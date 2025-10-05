@@ -1,0 +1,13 @@
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/model/Aluno.java
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/model/Usuario.java
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/service/UsuarioService.java
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/view/controllers/LoginController.java
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/model/Frequencia.java
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/database/DatabaseConnection.java
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/model/Relatorio.java
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/model/PlanoAula.java
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/model/Configuracao.java
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/MainApp.java
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/view/controllers/DashboardController.java
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/repository/UsuarioRepository.java
+/home/radleieugeniodoroth/Área de Trabalho/programação/src/main/java/com/planoaee/database/DatabaseInitializer.java
