@@ -1,4 +1,4 @@
-# Plano AEE - Sistema de Gestão APAPEQ
+# AmparoEdu - Sistema de Gestão APAPEQ
 
 Sistema desktop Java desenvolvido para automatizar processos manuais de relatórios, frequência e planos de aula da APAPEQ (Associação de Pais e Amigos de Pessoas Especiais de Quixadá).
 
