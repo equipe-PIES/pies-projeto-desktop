@@ -23,7 +23,7 @@ public class TokenService {
 
             String token = JWT.create() //gerando o token
                     .withIssuer("login-auth-api") //quem emite o token e o microserviço
-                    .withSubject("user.getEmail()") //quem é o sujeito que ta ganhando o token
+                    .withSubject(user.getEmail()) //quem é o sujeito que ta ganhando o token
                     .withExpiresAt(this.generateExpirationDate()) //função que gera a hora que expira o token
                     .sign(algorithm); //passando o algoritmo para gerar o token
             return token;
