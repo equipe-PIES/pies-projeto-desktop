@@ -1,7 +1,7 @@
-# URL de conexao com o banco de dados
+# URL de conexão com o banco de dados---
 spring.datasource.url=jdbc:postgresql://db.chanrhkfulbjytmjiwic.supabase.co:5432/postgres
 
-# Usuario e senha do banco
+# Usuário e senha do banco
 spring.datasource.username=postgres
 spring.datasource.password=ApapeqAmparoEdu
 
@@ -13,7 +13,7 @@ spring.datasource.driver-class-name=org.postgresql.Driver
 # Dialeto do Hibernate (permite entender o SQL do Postgres)
 spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 
-# Criacao automatica das tabelas com base nas entidades
+# (Opcional) Criação automática das tabelas com base nas entidades
 spring.jpa.hibernate.ddl-auto=none
 
 # Mostrar os comandos SQL no console

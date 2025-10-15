@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c4cd6cd9-5963-4114-9654-e9b41b4cba4e" name="Alterações" comment="">
-      <change afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/Pies_Backend/controller/AuthenticationController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/Pies_Backend/infra/security/SecurityConfigurations.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/Pies_Backend/infra/security/TokenService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/Pies_Backend/model/AuthenticationDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/Pies_Backend/model/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/Pies_Backend/repository/userRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pies-Backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-Backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/Pies_Backend/controller/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/Pies_Backend/controller/AuthenticationController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pies-Backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-Backend/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -31,6 +28,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MavenRunner">
+    <option name="delegateBuildToMaven" value="true" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -45,15 +48,30 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Aplicação.PiesBackendApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Maven..executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Sem nome.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feat/endpoints-de-autenticacao&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/radleieugeniodoroth/Documentos/pies-projeto-desktop&quot;
+    &quot;last_opened_file_path&quot;: &quot;/home/radleieugeniodoroth/Documentos/pies-projeto-desktop/Pies-Backend&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
 }</component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Tarefa padrão">
       <changelist id="c4cd6cd9-5963-4114-9654-e9b41b4cba4e" name="Alterações" comment="" />
