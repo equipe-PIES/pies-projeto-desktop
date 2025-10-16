@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <list default="true" id="c4cd6cd9-5963-4114-9654-e9b41b4cba4e" name="Alterações" comment="autenticação em andamento">
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
@@ -23,6 +24,19 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/Pies_Backend/controller/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/Pies_Backend/controller/AuthenticationController.java" afterDir="false" />
 >>>>>>> cbe3765 (WIP)
+=======
+    <list default="true" id="c4cd6cd9-5963-4114-9654-e9b41b4cba4e" name="Alterações" comment="autenticação em andamento">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/controller/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/controller/AuthenticationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/infra/security/SecurityConfigurations.java" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/infra/security/SecurityConfigurations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/infra/security/TokenService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/infra/security/TokenService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/model/UserRole.java" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/model/UserRole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/services/AuthorizationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-Backend/src/main/java/com/pies/api/projeto/integrado/pies_backend/services/AuthorizationService.java" afterDir="false" />
+>>>>>>> 708b7ba (feat: endpoints de registro e autenticação de usuarios finalizado.)
       <change beforePath="$PROJECT_DIR$/Pies-Backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-Backend/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -60,6 +74,9 @@
     <option name="showLibraryContents" value="true" />
   </component>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 708b7ba (feat: endpoints de registro e autenticação de usuarios finalizado.)
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Aplicação.PiesBackendApplication.executor": "Coverage",
@@ -76,6 +93,7 @@
     "last_opened_file_path": "/home/radleieugeniodoroth/Downloads/Fridge",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "settings.editor.selected.configurable": "preferences.pluginManager"
+<<<<<<< HEAD
   }
 }]]></component>
   <component name="RunManager" selected="Aplicação.PiesBackendApplication">
@@ -111,6 +129,24 @@
 }</component>
   <component name="RunManager">
 >>>>>>> cbe3765 (WIP)
+=======
+  }
+}]]></component>
+  <component name="RunManager" selected="Aplicação.PiesBackendApplication">
+    <configuration name="PiesBackendApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.pies.api.projeto.integrado.pies_backend.PiesBackendApplication" />
+      <module name="Pies-Backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.pies.api.projeto.integrado.pies_backend.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+>>>>>>> 708b7ba (feat: endpoints de registro e autenticação de usuarios finalizado.)
     <configuration default="true" type="JetRunConfigurationType">
       <method v="2">
         <option name="Make" enabled="true" />
@@ -121,13 +157,19 @@
       <method v="2" />
     </configuration>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 708b7ba (feat: endpoints de registro e autenticação de usuarios finalizado.)
     <recent_temporary>
       <list>
         <item itemvalue="Aplicação.PiesBackendApplication" />
       </list>
     </recent_temporary>
+<<<<<<< HEAD
 =======
 >>>>>>> cbe3765 (WIP)
+=======
+>>>>>>> 708b7ba (feat: endpoints de registro e autenticação de usuarios finalizado.)
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Tarefa padrão">
@@ -138,6 +180,9 @@
       <updated>1760277328252</updated>
     </task>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 708b7ba (feat: endpoints de registro e autenticação de usuarios finalizado.)
     <task id="LOCAL-00001" summary="autenticação em andamento">
       <option name="closed" value="true" />
       <created>1760554000633</created>
@@ -153,8 +198,11 @@
     <MESSAGE value="autenticação em andamento" />
     <option name="LAST_COMMIT_MESSAGE" value="autenticação em andamento" />
   </component>
+<<<<<<< HEAD
 =======
     <servers />
   </component>
 >>>>>>> cbe3765 (WIP)
+=======
+>>>>>>> 708b7ba (feat: endpoints de registro e autenticação de usuarios finalizado.)
 </project>

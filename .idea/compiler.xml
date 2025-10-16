@@ -4,6 +4,9 @@
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 708b7ba (feat: endpoints de registro e autenticação de usuarios finalizado.)
       <profile name="Annotation profile for Pies-Backend" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -20,8 +23,11 @@
       <module name="Pies-Backend" options="-parameters" />
     </option>
   </component>
+<<<<<<< HEAD
 =======
     </annotationProcessing>
   </component>
 >>>>>>> cbe3765 (WIP)
+=======
+>>>>>>> 708b7ba (feat: endpoints de registro e autenticação de usuarios finalizado.)
 </project>
