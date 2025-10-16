@@ -1,16 +1,17 @@
-package com.pies.api.projeto.integrado.Pies_Backend.infra.security;
+package com.pies.api.projeto.integrado.pies_backend.infra.security;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import org.springframework.beans.factory.annotation.Value;
-import com.pies.api.projeto.integrado.Pies_Backend.model.User;
-import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import com.pies.api.projeto.integrado.pies_backend.model.User;
 
 @Service
 public class TokenService {

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 708b7ba (feat: endpoints de registro e autenticação de usuarios finalizado.)
+      <profile name="Annotation profile for Pies-Backend" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.40/lombok-1.18.40.jar" />
+        </processorPath>
+        <module name="Pies-Backend" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Pies-Backend" options="-parameters" />
+    </option>
+  </component>
+<<<<<<< HEAD
+=======
+    </annotationProcessing>
+  </component>
+>>>>>>> cbe3765 (WIP)
+=======
+>>>>>>> 708b7ba (feat: endpoints de registro e autenticação de usuarios finalizado.)
+</project>

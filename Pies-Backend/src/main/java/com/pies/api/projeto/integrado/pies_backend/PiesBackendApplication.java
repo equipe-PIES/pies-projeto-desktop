@@ -1,4 +1,4 @@
-package com.pies.api.projeto.integrado.Pies_Backend;
+package com.pies.api.projeto.integrado.pies_backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
