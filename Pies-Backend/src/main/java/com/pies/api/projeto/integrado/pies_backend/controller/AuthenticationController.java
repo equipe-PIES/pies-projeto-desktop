@@ -1,52 +1,75 @@
 package com.pies.api.projeto.integrado.pies_backend.controller;
 
-import com.pies.api.projeto.integrado.pies_backend.controller.dto.AuthenticationDTO;
-import com.pies.api.projeto.integrado.pies_backend.controller.dto.RegisterDTO;
-import com.pies.api.projeto.integrado.pies_backend.model.User;
-import com.pies.api.projeto.integrado.pies_backend.repository.UserRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@RestController //indicando que é um controller rest
-@RequestMapping("auth")//mapeando o endpoint na qual esse controller vai ser chamado, se chamar auth vai cair nesse endpoint
+import com.pies.api.projeto.integrado.pies_backend.controller.dto.AuthenticationDTO;
+import com.pies.api.projeto.integrado.pies_backend.controller.dto.LoginResponseDTO;
+import com.pies.api.projeto.integrado.pies_backend.controller.dto.RegisterDTO;
+import com.pies.api.projeto.integrado.pies_backend.infra.security.TokenService;
+import com.pies.api.projeto.integrado.pies_backend.model.User;
+import com.pies.api.projeto.integrado.pies_backend.repository.UserRepository;
 
-public class AuthenticationController {//endpoint pro usuario fazer login
+import jakarta.validation.Valid;
+
+@RestController // Indica que é um controller REST que retorna JSON
+@RequestMapping("auth") // Mapeia todas as rotas deste controller para /auth
+
+public class AuthenticationController { // Controller responsável pela autenticação (login e registro)
+    
     @Autowired
-    private AuthenticationManager authenticationManager; //
+    private AuthenticationManager authenticationManager; // Gerenciador de autenticação do Spring Security
 
     @Autowired
-    private UserRepository repository;
+    private UserRepository repository; // Repositório para operações com usuários no banco
 
+    @Autowired
+    private TokenService tokenService; // Serviço para gerar tokens JWT
 
+    // Endpoint para fazer login
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
-
-        var usernamepassword = new UsernamePasswordAuthenticationToken(data.login(),data.password());
-        var auth = this.authenticationManager.authenticate(usernamepassword);//recebe o login e a senha juntos formados como um token
-
-        return ResponseEntity.ok().build();
-
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO data){
+        
+        // Cria um token de autenticação com email e senha
+        var usernamepassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+        
+        // Autentica o usuário (verifica se email e senha estão corretos)
+        var auth = this.authenticationManager.authenticate(usernamepassword);
+        
+        // Gera um token JWT para o usuário autenticado
+        var token = tokenService.gererateToken((User) auth.getPrincipal());
+        
+        // Retorna o token JWT para o cliente
+        return ResponseEntity.ok(new LoginResponseDTO(token));
     }
-    //novos usuarios
 
+    // Endpoint para registrar novos usuários
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
-        //verificar se o login existe no banco de dados, caso n exista fazemos o cadastro desse novo usuario
-        if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
+    public ResponseEntity<Void> register(@RequestBody @Valid RegisterDTO data){
+        
+        // Verifica se o email já existe no banco de dados
+        if(this.repository.findByEmail(data.login()) != null) {
+            return ResponseEntity.badRequest().build(); // Retorna erro 400 se email já existe
+        }
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password()); //pegando o hash da senha do usuario
+        // Criptografa a senha usando BCrypt antes de salvar no banco
+        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password()); 
 
+        // Cria um novo usuário com os dados fornecidos
         User newUser = new User(data.login(), encryptedPassword, data.role());
 
+        // Salva o novo usuário no banco de dados
         this.repository.save(newUser);
 
+        // Retorna sucesso (status 200) se o registro foi bem-sucedido
         return ResponseEntity.ok().build();
-
     }
 
 }

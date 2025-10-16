@@ -1,16 +1,17 @@
 package com.pies.api.projeto.integrado.pies_backend.infra.security;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import org.springframework.beans.factory.annotation.Value;
 import com.pies.api.projeto.integrado.pies_backend.model.User;
-import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @Service
 public class TokenService {
@@ -23,7 +24,7 @@ public class TokenService {
 
             String token = JWT.create() //gerando o token
                     .withIssuer("login-auth-api") //quem emite o token e o microserviço
-                    .withSubject("user.getEmail()") //quem é o sujeito que ta ganhando o token
+                    .withSubject(user.getEmail()) //quem é o sujeito que ta ganhando o token
                     .withExpiresAt(this.generateExpirationDate()) //função que gera a hora que expira o token
                     .sign(algorithm); //passando o algoritmo para gerar o token
             return token;
