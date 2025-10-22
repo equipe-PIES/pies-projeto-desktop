@@ -29,7 +29,7 @@ public class CoordenadorController {
      * @return ResponseEntity com mensagem de confirmação de acesso
      */
     @GetMapping("/dashboard")
-    @PreAuthorize("hasRole('COORDENADOR')")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
     public ResponseEntity<String> getCoordenadorDashboard() {
         return ResponseEntity.ok("Dashboard do Coordenador - Acesso autorizado");
     }
