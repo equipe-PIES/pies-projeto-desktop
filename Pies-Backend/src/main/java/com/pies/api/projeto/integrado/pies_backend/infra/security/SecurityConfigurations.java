@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration //indicando pro sprint que é uma classe de config
 @EnableWebSecurity //habilitando no web security para eu conseguir configurar dentro da classe
+@EnableMethodSecurity(prePostEnabled = true) //habilita @PreAuthorize e @PostAuthorize
 public class SecurityConfigurations {
     @Bean // pro spring conseguir instanciar a classe
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, SecurityFilter securityFilter) throws Exception {
@@ -31,6 +33,9 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()//permite que qualquer pessoa faça requisição pra endpoint
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()//permite registro de novos usuários
+                        .requestMatchers("/test/public").permitAll()//endpoint de teste público
+                        .requestMatchers("/professor/**").hasRole("PROFESSOR")//rotas de professor só para professores
+                        .requestMatchers("/coordenador/**").hasRole("COORDENADOR")//rotas de coordenador só para coordenadores
                         .requestMatchers(HttpMethod.POST, "/product").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

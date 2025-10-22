@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum UserRole {
     ADMIN("admin"),
-    USER("user");
+    USER("user"),
+    PROFESSOR("professor"),
+    COORDENADOR("coordenador");
 
     private final String role;
 
@@ -35,7 +37,7 @@ public enum UserRole {
         try {
             return UserRole.valueOf(value.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid role: " + value + ". Valid roles are: admin, user, ADMIN, USER");
+            throw new IllegalArgumentException("Invalid role: " + value + ". Valid roles are: admin, user, professor, coordenador, ADMIN, USER, PROFESSOR, COORDENADOR");
         }
     }
 }

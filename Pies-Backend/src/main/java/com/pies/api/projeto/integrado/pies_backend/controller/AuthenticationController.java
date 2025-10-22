@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.AuthenticationDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.LoginResponseDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.RegisterDTO;
+import com.pies.api.projeto.integrado.pies_backend.controller.dto.UserInfoDTO;
 import com.pies.api.projeto.integrado.pies_backend.infra.security.TokenService;
 import com.pies.api.projeto.integrado.pies_backend.model.User;
 import com.pies.api.projeto.integrado.pies_backend.repository.UserRepository;
@@ -70,6 +74,17 @@ public class AuthenticationController { // Controller responsável pela autentic
 
         // Retorna sucesso (status 200) se o registro foi bem-sucedido
         return ResponseEntity.ok().build();
+    }
+
+    // Endpoint para obter informações do usuário logado
+    @GetMapping("/me")
+    public ResponseEntity<UserInfoDTO> getCurrentUser() {
+        // Obtém o usuário autenticado do contexto de segurança
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        
+        // Retorna as informações do usuário
+        return ResponseEntity.ok(new UserInfoDTO(user.getId(), user.getName(), user.getEmail(), user.getRole()));
     }
 
 }
