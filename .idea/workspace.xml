@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9e3a1ccd-f66b-4c42-89f9-d37b4476796b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Pies-front/src/main/java/com/pies/projeto/integrado/piesfront/controllers/LoginController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Pies-front/src/main/resources/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Pies-front/src/main/resources/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Pies-front/src/main/resources/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Pies-front/src/main/resources/com/pies/projeto/integrado/piesfront/styles/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-front/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-front/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-front/src/main/java/com/pies/projeto/integrado/piesfront/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-front/src/main/java/com/PiesFrontApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-front/src/main/java/com/pies/projeto/integrado/piesfront/HelloController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-front/src/main/java/com/pies/projeto/integrado/piesfront/Launcher.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-front/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/Pies-front/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pies-front/src/main/resources/com/pies/projeto/integrado/piesfront/hello-view.fxml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "feature/PIES-41-tela-de-login"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <servers />
+  </component>
+</project>
