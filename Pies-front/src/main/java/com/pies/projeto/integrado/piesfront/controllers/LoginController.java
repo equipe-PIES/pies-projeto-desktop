@@ -1,6 +1,6 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 
-import com.pies.projeto.integrado.piesfront.enums.UserRole;
+import com.pies.projeto.integrado.piesfront.services.AuthService;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
@@ -27,6 +27,13 @@ public class LoginController implements Initializable {
     @FXML private Button loginButton;
     @FXML private Label errorMessageLabel;
     @FXML private Hyperlink forgotPasswordLink;
+    
+    // Serviço de autenticação para comunicação com o backend
+    private final AuthService authService;
+
+    public LoginController() {
+        this.authService = new AuthService();
+    }
 
     // Opcional: Implementar initialize se for necessário
     @Override
@@ -37,6 +44,14 @@ public class LoginController implements Initializable {
     // ----------------------------------------------------
     // MÉTODOS DE AÇÃO
     // ----------------------------------------------------
+
+    @FXML
+    private void handleForgotPasswordAction() {
+        // TODO: Implementar funcionalidade de recuperação de senha
+        // Por enquanto, apenas mostra uma mensagem informativa
+        errorMessageLabel.setText("Funcionalidade de recuperação de senha será implementada em breve.");
+        errorMessageLabel.setStyle("-fx-text-fill: blue;");
+    }
 
     @FXML
     private void handleLoginButtonAction() {
@@ -53,22 +68,10 @@ public class LoginController implements Initializable {
         }
 
         // ----------------------------------------------------------------------
-        // SIMULAÇÃO DA CHAMADA DE AUTENTICAÇÃO
+        // CHAMADA REAL AO BACKEND SPRING BOOT
         // ----------------------------------------------------------------------
-        // ESTE É O PONTO ONDE VOCÊ FARIA UMA CHAMADA AO SEU SERVIÇO SPRING
-        // E RECEBERIA A STRING DO PAPEL, EX: "professor", "admin", "INVÁLIDO"
-        // ----------------------------------------------------------------------
-
-        // **SUBSTITUA A LINHA ABAIXO PELA CHAMADA AO SEU BACKEND/SERVIÇO DE AUTENTICAÇÃO**
-        // Por enquanto, vamos simular que o email "coord@a.com" loga como coordenador
-        String roleRecebidaDoServico;
-        if ("coord@a.com".equals(email) && "123".equals(senha)) {
-            roleRecebidaDoServico = "coordenador"; // String retornada do login bem-sucedido
-        } else if ("prof@a.com".equals(email) && "123".equals(senha)) {
-            roleRecebidaDoServico = "professor"; // String retornada do login bem-sucedido
-        } else {
-            roleRecebidaDoServico = "INVÁLIDO"; // String retornada quando credenciais falham
-        }
+        // Faz a chamada HTTP para o endpoint /auth/login do backend
+        String roleRecebidaDoServico = authService.authenticate(email, senha);
 
         // ----------------------------------------------------------------------
         // 2. Autenticação e Verificação de Nível (Usando o Enum UserRole)
@@ -80,21 +83,8 @@ public class LoginController implements Initializable {
             return;
         }
 
-        String nivelAcesso = null;
-        try {
-            // CONVERSÃO CORRETA: String -> UserRole -> String
-            UserRole userRoleEnum = UserRole.fromString(roleRecebidaDoServico);
-
-            // Aqui pegamos o valor da String
-            nivelAcesso = userRoleEnum.getRole();
-
-        } catch (IllegalArgumentException e) {
-            // Este catch lida com o caso onde o backend retorna uma role válida, mas desconhecida
-            // pelo frontend (ex: "gerente").
-            e.printStackTrace();
-            errorMessageLabel.setText("Erro de permissão: Papel de usuário desconhecido. Contate o suporte.");
-            return;
-        }
+        // Usa diretamente a role do backend (simplificado)
+        String nivelAcesso = roleRecebidaDoServico.toLowerCase();
 
 
         // 3. Lógica de Mapeamento de Tela
