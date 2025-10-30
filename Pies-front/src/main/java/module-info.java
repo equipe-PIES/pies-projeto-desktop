@@ -9,7 +9,6 @@ module com.pies.projeto.integrado.piesfront {
     requires org.controlsfx.controls;
     requires org.kordamp.bootstrapfx.core;
 
-    opens com.pies.projeto.integrado.piesfront to javafx.fxml;
-    opens com.pies.projeto.integrado.piesfront to javafx.graphics;
+    opens com.pies.projeto.integrado.piesfront to javafx.fxml, javafx.graphics;
     exports com.pies.projeto.integrado.piesfront;
 }
