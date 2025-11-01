@@ -5,6 +5,7 @@ module com.pies.projeto.integrado.piesfront {
 
     requires org.controlsfx.controls;
     requires org.kordamp.bootstrapfx.core;
+    requires com.fasterxml.jackson.databind;
 
     opens com.pies.projeto.integrado.piesfront.controllers to javafx.fxml;
     opens com.pies.projeto.integrado.piesfront.dto;
