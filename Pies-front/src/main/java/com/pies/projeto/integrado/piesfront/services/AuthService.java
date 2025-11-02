@@ -97,10 +97,15 @@ public class AuthService {
      */
     private String getUserRole() {
         if (currentToken == null) {
+            System.err.println("getUserRole: Token é NULL!");
             return "INVÁLIDO";
         }
         
         try {
+            System.out.println("=== DEBUG GET USER ROLE ===");
+            System.out.println("URL: " + BASE_URL + USER_INFO_ENDPOINT);
+            System.out.println("Token: " + currentToken.substring(0, 30) + "...");
+            
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + USER_INFO_ENDPOINT))
                     .header("Authorization", "Bearer " + currentToken)
@@ -111,16 +116,22 @@ public class AuthService {
             HttpResponse<String> response = httpClient.send(request, 
                     HttpResponse.BodyHandlers.ofString());
             
+            System.out.println("Status Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
+            
             if (response.statusCode() == 200) {
                 UserInfoDTO userInfo = objectMapper.readValue(
                         response.body(), UserInfoDTO.class);
+                System.out.println("UserInfo parsed - role: " + userInfo.role());
                 return userInfo.role();
             } else {
+                System.err.println("getUserRole falhou com status: " + response.statusCode());
                 return "INVÁLIDO";
             }
             
         } catch (IOException | InterruptedException e) {
-            System.err.println("Erro ao buscar informações do usuário: " + e.getMessage());
+            System.err.println("EXCEÇÃO ao buscar informações do usuário: " + e.getMessage());
+            e.printStackTrace();
             return "INVÁLIDO";
         }
     }

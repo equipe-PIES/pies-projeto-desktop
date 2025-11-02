@@ -92,11 +92,11 @@ public class LoginController implements Initializable {
 
         switch (nivelAcesso) {
             case "coordenador":
-                fxmlDestino = "tela-inicio-coord.fxml";
+                fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml";
                 break;
             case "professor":
             case "user":  // Temporário: user também vai para tela de professor
-                fxmlDestino = "tela-inicio-professor.fxml";
+                fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml";
                 break;
             default:
                 errorMessageLabel.setText("Acesso sem tela mapeada. Contate o suporte.");

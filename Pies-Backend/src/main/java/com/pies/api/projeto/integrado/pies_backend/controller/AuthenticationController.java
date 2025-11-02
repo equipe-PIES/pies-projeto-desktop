@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.AuthenticationDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.LoginResponseDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.RegisterDTO;
+import com.pies.api.projeto.integrado.pies_backend.controller.dto.UserInfoDTO;
 import com.pies.api.projeto.integrado.pies_backend.infra.security.TokenService;
 import com.pies.api.projeto.integrado.pies_backend.model.User;
 import com.pies.api.projeto.integrado.pies_backend.repository.UserRepository;
@@ -88,6 +92,45 @@ public class AuthenticationController { // Controller responsável pela autentic
             
         } catch(Exception e) {
             System.err.println("ERRO NO REGISTRO: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    /**
+     * Endpoint para obter informações do usuário autenticado
+     * Retorna id, email, nome e role do usuário logado
+     */
+    @GetMapping("/me")
+    public ResponseEntity<UserInfoDTO> getAuthenticatedUser() {
+        try {
+            // Obtém a autenticação do contexto de segurança
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            
+            if (authentication == null || !authentication.isAuthenticated()) {
+                System.err.println("/auth/me: Usuario nao autenticado");
+                return ResponseEntity.status(401).build();
+            }
+            
+            // Obtém o usuário autenticado
+            User user = (User) authentication.getPrincipal();
+            
+            System.out.println("=== /auth/me DEBUG ===");
+            System.out.println("User: " + user.getEmail());
+            System.out.println("Role: " + user.getRole().getRole());
+            
+            // Cria o DTO com as informações do usuário
+            UserInfoDTO userInfo = new UserInfoDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole().getRole()
+            );
+            
+            return ResponseEntity.ok(userInfo);
+            
+        } catch (Exception e) {
+            System.err.println("ERRO NO /auth/me: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).build();
         }
