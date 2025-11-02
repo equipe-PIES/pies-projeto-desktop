@@ -7,7 +7,9 @@
 <?import javafx.scene.text.*?>
 
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
    <center>
       <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: default;">
           <children>
