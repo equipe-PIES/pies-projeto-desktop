@@ -95,6 +95,7 @@ public class LoginController implements Initializable {
                 fxmlDestino = "tela-inicio-coord.fxml";
                 break;
             case "professor":
+            case "user":  // Temporário: user também vai para tela de professor
                 fxmlDestino = "tela-inicio-professor.fxml";
                 break;
             default:

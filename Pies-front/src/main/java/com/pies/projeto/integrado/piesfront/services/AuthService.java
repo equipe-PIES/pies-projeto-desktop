@@ -41,9 +41,14 @@ public class AuthService {
      */
     public String authenticate(String email, String password) {
         try {
+            System.out.println("=== DEBUG AUTH SERVICE ===");
+            System.out.println("Email: " + email);
+            System.out.println("URL: " + BASE_URL + LOGIN_ENDPOINT);
+            
             // Cria o objeto de requisição
             LoginRequestDTO loginRequest = new LoginRequestDTO(email, password);
             String requestBody = objectMapper.writeValueAsString(loginRequest);
+            System.out.println("Request Body: " + requestBody);
             
             // Monta a requisição HTTP
             HttpRequest request = HttpRequest.newBuilder()
@@ -57,6 +62,9 @@ public class AuthService {
             HttpResponse<String> response = httpClient.send(request, 
                     HttpResponse.BodyHandlers.ofString());
             
+            System.out.println("Status Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
+            
             // Verifica se o login foi bem-sucedido
             if (response.statusCode() == 200) {
                 // Parse da resposta para obter o token
@@ -65,15 +73,20 @@ public class AuthService {
                 
                 // Armazena o token para uso posterior
                 this.currentToken = loginResponse.token();
+                System.out.println("Token armazenado: " + currentToken.substring(0, 30) + "...");
                 
                 // Busca as informações do usuário para obter a role
-                return getUserRole();
+                String role = getUserRole();
+                System.out.println("Role retornada: " + role);
+                return role;
             } else {
+                System.err.println("Login falhou com status: " + response.statusCode());
                 return "INVÁLIDO";
             }
             
         } catch (IOException | InterruptedException e) {
-            System.err.println("Erro ao fazer login: " + e.getMessage());
+            System.err.println("EXCEÇÃO ao fazer login: " + e.getMessage());
+            e.printStackTrace();
             return "INVÁLIDO";
         }
     }
