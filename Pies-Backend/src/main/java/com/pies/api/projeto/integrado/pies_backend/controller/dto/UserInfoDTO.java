@@ -1,6 +1,6 @@
 package com.pies.api.projeto.integrado.pies_backend.controller.dto;
 
-import com.pies.api.projeto.integrado.pies_backend.model.UserRole;
+import com.pies.api.projeto.integrado.pies_backend.model.Enums.UserRole;
 
 /**
  * DTO (Data Transfer Object) para transferir informações do usuário logado.

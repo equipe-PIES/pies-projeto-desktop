@@ -1,4 +1,4 @@
-package com.pies.api.projeto.integrado.pies_backend.model;
+package com.pies.api.projeto.integrado.pies_backend.model.Enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

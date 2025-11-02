@@ -28,45 +28,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor // Lombok: gera construtor vazio
 public class ProfessorDTO {
     
-    // ========== CAMPOS IDÊNTICOS AO MODELO ==========
-    // Todos os campos são expostos para resposta completa da API
-    
-    /**
-     * ID único do professor
-     * Gerado automaticamente pelo banco de dados
-     */
     private String id;
     
-    /**
-     * Nome completo do professor
-     */
     private String nome;
     
-    /**
-     * CPF do professor no formato brasileiro (000.000.000-00)
-     */
     private String cpf;
     
-    /**
-     * Data de nascimento do professor
-     * Formato: YYYY-MM-DD
-     */
     private LocalDate dataNascimento;
     
-    /**
-     * Gênero do professor
-     */
     private String genero;
     
-    /**
-     * Formação acadêmica do professor
-     */
     private String formacao;
     
-    /**
-     * Observações adicionais sobre o professor
-     * Pode ser null se não houver observações
-     */
     private String observacoes;
 
     // ========== CONSTRUTOR DE CONVERSÃO ==========
