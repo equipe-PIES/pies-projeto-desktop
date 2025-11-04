@@ -13,39 +13,53 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.pies.api.projeto.integrado.pies_backend.model.User;
 
+/**
+ * Serviço responsável por gerar e validar tokens JWT
+ */
 @Service
 public class TokenService {
+    
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public String gererateToken(User user){//função de geração de tokek
+    /**
+     * Gera um token JWT para o usuário autenticado
+     */
+    public String generateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-
-            String token = JWT.create() //gerando o token
-                    .withIssuer("login-auth-api") //quem emite o token e o microserviço
-                    .withSubject(user.getEmail()) //quem é o sujeito que ta ganhando o token
-                    .withExpiresAt(this.generateExpirationDate()) //função que gera a hora que expira o token
-                    .sign(algorithm); //passando o algoritmo para gerar o token
+            String token = JWT.create()
+                    .withIssuer("pies-backend")
+                    .withSubject(user.getEmail())
+                    .withClaim("role", user.getRole().getRole())
+                    .withExpiresAt(genExpirationDate())
+                    .sign(algorithm);
             return token;
-        } catch (JWTCreationException exception){
-            throw new RuntimeException("Error while authenticating");
+        } catch (JWTCreationException exception) {
+            throw new RuntimeException("Erro ao gerar token", exception);
         }
     }
-    //validar o token
-    public String validateToken(String token){
-        try {//se eu conseguir validar
+
+    /**
+     * Valida o token JWT e retorna o email do usuário
+     */
+    public String validateToken(String token) {
+        try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
-                    .withIssuer("login-auth-api")//montando o obj par fazer a verif
-                    .build()//montando o obj par fazer a verif
-                    .verify(token)//verificando, caso dê problema na verif ele lança a excessão do catch retornando nulo
-                    .getSubject();//pegando o valor que foi salvo no token no momento da geração
-        } catch (JWTVerificationException exception){//caso dê erro de validação retorna nulo por que tá so validando token
-            return null; //se vier como nulo o usuario não foi autentiocado, por erro no email ou etc
+                    .withIssuer("pies-backend")
+                    .build()
+                    .verify(token)
+                    .getSubject();
+        } catch (JWTVerificationException exception) {
+            return "";
         }
     }
-    private Instant generateExpirationDate(){
+
+    /**
+     * Define a data de expiração do token (2 horas)
+     */
+    private Instant genExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 }

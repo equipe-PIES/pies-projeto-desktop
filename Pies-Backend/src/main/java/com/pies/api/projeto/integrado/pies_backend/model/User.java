@@ -44,12 +44,15 @@ public class User implements UserDetails {// criacao do usuario
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return switch (this.role) {
-            case ADMIN -> List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-            case PROFESSOR -> List.of(new SimpleGrantedAuthority("ROLE_PROFESSOR"), new SimpleGrantedAuthority("ROLE_USER"));
-            case COORDENADOR -> List.of(new SimpleGrantedAuthority("ROLE_COORDENADOR"), new SimpleGrantedAuthority("ROLE_USER"));
-            default -> List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        };
+        if(this.role == UserRole.ADMIN) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        } else if(this.role == UserRole.PROFESSOR) {
+            return List.of(new SimpleGrantedAuthority("ROLE_PROFESSOR"));
+        } else if(this.role == UserRole.COORDENADOR) {
+            return List.of(new SimpleGrantedAuthority("ROLE_COORDENADOR"));
+        } else {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
     }
 
     @Override

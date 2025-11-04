@@ -1,7 +1,5 @@
 package com.pies.api.projeto.integrado.pies_backend.controller.dto;
 
-import com.pies.api.projeto.integrado.pies_backend.model.Enums.UserRole;
-
 /**
  * DTO (Data Transfer Object) para transferir informações do usuário logado.
  * Este DTO é usado no endpoint /auth/me para retornar dados do usuário autenticado
@@ -10,7 +8,7 @@ import com.pies.api.projeto.integrado.pies_backend.model.Enums.UserRole;
  * @param id Identificador único do usuário
  * @param name Nome completo do usuário
  * @param email Email do usuário (usado como login)
- * @param role Role do usuário (PROFESSOR, COORDENADOR, ADMIN, USER)
+ * @param role Role do usuário (professor, coordenador, admin, user)
  */
-public record UserInfoDTO(String id, String name, String email, UserRole role) {
+public record UserInfoDTO(String id, String name, String email, String role) {
 }

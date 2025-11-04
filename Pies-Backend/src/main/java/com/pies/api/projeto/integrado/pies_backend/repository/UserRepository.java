@@ -9,5 +9,3 @@ public interface UserRepository extends JpaRepository <User, String>{
     //metodo para consultar usuario pelo email
     User findByEmail(String email);//retorna um user para ser usado pela spring security
 }
-
-

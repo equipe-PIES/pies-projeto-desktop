@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,7 +48,7 @@ public class AuthenticationController { // Controller responsável pela autentic
         var auth = this.authenticationManager.authenticate(usernamepassword);
         
         // Gera um token JWT para o usuário autenticado
-        var token = tokenService.gererateToken((User) auth.getPrincipal());
+        var token = tokenService.generateToken((User) auth.getPrincipal());
         
         // Retorna o token JWT para o cliente
         return ResponseEntity.ok(new LoginResponseDTO(token));
@@ -58,33 +58,82 @@ public class AuthenticationController { // Controller responsável pela autentic
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody @Valid RegisterDTO data){
         
-        // Verifica se o email já existe no banco de dados
-        if(this.repository.findByEmail(data.login()) != null) {
-            return ResponseEntity.badRequest().build(); // Retorna erro 400 se email já existe
+        try {
+            System.out.println("=== DEBUG REGISTER ===");
+            System.out.println("Login recebido: " + data.login());
+            System.out.println("Role recebida: " + data.role());
+            
+            // Verifica se o email já existe no banco de dados
+            User existingUser = this.repository.findByEmail(data.login());
+            if(existingUser != null) {
+                System.out.println("Usuario ja existe!");
+                return ResponseEntity.badRequest().build(); // Retorna erro 400 se email já existe
+            }
+
+            // Criptografa a senha usando BCrypt antes de salvar no banco
+            String encryptedPassword = new BCryptPasswordEncoder().encode(data.password()); 
+            System.out.println("Senha criptografada");
+
+            // Cria um novo usuário com os dados fornecidos
+            User newUser = new User();
+            newUser.setEmail(data.login());
+            newUser.setPassword(encryptedPassword);
+            newUser.setRole(data.role());
+            newUser.setName(data.login().split("@")[0]); // Define o nome como parte do email antes do @
+            
+            System.out.println("Usuario criado: " + newUser.getEmail() + " | Name: " + newUser.getName());
+
+            // Salva o novo usuário no banco de dados
+            this.repository.save(newUser);
+            System.out.println("Usuario salvo com sucesso!");
+
+            // Retorna sucesso (status 200) se o registro foi bem-sucedido
+            return ResponseEntity.ok().build();
+            
+        } catch(Exception e) {
+            System.err.println("ERRO NO REGISTRO: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
         }
-
-        // Criptografa a senha usando BCrypt antes de salvar no banco
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password()); 
-
-        // Cria um novo usuário com os dados fornecidos
-        User newUser = new User(data.login(), encryptedPassword, data.role());
-
-        // Salva o novo usuário no banco de dados
-        this.repository.save(newUser);
-
-        // Retorna sucesso (status 200) se o registro foi bem-sucedido
-        return ResponseEntity.ok().build();
     }
 
-    // Endpoint para obter informações do usuário logado
+    /**
+     * Endpoint para obter informações do usuário autenticado
+     * Retorna id, email, nome e role do usuário logado
+     */
     @GetMapping("/me")
-    public ResponseEntity<UserInfoDTO> getCurrentUser() {
-        // Obtém o usuário autenticado do contexto de segurança
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        
-        // Retorna as informações do usuário
-        return ResponseEntity.ok(new UserInfoDTO(user.getId(), user.getName(), user.getEmail(), user.getRole()));
+    public ResponseEntity<UserInfoDTO> getAuthenticatedUser() {
+        try {
+            // Obtém a autenticação do contexto de segurança
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            
+            if (authentication == null || !authentication.isAuthenticated()) {
+                System.err.println("/auth/me: Usuario nao autenticado");
+                return ResponseEntity.status(401).build();
+            }
+            
+            // Obtém o usuário autenticado
+            User user = (User) authentication.getPrincipal();
+            
+            System.out.println("=== /auth/me DEBUG ===");
+            System.out.println("User: " + user.getEmail());
+            System.out.println("Role: " + user.getRole().getRole());
+            
+            // Cria o DTO com as informações do usuário
+            UserInfoDTO userInfo = new UserInfoDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole().getRole()
+            );
+            
+            return ResponseEntity.ok(userInfo);
+            
+        } catch (Exception e) {
+            System.err.println("ERRO NO /auth/me: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
     }
 
 }
