@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="coordInicioPane" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
+<BorderPane fx:id="coordInicioPane" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.HomeCoordController">
 
     <!-- TOPO -->
     <top>
@@ -37,7 +37,7 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="inicioButton" fx:id="inicioButton" text="Início" />
+                        <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" text="Início" />
                         <Button id="turmasButton" fx:id="turmasButton" text="Turmas" />
                         <Button id="professoresButton" fx:id="professoresButton" text="Professores" />
                         <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
@@ -75,7 +75,7 @@
                         <Insets right="20.0" />
                     </padding></Region>
 
-                <Button id="sairButton" fx:id="sairButton" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
+                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
                     <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
                     </VBox.margin>
@@ -115,7 +115,7 @@
                               <Insets bottom="4.0" left="20.0" />
                            </VBox.margin>
                         </Label>
-                        <TextField fx:id="cpfEducando">
+                        <TextField fx:id="cpfAluno" promptText="000.000.000.-00">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
@@ -125,7 +125,7 @@
                               <Insets bottom="4.0" left="20.0" />
                            </VBox.margin>
                         </Label>
-                        <DatePicker fx:id="dtNascEduc">
+                        <DatePicker fx:id="dtNascAluno" promptText="--/--/----">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
@@ -135,7 +135,7 @@
                               <Insets bottom="4.0" left="20.0" />
                            </VBox.margin>
                         </Label>
-                        <ChoiceBox fx:id="generoEducando" prefHeight="31.0" prefWidth="250.0">
+                        <ChoiceBox fx:id="generoAluno" prefHeight="31.0" prefWidth="250.0">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
@@ -145,7 +145,7 @@
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
                         </Label>
-                        <ChoiceBox fx:id="grauEscEducando" prefWidth="250.0">
+                        <ChoiceBox fx:id="grauEscAluno" prefWidth="250.0">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
@@ -155,7 +155,7 @@
                               <Insets bottom="4.0" left="20.0" />
                            </VBox.margin>
                         </Label>
-                        <TextField fx:id="cidEducando">
+                        <TextField fx:id="cidAluno" promptText="CID">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
@@ -165,7 +165,7 @@
                               <Insets bottom="4.0" left="20.0" />
                            </VBox.margin>
                         </Label>
-                        <TextField fx:id="nisEducando">
+                        <TextField fx:id="nisAluno" promptText="000.00000.00-0">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
@@ -175,7 +175,7 @@
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
                         </Label>
-                        <TextArea fx:id="obsEducando" prefHeight="200.0" prefWidth="200.0">
+                        <TextArea fx:id="obsAluno" prefHeight="200.0" prefWidth="200.0" promptText="Guarde suas observações sobre o Aluno(a) aqui.">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
@@ -197,7 +197,7 @@
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="nomeRespon">
+                              <TextField fx:id="nomeRespon" promptText="Nome do Responsável">
                                  <VBox.margin>
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
@@ -207,7 +207,7 @@
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="cpfRespon">
+                              <TextField fx:id="cpfRespon" promptText="000.000.000.-00">
                                  <VBox.margin>
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
@@ -217,7 +217,7 @@
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="contatoRespon">
+                              <TextField fx:id="contatoRespon" promptText="(--) 0.0000-0000">
                                  <VBox.margin>
                                     <Insets bottom="15.0" left="20.0" right="20.0" />
                                  </VBox.margin>
@@ -232,7 +232,7 @@
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="endRua">
+                              <TextField fx:id="endRua" promptText="Rua">
                                  <VBox.margin>
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
@@ -242,7 +242,7 @@
                                     <VBox prefHeight="200.0" prefWidth="220.0">
                                        <children>
                                           <Label text="Número:" />
-                                          <TextField fx:id="endNum" prefHeight="31.0" prefWidth="187.0">
+                                          <TextField fx:id="endNum" prefHeight="31.0" prefWidth="187.0" promptText="Número">
                                              <VBox.margin>
                                                 <Insets />
                                              </VBox.margin>
@@ -256,7 +256,7 @@
                                     <VBox prefHeight="200.0" prefWidth="150.0">
                                        <children>
                                           <Label text="Bairro:" />
-                                          <TextField fx:id="endBairro" />
+                                          <TextField fx:id="endBairro" promptText="Bairro" />
                                        </children>
                                     </VBox>
                                  </children>

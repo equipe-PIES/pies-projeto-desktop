@@ -15,8 +15,11 @@ import java.time.Duration;
 /**
  * Serviço responsável por fazer chamadas HTTP para o backend Spring Boot
  * e gerenciar a autenticação do usuário.
+ * Implementado como singleton para compartilhar o estado de autenticação entre controllers.
  */
 public class AuthService {
+    
+    private static AuthService instance; // Instância singleton para compartilhar o estado de autenticação entre controllers.
     
     private static final String BASE_URL = "http://localhost:8080"; // URL do seu backend
     private static final String LOGIN_ENDPOINT = "/auth/login";
@@ -26,11 +29,25 @@ public class AuthService {
     private final ObjectMapper objectMapper;
     private String currentToken; // Armazena o token JWT atual
     
-    public AuthService() {
+    /**
+     * Construtor privado para implementar o padrão singleton
+     */
+    private AuthService() {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
         this.objectMapper = new ObjectMapper();
+    }
+    
+    /**
+     * Obtém a instância singleton do AuthService
+     * @return Instância única do AuthService
+     */
+    public static synchronized AuthService getInstance() {
+        if (instance == null) {
+            instance = new AuthService();
+        }
+        return instance;
     }
     
     /**
@@ -109,6 +126,40 @@ public class AuthService {
         } catch (IOException | InterruptedException e) {
             System.err.println("Erro ao buscar informações do usuário: " + e.getMessage());
             return "INVÁLIDO";
+        }
+    }
+    
+    /**
+     * Busca as informações completas do usuário logado
+     * @return UserInfoDTO com as informações do usuário ou null se falhar
+     */
+    public UserInfoDTO getUserInfo() {
+        if (currentToken == null) {
+            return null;
+        }
+        
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + USER_INFO_ENDPOINT))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            
+            HttpResponse<String> response = httpClient.send(request, 
+                    HttpResponse.BodyHandlers.ofString());
+            
+            if (response.statusCode() == 200) {
+                return objectMapper.readValue(
+                        response.body(), UserInfoDTO.class);
+            } else {
+                System.err.println("Erro ao buscar informações do usuário. Status: " + response.statusCode());
+                return null;
+            }
+            
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao buscar informações do usuário: " + e.getMessage());
+            return null;
         }
     }
     

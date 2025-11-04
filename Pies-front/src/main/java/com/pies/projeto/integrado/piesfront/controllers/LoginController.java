@@ -32,7 +32,7 @@ public class LoginController implements Initializable {
     private final AuthService authService;
 
     public LoginController() {
-        this.authService = new AuthService();
+        this.authService = AuthService.getInstance(); // Usa a instância singleton
     }
 
     // Opcional: Implementar initialize se for necessário
@@ -92,10 +92,10 @@ public class LoginController implements Initializable {
 
         switch (nivelAcesso) {
             case "coordenador":
-                fxmlDestino = "tela-inicio-coord.fxml";
+                fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml";
                 break;
             case "professor":
-                fxmlDestino = "tela-inicio-professor.fxml";
+                fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml";
                 break;
             default:
                 errorMessageLabel.setText("Acesso sem tela mapeada. Contate o suporte.");
