@@ -1,0 +1,3 @@
+com\pies\api\projeto\integrado\pies_backend\infra\security\SecurityFilter.class
+com\pies\api\projeto\integrado\pies_backend\infra\security\SecurityConfigurations.class
+com\pies\api\projeto\integrado\pies_backend\controller\AuthenticationController.class

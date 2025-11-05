@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            prefHeight="600.0" prefWidth="800.0"
+            style="-fx-background-color: #f0f0f0;">
+
+    <center>
+        <VBox alignment="CENTER" spacing="30">
+            <Label text="✓ LOGIN FUNCIONOU!" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;"/>
+            <Label text="Tela do Professor" style="-fx-font-size: 24px;"/>
+            <Label text="Backend e Frontend conectados com sucesso!" style="-fx-font-size: 16px; -fx-text-fill: #666;"/>
+            
+            <VBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
+                <Label text="Módulo de Login: ✓ Funcional" style="-fx-font-size: 14px;"/>
+                <Label text="Autenticação JWT: ✓ Funcional" style="-fx-font-size: 14px;"/>
+                <Label text="Role-based Navigation: ✓ Funcional" style="-fx-font-size: 14px;"/>
+            </VBox>
+            
+            <Button text="Sair" style="-fx-font-size: 14px; -fx-padding: 10 30; -fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 5;"/>
+        </VBox>
+    </center>
+
+</BorderPane>

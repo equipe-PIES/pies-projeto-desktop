@@ -32,7 +32,7 @@ public class LoginController implements Initializable {
     private final AuthService authService;
 
     public LoginController() {
-        this.authService = new AuthService();
+        this.authService = AuthService.getInstance(); // Usa a instância singleton
     }
 
     // Opcional: Implementar initialize se for necessário
