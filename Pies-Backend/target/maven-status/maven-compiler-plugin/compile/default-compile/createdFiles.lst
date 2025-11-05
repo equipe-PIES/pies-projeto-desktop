@@ -9,6 +9,7 @@ com\pies\api\projeto\integrado\pies_backend\model\Professor.class
 com\pies\api\projeto\integrado\pies_backend\controller\dto\TurmaDTO.class
 com\pies\api\projeto\integrado\pies_backend\model\Turma.class
 com\pies\api\projeto\integrado\pies_backend\model\User.class
+com\pies\api\projeto\integrado\pies_backend\controller\AuthenticationController.class
 com\pies\api\projeto\integrado\pies_backend\controller\TurmaController.class
 com\pies\api\projeto\integrado\pies_backend\PiesBackendApplication.class
 com\pies\api\projeto\integrado\pies_backend\infra\security\TokenService.class
@@ -20,3 +21,4 @@ com\pies\api\projeto\integrado\pies_backend\controller\CoordenadorController.cla
 com\pies\api\projeto\integrado\pies_backend\controller\dto\ProfessorDTO.class
 com\pies\api\projeto\integrado\pies_backend\controller\dto\AuthenticationDTO.class
 com\pies\api\projeto\integrado\pies_backend\model\Enums\Turno.class
+com\pies\api\projeto\integrado\pies_backend\controller\dto\UserInfoDTO.class

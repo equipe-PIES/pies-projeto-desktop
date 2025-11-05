@@ -31,9 +31,20 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        var token = this.recoverToken(request);
+        
+        String requestURI = request.getRequestURI();
         System.out.println("=== SECURITY FILTER DEBUG ===");
-        System.out.println("Request URI: " + request.getRequestURI());
+        System.out.println("Request URI: " + requestURI);
+        System.out.println("Request Method: " + request.getMethod());
+        
+        // Permite rotas públicas sem autenticação
+        if (requestURI.equals("/auth/login") || requestURI.equals("/auth/register")) {
+            System.out.println("Rota pública - passando sem autenticação");
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
+        var token = this.recoverToken(request);
         System.out.println("Token presente: " + (token != null));
         
         if (token != null) {
