@@ -67,74 +67,55 @@ public class LoginController implements Initializable {
             return;
         }
 
-        // Desabilita o botão durante o processo de login
-        loginButton.setDisable(true);
-        errorMessageLabel.setText("Autenticando...");
-        errorMessageLabel.setStyle("-fx-text-fill: blue;");
+        // ----------------------------------------------------------------------
+        // CHAMADA REAL AO BACKEND SPRING BOOT
+        // ----------------------------------------------------------------------
+        // Faz a chamada HTTP para o endpoint /auth/login do backend
+        String roleRecebidaDoServico = authService.authenticate(email, senha);
 
-        try {
-            // ----------------------------------------------------------------------
-            // CHAMADA REAL AO BACKEND SPRING BOOT
-            // ----------------------------------------------------------------------
-            // Faz a chamada HTTP para o endpoint /auth/login do backend
-            String roleRecebidaDoServico = authService.authenticate(email, senha);
+        // ----------------------------------------------------------------------
+        // 2. Autenticação e Verificação de Nível (Usando o Enum UserRole)
+        // ----------------------------------------------------------------------
 
-            // ----------------------------------------------------------------------
-            // 2. Autenticação e Verificação de Nível (Usando o Enum UserRole)
-            // ----------------------------------------------------------------------
+        // Se as credenciais falharem, encerra aqui.
+        if ("INVÁLIDO".equals(roleRecebidaDoServico)) {
+            errorMessageLabel.setText("Credenciais inválidas. Tente novamente.");
+            return;
+        }
 
-            // Se as credenciais falharem, encerra aqui.
-            if ("INVÁLIDO".equals(roleRecebidaDoServico)) {
-                errorMessageLabel.setText("Credenciais inválidas ou servidor indisponível.");
-                errorMessageLabel.setStyle("-fx-text-fill: red;");
+        // Usa diretamente a role do backend (simplificado)
+        String nivelAcesso = roleRecebidaDoServico.toLowerCase();
+
+
+        // 3. Lógica de Mapeamento de Tela
+        String fxmlDestino = null;
+
+        switch (nivelAcesso) {
+            case "coordenador":
+                fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml";
+                break;
+            case "professor":
+            case "user":  // Temporário: user também vai para tela de professor
+                fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml";
+                break;
+            default:
+                errorMessageLabel.setText("Acesso sem tela mapeada. Contate o suporte.");
                 return;
+        }
+
+        // 4. Carregar a Próxima Tela
+        if (fxmlDestino != null) {
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource(fxmlDestino));
+
+                Stage currentStage = (Stage) loginButton.getScene().getWindow();
+                currentStage.setScene(new Scene(root));
+                currentStage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                errorMessageLabel.setText("Erro interno ao carregar a tela do sistema. FXML: " + fxmlDestino);
             }
-
-            if ("ERRO_CONEXAO".equals(roleRecebidaDoServico)) {
-                errorMessageLabel.setText("Erro de conexão com o servidor. Verifique se o backend está rodando.");
-                errorMessageLabel.setStyle("-fx-text-fill: red;");
-                return;
-            }
-
-            // Usa diretamente a role do backend (simplificado)
-            String nivelAcesso = roleRecebidaDoServico.toLowerCase();
-
-
-            // 3. Lógica de Mapeamento de Tela
-            String fxmlDestino = null;
-
-            switch (nivelAcesso) {
-                case "coordenador":
-                    fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml";
-                    break;
-                case "professor":
-                case "user":  // Temporário: user também vai para tela de professor
-                    fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml";
-                    break;
-                default:
-                    errorMessageLabel.setText("Acesso sem tela mapeada. Contate o suporte.");
-                    errorMessageLabel.setStyle("-fx-text-fill: red;");
-                    return;
-            }
-
-            // 4. Carregar a Próxima Tela
-            if (fxmlDestino != null) {
-                try {
-                    Parent root = FXMLLoader.load(getClass().getResource(fxmlDestino));
-
-                    Stage currentStage = (Stage) loginButton.getScene().getWindow();
-                    currentStage.setScene(new Scene(root));
-                    currentStage.show();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    errorMessageLabel.setText("Erro ao carregar a tela: " + e.getMessage());
-                    errorMessageLabel.setStyle("-fx-text-fill: red;");
-                }
-            }
-        } finally {
-            // Reabilita o botão
-            loginButton.setDisable(false);
         }
     }
 }

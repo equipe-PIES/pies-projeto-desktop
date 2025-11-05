@@ -1,7 +1,0 @@
-com\pies\projeto\integrado\piesfront\controllers\LoginController.class
-module-info.class
-com\pies\projeto\integrado\piesfront\dto\LoginResponseDTO.class
-com\pies\projeto\integrado\piesfront\dto\UserInfoDTO.class
-com\pies\projeto\integrado\piesfront\dto\LoginRequestDTO.class
-com\pies\projeto\integrado\piesfront\services\AuthService.class
-com\PiesFrontApplication.class

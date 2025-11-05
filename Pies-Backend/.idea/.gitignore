@@ -1,0 +1,4 @@
+# Arquivos ignorados por padrão
+/shelf/
+.idea/
+/workspace.xml
