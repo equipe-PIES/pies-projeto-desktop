@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class HomeCoordController implements Initializable {
+public class CadastroTurmaController implements Initializable {
     // ----------------------------------------------------
     // DECLARAÇÃO DOS fx:id
     // ----------------------------------------------------
@@ -27,15 +27,10 @@ public class HomeCoordController implements Initializable {
     private Button sairButton;
     @FXML
     private Button inicioButton;
-    @FXML
-    private Button addAluno;
-    @FXML
-    private Button addProf;
-    @FXML
-    private Button addTurma;
+
     private final AuthService authService;
 
-    public HomeCoordController() {
+    public CadastroTurmaController() {
         this.authService = AuthService.getInstance(); // Usa a instância singleton
     }
 
@@ -43,7 +38,7 @@ public class HomeCoordController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Atualiza o texto do indicador baseado no arquivo FXML carregado
         atualizarIndicadorDeTela(url);
-        
+
         // Busca e atualiza o nome do usuário
         atualizarNomeUsuario();
     }
@@ -54,7 +49,7 @@ public class HomeCoordController implements Initializable {
 
     /**
      * Atualiza o texto do indicador de tela baseado no arquivo FXML carregado.
-     * 
+     *
      * @param url URL do arquivo FXML que foi carregado
      */
     private void atualizarIndicadorDeTela(URL url) {
@@ -64,7 +59,7 @@ public class HomeCoordController implements Initializable {
 
         // Extrai o nome do arquivo do URL
         String arquivoFXML = url.getPath();
-        
+
         // Determina o texto baseado no nome do arquivo
         //FALTA ADICIONAR MAIS INDICES
         String textoIndicador;
@@ -81,7 +76,7 @@ public class HomeCoordController implements Initializable {
             // Texto padrão caso não reconheça a tela
             textoIndicador = "Indicador de Tela";
         }
-        
+
         indicadorDeTela.setText(textoIndicador);
     }
 
@@ -95,7 +90,7 @@ public class HomeCoordController implements Initializable {
 
         // Busca as informações do usuário do backend
         UserInfoDTO userInfo = authService.getUserInfo();
-        
+
         if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
             nameUser.setText(userInfo.name());
         } else {
@@ -108,7 +103,7 @@ public class HomeCoordController implements Initializable {
     /**
      * Método público para atualizar o indicador de tela manualmente.
      * Pode ser usado quando há navegação entre telas.
-     * 
+     *
      * @param texto Texto a ser exibido no indicador
      */
     public void setIndicadorDeTela(String texto) {
@@ -116,7 +111,7 @@ public class HomeCoordController implements Initializable {
             indicadorDeTela.setText(texto);
         }
     }
-    
+
     /**
      * Handler para o botão de início.
      * Navega para a tela inicial do coordenador.
@@ -125,72 +120,17 @@ public class HomeCoordController implements Initializable {
     private void handleInicioButtonAction() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml"));
-            
+
             Stage currentStage = (Stage) inicioButton.getScene().getWindow();
             currentStage.setScene(new Scene(root));
             currentStage.show();
-            
+
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Erro ao carregar a tela de início: " + e.getMessage());
         }
     }
-    
-    /**
-     * Handler para o botão de adicionar aluno.
-     * Navega para a tela de cadastro de aluno.
-     */
-    @FXML
-    private void handleAddAlunoAction() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/cadastro-de-aluno.fxml"));
-            
-            Stage currentStage = (Stage) addAluno.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar a tela de cadastro de aluno: " + e.getMessage());
-        }
-    }
-    /**
-     * Handler para o botão de adicionar professor.
-     * Navega para a tela de cadastro de professor.
-     */
-    @FXML
-    private void handleAddProfAction() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/cadastro-de-prof.fxml"));
 
-            Stage currentStage = (Stage) addProf.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar a tela de cadastro de aluno: " + e.getMessage());
-        }
-    }
-    /**
-     * Handler para o botão de adicionar turma.
-     * Navega para a tela de cadastro de turma.
-     */
-    @FXML
-    private void handleAddTurmaAction() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/cadastro-de-turma.fxml"));
-
-            Stage currentStage = (Stage) addTurma.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar a tela de cadastro de aluno: " + e.getMessage());
-        }
-    }
-    
     /**
      * Handler para o botão de sair.
      * Faz logout do usuário e retorna para a tela de login.
@@ -199,15 +139,15 @@ public class HomeCoordController implements Initializable {
     private void handleSairButtonAction() {
         // Faz logout - limpa o token de autenticação
         authService.logout();
-        
+
         // Carrega a tela de login
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml"));
-            
+
             Stage currentStage = (Stage) sairButton.getScene().getWindow();
             currentStage.setScene(new Scene(root));
             currentStage.show();
-            
+
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Erro ao carregar a tela de login: " + e.getMessage());

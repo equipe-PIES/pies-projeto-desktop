@@ -117,7 +117,7 @@
                            </VBox.margin>
                              </Label>
                              <Label alignment="CENTER" text="Adicione uma nova turma à lista de turmas no seu sistema." wrapText="true" />
-                             <Button fx:id="addTurma" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
+                             <Button fx:id="addTurma" onAction="#handleAddTurmaAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
          </children>
                       </VBox>
 
@@ -133,7 +133,7 @@
                            </VBox.margin>
                              </Label>
                              <Label alignment="CENTER" text="Adicione um novo professor(a) ao seu sistema." wrapText="true" />
-                             <Button fx:id="addProf" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
+                             <Button fx:id="addProf" onAction="#handleAddProfAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
          </children>
                       </VBox>
 
