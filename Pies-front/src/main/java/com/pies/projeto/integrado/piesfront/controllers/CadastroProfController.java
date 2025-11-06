@@ -28,6 +28,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+// Remover imports dos DTOs externos do cadastro de professor (CreateProfessorRequestDTO, RegisterRequestDTO)
 
 public class CadastroProfController implements Initializable {
     // ----------------------------------------------------
@@ -311,22 +312,6 @@ public class CadastroProfController implements Initializable {
         }
     }
 
-    // DTOs simples para serialização do corpo da requisição
-    private static class CreateProfessorRequest {
-        public String nome;
-        public String cpf;
-        public String dataNascimento; // ISO-8601 yyyy-MM-dd
-        public String genero;
-        public String formacao;
-        public String observacoes;
-    }
-
-    private static class RegisterRequest {
-        public String login;
-        public String password;
-        public String role;
-    }
-
     private String extrairMensagemErro(String responseBody) {
         try {
             // Pode ser uma string simples ou um JSON; tentamos mapear como texto simples primeiro
@@ -375,5 +360,19 @@ public class CadastroProfController implements Initializable {
             e.printStackTrace();
             System.err.println("Erro ao carregar a tela de login: " + e.getMessage());
         }
+    }
+
+    private static class CreateProfessorRequest {
+        public String nome;
+        public String cpf;
+        public String dataNascimento;
+        public String genero;
+        public String formacao;
+        public String observacoes;
+    }
+    private static class RegisterRequest {
+        public String login;
+        public String password;
+        public String role;
     }
 }
