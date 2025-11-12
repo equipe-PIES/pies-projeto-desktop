@@ -41,8 +41,8 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permite requisições OPTIONS (preflight)
-                        .requestMatchers(HttpMethod.GET, "/auth/me").hasAnyRole("ADMIN", "USER", "PROFESSOR", "COORDENADOR")
+                        .requestMatchers(HttpMethod.GET, "/auth/me").authenticated()
+                        .requestMatchers("/api/educandos/**").hasAnyRole("COORDENADOR", "ADMIN")
                         .requestMatchers("/coordenador/**").hasRole("COORDENADOR")
                         .requestMatchers("/professor/**").hasRole("PROFESSOR")
                         .anyRequest().authenticated()

@@ -410,4 +410,5 @@ public class CadastroProfController implements Initializable {
             System.err.println("Erro ao carregar a tela de login: " + e.getMessage());
         }
     }
+
 }

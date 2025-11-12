@@ -62,7 +62,7 @@
                         <VBox prefHeight="200.0" prefWidth="100.0">
                             <children>
                                 <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário" />
-                                <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Coordenadora" />
+                                <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Professora" />
                             </children>
                         </VBox>
                     </children>
