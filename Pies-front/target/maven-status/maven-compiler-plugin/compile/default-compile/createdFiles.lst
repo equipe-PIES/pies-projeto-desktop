@@ -17,6 +17,7 @@ com\pies\projeto\integrado\piesfront\controllers\CadastroProfController.class
 com\pies\projeto\integrado\piesfront\controllers\HomeCoordController.class
 com\pies\projeto\integrado\piesfront\controllers\CadastroAlunoController.class
 com\PiesFrontApplication.class
+com\pies\projeto\integrado\piesfront\controllers\CadastroTurmaController$4.class
 com\pies\projeto\integrado\piesfront\dto\CreateTurmaDTO.class
 com\pies\projeto\integrado\piesfront\controllers\HomeProfController.class
 com\pies\projeto\integrado\piesfront\controllers\CadastroProfController$CreateProfessorRequest.class

@@ -93,6 +93,9 @@ public class CadastroTurmaController implements Initializable {
         carregarProfessores();
         conectarAcoesFormulario();
         configurarListViewAlunos();
+        
+        // Carrega o cache de alunos de forma proativa em background
+        carregarCacheAlunosEmBackground();
     }
 
     // ----------------------------------------------------
@@ -186,6 +189,47 @@ public class CadastroTurmaController implements Initializable {
         if (addCPFButton != null) {
             addCPFButton.setOnAction(e -> adicionarAlunoPorCPF());
         }
+    }
+
+    /**
+     * Carrega o cache de alunos de forma proativa em background
+     * para que a primeira busca por CPF seja instantânea
+     */
+    private void carregarCacheAlunosEmBackground() {
+        String token = authService.getCurrentToken();
+        if (token == null || token.isEmpty()) {
+            return; // Silenciosamente ignora se não há token
+        }
+
+        // Executa em thread separada para não bloquear a UI
+        Thread thread = new Thread(() -> {
+            try {
+                System.out.println("=== CARREGANDO CACHE DE ALUNOS EM BACKGROUND ===");
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8080/api/educandos"))
+                        .header("Authorization", "Bearer " + token)
+                        .header("Content-Type", "application/json")
+                        .GET()
+                        .timeout(Duration.ofSeconds(10))
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    todosAlunosCache = objectMapper.readValue(
+                        response.body(),
+                        new TypeReference<List<AlunoSimplificadoDTO>>() {}
+                    );
+                    System.out.println("✓ Cache carregado com " + todosAlunosCache.size() + " alunos");
+                } else {
+                    System.err.println("Erro ao carregar cache de alunos. Código: " + response.statusCode());
+                }
+            } catch (Exception e) {
+                System.err.println("Erro ao carregar cache de alunos em background: " + e.getMessage());
+            }
+        });
+        thread.setDaemon(true); // Thread daemon para não bloquear o encerramento da aplicação
+        thread.start();
     }
 
     private void configurarListViewAlunos() {
