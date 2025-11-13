@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.CreateTurmaDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.TurmaDTO;
+import com.pies.api.projeto.integrado.pies_backend.model.Professor;
 import com.pies.api.projeto.integrado.pies_backend.model.Turma;
-import com.pies.api.projeto.integrado.pies_backend.model.User;
+import com.pies.api.projeto.integrado.pies_backend.repository.ProfessorRepository;
 import com.pies.api.projeto.integrado.pies_backend.repository.TurmaRepository;
-import com.pies.api.projeto.integrado.pies_backend.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -30,22 +30,29 @@ import jakarta.validation.Valid;
 public class TurmaController {
 
     private final TurmaRepository turmaRepository;
-    private final UserRepository userRepository;
+    private final ProfessorRepository professorRepository;
 
-    public TurmaController(TurmaRepository turmaRepository, UserRepository userRepository) {
+    public TurmaController(TurmaRepository turmaRepository, ProfessorRepository professorRepository) {
         this.turmaRepository = turmaRepository;
-        this.userRepository = userRepository;
+        this.professorRepository = professorRepository;
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN')")
     @Transactional
     public ResponseEntity<TurmaDTO> criar(@RequestBody @Valid CreateTurmaDTO payload) {
-        User professor = Optional.ofNullable(userRepository.findByEmail(payload.professorId()))
-                .orElseGet(() -> userRepository.findById(payload.professorId()).orElse(null));
-        if (professor == null) {
+        System.out.println("=== CRIANDO TURMA ===");
+        System.out.println("Professor ID recebido: " + payload.professorId());
+        
+        Optional<Professor> professorOpt = professorRepository.findById(payload.professorId());
+        
+        if (professorOpt.isEmpty()) {
+            System.err.println("ERRO: Professor não encontrado na tabela professores! ID: " + payload.professorId());
             return ResponseEntity.badRequest().build();
         }
+        
+        Professor professor = professorOpt.get();
+        System.out.println("Professor encontrado: " + professor.getNome() + " (ID: " + professor.getId() + ")");
 
         Turma turma = new Turma();
         turma.setNome(payload.nome());
@@ -55,6 +62,7 @@ public class TurmaController {
         turma.setProfessor(professor);
 
         Turma salva = turmaRepository.save(turma);
+        System.out.println("✓ Turma criada: " + salva.getNome());
         return ResponseEntity.ok(mapToDTO(salva));
     }
 
@@ -83,11 +91,11 @@ public class TurmaController {
         }
         Turma turma = opt.get();
 
-        User professor = Optional.ofNullable(userRepository.findByEmail(payload.professorId()))
-                .orElseGet(() -> userRepository.findById(payload.professorId()).orElse(null));
-        if (professor == null) {
+        Optional<Professor> professorOpt = professorRepository.findById(payload.professorId());
+        if (professorOpt.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
+        Professor professor = professorOpt.get();
 
         turma.setNome(payload.nome());
         turma.setGrauEscolar(payload.grauEscolar());
@@ -112,7 +120,7 @@ public class TurmaController {
 
     private TurmaDTO mapToDTO(Turma turma) {
         String professorId = turma.getProfessor() != null ? turma.getProfessor().getId() : null;
-        String professorNome = turma.getProfessor() != null ? turma.getProfessor().getName() : null;
+        String professorNome = turma.getProfessor() != null ? turma.getProfessor().getNome() : null;
         return new TurmaDTO(
             turma.getId(),
             turma.getNome(),

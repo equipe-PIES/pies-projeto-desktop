@@ -96,11 +96,21 @@
                     <children>
                         <VBox prefHeight="1024.0" prefWidth="455.0" style="-fx-border-color: #ddd;">
                             <children>
-                                <Label fx:id="NomeIdTurma" text="[Nome da Turma]">
+                                <Label text="Dados da Turma">
                                     <VBox.margin>
-                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                        <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
                                     </VBox.margin>
                                 </Label>
+                                <Label text="Nome da Turma:">
+                                    <VBox.margin>
+                                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                                    </VBox.margin>
+                                </Label>
+                                <TextField fx:id="nomeTurmaField" promptText="Ex: Turma A - Infantil">
+                                    <VBox.margin>
+                                        <Insets bottom="10.0" left="20.0" right="20.0" />
+                                    </VBox.margin>
+                                </TextField>
                                 <Label text="Qual o grau de escolaridade da turma?">
                                     <VBox.margin>
                                         <Insets bottom="4.0" left="20.0" right="20.0" />
@@ -108,7 +118,7 @@
                                 </Label>
                         <ChoiceBox fx:id="grauTurma" prefHeight="31.0" prefWidth="350.0">
                            <VBox.margin>
-                              <Insets bottom="4.0" left="20.0" right="20.0" />
+                              <Insets bottom="10.0" left="20.0" right="20.0" />
                            </VBox.margin>
                         </ChoiceBox>
                                 <Label text="Faixa etária dos alunos">
@@ -118,7 +128,7 @@
                                 </Label>
                         <ChoiceBox fx:id="idadeAlunos" prefHeight="31.0" prefWidth="200.0">
                            <VBox.margin>
-                              <Insets bottom="4.0" left="20.0" right="20.0" />
+                              <Insets bottom="10.0" left="20.0" right="20.0" />
                            </VBox.margin>
                         </ChoiceBox>
                                 <Label text="Professor(a) Responsável:">
@@ -182,6 +192,11 @@
                                     </children>
                                 </VBox>
                                 <Region prefHeight="10.0" prefWidth="200.0" />
+                                <Label fx:id="erroMensagem" text="" textFill="red" wrapText="true">
+                                    <VBox.margin>
+                                        <Insets bottom="10.0" left="10.0" right="10.0" />
+                                    </VBox.margin>
+                                </Label>
                                 <HBox alignment="CENTER" prefHeight="9.0" prefWidth="435.0">
                                     <children>
                                         <Button fx:id="cancelCadastroBt" mnemonicParsing="false" prefHeight="30.0" prefWidth="220.0" text="Cancelar" />
