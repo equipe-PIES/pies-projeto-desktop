@@ -7,8 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record CreateTurmaDTO(
-    @NotBlank String nome,
-    @NotNull GrauEscolar grauEscolar,
+    @NotBlank String nome,//n é nulo, n é espaço,n é vazio
+    @NotNull GrauEscolar grauEscolar,//so nulo
     @NotBlank String faixaEtaria,
     @NotNull Turno turno,
     @NotBlank String professorId
