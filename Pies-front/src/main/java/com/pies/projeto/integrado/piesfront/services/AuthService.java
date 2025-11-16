@@ -1,8 +1,10 @@
 package com.pies.projeto.integrado.piesfront.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pies.projeto.integrado.piesfront.dto.LoginRequestDTO;
 import com.pies.projeto.integrado.piesfront.dto.LoginResponseDTO;
+import com.pies.projeto.integrado.piesfront.dto.TurmaDTO;
 import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
 
 import java.io.IOException;
@@ -11,6 +13,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Serviço responsável por fazer chamadas HTTP para o backend Spring Boot
@@ -24,6 +28,7 @@ public class AuthService {
     private static final String BASE_URL = "http://localhost:8080"; // URL do seu backend
     private static final String LOGIN_ENDPOINT = "/auth/login";
     private static final String USER_INFO_ENDPOINT = "/auth/me";
+    private static final String TURMAS_ENDPOINT = "/turmas";
     
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
@@ -200,5 +205,41 @@ public class AuthService {
      */
     public void logout() {
         this.currentToken = null;
+    }
+    
+    /**
+     * Busca todas as turmas do backend
+     * @return Lista de turmas ou lista vazia se falhar
+     */
+    public List<TurmaDTO> getTurmas() {
+        if (currentToken == null) {
+            System.err.println("getTurmas: Token é NULL!");
+            return new ArrayList<>();
+        }
+        
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + TURMAS_ENDPOINT))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            
+            HttpResponse<String> response = httpClient.send(request, 
+                    HttpResponse.BodyHandlers.ofString());
+            
+            if (response.statusCode() == 200) {
+                TypeReference<List<TurmaDTO>> typeRef = new TypeReference<List<TurmaDTO>>() {};
+                return objectMapper.readValue(response.body(), typeRef);
+            } else {
+                System.err.println("Erro ao buscar turmas. Status: " + response.statusCode());
+                return new ArrayList<>();
+            }
+            
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao buscar turmas: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 }

@@ -128,7 +128,7 @@ public class CadastroTurmaController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Erro ao carregar a tela de início: " + e.getMessage());
-        }
+        }**
     }
 
     /**
