@@ -2,12 +2,16 @@ package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.TurmaDTO;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -30,7 +34,7 @@ public class CardTurmaController implements Initializable {
     private Label totalAlunoCard;
     
     @FXML
-    private Label professorTurmaCard;
+    private Label faixaEtariaCard;
     
     @FXML
     private Label grauTurmaCard;
@@ -66,9 +70,9 @@ public class CardTurmaController implements Initializable {
             nomeTurmaCard.setText(nome + " " + id);
         }
         
-        if (professorTurmaCard != null) {
-            String professorNome = turma.professorNome() != null ? turma.professorNome() : "Não atribuído";
-            professorTurmaCard.setText("Professor(a): " + professorNome);
+        if (faixaEtariaCard != null) {
+            String faixaEtaria = turma.FaixaEtaria() != null ? turma.FaixaEtaria() : "Não informado";
+            faixaEtariaCard.setText("Faixa Etária: " + faixaEtaria);
         }
         
         if (grauTurmaCard != null) {
@@ -123,8 +127,30 @@ public class CardTurmaController implements Initializable {
      */
     @FXML
     private void handleVerificarTurmaAction() {
-        // TODO: Implementar navegação para detalhes da turma
-        System.out.println("Verificar turma: " + (turma != null ? turma.id() : "null"));
+        if (turma == null || turma.id() == null) {
+            System.err.println("Turma não definida!");
+            return;
+        }
+        
+        try {
+            // Carrega o FXML da view-turma
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml"));
+            Parent root = loader.load();
+            
+            // Obtém o controller e define o ID da turma
+            ViewTurmaController controller = loader.getController();
+            controller.setTurmaId(turma.id());
+            
+            // Navega para a nova tela
+            Stage currentStage = (Stage) verificarTurmaButton.getScene().getWindow();
+            currentStage.setScene(new javafx.scene.Scene(root));
+            currentStage.show();
+            
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar a tela de visualização da turma: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     @Override

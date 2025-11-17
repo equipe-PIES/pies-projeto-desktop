@@ -7,9 +7,9 @@ package com.pies.projeto.integrado.piesfront.dto;
 public record TurmaDTO(
     String id,
     String nome,
-    String grauEscolar,  // Enum serializado como String
-    String FaixaEtaria,  // Nome exato do backend (com F maiúsculo)
-    String turno,        // Enum serializado como String
+    String grauEscolar,
+    String FaixaEtaria,
+    String turno,
     String professorId,
     String professorNome
 ) {}

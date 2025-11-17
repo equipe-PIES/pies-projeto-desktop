@@ -2,6 +2,7 @@ package com.pies.projeto.integrado.piesfront.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.LoginRequestDTO;
 import com.pies.projeto.integrado.piesfront.dto.LoginResponseDTO;
 import com.pies.projeto.integrado.piesfront.dto.TurmaDTO;
@@ -29,6 +30,7 @@ public class AuthService {
     private static final String LOGIN_ENDPOINT = "/auth/login";
     private static final String USER_INFO_ENDPOINT = "/auth/me";
     private static final String TURMAS_ENDPOINT = "/turmas";
+    private static final String EDUCANDOS_ENDPOINT = "/api/educandos";
     
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
@@ -238,6 +240,78 @@ public class AuthService {
             
         } catch (IOException | InterruptedException e) {
             System.err.println("Erro ao buscar turmas: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
+     * Busca uma turma específica pelo ID
+     * @param turmaId ID da turma
+     * @return TurmaDTO ou null se não encontrada
+     */
+    public TurmaDTO getTurmaById(String turmaId) {
+        if (currentToken == null || turmaId == null) {
+            System.err.println("getTurmaById: Token ou ID é NULL!");
+            return null;
+        }
+        
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + TURMAS_ENDPOINT + "/" + turmaId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            
+            HttpResponse<String> response = httpClient.send(request, 
+                    HttpResponse.BodyHandlers.ofString());
+            
+            if (response.statusCode() == 200) {
+                return objectMapper.readValue(response.body(), TurmaDTO.class);
+            } else {
+                System.err.println("Erro ao buscar turma. Status: " + response.statusCode());
+                return null;
+            }
+            
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao buscar turma: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    /**
+     * Busca todos os educandos do backend
+     * @return Lista de educandos ou lista vazia se falhar
+     */
+    public List<EducandoDTO> getEducandos() {
+        if (currentToken == null) {
+            System.err.println("getEducandos: Token é NULL!");
+            return new ArrayList<>();
+        }
+        
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + EDUCANDOS_ENDPOINT))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            
+            HttpResponse<String> response = httpClient.send(request, 
+                    HttpResponse.BodyHandlers.ofString());
+            
+            if (response.statusCode() == 200) {
+                TypeReference<List<EducandoDTO>> typeRef = new TypeReference<List<EducandoDTO>>() {};
+                return objectMapper.readValue(response.body(), typeRef);
+            } else {
+                System.err.println("Erro ao buscar educandos. Status: " + response.statusCode());
+                return new ArrayList<>();
+            }
+            
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao buscar educandos: " + e.getMessage());
             e.printStackTrace();
             return new ArrayList<>();
         }
