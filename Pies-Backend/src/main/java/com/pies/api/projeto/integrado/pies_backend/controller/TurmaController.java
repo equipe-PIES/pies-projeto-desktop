@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +43,16 @@ public class TurmaController {
     @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN')")
     @Transactional
     public ResponseEntity<TurmaDTO> criar(@RequestBody @Valid CreateTurmaDTO payload) {
-        System.out.println("=== CRIANDO TURMA ===");
+        // Debug de autenticação
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("=== DEBUG AUTORIZAÇÃO NO CONTROLLER ===");
+        System.out.println("Authentication: " + auth);
+        System.out.println("Principal: " + (auth != null ? auth.getPrincipal() : "null"));
+        System.out.println("Authorities: " + (auth != null ? auth.getAuthorities() : "null"));
+        System.out.println("========================================");
+        
+        // Este log só aparece se passar pela autorização
+        System.out.println("=== CRIANDO TURMA (AUTORIZAÇÃO OK) ===");
         System.out.println("Professor ID recebido: " + payload.professorId());
         
         Optional<Professor> professorOpt = professorRepository.findById(payload.professorId());

@@ -122,14 +122,16 @@ public class AuthenticationController { // Controller responsável pela autentic
             
             System.out.println("=== /auth/me DEBUG ===");
             System.out.println("User: " + user.getEmail());
-            System.out.println("Role: " + user.getRole().getRole());
+            System.out.println("Role enum name: " + user.getRole().name());
+            System.out.println("Role value: " + user.getRole().getRole());
             
             // Cria o DTO com as informações do usuário
+            // Usa o nome do enum (COORDENADOR) em vez do valor (coordenador)
             UserInfoDTO userInfo = new UserInfoDTO(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole().getRole()
+                user.getRole().name() // Usa name() em vez de getRole()
             );
             
             return ResponseEntity.ok(userInfo);

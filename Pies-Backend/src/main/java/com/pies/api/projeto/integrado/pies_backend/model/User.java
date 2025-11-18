@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.UserRole;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,6 +36,7 @@ public class User implements UserDetails {// criacao do usuario
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     public User(String email, String password, UserRole role){
@@ -44,13 +47,22 @@ public class User implements UserDetails {// criacao do usuario
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        System.out.println("=== DEBUG getAuthorities ===");
+        System.out.println("User: " + this.email);
+        System.out.println("Role enum: " + this.role);
+        System.out.println("Role name: " + (this.role != null ? this.role.name() : "NULL"));
+        
         if(this.role == UserRole.ADMIN) {
+            System.out.println("Authorities: ROLE_ADMIN, ROLE_USER");
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         } else if(this.role == UserRole.PROFESSOR) {
+            System.out.println("Authorities: ROLE_PROFESSOR");
             return List.of(new SimpleGrantedAuthority("ROLE_PROFESSOR"));
         } else if(this.role == UserRole.COORDENADOR) {
+            System.out.println("Authorities: ROLE_COORDENADOR");
             return List.of(new SimpleGrantedAuthority("ROLE_COORDENADOR"));
         } else {
+            System.out.println("Authorities: ROLE_USER (default)");
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
     }

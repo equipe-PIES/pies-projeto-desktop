@@ -18,6 +18,7 @@ C:\Users\Usuario\Desktop\Estudos UFC\4º semestre\PIES\Projeto-Desktop-ONG\pies-
 C:\Users\Usuario\Desktop\Estudos UFC\4º semestre\PIES\Projeto-Desktop-ONG\pies-projeto-desktop\Pies-Backend\src\main\java\com\pies\api\projeto\integrado\pies_backend\controller\TurmaController.java
 C:\Users\Usuario\Desktop\Estudos UFC\4º semestre\PIES\Projeto-Desktop-ONG\pies-projeto-desktop\Pies-Backend\src\main\java\com\pies\api\projeto\integrado\pies_backend\exception\CpfJaCadastradoException.java
 C:\Users\Usuario\Desktop\Estudos UFC\4º semestre\PIES\Projeto-Desktop-ONG\pies-projeto-desktop\Pies-Backend\src\main\java\com\pies\api\projeto\integrado\pies_backend\exception\EducandoNotFoundException.java
+C:\Users\Usuario\Desktop\Estudos UFC\4º semestre\PIES\Projeto-Desktop-ONG\pies-projeto-desktop\Pies-Backend\src\main\java\com\pies\api\projeto\integrado\pies_backend\infra\DataInitializer.java
 C:\Users\Usuario\Desktop\Estudos UFC\4º semestre\PIES\Projeto-Desktop-ONG\pies-projeto-desktop\Pies-Backend\src\main\java\com\pies\api\projeto\integrado\pies_backend\infra\security\SecurityConfigurations.java
 C:\Users\Usuario\Desktop\Estudos UFC\4º semestre\PIES\Projeto-Desktop-ONG\pies-projeto-desktop\Pies-Backend\src\main\java\com\pies\api\projeto\integrado\pies_backend\infra\security\SecurityFilter.java
 C:\Users\Usuario\Desktop\Estudos UFC\4º semestre\PIES\Projeto-Desktop-ONG\pies-projeto-desktop\Pies-Backend\src\main\java\com\pies\api\projeto\integrado\pies_backend\infra\security\TokenService.java

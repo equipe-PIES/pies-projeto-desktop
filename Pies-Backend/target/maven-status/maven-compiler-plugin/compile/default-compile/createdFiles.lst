@@ -35,6 +35,7 @@ com\pies\api\projeto\integrado\pies_backend\model\Enums\UserRole.class
 com\pies\api\projeto\integrado\pies_backend\controller\dto\EnderecoDTO.class
 com\pies\api\projeto\integrado\pies_backend\controller\CoordenadorController.class
 com\pies\api\projeto\integrado\pies_backend\controller\dto\ProfessorDTO.class
+com\pies\api\projeto\integrado\pies_backend\infra\DataInitializer.class
 com\pies\api\projeto\integrado\pies_backend\controller\dto\AuthenticationDTO.class
 com\pies\api\projeto\integrado\pies_backend\controller\dto\EducandoDTO.class
 com\pies\api\projeto\integrado\pies_backend\model\Enums\Turno.class
