@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="coordInicioPane" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.HomeProfController">
+<BorderPane fx:id="coordInicioPane" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.ViewTurmaController">
 
     <!-- TOPO -->
     <top>
@@ -91,7 +91,7 @@
                   </ImageView>
                   <VBox alignment="TOP_CENTER" prefHeight="300.0" prefWidth="300.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label prefWidth="300.0" text="Nome da Turma">
+                        <Label fx:id="nomeTurmaLabel" prefWidth="300.0" text="Nome da Turma">
                            <VBox.margin>
                               <Insets bottom="20.0" left="10.0" right="10.0" />
                            </VBox.margin>
@@ -163,7 +163,7 @@
                         <Insets />
                      </HBox.margin>
                   </TextField>
-                  <Button fx:id="buscarAlunoButton" mnemonicParsing="false" prefWidth="200.0" text="Buscar">
+                  <Button fx:id="buscarAlunoButton" mnemonicParsing="false" onAction="#handleBuscarAlunoAction" prefWidth="200.0" text="Buscar">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
@@ -178,7 +178,7 @@
                   <Insets left="20.0" right="20.0" />
                </VBox.margin>
                <content>
-                  <FlowPane />
+                  <FlowPane fx:id="containerAlunos" />
                </content>
             </ScrollPane>
          </children>

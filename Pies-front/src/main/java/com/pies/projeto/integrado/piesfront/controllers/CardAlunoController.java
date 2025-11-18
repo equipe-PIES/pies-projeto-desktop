@@ -2,13 +2,20 @@ package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
@@ -40,6 +47,9 @@ public class CardAlunoController implements Initializable {
     
     @FXML
     private Button verProgressoButton;
+    
+    @FXML
+    private Button infoButton;
     
     private EducandoDTO educando;
     
@@ -110,6 +120,7 @@ public class CardAlunoController implements Initializable {
     
     /**
      * Handler para o botão "Status de Atendimento"
+     * TODO: Implementar navegação para status de atendimento
      */
     @FXML
     private void handleStatusAtendimentoAction() {
@@ -118,12 +129,85 @@ public class CardAlunoController implements Initializable {
     }
     
     /**
+     * Handler para o botão "Info"
+     * Abre a tela de informações do aluno como popup
+     */
+    @FXML
+    private void handleInfoAction() {
+        if (educando == null) {
+            System.err.println("Educando não definido!");
+            return;
+        }
+        
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/pies/projeto/integrado/piesfront/screens/infos-aluno.fxml"));
+            Parent root = loader.load();
+            
+            // Obtém o controller e define o educando
+            InfosAlunoController controller = loader.getController();
+            controller.setEducando(educando);
+            
+            // Cria a janela popup
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Informações do Aluno");
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initStyle(StageStyle.UTILITY);
+            popupStage.setScene(new Scene(root));
+            popupStage.setResizable(false);
+            
+            // Centraliza a janela
+            Stage parentStage = (Stage) infoButton.getScene().getWindow();
+            popupStage.setX(parentStage.getX() + (parentStage.getWidth() - popupStage.getWidth()) / 2);
+            popupStage.setY(parentStage.getY() + (parentStage.getHeight() - popupStage.getHeight()) / 2);
+            
+            popupStage.showAndWait();
+            
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar tela de informações do aluno: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    /**
      * Handler para o botão "Ver Progresso"
+     * Abre a tela de progresso de atendimento como popup
      */
     @FXML
     private void handleVerProgressoAction() {
-        // TODO: Implementar navegação para progresso do aluno
-        System.out.println("Ver progresso: " + (educando != null ? educando.id() : "null"));
+        if (educando == null) {
+            System.err.println("Educando não definido!");
+            return;
+        }
+        
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/pies/projeto/integrado/piesfront/screens/progresso-atendimento.fxml"));
+            Parent root = loader.load();
+            
+            // Obtém o controller e define o educando
+            ProgressoAtendimentoController controller = loader.getController();
+            controller.setEducando(educando);
+            
+            // Cria a janela popup
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Progresso de Atendimento");
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initStyle(StageStyle.UTILITY);
+            popupStage.setScene(new Scene(root));
+            popupStage.setResizable(false);
+            
+            // Centraliza a janela
+            Stage parentStage = (Stage) verProgressoButton.getScene().getWindow();
+            popupStage.setX(parentStage.getX() + (parentStage.getWidth() - popupStage.getWidth()) / 2);
+            popupStage.setY(parentStage.getY() + (parentStage.getHeight() - popupStage.getHeight()) / 2);
+            
+            popupStage.showAndWait();
+            
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar tela de progresso: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     @Override

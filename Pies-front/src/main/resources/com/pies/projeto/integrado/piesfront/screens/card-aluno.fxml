@@ -30,7 +30,7 @@
                   <Insets bottom="20.0" top="20.0" />
                </HBox.margin>
             </VBox>
-            <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="!">
+            <Button fx:id="infoButton" mnemonicParsing="false" onAction="#handleInfoAction" prefHeight="31.0" prefWidth="31.0" text="!">
                <HBox.margin>
                   <Insets right="5.0" top="5.0" />
                </HBox.margin>
@@ -39,7 +39,7 @@
       </HBox>
       <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button fx:id="statusAtendimentoButton" mnemonicParsing="false" onAction="#handleStatusAtendimentoAction" prefHeight="40.0" prefWidth="299.0" text="Status de Atendimento">
+            <Button fx:id="statusAtendimentoButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="299.0" text="Status de Atendimento">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
