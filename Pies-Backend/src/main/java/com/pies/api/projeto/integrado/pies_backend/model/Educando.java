@@ -1,15 +1,32 @@
 package com.pies.api.projeto.integrado.pies_backend.model;
 
-import com.pies.api.projeto.integrado.pies_backend.model.Enums.Genero;
-import com.pies.api.projeto.integrado.pies_backend.model.Enums.GrauEscolar;
 import java.time.LocalDate;
 import java.util.List;
 
 import org.hibernate.validator.constraints.br.CPF;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
+import com.pies.api.projeto.integrado.pies_backend.model.Enums.Genero;
+import com.pies.api.projeto.integrado.pies_backend.model.Enums.GrauEscolar;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Entidade que representa um Educando no sistema PIES.
@@ -116,6 +133,30 @@ public class Educando {
      */
     @OneToMany(mappedBy = "educando", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Responsavel> responsaveis;
+
+    /**
+     * Lista de turmas em que este educando está matriculado.
+     * 
+     * Relacionamento ManyToMany: um educando pode estar em múltiplas turmas
+     * e uma turma pode ter múltiplos educandos.
+     * 
+     * Configurações do relacionamento:
+     * - joinTable: define a tabela intermediária "educando_turma" que armazena
+     *   os relacionamentos entre educandos e turmas.
+     * - joinColumns: define a coluna "educando_id" na tabela intermediária
+     *   que referencia o ID do educando.
+     * - inverseJoinColumns: define a coluna "turma_id" na tabela intermediária
+     *   que referencia o ID da turma.
+     * - fetch: LAZY significa que as turmas só são carregadas quando explicitamente
+     *   acessadas, melhorando a performance.
+     */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "educando_turma",
+        joinColumns = @JoinColumn(name = "educando_id"),
+        inverseJoinColumns = @JoinColumn(name = "turma_id")
+    )
+    private List<Turma> turmas;
 
     /**
      * Construtor parametrizado para criação de instâncias de Educando.
