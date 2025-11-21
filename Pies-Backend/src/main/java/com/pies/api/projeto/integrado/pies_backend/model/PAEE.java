@@ -1,0 +1,153 @@
+package com.pies.api.projeto.integrado.pies_backend.model;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * MODELO DE DOMÍNIO - ENTIDADE PAEE (Plano de Atendimento Educacional Especializado)
+ * 
+ * Esta classe representa o Plano de Atendimento Educacional Especializado de um educando
+ * no sistema AmparoEdu. O PAEE contém informações sobre o resumo do caso, dificuldades
+ * apresentadas e intervenções planejadas.
+ * 
+ * Características:
+ * - Entidade JPA com mapeamento automático para tabela
+ * - Relacionamento ManyToOne com Educando (um educando pode ter múltiplos PAEEs)
+ * - Validações robustas para garantir integridade dos dados
+ * - Uso do Lombok para reduzir código repetitivo
+ */
+@Entity
+@Table(name = "paees")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class PAEE {
+    
+    /**
+     * ID único do PAEE.
+     * Gerado automaticamente como UUID pelo banco de dados.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+
+    /**
+     * Resumo de caso do educando.
+     * Campo obrigatório - apresentação do resumo de caso do educando
+     * Permite até 2000 caracteres para descrição detalhada
+     */
+    @NotBlank(message = "Resumo de caso é obrigatório")
+    @Column(length = 2000)
+    private String resumoCaso;
+
+    /**
+     * Dificuldades apresentadas - Motores/Psicomotores.
+     * Campo opcional - valor selecionado no dropdown
+     */
+    @Column(length = 500)
+    private String dificuldadesMotoresPsicomotores;
+
+    /**
+     * Dificuldades apresentadas - Cognitivo.
+     * Campo opcional - valor selecionado no dropdown
+     */
+    @Column(length = 500)
+    private String dificuldadesCognitivo;
+
+    /**
+     * Dificuldades apresentadas - Sensorial.
+     * Campo opcional - valor selecionado no dropdown
+     */
+    @Column(length = 500)
+    private String dificuldadesSensorial;
+
+    /**
+     * Dificuldades apresentadas - Linguagem oral/Comunicação.
+     * Campo opcional - valor selecionado no dropdown
+     */
+    @Column(length = 500)
+    private String dificuldadesLinguagemComunicacao;
+
+    /**
+     * Dificuldades apresentadas - Familiar.
+     * Campo opcional - valor selecionado no dropdown
+     */
+    @Column(length = 500)
+    private String dificuldadesFamiliar;
+
+    /**
+     * Dificuldades apresentadas - Afetivo/Interpessoais.
+     * Campo opcional - valor selecionado no dropdown
+     */
+    @Column(length = 500)
+    private String dificuldadesAfetivoInterpessoais;
+
+    /**
+     * Dificuldades apresentadas - Raciocínio Lógico/Matemático.
+     * Campo opcional - valor selecionado no dropdown
+     */
+    @Column(length = 500)
+    private String dificuldadesRaciocinioLogicoMatematico;
+
+    /**
+     * Dificuldades apresentadas - AVAs.
+     * Campo opcional - valor selecionado no dropdown
+     */
+    @Column(length = 500)
+    private String dificuldadesAVAs;
+
+    /**
+     * Desenvolvimento Motores/Psicomotores - Dificuldades.
+     * Campo opcional - descrição das dificuldades
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String desenvolvimentoMotoresPsicomotoresDificuldades;
+
+    /**
+     * Desenvolvimento Motores/Psicomotores - Intervenções.
+     * Campo opcional - descrição das intervenções
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String desenvolvimentoMotoresPsicomotoresIntervencoes;
+
+    /**
+     * Comunicação e Linguagem - Dificuldades.
+     * Campo opcional - descrição das dificuldades
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String comunicacaoLinguagemDificuldades;
+
+    /**
+     * Comunicação e Linguagem - Intervenções.
+     * Campo opcional - descrição das intervenções
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String comunicacaoLinguagemIntervencoes;
+
+    /**
+     * Relacionamento com Educando.
+     * ManyToOne: múltiplos PAEEs podem pertencer a um educando
+     * O educando não pode ser nulo
+     */
+    @NotNull(message = "Educando é obrigatório")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "educando_id", nullable = false)
+    private Educando educando;
+}
+
