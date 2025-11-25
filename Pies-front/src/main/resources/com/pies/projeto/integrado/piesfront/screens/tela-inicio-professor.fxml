@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="coordInicioPane" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
+<BorderPane fx:id="coordInicioPane" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.HomeProfController">
 
     <!-- TOPO -->
     <top>
@@ -38,8 +38,7 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="inicioButton" fx:id="inicioButton" text="Início" />
-                        <Button id="turmasButton" fx:id="turmasButton" text="Turmas" />
+                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
                         <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
                         <Button id="relatoriosButton" fx:id="relatoriosButton" text="Relatórios" />
                     </children>
@@ -70,7 +69,7 @@
 
                 <Region prefHeight="1024.0" prefWidth="210.0" />
 
-                <Button id="sairButton" fx:id="sairButton" prefWidth="280.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
+                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="280.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
                     <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
                     </VBox.margin>
@@ -78,42 +77,13 @@
             </children>
         </VBox>
     </left>
-
-    <!-- CONTEÚDO CENTRAL -->
     <center>
-        <VBox spacing="20.0" style="-fx-background-color: #ffffff;">
-            <padding>
-                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-            </padding>
-            <children>
-
-                <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Início" />
-
-                <!-- SEÇÃO DE DESTAQUE -->
-                <VBox prefHeight="250.0" style="-fx-background-color: #f0f0f0; -fx-alignment: center;">
-                    <children>
-                        <Label alignment="CENTER" text="Imagens APAPEQ" VBox.vgrow="ALWAYS" />
-                    </children>
-                </VBox>
-            <HBox prefHeight="325.0" prefWidth="723.0">
-               <children>
-                  <VBox prefHeight="325.0" prefWidth="375.0">
-                     <children>
-                         <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Sobre a ferramenta AmparoEdu" />
-                         <Label style="-fx-text-fill: gray; -fx-font-size: 13px;" text="Subheading" />
-                         <TextFlow>
-                            <children>
-                                <Text text="Body text for your whole article or post. We'll put in some lorem ipsum to show how a filled-out page might look:Body text for your whole article or post. We'll put in some lorem ipsum to show how a filled-out page might look:Body text for your whole article or post. We'll put in some lorem ipsum to show how a filled-out page might look:Body text for your whole article or post. We'll put in some lorem ipsum to show how a filled-out page might look:Body text for your whole article or post. We'll put in some lorem ipsum to show how a filled-out page might look:" />
-                            </children>
-                         </TextFlow>
-                     </children>
-                  </VBox>
-                  <Region prefHeight="326.0" prefWidth="35.0" />
-                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </HBox>
-            </children>
-        </VBox>
+        <ScrollPane fitToWidth="true" pannable="true">
+            <content>
+                <FlowPane fx:id="containerCards" alignment="TOP_LEFT" hgap="20" prefWidth="600" style="-fx-padding: 20;" vgap="20">
+                </FlowPane>
+            </content>
+        </ScrollPane>
     </center>
 
 </BorderPane>
