@@ -195,8 +195,8 @@ public class ViewTurmaController implements Initializable {
         }
         
         if (fxEtariaTurma != null) {
-            String faixaEtaria = turmaAtual.FaixaEtaria() != null ? 
-                    turmaAtual.FaixaEtaria() : "Não informado";
+            String faixaEtaria = turmaAtual.faixaEtaria() != null ? 
+                    turmaAtual.faixaEtaria() : "Não informado";
             fxEtariaTurma.setText(faixaEtaria);
         }
     }

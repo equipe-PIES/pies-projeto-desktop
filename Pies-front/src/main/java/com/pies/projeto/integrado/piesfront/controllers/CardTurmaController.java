@@ -71,7 +71,7 @@ public class CardTurmaController implements Initializable {
         }
         
         if (faixaEtariaCard != null) {
-            String faixaEtaria = turma.FaixaEtaria() != null ? turma.FaixaEtaria() : "Não informado";
+            String faixaEtaria = turma.faixaEtaria() != null ? turma.faixaEtaria() : "Não informado";
             faixaEtariaCard.setText("Faixa Etária: " + faixaEtaria);
         }
         

@@ -23,9 +23,14 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.CreateProfesso
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.ProfessorDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.UpdateProfessorDTO;
 import com.pies.api.projeto.integrado.pies_backend.model.Professor;
+import com.pies.api.projeto.integrado.pies_backend.model.Turma;
 import com.pies.api.projeto.integrado.pies_backend.repository.ProfessorRepository;
+import com.pies.api.projeto.integrado.pies_backend.repository.TurmaRepository;
+import com.pies.api.projeto.integrado.pies_backend.repository.UserRepository;
 
 import jakarta.validation.Valid;
+
+import org.springframework.security.core.Authentication;
 
 /**
  * CONTROLLER LAYER - CAMADA DE APRESENTAÇÃO
@@ -67,6 +72,12 @@ public class ProfessorController {
      */
     @Autowired // Spring injeta automaticamente a implementação do ProfessorRepository
     private ProfessorRepository professorRepository;
+    
+    @Autowired
+    private TurmaRepository turmaRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
 
     // ========== ENDPOINTS DE CONSULTA (GET) ==========
     
@@ -92,7 +103,16 @@ public class ProfessorController {
         // Converte lista de entidades Professor em lista de DTOs
         // Usa Stream API para transformação funcional
         List<ProfessorDTO> professoresDTO = professores.stream()
-                .map(ProfessorDTO::new) // Converte cada Professor em ProfessorDTO
+                .map(professor -> {
+                    ProfessorDTO dto = new ProfessorDTO(professor);
+                    // Busca e adiciona turmas vinculadas
+                    List<Turma> turmas = turmaRepository.findByProfessor(professor);
+                    List<String> turmasIds = turmas.stream()
+                            .map(Turma::getId)
+                            .collect(Collectors.toList());
+                    dto.setTurmasIds(turmasIds);
+                    return dto;
+                })
                 .collect(Collectors.toList()); // Coleta em uma nova lista
         
         // Retorna resposta HTTP 200 (OK) com a lista de professores
@@ -122,8 +142,18 @@ public class ProfessorController {
         
         // Verifica se professor foi encontrado
         if (professor.isPresent()) {
-            // Professor encontrado - converte para DTO e retorna 200 (OK)
-            return ResponseEntity.ok(new ProfessorDTO(professor.get()));
+            // Professor encontrado - converte para DTO
+            ProfessorDTO dto = new ProfessorDTO(professor.get());
+            
+            // Busca turmas vinculadas ao professor e adiciona os IDs ao DTO
+            List<Turma> turmas = turmaRepository.findByProfessor(professor.get());
+            List<String> turmasIds = turmas.stream()
+                    .map(Turma::getId)
+                    .collect(Collectors.toList());
+            dto.setTurmasIds(turmasIds);
+            
+            // Retorna 200 (OK) com o DTO completo incluindo turmas
+            return ResponseEntity.ok(dto);
         }
         
         // Professor não encontrado - retorna 404 (Not Found)
@@ -324,5 +354,44 @@ public class ProfessorController {
     @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<String> getPerfil() {
         return ResponseEntity.ok("Perfil do professor");
+    }
+    
+    /**
+     * Busca os dados do professor logado (me = "eu" em inglês)
+     * Endpoint: GET /professores/me
+     * Permissões: PROFESSOR
+     * 
+     * Retorna os dados completos do professor autenticado, incluindo lista de turmas
+     * 
+     * @param authentication Informações do usuário autenticado (injetado automaticamente)
+     * @return ResponseEntity com dados do professor ou 404 se não encontrado
+     */
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('PROFESSOR')")
+    public ResponseEntity<ProfessorDTO> getMeuPerfil(Authentication authentication) {
+        String emailUsuario = authentication.getName();
+        
+        // Busca o usuário pelo email
+        var user = userRepository.findByEmail(emailUsuario);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        // Busca o professor pelo user_id
+        Professor professor = professorRepository.findByUserId(user.getId());
+        
+        if (professor == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        // Converte para DTO e adiciona turmas
+        ProfessorDTO dto = new ProfessorDTO(professor);
+        List<Turma> turmas = turmaRepository.findByProfessor(professor);
+        List<String> turmasIds = turmas.stream()
+                .map(Turma::getId)
+                .collect(Collectors.toList());
+        dto.setTurmasIds(turmasIds);
+        
+        return ResponseEntity.ok(dto);
     }
 }

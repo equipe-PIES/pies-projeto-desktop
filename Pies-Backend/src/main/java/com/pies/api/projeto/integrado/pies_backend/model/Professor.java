@@ -96,6 +96,12 @@ public class Professor {
      * Usado para informações complementares
      */
     private String observacoes; // Sem validação = campo opcional
+    
+    /**
+     * ID do usuário vinculado (chave estrangeira para tabela users)
+     * Campo opcional - relaciona o professor com sua conta de usuário
+     */
+    private String userId; // Campo que vincula com a tabela users
 
     // ========== CONSTRUTORES PERSONALIZADOS ==========
     

@@ -8,9 +8,10 @@ public record TurmaDTO(
     String id,
     String nome,
     String grauEscolar,
-    String FaixaEtaria,
+    String faixaEtaria,
     String turno,
     String professorId,
-    String professorNome
+    String professorNome,
+    String professorCpf
 ) {}
 

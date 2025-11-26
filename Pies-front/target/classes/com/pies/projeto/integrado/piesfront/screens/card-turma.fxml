@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="cardTurma" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="350.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #CCCCCC; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 15;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CardTurmaController">
+   <children>
+      <ImageView fx:id="imgTurmaCard" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" smooth="false" />
+      <Label fx:id="nomeTurmaCard" prefHeight="21.0" prefWidth="400.0" text="Nome da Turma">
+         <VBox.margin>
+            <Insets left="5.0" right="5.0" />
+         </VBox.margin>
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="totalAlunoCard" prefWidth="400.0" text="Total de alunos: 0">
+         <VBox.margin>
+            <Insets left="5.0" right="5.0" />
+         </VBox.margin>
+      </Label>
+      <Label fx:id="faixaEtariaCard" prefWidth="400.0" text="Faixa Etária:">
+         <VBox.margin>
+            <Insets left="5.0" right="5.0" />
+         </VBox.margin>
+      </Label>
+      <Label fx:id="grauTurmaCard" prefWidth="400.0" text="Grau da turma:">
+         <VBox.margin>
+            <Insets left="5.0" right="5.0" />
+         </VBox.margin>
+      </Label>
+      <Label fx:id="turnoTurmaCard" prefWidth="400.0" text="Turno:">
+         <VBox.margin>
+            <Insets left="5.0" right="5.0" />
+         </VBox.margin>
+      </Label>
+      <Button fx:id="verificarTurmaButton" mnemonicParsing="false" onAction="#handleVerificarTurmaAction" prefWidth="400.0" text="Verificar turma">
+         <VBox.margin>
+            <Insets left="5.0" right="5.0" />
+         </VBox.margin>
+      </Button>
+   </children>
+</VBox>

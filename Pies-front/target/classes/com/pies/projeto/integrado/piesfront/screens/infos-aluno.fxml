@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <center>
+        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets bottom="20.0" left="20.0" right="20.0" />
+            </BorderPane.margin>
+            <children>
+                <VBox prefWidth="400.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
+                    <HBox.margin>
+                        <Insets right="25.0" />
+                    </HBox.margin>
+                    <children>
+                  <Label text="Nome: ">
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="20.0" right="20.0" top="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="Data de Nascimento: ">
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="CPF:">
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="Gênero: ">
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="CID:">
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="NIS:">
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="Grau de Escolaridade:">
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="Escola: ">
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="Observações:">
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </Label>
+                    </children>
+                </VBox>
+                <VBox prefHeight="200.0" prefWidth="480.0">
+               <children>
+                  <VBox prefHeight="269.0" prefWidth="460.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
+                     <VBox.margin>
+                        <Insets bottom="25.0" />
+                     </VBox.margin>
+                     <children>
+                        <Label text="Nome do Responsável:">
+                           <VBox.margin>
+                              <Insets bottom="4.0" left="20.0" right="20.0" top="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label text="Parentesco:">
+                           <VBox.margin>
+                              <Insets bottom="4.0" left="20.0" right="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label text="CPF:">
+                           <VBox.margin>
+                              <Insets bottom="4.0" left="20.0" right="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label text="Contato:">
+                           <VBox.margin>
+                              <Insets bottom="4.0" left="20.0" right="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label text="Endereço: ">
+                           <VBox.margin>
+                              <Insets bottom="4.0" left="20.0" right="20.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
+                     <children>
+                        <Label text="Turma:">
+                           <VBox.margin>
+                              <Insets bottom="4.0" left="20.0" top="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label text="Professora Responsável:">
+                           <VBox.margin>
+                              <Insets bottom="4.0" left="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label text="Grau de Escolaridade da Turma:">
+                           <VBox.margin>
+                              <Insets bottom="4.0" left="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label text="Turno:">
+                           <VBox.margin>
+                              <Insets bottom="4.0" left="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label text="Horário de Atendimento:">
+                           <VBox.margin>
+                              <Insets bottom="4.0" left="20.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+                </VBox>
+            </children>
+        </HBox>
+    </center>
+    <top>
+        <HBox prefHeight="51.0" prefWidth="964.0" BorderPane.alignment="CENTER_LEFT">
+            <children>
+                <Label text="Informações do(a) Aluno(a)">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                    <HBox.margin>
+                        <Insets right="20.0" />
+                    </HBox.margin>
+                </Label>
+                <Region prefHeight="44.0" prefWidth="300.0" HBox.hgrow="ALWAYS" />
+                <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="X">
+                    <HBox.margin>
+                        <Insets left="20.0" />
+                    </HBox.margin>
+                </Button>
+            </children>
+            <BorderPane.margin>
+                <Insets left="30.0" right="30.0" top="30.0" />
+            </BorderPane.margin>
+        </HBox>
+    </top>
+</BorderPane>

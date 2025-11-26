@@ -1,6 +1,8 @@
 package com.pies.projeto.integrado.piesfront.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * DTO para representar um professor retornado pela API
@@ -26,9 +28,13 @@ public class ProfessorDTO {
     
     @JsonProperty("observacoes")
     private String observacoes;
+    
+    @JsonProperty("turmasIds")
+    private List<String> turmasIds;
 
     // Construtor vazio
     public ProfessorDTO() {
+        this.turmasIds = new ArrayList<>();
     }
 
     // Getters e Setters
@@ -86,5 +92,13 @@ public class ProfessorDTO {
 
     public void setObservacoes(String observacoes) {
         this.observacoes = observacoes;
+    }
+    
+    public List<String> getTurmasIds() {
+        return turmasIds;
+    }
+    
+    public void setTurmasIds(List<String> turmasIds) {
+        this.turmasIds = turmasIds;
     }
 }
