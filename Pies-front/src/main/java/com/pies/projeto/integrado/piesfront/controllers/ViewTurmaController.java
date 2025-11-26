@@ -178,8 +178,7 @@ public class ViewTurmaController implements Initializable {
         // Preenche os campos com as informações da turma
         if (nomeTurmaLabel != null) {
             String nome = turmaAtual.nome() != null ? turmaAtual.nome() : "Sem nome";
-            String id = turmaAtual.id() != null ? turmaAtual.id() : "";
-            nomeTurmaLabel.setText(nome + " " + id);
+            nomeTurmaLabel.setText(nome);
         }
         
         if (grauTurma != null) {
@@ -195,8 +194,8 @@ public class ViewTurmaController implements Initializable {
         }
         
         if (fxEtariaTurma != null) {
-            String faixaEtaria = turmaAtual.FaixaEtaria() != null ? 
-                    turmaAtual.FaixaEtaria() : "Não informado";
+            String faixaEtaria = turmaAtual.faixaEtaria() != null ? 
+                    turmaAtual.faixaEtaria() : "Não informado";
             fxEtariaTurma.setText(faixaEtaria);
         }
     }

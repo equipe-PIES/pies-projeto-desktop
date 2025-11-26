@@ -2,6 +2,8 @@ package com.pies.api.projeto.integrado.pies_backend.controller.dto;
 
 // Import para manipulação de datas
 import java.time.LocalDate;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.pies.api.projeto.integrado.pies_backend.model.Professor;
 
@@ -41,6 +43,12 @@ public class ProfessorDTO {
     private String formacao;
     
     private String observacoes;
+    
+    /**
+     * Lista de IDs das turmas vinculadas ao professor
+     * Útil para exibir as turmas que o professor leciona
+     */
+    private List<String> turmasIds;
 
     // ========== CONSTRUTOR DE CONVERSÃO ==========
     
@@ -63,5 +71,7 @@ public class ProfessorDTO {
         this.genero = professor.getGenero();
         this.formacao = professor.getFormacao();
         this.observacoes = professor.getObservacoes();
+        // Lista de turmas vazia por padrão - deve ser preenchida via setter
+        this.turmasIds = new ArrayList<>();
     }
 }

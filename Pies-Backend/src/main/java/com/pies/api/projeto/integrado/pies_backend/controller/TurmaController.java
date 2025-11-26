@@ -132,6 +132,7 @@ public class TurmaController {
     private TurmaDTO mapToDTO(Turma turma) {
         String professorId = turma.getProfessor() != null ? turma.getProfessor().getId() : null;
         String professorNome = turma.getProfessor() != null ? turma.getProfessor().getNome() : null;
+        String professorCpf = turma.getProfessor() != null ? turma.getProfessor().getCpf() : null;
         return new TurmaDTO(
             turma.getId(),
             turma.getNome(),
@@ -139,7 +140,8 @@ public class TurmaController {
             turma.getFaixaEtaria(),
             turma.getTurno(),
             professorId,
-            professorNome
+            professorNome,
+            professorCpf
         );
     }
 }

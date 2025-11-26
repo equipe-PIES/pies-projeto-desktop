@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="600.0" maxWidth="900.0" minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.ProgressoAtendimentoController">
+   <center>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" />
+         </BorderPane.margin>
+         <children>
+            <VBox prefWidth="350.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
+               <HBox.margin>
+                  <Insets right="25.0" />
+               </HBox.margin>
+               <children>
+                  <Label text="Diario do Professor">
+                     <font>
+                        <Font name="System Bold" size="22.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="20.0" top="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Detalhes dos Atendimentos">
+                     <VBox.margin>
+                        <Insets left="20.0" />
+                     </VBox.margin>
+                  </Text>
+                  <Region prefHeight="298.0" prefWidth="348.0" />
+                  <Button fx:id="iniciarAtendimento" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" text="Iniciar atendimento">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="viewRelatorios" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" text="Vizualizar relatórios">
+                     <VBox.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="480.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
+                     <children>
+                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="350.0">
+                           <children>
+                              <Label text="Anamnese">
+                                 <font>
+                                    <Font name="System Bold" size="22.0" />
+                                 </font>
+                              </Label>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Análise inicial do educando" />
+                           </children>
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="20.0" top="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <Button fx:id="statusAnamnese" mnemonicParsing="false" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
+                           <HBox.margin>
+                              <Insets right="20.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
+                     <children>
+                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="350.0">
+                           <children>
+                              <Label text="Diagnóstico Inicial">
+                                 <font>
+                                    <Font name="System Bold" size="22.0" />
+                                 </font>
+                              </Label>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Percepção advinda da anamnese" />
+                           </children>
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="20.0" top="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <Button fx:id="statusDI" mnemonicParsing="false" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
+                           <HBox.margin>
+                              <Insets right="20.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
+                     <children>
+                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="350.0">
+                           <children>
+                              <Label text="PDI">
+                                 <font>
+                                    <Font name="System Bold" size="22.0" />
+                                 </font>
+                              </Label>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Plano de Desenvolvimento Individual" />
+                           </children>
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="20.0" top="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <Button fx:id="statusPDI" mnemonicParsing="false" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
+                           <HBox.margin>
+                              <Insets right="20.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="210.0" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
+                     <children>
+                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="350.0">
+                           <children>
+                              <Label text="PAEE">
+                                 <font>
+                                    <Font name="System Bold" size="22.0" />
+                                 </font>
+                              </Label>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Plano do Atendimento Educacional Especializado" />
+                           </children>
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="20.0" top="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <Button fx:id="statusPAEE" mnemonicParsing="false" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
+                           <HBox.margin>
+                              <Insets right="20.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </center>
+   <top>
+      <HBox prefHeight="51.0" prefWidth="964.0" BorderPane.alignment="CENTER_LEFT">
+         <children>
+            <Label text="Progresso de Atendimento">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </Label>
+            <Region prefHeight="44.0" prefWidth="300.0" HBox.hgrow="ALWAYS" />
+            <Button fx:id="closeProgressoAtd" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="X">
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+         <BorderPane.margin>
+            <Insets left="30.0" right="30.0" top="30.0" />
+         </BorderPane.margin>
+      </HBox>
+   </top>
+</BorderPane>

@@ -132,17 +132,30 @@ public class HomeProfController implements Initializable {
         
         // Busca informações do usuário logado para filtrar as turmas
         UserInfoDTO userInfo = authService.getUserInfo();
-        if (userInfo == null || userInfo.id() == null) {
+        if (userInfo == null) {
             System.err.println("Não foi possível obter informações do usuário logado.");
             return;
         }
         
+        // Busca o ID do professor usando o nome do usuário logado
+        String professorId = authService.getProfessorIdByNome(userInfo.name());
+        
+        if (professorId == null) {
+            System.err.println("Professor não encontrado na tabela de professores.");
+            Label semTurmasLabel = new Label("Professor não cadastrado no sistema.");
+            semTurmasLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #e74c3c;");
+            containerCards.getChildren().add(semTurmasLabel);
+            return;
+        }
+        
+        System.out.println("Professor ID encontrado: " + professorId);
+        
         // Busca todas as turmas do backend
         List<TurmaDTO> todasTurmas = authService.getTurmas();
         
-        // Filtra apenas as turmas do professor logado
+        // Filtra apenas as turmas do professor logado usando o ID do professor
         List<TurmaDTO> turmasDoProfessor = todasTurmas.stream()
-                .filter(turma -> userInfo.id().equals(turma.professorId()))
+                .filter(turma -> professorId.equals(turma.professorId()))
                 .collect(Collectors.toList());
         
         // Cria um card para cada turma

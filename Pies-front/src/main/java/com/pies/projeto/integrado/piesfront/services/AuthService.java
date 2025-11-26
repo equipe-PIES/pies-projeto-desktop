@@ -324,4 +324,45 @@ public class AuthService {
             return new ArrayList<>();
         }
     }
+    
+    /**
+     * Busca o ID do professor pelo nome do usuário logado
+     * @param nomeUsuario Nome do usuário logado
+     * @return ID do professor ou null se não encontrado
+     */
+    public String getProfessorIdByNome(String nomeUsuario) {
+        if (currentToken == null || nomeUsuario == null) {
+            System.err.println("getProfessorIdByNome: Token ou nome é NULL!");
+            return null;
+        }
+        
+        try {
+            // Usa o novo endpoint /professores/me que retorna os dados do professor logado
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/professores/me"))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            
+            HttpResponse<String> response = httpClient.send(request, 
+                    HttpResponse.BodyHandlers.ofString());
+            
+            if (response.statusCode() == 200) {
+                // Parse para um Map genérico
+                var professor = objectMapper.readValue(response.body(), 
+                    new TypeReference<java.util.Map<String, Object>>() {});
+                
+                return (String) professor.get("id");
+            } else {
+                System.err.println("Erro ao buscar professor logado. Status: " + response.statusCode());
+                return null;
+            }
+            
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao buscar professor por nome: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
