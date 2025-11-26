@@ -1,131 +1,180 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="coordInicioPane" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.HomeCoordController">
+<BorderPane fx:id="coordInicioPane" prefHeight="880.0" prefWidth="1220.0" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.HomeCoordController">
 
     <!-- TOPO -->
     <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="60.0" style="-fx-background-color: #ffffff;">
-            <padding>
-                <Insets left="20.0" right="20.0" />
-            </padding>
+        <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="91.0" prefWidth="1220.0" style="-fx-background-radius: 0 0 8 0; -fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
             <children>
-                <Region prefHeight="60.0" prefWidth="15.0" />
-                <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="140.0">
+                <HBox style="-fx-background-color: #d6d6d6;">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+                </HBox>
+                <VBox>
+                    <HBox.margin>
+                        <Insets bottom="20.0" left="30.0" top="20.0" />
+                    </HBox.margin>
                     <children>
-
-                        <Label id="tituloAmparoEdu" fx:id="tituloAmparoEdu" prefHeight="21.0" prefWidth="92.0" text="AmparoEdu" />
-                        <Label id="indicadorDeTela" fx:id="indicadorDeTela" prefHeight="21.0" prefWidth="131.0" text="indicadorDeTela" />
+                        <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-font-size: 22; -fx-font-weight: bold;" text="AmparoEdu" textFill="#1e1e1e">
+                            <font>
+                                <Font name="Inter Semi Bold" size="24.0" />
+                            </font>
+                        </Label>
+                        <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-font-size: 18;" text="Início" textFill="#757575">
+                            <font>
+                                <Font name="Inter Regular" size="24.0" />
+                            </font>
+                        </Label>
                     </children>
                 </VBox>
 
-                <Region HBox.hgrow="ALWAYS" />
+                <Region prefHeight="86.0" prefWidth="737.0" HBox.hgrow="ALWAYS" />
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" text="Início" />
-                        <Button id="turmasButton" fx:id="turmasButton" text="Turmas" />
-                        <Button id="professoresButton" fx:id="professoresButton" text="Professores" />
-                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
+                        <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" styleClass="top-button" text="Início">
+                            <font>
+                                <Font name="Inter Regular" size="12.0" />
+                            </font></Button>
+                        <Button id="turmasButton" fx:id="turmasButton" styleClass="top-button" text="Turmas">
+                            <font>
+                                <Font name="Inter Regular" size="12.0" />
+                            </font></Button>
+                        <Button id="professoresButton" fx:id="professoresButton" styleClass="top-button" text="Professores">
+                            <font>
+                                <Font name="Inter Regular" size="12.0" />
+                            </font></Button>
+                        <Button id="alunosButton" fx:id="alunosButton" styleClass="top-button" text="Alunos">
+                            <font>
+                                <Font name="Inter Regular" size="12.0" />
+                            </font></Button>
                     </children>
                 </HBox>
             </children>
+         <padding>
+            <Insets right="40.0" />
+         </padding>
         </HBox>
     </top>
 
-    <!-- MENU LATERAL -->
     <left>
-        <VBox prefHeight="820.0" prefWidth="280.0" style="-fx-background-color: #f4f4f4;">
+        <VBox prefHeight="779.0" prefWidth="280.0" style="-fx-background-color: #d6d6d6; -fx-background-radius: 0 8 0 0; -fx-border-color: #d6d6d6; -fx-border-width: 1 0 0 0;" BorderPane.alignment="CENTER">
             <padding>
                 <Insets left="15.0" right="15.0" top="20.0" />
             </padding>
             <children>
-                <HBox alignment="BOTTOM_CENTER" prefHeight="45.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
-                    <children>
-                        <ImageView id="perfilUser" fx:id="perfilUser" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" />
-                        <Region prefHeight="45.0" prefWidth="16.0" />
-                        <VBox prefHeight="200.0" prefWidth="100.0">
-                            <children>
-                                <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário" />
-                                <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Coordenadora" />
-                            </children>
-                        </VBox>
-                    </children>
-                </HBox>
+                  <HBox alignment="CENTER">
+                      <children>
+                          <ImageView id="perfilUser" fx:id="perfilUser" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                  <Image url="@../icons/user-tie-solid-full.png" />
+                              </image>
+                          </ImageView>
+                          <Region prefWidth="16.0" />
+                          <VBox alignment="CENTER">
+                              <children>
+                                  <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário">
+                                      <font>
+                                          <Font name="Inter Semi Bold" size="12.0" />
+                                      </font>
+                                  </Label>
+                                  <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Coordenadora">
+                                      <font>
+                                          <Font name="Inter Regular" size="12.0" />
+                                      </font>
+                                  </Label>
+                              </children>
+                          </VBox>
+                      </children>
+                  </HBox>
 
-                <Region prefHeight="1024.0" prefWidth="210.0">
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
-                    <padding>
-                        <Insets right="20.0" />
-                    </padding></Region>
+                <Region prefHeight="567.0" prefWidth="250.0" VBox.vgrow="ALWAYS" />
+                <Label id="tituloAmparoEdu" fx:id="tituloAmparoEdu" text="AmparoEdu" textFill="#d6d6d6" />
+                <Label id="indicadorDeTela" fx:id="indicadorDeTela" text="indicadorDeTela" textFill="#d6d6d6" />
 
-                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
+                <HBox alignment="CENTER" prefHeight="92.0" prefWidth="250.0">
                     <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
                     </VBox.margin>
-                </Button>
+                    <children>
+                        <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefHeight="30.0" prefWidth="78.0" style="-fx-background-color: #d6d6d6; -fx-border-color: black; -fx-border-radius: 8;" text="Sair" textAlignment="CENTER">
+                            <font>
+                                <Font name="Inter Semi Bold" size="13.0" />
+                            </font>
+                        </Button>
+                    </children>
+                </HBox>
             </children>
         </VBox>
     </left>
 
     <!-- CONTEÚDO CENTRAL -->
     <center>
-        <VBox spacing="20.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
+        <VBox spacing="20.0" styleClass="center-thing" BorderPane.alignment="CENTER">
             <padding>
                 <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
             </padding>
             <children>
             <HBox alignment="CENTER" prefHeight="717.0" prefWidth="880.0" VBox.vgrow="ALWAYS">
                <children>
-                  <VBox prefHeight="1024.0" prefWidth="455.0" style="-fx-border-color: #ddd;" HBox.hgrow="ALWAYS">
+                  <VBox style="-fx-border-color: #ddd; -fx-border-radius: 8;" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label text="Dados do aluno(a)">
+                        <Label text="Dados do Aluno(a)">
                            <VBox.margin>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Semi Bold" size="18.0" />
+                           </font>
                         </Label>
                         <Label text="Nome do aluno(a):">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </Label>
-                        <TextField fx:id="nomeEducando" prefHeight="31.0" prefWidth="100.0" promptText="Nome do Aluno(a)">
+                        <TextField fx:id="nomeEducando" promptText="Nome do aluno(a)" styleClass="top-button">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </TextField>
                         <Label text="CPF:">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </Label>
-                        <TextField fx:id="cpfAluno" promptText="000.000.000.-00">
+                        <TextField fx:id="cpfAluno" promptText="000.000.000.-00" styleClass="top-button">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </TextField>
                         <Label text="Data de Nascimento:">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </Label>
-                        <DatePicker fx:id="dtNascAluno" promptText="--/--/----">
+                        <DatePicker fx:id="dtNascAluno" promptText="--/--/----" styleClass="top-button">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
@@ -134,8 +183,11 @@
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </Label>
-                        <ChoiceBox fx:id="generoAluno" prefHeight="31.0" prefWidth="250.0">
+                        <ChoiceBox fx:id="generoAluno" styleClass="top-button">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
@@ -144,8 +196,11 @@
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </Label>
-                        <ChoiceBox fx:id="grauEscAluno" prefWidth="250.0">
+                        <ChoiceBox fx:id="grauEscAluno" styleClass="top-button">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
@@ -154,98 +209,154 @@
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </Label>
-                        <TextField fx:id="cidAluno" promptText="CID">
+                        <TextField fx:id="cidAluno" promptText="CID" styleClass="top-button">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </TextField>
                         <Label text="NIS:">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </Label>
-                        <TextField fx:id="nisAluno" promptText="000.00000.00-0">
+                        <TextField fx:id="nisAluno" promptText="000.00000.00-0" styleClass="top-button">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </TextField>
                         <Label text="Observações:">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </Label>
-                        <TextArea fx:id="obsAluno" prefHeight="200.0" prefWidth="200.0" promptText="Guarde suas observações sobre o Aluno(a) aqui.">
+                        <TextArea fx:id="obsAluno" promptText="Guarde suas observações sobre o educando aqui." styleClass="top-button">
                            <VBox.margin>
                               <Insets bottom="4.0" left="20.0" right="20.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="Inter Regular" size="12.0" />
+                           </font>
                         </TextArea>
                      </children>
+                     <HBox.margin>
+                        <Insets right="15.0" />
+                     </HBox.margin>
                   </VBox>
-                  <Region prefHeight="710.0" prefWidth="30.0" />
-                  <VBox prefHeight="1024.0" prefWidth="455.0">
+                  <VBox>
                      <children>
-                        <VBox prefHeight="670.0" prefWidth="455.0" style="-fx-border-color: #ddd;" VBox.vgrow="ALWAYS">
+                        <VBox style="-fx-border-color: #ddd; -fx-border-radius: 8;" VBox.vgrow="ALWAYS">
                            <children>
-                              <Label text="Dados dos Responsáveis">
+                              <Label text="Dados do Responsável">
                                  <VBox.margin>
                                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                  </VBox.margin>
+                                 <font>
+                                    <Font name="Inter Semi Bold" size="18.0" />
+                                 </font>
                               </Label>
                               <Label text="Nome do responsável:">
                                  <VBox.margin>
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
+                                 <font>
+                                    <Font name="Inter Regular" size="12.0" />
+                                 </font>
                               </Label>
-                              <TextField fx:id="nomeRespon" promptText="Nome do Responsável">
+                              <TextField fx:id="nomeRespon" promptText="Nome do responsável" styleClass="top-button">
                                  <VBox.margin>
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
+                                 <font>
+                                    <Font name="Inter Regular" size="12.0" />
+                                 </font>
                               </TextField>
                               <Label text="CPF:">
                                  <VBox.margin>
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
+                                 <font>
+                                    <Font name="Inter Regular" size="12.0" />
+                                 </font>
                               </Label>
-                              <TextField fx:id="cpfRespon" promptText="000.000.000.-00">
+                              <TextField fx:id="cpfRespon" promptText="000.000.000.-00" styleClass="top-button">
                                  <VBox.margin>
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
+                                 <font>
+                                    <Font name="Inter Regular" size="12.0" />
+                                 </font>
                               </TextField>
                               <Label text="Contato:">
                                  <VBox.margin>
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
+                                 <font>
+                                    <Font name="Inter Regular" size="12.0" />
+                                 </font>
                               </Label>
-                              <TextField fx:id="contatoRespon" promptText="(--) 0.0000-0000">
+                              <TextField fx:id="contatoRespon" promptText="(00) 0.0000-0000" styleClass="top-button">
                                  <VBox.margin>
                                     <Insets bottom="15.0" left="20.0" right="20.0" />
                                  </VBox.margin>
+                                 <font>
+                                    <Font name="Inter Regular" size="12.0" />
+                                 </font>
                               </TextField>
                               <Label text="Endereço">
                                  <VBox.margin>
-                                    <Insets bottom="4.0" left="20.0" right="20.0" />
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                  </VBox.margin>
+                                 <font>
+                                    <Font name="Inter Semi Bold" size="18.0" />
+                                 </font>
                               </Label>
                               <Label text="Rua:">
                                  <VBox.margin>
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
+                                 <font>
+                                    <Font name="Inter Regular" size="12.0" />
+                                 </font>
                               </Label>
-                              <TextField fx:id="endRua" promptText="Rua">
+                              <TextField fx:id="endRua" promptText="Rua" styleClass="top-button">
                                  <VBox.margin>
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
+                                 <font>
+                                    <Font name="Inter Regular" size="12.0" />
+                                 </font>
                               </TextField>
                               <HBox prefHeight="100.0" prefWidth="200.0">
                                  <children>
                                     <VBox prefHeight="200.0" prefWidth="220.0">
                                        <children>
-                                          <Label text="Número:" />
-                                          <TextField fx:id="endNum" prefHeight="31.0" prefWidth="187.0" promptText="Número">
+                                          <Label text="Número:">
+                                             <font>
+                                                <Font name="Inter Regular" size="12.0" />
+                                             </font></Label>
+                                          <TextField fx:id="endNum" promptText="Número" styleClass="top-button">
                                              <VBox.margin>
                                                 <Insets />
                                              </VBox.margin>
+                                             <font>
+                                                <Font name="Inter Regular" size="12.0" />
+                                             </font>
                                           </TextField>
                                        </children>
                                        <HBox.margin>
@@ -255,8 +366,14 @@
                                     <Region prefHeight="100.0" prefWidth="19.0" />
                                     <VBox prefHeight="200.0" prefWidth="150.0">
                                        <children>
-                                          <Label text="Bairro:" />
-                                          <TextField fx:id="endBairro" promptText="Bairro" />
+                                          <Label text="Bairro:">
+                                             <font>
+                                                <Font name="Inter Regular" size="12.0" />
+                                             </font></Label>
+                                          <TextField fx:id="endBairro" promptText="Bairro" styleClass="top-button">
+                                             <font>
+                                                <Font name="Inter Regular" size="12.0" />
+                                             </font></TextField>
                                        </children>
                                     </VBox>
                                  </children>
@@ -265,14 +382,24 @@
                                  </VBox.margin>
                               </HBox>
                            </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                         </VBox>
-                        <Region prefHeight="10.0" prefWidth="200.0" />
-                        <HBox alignment="CENTER" prefHeight="9.0" prefWidth="435.0">
+                        <HBox alignment="CENTER" spacing="20.0">
                            <children>
-                              <Button fx:id="cancelCadastroBt" mnemonicParsing="false" prefHeight="30.0" prefWidth="220.0" text="Cancelar" />
-                              <Region prefHeight="31.0" prefWidth="13.0" />
-                              <Button fx:id="cadastroAlunoBt" mnemonicParsing="false" prefWidth="220.0" text="Cadastrar aluno(a)" />
+                              <Button fx:id="cancelCadastroBt" mnemonicParsing="false" prefWidth="150.0" styleClass="top-button" text="Cancelar">
+                                 <font>
+                                    <Font name="Inter Regular" size="12.0" />
+                                 </font></Button>
+                              <Button fx:id="cadastroAlunoBt" mnemonicParsing="false" prefWidth="150.0" styleClass="top-button" text="Cadastrar aluno(a)">
+                                 <font>
+                                    <Font name="Inter Semi Bold" size="12.0" />
+                                 </font></Button>
                            </children>
+                           <VBox.margin>
+                              <Insets top="20.0" />
+                           </VBox.margin>
                         </HBox>
                      </children>
                   </VBox>

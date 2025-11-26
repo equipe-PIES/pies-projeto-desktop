@@ -1,40 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
+<BorderPane maxHeight="800.0" maxWidth="1200.0" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
-   <center>
-      <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: default;">
-          <children>
-              <ImageView fx:id="logoAmparoEdu" fitHeight="254.0" fitWidth="266.0" layoutX="154.0" layoutY="226.0" pickOnBounds="true" preserveRatio="true" />
-              <Rectangle fx:id="barraLateral" arcHeight="10.0" arcWidth="10.0" fill="#d6d6d6" height="800.0" layoutX="573.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="627.0" />
-              <Label fx:id="fraseAutoria" layoutX="681.0" layoutY="728.0" text="Você está usando um sistema desenvolvido por quixada.ufc.br" textFill="WHITE" />
-            <Text fx:id="nomeDoSoftware" layoutX="147.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="AmparoEdu" wrappingWidth="280.958984375">
-               <font>
-                  <Font name="System Bold" size="49.0" />
-               </font>
-            </Text>
-            <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="398.0" layoutX="722.0" layoutY="171.0" stroke="#0000003b" strokeType="INSIDE" width="330.0" />
-            <Button fx:id="loginButton" layoutX="746.0" layoutY="423.0" mnemonicParsing="false" onAction="#handleLoginButtonAction" prefHeight="38.0" prefWidth="281.0" text="Entrar" />
-            <PasswordField fx:id="passwordField" layoutX="747.0" layoutY="370.0" prefHeight="38.0" prefWidth="281.0" promptText="Senha" />
-            <TextField fx:id="emailField" layoutX="747.0" layoutY="298.0" prefHeight="38.0" prefWidth="281.0" promptText="Email" />
-            <Label fx:id="legendaEmail" layoutX="748.0" layoutY="268.0" text="E-mail:" />
-            <Label fx:id="titleLogin" layoutX="853.0" layoutY="203.0" text="Login">
-               <font>
-                  <Font name="System Bold" size="26.0" />
-               </font>
-            </Label>
-            <Label fx:id="legendaPassword" layoutX="749.0" layoutY="342.0" text="Senha:" />
-            <Hyperlink fx:id="forgotPasswordLink" layoutX="811.0" layoutY="499.0" onAction="#handleForgotPasswordAction" text="Esqueci minha senha." textFill="#8a8686" />
-            <Label fx:id="errorMessageLabel" layoutX="746.0" layoutY="470.0" prefHeight="21.0" prefWidth="281.0" textFill="#ee7d7d" />
-          </children>
-      </AnchorPane>
-   </center>
+    <center>
+        <HBox BorderPane.alignment="CENTER">
+
+            <VBox alignment="CENTER_LEFT" prefWidth="500.0" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets left="80.0" />
+                </padding>
+                <children>
+                    <Text fx:id="nomeDoSoftware" strokeType="OUTSIDE" strokeWidth="0.0" text="AmparoEdu">
+                        <font>
+                            <Font name="Inter Semi Bold" size="64.0" />
+                        </font>
+                    </Text>
+                    <Label fx:id="fraseAutoria" text="Você está usando um sistema desenvolvido por quixada.ufc.br">
+                        <font>
+                            <Font name="Inter Semi Bold" size="10.0" />
+                        </font>
+                        <VBox.margin>
+                            <Insets bottom="20.0" />
+                        </VBox.margin>
+                    </Label>
+                </children>
+            </VBox>
+
+            <VBox fx:id="barraLateral" alignment="CENTER" style="-fx-background-color: #d6d6d6;" HBox.hgrow="ALWAYS">
+
+                <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="390.0" prefWidth="330.0" style="-fx-background-color: white; -fx-background-radius: 5;">
+                    <children>
+
+                        <Label fx:id="titleLogin" text="Login" textOverrun="CLIP">
+                            <font>
+                                <Font name="Inter Semi Bold" size="25.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets bottom="30.0" />
+                            </VBox.margin>
+                        </Label>
+
+                        <Label fx:id="legendaEmail" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="16.0" prefWidth="43.0" text="E-mail:">
+                            <font>
+                                <Font name="Inter Regular" size="13.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets bottom="5.0" right="220.0" />
+                            </VBox.margin>
+                        </Label>
+                        <TextField fx:id="emailField" maxWidth="Infinity" prefHeight="40.0" promptText="Digite aqui">
+                            <font>
+                                <Font name="Inter Regular" size="13.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets bottom="20.0" top="5.0" />
+                            </VBox.margin>
+                        </TextField>
+
+                        <Label fx:id="legendaPassword" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="16.0" prefWidth="43.0" text="Senha:">
+                            <font>
+                                <Font name="Inter Regular" size="13.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets bottom="5.0" right="220.0" />
+                            </VBox.margin>
+                        </Label>
+                        <PasswordField fx:id="passwordField" maxWidth="Infinity" prefHeight="40.0" promptText="Digite aqui">
+                            <font>
+                                <Font name="Inter Regular" size="13.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets bottom="40.0" top="5.0" />
+                            </VBox.margin>
+                        </PasswordField>
+
+                        <Button fx:id="loginButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLoginButtonAction" prefHeight="40.0" style="-fx-background-color: #34bc74;" text="Entrar" textFill="WHITE">
+                            <font>
+                                <Font name="Inter Regular" size="13.0" />
+                            </font>
+                        </Button>
+
+                    </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets left="30.0" right="30.0" />
+               </padding>
+                </VBox>
+
+            </VBox>
+
+        </HBox>
+    </center>
+
 </BorderPane>

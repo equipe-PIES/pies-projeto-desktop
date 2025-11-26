@@ -1,0 +1,15 @@
+.top-button {
+    -fx-background-color: #f5f5f5;
+    -fx-border-radius: 8;
+    -fx-weight: 25;
+}
+
+.center-thing {
+    -fx-background-color: white;
+    -fx-border-width: 1 0 0 0;
+    -fx-border-color: #d6d6d6;
+}
+
+.cad-add-thing {
+
+}
