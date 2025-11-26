@@ -66,8 +66,7 @@ public class CardTurmaController implements Initializable {
         
         if (nomeTurmaCard != null) {
             String nome = turma.nome() != null ? turma.nome() : "Sem nome";
-            String id = turma.id() != null ? turma.id() : "";
-            nomeTurmaCard.setText(nome + " " + id);
+            nomeTurmaCard.setText(nome);
         }
         
         if (faixaEtariaCard != null) {
