@@ -61,7 +61,7 @@ public class AuthService {
      * Faz login no sistema chamando o endpoint /auth/login do backend
      * @param email Email do usuário
      * @param password Senha do usuário
-     * @return String com a role do usuário ou "INVÁLIDO" se falhar
+     * @return String com a role do usuário, "INVÁLIDO" se credenciais incorretas, ou "ERRO_CONEXAO" se houver problema de conexão
      */
     public String authenticate(String email, String password) {
         try {
@@ -103,15 +103,23 @@ public class AuthService {
                 String role = getUserRole();
                 System.out.println("Role retornada: " + role);
                 return role;
+            } else if (response.statusCode() == 401 || response.statusCode() == 403) {
+                System.err.println("Login falhou - credenciais inválidas");
+                return "INVÁLIDO";
             } else {
                 System.err.println("Login falhou com status: " + response.statusCode());
-                return "INVÁLIDO";
+                return "ERRO_CONEXAO";
             }
             
+        } catch (java.net.ConnectException e) {
+            System.err.println("ERRO DE CONEXÃO: Não foi possível conectar ao servidor backend.");
+            System.err.println("Verifique se o backend está rodando em " + BASE_URL);
+            e.printStackTrace();
+            return "ERRO_CONEXAO";
         } catch (IOException | InterruptedException e) {
             System.err.println("EXCEÇÃO ao fazer login: " + e.getMessage());
             e.printStackTrace();
-            return "INVÁLIDO";
+            return "ERRO_CONEXAO";
         }
     }
     

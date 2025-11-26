@@ -1,6 +1,7 @@
 module com.pies.projeto.integrado.piesfront {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.graphics;
     requires java.net.http;
 
     requires org.controlsfx.controls;
@@ -8,7 +9,7 @@ module com.pies.projeto.integrado.piesfront {
     requires com.fasterxml.jackson.databind;
 
     opens com.pies.projeto.integrado.piesfront.controllers to javafx.fxml;
-    opens com.pies.projeto.integrado.piesfront.dto;
+    opens com.pies.projeto.integrado.piesfront.dto to com.fasterxml.jackson.databind;
     opens com to javafx.fxml;
 
     exports com;

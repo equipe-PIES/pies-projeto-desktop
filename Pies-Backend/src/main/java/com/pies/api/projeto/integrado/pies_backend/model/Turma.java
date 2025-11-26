@@ -44,5 +44,5 @@ public class Turma {
 Ele só é buscado quando for realmente acessado.*/
 
     @JoinColumn(name = "professor_id") // Nome da coluna de ligação na tabela
-    private User professor;
+    private Professor professor;
 }

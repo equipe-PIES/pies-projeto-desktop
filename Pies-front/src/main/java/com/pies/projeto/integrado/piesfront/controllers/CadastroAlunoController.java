@@ -293,6 +293,7 @@ public class CadastroAlunoController implements Initializable {
     /// MOSTRAR ERRO
     private void mostrarErro(String mensagem){
         if(ErrorForm != null) {
+            ErrorForm.setTextFill(javafx.scene.paint.Color.web("#f24d4d"));
             ErrorForm.setText(mensagem);
         } else {
             System.err.println("Formulário inválido: " + mensagem);
@@ -304,6 +305,39 @@ public class CadastroAlunoController implements Initializable {
             ErrorForm.setText("");
         }
     }
+    
+    /// MOSTRAR SUCESSO
+    private void mostrarSucesso(String mensagem) {
+        if (ErrorForm != null) {
+            ErrorForm.setTextFill(javafx.scene.paint.Color.GREEN);
+            ErrorForm.setText(mensagem);
+        }
+    }
+    
+    /// LIMPAR FORMULÁRIO
+    private void limparFormulario() {
+        if (nomeAluno != null) nomeAluno.clear();
+        if (cpfAluno != null) cpfAluno.clear();
+        if (dtNascAluno != null) dtNascAluno.setValue(null);
+        if (generoAluno != null) generoAluno.setValue(null);
+        if (grauEscAluno != null) grauEscAluno.setValue(null);
+        if (escolaAluno != null) escolaAluno.clear();
+        if (cidAluno != null) cidAluno.clear();
+        if (nisAluno != null) nisAluno.clear();
+        if (obsAluno != null) obsAluno.clear();
+        if (nomeRespon != null) nomeRespon.clear();
+        if (cpfRespon != null) cpfRespon.clear();
+        if (parentescoRespon != null) parentescoRespon.setValue(null);
+        if (contatoRespon != null) contatoRespon.clear();
+        if (endUF != null) endUF.setValue(null);
+        if (endCidade != null) endCidade.clear();
+        if (endCEP != null) endCEP.clear();
+        if (endRua != null) endRua.clear();
+        if (endNum != null) endNum.clear();
+        if (endBairro != null) endBairro.clear();
+        if (endComplemento != null) endComplemento.clear();
+    }
+    
     /// Conecção de ações dos botões do formulário
     private void conectarAcoesFormulario() {
         if (cadastroAlunoBt != null) {
@@ -355,6 +389,7 @@ public class CadastroAlunoController implements Initializable {
         // Montar JSON e fazer a requisição
         try {
             String json = objectMapper.writeValueAsString(educando);
+            System.out.println("JSON enviado: " + json);
             java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
                     .uri(java.net.URI.create("http://localhost:8080/api/educandos"))
                     .header("Content-Type", "application/json")
@@ -363,12 +398,31 @@ public class CadastroAlunoController implements Initializable {
                     .timeout(java.time.Duration.ofSeconds(10))
                     .build();
             java.net.http.HttpResponse<String> response = httpClient.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+            System.out.println("Status Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
             if (response.statusCode() == 201) {
-                handleInicioButtonAction();
+                limparFormulario();
+                mostrarSucesso("Aluno cadastrado com sucesso!");
+                // Aguarda 2 segundos antes de voltar
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(2000);
+                        javafx.application.Platform.runLater(() -> handleInicioButtonAction());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
             } else if (response.statusCode() == 409) {
                 mostrarErro("CPF já cadastrado. Verifique os dados.");
             } else if (response.statusCode() == 400) {
-                mostrarErro("Requisição inválida: " + extrairMensagemErro(response.body()));
+                String mensagemErro = extrairMensagemErro(response.body());
+                if (mensagemErro.contains("CPF inválido") || mensagemErro.contains("CPF")) {
+                    mostrarErro("CPF inválido. Use CPFs válidos para teste.");
+                } else {
+                    mostrarErro("Dados inválidos: " + mensagemErro);
+                }
+            } else if (response.statusCode() == 403) {
+                mostrarErro("Acesso negado. Verifique suas permissões.");
             } else {
                 mostrarErro("Erro inesperado. Código: " + response.statusCode());
             }

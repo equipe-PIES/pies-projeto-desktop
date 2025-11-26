@@ -28,7 +28,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-// Remover imports dos DTOs externos do cadastro de professor (CreateProfessorRequestDTO, RegisterRequestDTO)
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CadastroProfController implements Initializable {
     // ----------------------------------------------------
@@ -244,6 +244,11 @@ public class CadastroProfController implements Initializable {
 
         try {
             String json = objectMapper.writeValueAsString(requestBody);
+            
+            // DEBUG: Imprimir o JSON que está sendo enviado
+            System.out.println("=== JSON SENDO ENVIADO PARA /professores ===");
+            System.out.println(json);
+            System.out.println("============================================");
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/professores"))
@@ -270,6 +275,13 @@ public class CadastroProfController implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
+            System.err.println("=== ERRO DETALHADO ===");
+            System.err.println("Mensagem: " + e.getMessage());
+            System.err.println("Tipo: " + e.getClass().getName());
+            if (e.getCause() != null) {
+                System.err.println("Causa: " + e.getCause().getMessage());
+            }
+            System.err.println("======================");
             mostrarErro("Erro ao comunicar com o servidor: " + e.getMessage());
         }
     }
@@ -282,6 +294,11 @@ public class CadastroProfController implements Initializable {
             body.role = "professor";
 
             String json = objectMapper.writeValueAsString(body);
+            
+            // DEBUG: Imprimir o JSON que está sendo enviado
+            System.out.println("=== JSON SENDO ENVIADO PARA /auth/register ===");
+            System.out.println(json);
+            System.out.println("===============================================");
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/auth/register"))
@@ -310,6 +327,38 @@ public class CadastroProfController implements Initializable {
             mostrarErro("Erro ao registrar usuário: " + e.getMessage());
             return false;
         }
+    }
+
+    // DTOs simples para serialização do corpo da requisição
+    public static class CreateProfessorRequest {
+        @JsonProperty("nome")
+        public String nome;
+        
+        @JsonProperty("cpf")
+        public String cpf;
+        
+        @JsonProperty("dataNascimento")
+        public String dataNascimento; // ISO-8601 yyyy-MM-dd
+        
+        @JsonProperty("genero")
+        public String genero;
+        
+        @JsonProperty("formacao")
+        public String formacao;
+        
+        @JsonProperty("observacoes")
+        public String observacoes;
+    }
+
+    public static class RegisterRequest {
+        @JsonProperty("login")
+        public String login;
+        
+        @JsonProperty("password")
+        public String password;
+        
+        @JsonProperty("role")
+        public String role;
     }
 
     private String extrairMensagemErro(String responseBody) {
@@ -362,17 +411,4 @@ public class CadastroProfController implements Initializable {
         }
     }
 
-    private static class CreateProfessorRequest {
-        public String nome;
-        public String cpf;
-        public String dataNascimento;
-        public String genero;
-        public String formacao;
-        public String observacoes;
-    }
-    private static class RegisterRequest {
-        public String login;
-        public String password;
-        public String role;
-    }
 }

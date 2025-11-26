@@ -19,6 +19,7 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.RegisterDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.UserInfoDTO;
 import com.pies.api.projeto.integrado.pies_backend.infra.security.TokenService;
 import com.pies.api.projeto.integrado.pies_backend.model.User;
+import com.pies.api.projeto.integrado.pies_backend.model.Enums.UserRole;
 import com.pies.api.projeto.integrado.pies_backend.repository.UserRepository;
 
 import jakarta.validation.Valid;
@@ -74,14 +75,18 @@ public class AuthenticationController { // Controller responsável pela autentic
             String encryptedPassword = new BCryptPasswordEncoder().encode(data.password()); 
             System.out.println("Senha criptografada");
 
+            // Define role padrão se vier null
+            UserRole userRole = (data.role() != null) ? data.role() : UserRole.USER;
+            System.out.println("Role a ser usada: " + userRole.getRole());
+
             // Cria um novo usuário com os dados fornecidos
             User newUser = new User();
             newUser.setEmail(data.login());
             newUser.setPassword(encryptedPassword);
-            newUser.setRole(data.role());
+            newUser.setRole(userRole);
             newUser.setName(data.login().split("@")[0]); // Define o nome como parte do email antes do @
             
-            System.out.println("Usuario criado: " + newUser.getEmail() + " | Name: " + newUser.getName());
+            System.out.println("Usuario criado: " + newUser.getEmail() + " | Name: " + newUser.getName() + " | Role: " + userRole.getRole());
 
             // Salva o novo usuário no banco de dados
             this.repository.save(newUser);
@@ -117,14 +122,16 @@ public class AuthenticationController { // Controller responsável pela autentic
             
             System.out.println("=== /auth/me DEBUG ===");
             System.out.println("User: " + user.getEmail());
-            System.out.println("Role: " + user.getRole().getRole());
+            System.out.println("Role enum name: " + user.getRole().name());
+            System.out.println("Role value: " + user.getRole().getRole());
             
             // Cria o DTO com as informações do usuário
+            // Usa o nome do enum (COORDENADOR) em vez do valor (coordenador)
             UserInfoDTO userInfo = new UserInfoDTO(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole().getRole()
+                user.getRole().name() // Usa name() em vez de getRole()
             );
             
             return ResponseEntity.ok(userInfo);
