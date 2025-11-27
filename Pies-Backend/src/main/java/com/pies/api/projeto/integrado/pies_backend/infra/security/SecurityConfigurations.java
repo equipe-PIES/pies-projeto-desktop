@@ -46,6 +46,7 @@ public class SecurityConfigurations {
                         .requestMatchers("/api/educandos/**").hasAnyRole("COORDENADOR", "ADMIN", "PROFESSOR")
                         .requestMatchers("/api/pdis/**").hasAnyRole("COORDENADOR", "ADMIN", "PROFESSOR")
                         .requestMatchers("/api/paees/**").hasAnyRole("COORDENADOR", "ADMIN", "PROFESSOR")
+                        .requestMatchers("/api/relatorios-individuais/**").hasAnyRole("COORDENADOR", "ADMIN", "PROFESSOR")
                         .requestMatchers("/coordenador/**").hasRole("COORDENADOR")
                         .requestMatchers("/professor/**").hasRole("PROFESSOR")
                         .requestMatchers("/turmas/**").hasAnyRole("COORDENADOR", "ADMIN", "PROFESSOR")
