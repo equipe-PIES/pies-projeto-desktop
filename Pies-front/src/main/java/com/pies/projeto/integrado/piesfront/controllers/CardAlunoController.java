@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ResourceBundle;
 
+import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
+
 /**
  * Controller para o card de aluno (educando)
  * Gerencia a exibição de informações de um educando em formato de card
@@ -90,6 +92,17 @@ public class CardAlunoController implements Initializable {
                     formatarEscolaridade(educando.escolaridade()) : "Não informado";
             grauEscolaridadeLabel.setText("Grau de Escolaridade: " + escolaridade);
         }
+
+        if (statusAtendimentoButton != null) {
+            AtendimentoFlowService.Etapa etapa = AtendimentoFlowService.getInstance()
+                    .getEtapaAtual(educando.id());
+            String texto = switch (etapa) {
+                case ANAMNESE -> "Anamnese";
+                case PDI -> "PDI";
+                case COMPLETO -> "Concluído";
+            };
+            statusAtendimentoButton.setText(texto);
+        }
     }
     
     /**
@@ -124,8 +137,16 @@ public class CardAlunoController implements Initializable {
      */
     @FXML
     private void handleStatusAtendimentoAction() {
-        // TODO: Implementar navegação para status de atendimento
-        System.out.println("Status de atendimento: " + (educando != null ? educando.id() : "null"));
+        if (educando == null) {
+            return;
+        }
+        AtendimentoFlowService.Etapa etapa = AtendimentoFlowService.getInstance()
+                .getEtapaAtual(educando.id());
+        if (etapa == AtendimentoFlowService.Etapa.ANAMNESE) {
+            abrirTelaAnamnese("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
+        } else if (etapa == AtendimentoFlowService.Etapa.PDI) {
+            abrirTelaPdi("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
+        }
     }
     
     /**
@@ -207,6 +228,38 @@ public class CardAlunoController implements Initializable {
         } catch (IOException e) {
             System.err.println("Erro ao carregar tela de progresso: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private void abrirTelaAnamnese(String resource, String titulo) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+            Parent root = loader.load();
+            AnamneseController controller = loader.getController();
+            controller.setEducando(educando);
+            Stage stage = new Stage();
+            stage.setTitle(titulo);
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Erro ao abrir anamnese: " + e.getMessage());
+        }
+    }
+
+    private void abrirTelaPdi(String resource, String titulo) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+            Parent root = loader.load();
+            PDIController controller = loader.getController();
+            controller.setEducando(educando);
+            Stage stage = new Stage();
+            stage.setTitle(titulo);
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Erro ao abrir PDI: " + e.getMessage());
         }
     }
     

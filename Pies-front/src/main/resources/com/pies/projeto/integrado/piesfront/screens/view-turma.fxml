@@ -99,7 +99,7 @@
                               <Font name="System Bold" size="24.0" />
                            </font>
                         </Label>
-                        <Label prefWidth="300.0" text="Total de alunos:" contentDisplay="RIGHT" graphicTextGap="8.0">
+                        <Label prefWidth="300.0" text="Total de alunos:">
                            <graphic>
                               <Label fx:id="totalAlunosTurma" />
                            </graphic>
@@ -107,7 +107,7 @@
                               <Insets bottom="5.0" />
                            </VBox.margin>
                         </Label>
-                        <Label prefWidth="300.0" text="Grau da turma:" contentDisplay="RIGHT" graphicTextGap="8.0">
+                        <Label prefWidth="300.0" text="Grau da turma:">
                            <graphic>
                               <Label fx:id="grauTurma">
                                  <padding>
@@ -116,7 +116,7 @@
                               </Label>
                            </graphic>
                         </Label>
-                        <Label prefWidth="300.0" text="Turno:" contentDisplay="RIGHT" graphicTextGap="8.0">
+                        <Label prefWidth="300.0" text="Turno:">
                            <graphic>
                               <Label fx:id="turnoTurma" />
                            </graphic>
@@ -124,7 +124,7 @@
                               <Insets bottom="5.0" />
                            </VBox.margin>
                         </Label>
-                        <Label prefWidth="300.0" text="Faixa etária:" contentDisplay="RIGHT" graphicTextGap="8.0">
+                        <Label prefWidth="300.0" text="Faixa etária:">
                            <graphic>
                               <Label fx:id="fxEtariaTurma" />
                            </graphic>
