@@ -99,8 +99,8 @@
                                                  <Label text="Tem convulsão?" />
                               <HBox prefHeight="0.0" prefWidth="388.0">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" text="Sim" />
-                                    <CheckBox mnemonicParsing="false" text="Não">
+                                    <CheckBox fx:id="convulsaoSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="convulsaoNao" mnemonicParsing="false" text="Não">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
@@ -111,8 +111,8 @@
                                                  <Label text="Possui convênio médico?" />
                               <HBox prefHeight="0.0" prefWidth="388.0">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" text="Sim" />
-                                    <CheckBox mnemonicParsing="false" text="Não">
+                                    <CheckBox fx:id="convenioSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="convenioNao" mnemonicParsing="false" text="Não">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
@@ -125,8 +125,8 @@
                                                  <Label text="Vacinação em dias?" />
                               <HBox prefHeight="0.0" prefWidth="388.0">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" text="Sim" />
-                                    <CheckBox mnemonicParsing="false" text="Não">
+                                    <CheckBox fx:id="vacinacaoSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="vacinacaoNao" mnemonicParsing="false" text="Não">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
@@ -137,8 +137,8 @@
                                                  <Label text="Teve doença contagiosa?" />
                               <HBox prefHeight="0.0" prefWidth="388.0">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" text="Sim" />
-                                    <CheckBox mnemonicParsing="false" text="Não">
+                                    <CheckBox fx:id="doencaContagiosaSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="doencaContagiosaNao" mnemonicParsing="false" text="Não">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
@@ -151,8 +151,8 @@
                                                  <Label text="Faz uso de medicações? Quais?" />
                               <HBox prefHeight="0.0" prefWidth="388.0">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" text="Sim" />
-                                    <CheckBox mnemonicParsing="false" text="Não">
+                                    <CheckBox fx:id="medicacaoSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="medicacaoNao" mnemonicParsing="false" text="Não">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
@@ -202,8 +202,8 @@
                                      <Label text="Apresenta dificuldades?" />
                               <HBox prefHeight="0.0" prefWidth="388.0">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" text="Sim" />
-                                    <CheckBox mnemonicParsing="false" text="Não">
+                                    <CheckBox fx:id="dificuldadesSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="dificuldadesNao" mnemonicParsing="false" text="Não">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
@@ -216,8 +216,8 @@
                                      <Label text="Recebe apoio pedagógico em casa?" />
                               <HBox prefHeight="0.0" prefWidth="388.0">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" text="Sim" />
-                                    <CheckBox mnemonicParsing="false" text="Não">
+                                    <CheckBox fx:id="apoioPedagogicoSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="apoioPedagogicoNao" mnemonicParsing="false" text="Não">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
@@ -248,8 +248,8 @@
                               <Label text="Houve prematuridade?" />
                               <HBox prefHeight="0.0" prefWidth="388.0">
                                  <children>
-                                    <CheckBox mnemonicParsing="false" text="Sim" />
-                                    <CheckBox mnemonicParsing="false" text="Não">
+                                    <CheckBox fx:id="prematuridadeSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="prematuridadeNao" mnemonicParsing="false" text="Não">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
@@ -276,6 +276,7 @@
                                   <!-- BOTÕES -->
                 <HBox alignment="CENTER_RIGHT" spacing="20">
                     <children>
+                        <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
                         <Button onAction="#handleCancelAction" text="Cancelar" />
                         <Button onAction="#handleGoToAnamnese2" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
                     </children>

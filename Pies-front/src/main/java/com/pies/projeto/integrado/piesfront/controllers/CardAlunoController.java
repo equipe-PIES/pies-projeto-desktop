@@ -188,6 +188,7 @@ public class CardAlunoController implements Initializable {
             
             // Centraliza a janela
             Stage parentStage = (Stage) infoButton.getScene().getWindow();
+            popupStage.initOwner(parentStage);
             popupStage.setX(parentStage.getX() + (parentStage.getWidth() - popupStage.getWidth()) / 2);
             popupStage.setY(parentStage.getY() + (parentStage.getHeight() - popupStage.getHeight()) / 2);
             
@@ -229,6 +230,7 @@ public class CardAlunoController implements Initializable {
             
             // Centraliza a janela
             Stage parentStage = (Stage) verProgressoButton.getScene().getWindow();
+            popupStage.initOwner(parentStage);
             popupStage.setX(parentStage.getX() + (parentStage.getWidth() - popupStage.getWidth()) / 2);
             popupStage.setY(parentStage.getY() + (parentStage.getHeight() - popupStage.getHeight()) / 2);
             
@@ -246,10 +248,9 @@ public class CardAlunoController implements Initializable {
             Parent root = loader.load();
             AnamneseController controller = loader.getController();
             controller.setEducando(educando);
-            Stage stage = new Stage();
+            Stage stage = (Stage) statusAtendimentoButton.getScene().getWindow();
             stage.setTitle(titulo);
             stage.setScene(new Scene(root));
-            stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
             System.err.println("Erro ao abrir anamnese: " + e.getMessage());
@@ -262,10 +263,9 @@ public class CardAlunoController implements Initializable {
             Parent root = loader.load();
             PDIController controller = loader.getController();
             controller.setEducando(educando);
-            Stage stage = new Stage();
+            Stage stage = (Stage) statusAtendimentoButton.getScene().getWindow();
             stage.setTitle(titulo);
             stage.setScene(new Scene(root));
-            stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
             System.err.println("Erro ao abrir PDI: " + e.getMessage());

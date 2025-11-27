@@ -74,9 +74,9 @@ public class ProgressoAtendimentoController implements Initializable {
         AtendimentoFlowService.Etapa etapa = AtendimentoFlowService.getInstance()
                 .getEtapaAtual(educando.id());
         if (etapa == AtendimentoFlowService.Etapa.ANAMNESE) {
-            abrirTela("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
+            navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
         } else if (etapa == AtendimentoFlowService.Etapa.PDI) {
-            abrirTela("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
+            navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
         }
     }
     
@@ -97,7 +97,7 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
-        abrirTela("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
+        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
     }
     
     /**
@@ -118,7 +118,7 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
-        abrirTela("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
+        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
     }
     
     /**
@@ -148,7 +148,7 @@ public class ProgressoAtendimentoController implements Initializable {
         }
     }
 
-    private void abrirTela(String resource, String titulo) {
+    private void navegarNoStagePai(String resource, String titulo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
             Parent root = loader.load();
@@ -158,13 +158,17 @@ public class ProgressoAtendimentoController implements Initializable {
             } else if (controller instanceof PDIController c) {
                 c.setEducando(educando);
             }
-            Stage stage = new Stage();
-            stage.setTitle(titulo);
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.show();
+            Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
+            Stage parentStage = (Stage) popupStage.getOwner();
+            if (parentStage == null) {
+                parentStage = popupStage; // fallback
+            }
+            parentStage.setTitle(titulo);
+            parentStage.setScene(new Scene(root));
+            parentStage.show();
+            popupStage.close();
         } catch (Exception e) {
-            System.err.println("Erro ao abrir tela: " + e.getMessage());
+            System.err.println("Erro ao navegar: " + e.getMessage());
         }
     }
 }
