@@ -103,4 +103,7 @@ public class EducandoDTO {
 
     @Valid
     private List<ResponsavelDTO> responsaveis;
+
+    @Valid
+    private AnamneseDTO anamnese;
 }

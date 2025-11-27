@@ -46,6 +46,7 @@ public class SecurityConfigurations {
                         .requestMatchers("/coordenador/**").hasRole("COORDENADOR")
                         .requestMatchers("/professor/**").hasRole("PROFESSOR")
                         .requestMatchers("/turmas/**").hasAnyRole("COORDENADOR", "ADMIN", "PROFESSOR")
+                        .requestMatchers("/api/anamneses/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

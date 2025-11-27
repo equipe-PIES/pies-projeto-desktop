@@ -28,6 +28,7 @@ com\pies\projeto\integrado\piesfront\controllers\CadastroTurmaController.class
 com\pies\projeto\integrado\piesfront\controllers\CadastroTurmaController$1.class
 com\pies\projeto\integrado\piesfront\dto\UserInfoDTO.class
 com\pies\projeto\integrado\piesfront\controllers\HomeCoordController.class
+com\pies\projeto\integrado\piesfront\dto\AnamneseDTO.class
 com\pies\projeto\integrado\piesfront\controllers\CadastroTurmaController$4.class
 com\pies\projeto\integrado\piesfront\dto\CreateTurmaDTO.class
 com\pies\projeto\integrado\piesfront\dto\TurmaDTO.class

@@ -194,7 +194,7 @@ public class EducandoService {
         // BeanUtils.copyProperties() copia automaticamente campos com o mesmo nome
         // O terceiro parâmetro "responsaveis" indica que este campo deve ser IGNORADO
         // (será convertido manualmente abaixo)
-        BeanUtils.copyProperties(e, dto, "responsaveis");
+        BeanUtils.copyProperties(e, dto, "responsaveis", "anamnese");
         
         // Converte a lista de responsáveis se existir e não estiver vazia
         // O relacionamento @OneToMany é lazy, mas como estamos dentro de uma transação
@@ -210,6 +210,10 @@ public class EducandoService {
             dto.setResponsaveis(responsaveisDTO);
         }
         
+        if (e.getAnamnese() != null) {
+            dto.setAnamnese(toAnamneseDTO(e.getAnamnese()));
+        }
+
         return dto;
     }
 
@@ -232,7 +236,7 @@ public class EducandoService {
      */
     private Educando toEntity(EducandoDTO dto) {
         Educando e = new Educando();
-        BeanUtils.copyProperties(dto, e, "id", "responsaveis");
+        BeanUtils.copyProperties(dto, e, "id", "responsaveis", "anamnese");
 
         // Verifica se o DTO tem responsáveis
         if (dto.getResponsaveis() != null && !dto.getResponsaveis().isEmpty()) {
@@ -253,6 +257,11 @@ public class EducandoService {
             }).collect(Collectors.toList());
 
             e.setResponsaveis(responsaveis);
+        }
+
+        if (dto.getAnamnese() != null) {
+            Anamnese anamnese = toAnamneseEntity(dto.getAnamnese(), e);
+            e.setAnamnese(anamnese);
         }
 
         return e;
@@ -306,6 +315,19 @@ public class EducandoService {
         BeanUtils.copyProperties(e, dto);
         
         return dto;
+    }
+
+    private AnamneseDTO toAnamneseDTO(Anamnese anamnese) {
+        AnamneseDTO dto = new AnamneseDTO();
+        BeanUtils.copyProperties(anamnese, dto, "educando");
+        return dto;
+    }
+
+    private Anamnese toAnamneseEntity(AnamneseDTO dto, Educando educando) {
+        Anamnese anamnese = new Anamnese();
+        BeanUtils.copyProperties(dto, anamnese, "id", "educando");
+        anamnese.setEducando(educando);
+        return anamnese;
     }
     
     @Transactional

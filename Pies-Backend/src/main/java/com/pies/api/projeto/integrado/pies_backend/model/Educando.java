@@ -123,6 +123,9 @@ public class Educando {
     @OneToMany(mappedBy = "educando", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Responsavel> responsaveis;
 
+    @OneToOne(mappedBy = "educando", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Anamnese anamnese;
+
     /**
      * Construtor parametrizado para criação de instâncias de Educando.
      * 
