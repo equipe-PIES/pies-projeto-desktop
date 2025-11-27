@@ -66,6 +66,12 @@ public class CardTurmaController implements Initializable {
         
         if (nomeTurmaCard != null) {
             String nome = turma.nome() != null ? turma.nome() : "Sem nome";
+            if (turma.id() != null && nome.contains(turma.id())) {
+                nome = nome.replace(turma.id(), "").trim();
+            }
+            if (nome.endsWith("-")) {
+                nome = nome.substring(0, nome.length() - 1).trim();
+            }
             nomeTurmaCard.setText(nome);
         }
         
