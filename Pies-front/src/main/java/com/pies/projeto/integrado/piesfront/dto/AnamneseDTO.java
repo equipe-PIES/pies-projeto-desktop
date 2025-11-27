@@ -1,0 +1,45 @@
+package com.pies.projeto.integrado.piesfront.dto;
+
+/**
+ * DTO para informações de anamnese do educando
+ */
+public record AnamneseDTO(
+    String id,
+    String temConvulsao,
+    String convenioMedico,
+    String vacinacaoEmDia,
+    String doencaContagiosa,
+    String usoMedicacoes,
+    String servicosSaudeOuEducacao,
+    String inicioEscolarizacao,
+    String dificuldadesEscolares,
+    String apoioPedagogicoEmCasa,
+    String duracaoGestacao,
+    String fezPreNatal,
+    String prematuridade,
+    String cidadeNascimento,
+    String maternidadeNascimento,
+    String tipoParto,
+    String chorouAoNascer,
+    String ficouRoxo,
+    String usoIncubadora,
+    String foiAmamentado,
+    String sustentouCabecaMeses,
+    String engatinhouMeses,
+    String sentouMeses,
+    String andouMeses,
+    String precisouTerapiaMotivo,
+    String falouMeses,
+    String primeiroBalbucioMeses,
+    String primeiraPalavraQuando,
+    String primeiraFraseQuando,
+    String falaNaturalOuInibido,
+    String disturbioFala,
+    String dormeSozinho,
+    String temQuartoProprio,
+    String sonoCalmoOuAgitado,
+    String respeitaRegras,
+    String desmotivado,
+    String agressivo,
+    String apresentaInquietacao
+) {}

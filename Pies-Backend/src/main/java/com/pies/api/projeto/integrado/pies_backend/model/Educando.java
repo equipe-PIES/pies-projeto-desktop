@@ -98,6 +98,12 @@ public class Educando {
      */
     @Column(length = 500)
     private String observacao;
+    
+    /**
+     * ID da turma à qual o educando está vinculado.
+     * Campo opcional - relaciona o educando com uma turma específica.
+     */
+    private String turmaId;
 
     /**
      * Lista de responsáveis vinculados a este educando.
@@ -116,6 +122,9 @@ public class Educando {
      */
     @OneToMany(mappedBy = "educando", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Responsavel> responsaveis;
+
+    @OneToOne(mappedBy = "educando", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Anamnese anamnese;
 
     /**
      * Construtor parametrizado para criação de instâncias de Educando.
