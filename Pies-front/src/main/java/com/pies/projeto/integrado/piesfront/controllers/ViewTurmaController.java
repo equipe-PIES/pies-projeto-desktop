@@ -222,15 +222,14 @@ public class ViewTurmaController implements Initializable {
             return;
         }
         
-        // Filtra alunos relacionados à turma
-        // Como não há relação direta, filtra por grau escolar correspondente
-        if (turmaAtual != null && turmaAtual.grauEscolar() != null) {
+        // Filtra alunos vinculados a esta turma pelo turmaId
+        if (turmaAtual != null && turmaAtual.id() != null) {
             educandosFiltrados = todosEducandos.stream()
-                    .filter(educando -> turmaAtual.grauEscolar().equals(educando.escolaridade()))
+                    .filter(educando -> turmaAtual.id().equals(educando.turmaId()))
                     .collect(Collectors.toList());
         } else {
-            // Se não houver grau escolar, mostra todos
-            educandosFiltrados = new ArrayList<>(todosEducandos);
+            // Se não houver ID da turma, não mostra alunos
+            educandosFiltrados = new ArrayList<>();
         }
         
         // Atualiza o total de alunos

@@ -2,6 +2,7 @@ package com.pies.projeto.integrado.piesfront.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.LoginRequestDTO;
 import com.pies.projeto.integrado.piesfront.dto.LoginResponseDTO;
@@ -44,6 +45,7 @@ public class AuthService {
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
     }
     
     /**

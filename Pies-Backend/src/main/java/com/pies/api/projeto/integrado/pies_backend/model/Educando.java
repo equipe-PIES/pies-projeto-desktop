@@ -98,6 +98,12 @@ public class Educando {
      */
     @Column(length = 500)
     private String observacao;
+    
+    /**
+     * ID da turma à qual o educando está vinculado.
+     * Campo opcional - relaciona o educando com uma turma específica.
+     */
+    private String turmaId;
 
     /**
      * Lista de responsáveis vinculados a este educando.

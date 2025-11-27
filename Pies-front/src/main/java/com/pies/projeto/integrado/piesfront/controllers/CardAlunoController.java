@@ -34,6 +34,9 @@ public class CardAlunoController implements Initializable {
     private ImageView imgAlunoCard;
     
     @FXML
+    private Label nomeLabel;
+    
+    @FXML
     private Label idadeLabel;
     
     @FXML
@@ -68,6 +71,12 @@ public class CardAlunoController implements Initializable {
     private void atualizarDados() {
         if (educando == null) {
             return;
+        }
+        
+        // Nome do aluno
+        if (nomeLabel != null) {
+            String nome = educando.nome() != null ? educando.nome() : "Nome não informado";
+            nomeLabel.setText(nome);
         }
         
         // Calcula a idade

@@ -42,7 +42,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/me").authenticated()
-                        .requestMatchers("/api/educandos/**").hasAnyRole("COORDENADOR", "ADMIN")
+                        .requestMatchers("/api/educandos/**").hasAnyRole("COORDENADOR", "ADMIN", "PROFESSOR")
                         .requestMatchers("/coordenador/**").hasRole("COORDENADOR")
                         .requestMatchers("/professor/**").hasRole("PROFESSOR")
                         .requestMatchers("/turmas/**").hasAnyRole("COORDENADOR", "ADMIN", "PROFESSOR")

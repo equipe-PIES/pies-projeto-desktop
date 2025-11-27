@@ -1,6 +1,7 @@
 package com.pies.projeto.integrado.piesfront.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * DTO para informações de educando (aluno)
@@ -15,6 +16,9 @@ public record EducandoDTO(
     String cid,
     String nis,
     String escola,
-    String escolaridade  // Enum serializado como String
+    String escolaridade,  // Enum serializado como String
+    String observacao,  // Observações adicionais
+    String turmaId,  // ID da turma vinculada
+    List<ResponsavelDTO> responsaveis  // Lista de responsáveis
 ) {}
 

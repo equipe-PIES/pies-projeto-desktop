@@ -21,8 +21,10 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.CreateTurmaDTO
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.TurmaDTO;
 import com.pies.api.projeto.integrado.pies_backend.model.Professor;
 import com.pies.api.projeto.integrado.pies_backend.model.Turma;
+import com.pies.api.projeto.integrado.pies_backend.model.Educando;
 import com.pies.api.projeto.integrado.pies_backend.repository.ProfessorRepository;
 import com.pies.api.projeto.integrado.pies_backend.repository.TurmaRepository;
+import com.pies.api.projeto.integrado.pies_backend.repository.EducandoRepository;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -33,10 +35,13 @@ public class TurmaController {
 
     private final TurmaRepository turmaRepository;
     private final ProfessorRepository professorRepository;
+    private final EducandoRepository educandoRepository;
 
-    public TurmaController(TurmaRepository turmaRepository, ProfessorRepository professorRepository) {
+    public TurmaController(TurmaRepository turmaRepository, ProfessorRepository professorRepository, 
+                          EducandoRepository educandoRepository) {
         this.turmaRepository = turmaRepository;
         this.professorRepository = professorRepository;
+        this.educandoRepository = educandoRepository;
     }
 
     @PostMapping
@@ -74,6 +79,28 @@ public class TurmaController {
 
         Turma salva = turmaRepository.save(turma);
         System.out.println("✓ Turma criada: " + salva.getNome());
+        
+        // Vincula os alunos à turma se houver CPFs informados
+        if (payload.cpfsAlunos() != null && !payload.cpfsAlunos().isEmpty()) {
+            System.out.println("Vinculando " + payload.cpfsAlunos().size() + " alunos à turma...");
+            int alunosVinculados = 0;
+            
+            for (String cpf : payload.cpfsAlunos()) {
+                Optional<Educando> educandoOpt = educandoRepository.findByCpf(cpf);
+                if (educandoOpt.isPresent()) {
+                    Educando educando = educandoOpt.get();
+                    educando.setTurmaId(salva.getId());
+                    educandoRepository.save(educando);
+                    alunosVinculados++;
+                    System.out.println("  ✓ Aluno vinculado: " + educando.getNome() + " (CPF: " + cpf + ")");
+                } else {
+                    System.err.println("  ✗ Aluno não encontrado com CPF: " + cpf);
+                }
+            }
+            
+            System.out.println("Total de alunos vinculados: " + alunosVinculados);
+        }
+        
         return ResponseEntity.ok(mapToDTO(salva));
     }
 

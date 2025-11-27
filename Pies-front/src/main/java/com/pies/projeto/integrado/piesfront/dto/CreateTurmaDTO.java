@@ -1,6 +1,7 @@
 package com.pies.projeto.integrado.piesfront.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 
 public class CreateTurmaDTO {
     @JsonProperty("nome")
@@ -17,6 +18,9 @@ public class CreateTurmaDTO {
     
     @JsonProperty("professorId")
     private String professorId;
+    
+    @JsonProperty("cpfsAlunos")
+    private List<String> cpfsAlunos;
 
     // Construtor vazio
     public CreateTurmaDTO() {
@@ -70,5 +74,13 @@ public class CreateTurmaDTO {
 
     public void setProfessorId(String professorId) {
         this.professorId = professorId;
+    }
+    
+    public List<String> getCpfsAlunos() {
+        return cpfsAlunos;
+    }
+    
+    public void setCpfsAlunos(List<String> cpfsAlunos) {
+        this.cpfsAlunos = cpfsAlunos;
     }
 }

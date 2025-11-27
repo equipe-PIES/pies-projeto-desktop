@@ -90,6 +90,11 @@ public class EducandoDTO {
      * Permite informações complementares opcionais.
      */
     private String observacao;
+    
+    /**
+     * ID da turma à qual o educando está vinculado.
+     */
+    private String turmaId;
 
     /**
      * Lista de responsáveis vinculados a este educando.
