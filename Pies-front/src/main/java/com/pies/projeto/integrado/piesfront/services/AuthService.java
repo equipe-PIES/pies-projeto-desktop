@@ -3,6 +3,7 @@ package com.pies.projeto.integrado.piesfront.services;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.pies.projeto.integrado.piesfront.dto.AnamneseDTO;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.LoginRequestDTO;
 import com.pies.projeto.integrado.piesfront.dto.LoginResponseDTO;
@@ -32,6 +33,7 @@ public class AuthService {
     private static final String USER_INFO_ENDPOINT = "/auth/me";
     private static final String TURMAS_ENDPOINT = "/turmas";
     private static final String EDUCANDOS_ENDPOINT = "/api/educandos";
+    private static final String ANAMNESES_ENDPOINT = "/api/anamneses";
     
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
@@ -363,6 +365,135 @@ public class AuthService {
             
         } catch (IOException | InterruptedException e) {
             System.err.println("Erro ao buscar professor por nome: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    /**
+     * Cria uma anamnese para um educando
+     * @param educandoId ID do educando
+     * @param anamneseDTO Dados da anamnese
+     * @return AnamneseDTO criada ou null se falhar
+     */
+    public AnamneseDTO criarAnamnese(String educandoId, AnamneseDTO anamneseDTO) {
+        if (currentToken == null || educandoId == null || anamneseDTO == null) {
+            System.err.println("criarAnamnese: Token, educandoId ou anamneseDTO é NULL!");
+            return null;
+        }
+        
+        try {
+            String requestBody = objectMapper.writeValueAsString(anamneseDTO);
+            System.out.println("=== DEBUG CREATE ANAMNESE ===");
+            System.out.println("URL: " + BASE_URL + ANAMNESES_ENDPOINT + "/educando/" + educandoId);
+            System.out.println("Request Body: " + requestBody);
+            
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + ANAMNESES_ENDPOINT + "/educando/" + educandoId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            
+            HttpResponse<String> response = httpClient.send(request, 
+                    HttpResponse.BodyHandlers.ofString());
+            
+            System.out.println("Status Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
+            
+            if (response.statusCode() == 201 || response.statusCode() == 200) {
+                return objectMapper.readValue(response.body(), AnamneseDTO.class);
+            } else {
+                System.err.println("Erro ao criar anamnese. Status: " + response.statusCode());
+                return null;
+            }
+            
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao criar anamnese: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    /**
+     * Busca a anamnese de um educando
+     * @param educandoId ID do educando
+     * @return AnamneseDTO ou null se não encontrada
+     */
+    public AnamneseDTO getAnamnesePorEducando(String educandoId) {
+        if (currentToken == null || educandoId == null) {
+            System.err.println("getAnamnesePorEducando: Token ou educandoId é NULL!");
+            return null;
+        }
+        
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + ANAMNESES_ENDPOINT + "/educando/" + educandoId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            
+            HttpResponse<String> response = httpClient.send(request, 
+                    HttpResponse.BodyHandlers.ofString());
+            
+            if (response.statusCode() == 200) {
+                return objectMapper.readValue(response.body(), AnamneseDTO.class);
+            } else if (response.statusCode() == 404) {
+                System.out.println("Anamnese não encontrada para o educando: " + educandoId);
+                return null;
+            } else {
+                System.err.println("Erro ao buscar anamnese. Status: " + response.statusCode());
+                return null;
+            }
+            
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao buscar anamnese: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    /**
+     * Atualiza a anamnese de um educando
+     * @param educandoId ID do educando
+     * @param anamneseDTO Dados atualizados da anamnese
+     * @return AnamneseDTO atualizada ou null se falhar
+     */
+    public AnamneseDTO atualizarAnamnese(String educandoId, AnamneseDTO anamneseDTO) {
+        if (currentToken == null || educandoId == null || anamneseDTO == null) {
+            System.err.println("atualizarAnamnese: Token, educandoId ou anamneseDTO é NULL!");
+            return null;
+        }
+        
+        try {
+            String requestBody = objectMapper.writeValueAsString(anamneseDTO);
+            System.out.println("=== DEBUG UPDATE ANAMNESE ===");
+            System.out.println("URL: " + BASE_URL + ANAMNESES_ENDPOINT + "/educando/" + educandoId);
+            
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + ANAMNESES_ENDPOINT + "/educando/" + educandoId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            
+            HttpResponse<String> response = httpClient.send(request, 
+                    HttpResponse.BodyHandlers.ofString());
+            
+            System.out.println("Status Code: " + response.statusCode());
+            
+            if (response.statusCode() == 200) {
+                return objectMapper.readValue(response.body(), AnamneseDTO.class);
+            } else {
+                System.err.println("Erro ao atualizar anamnese. Status: " + response.statusCode());
+                return null;
+            }
+            
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao atualizar anamnese: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
