@@ -34,12 +34,12 @@
                      </VBox.margin>
                   </Text>
                   <Region prefHeight="298.0" prefWidth="348.0" />
-                  <Button fx:id="iniciarAtendimento" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" text="Iniciar atendimento">
+                  <Button fx:id="iniciarAtendimento" mnemonicParsing="false" onAction="#handleIniciarAtendimentoAction" prefHeight="50.0" prefWidth="300.0" text="Iniciar atendimento">
                      <VBox.margin>
                         <Insets bottom="5.0" left="20.0" right="20.0" />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="viewRelatorios" mnemonicParsing="false" prefHeight="50.0" prefWidth="300.0" text="Vizualizar relatórios">
+                  <Button fx:id="viewRelatorios" mnemonicParsing="false" onAction="#handleViewRelatoriosAction" prefHeight="50.0" prefWidth="300.0" text="Vizualizar relatórios">
                      <VBox.margin>
                         <Insets bottom="20.0" left="20.0" right="20.0" />
                      </VBox.margin>
@@ -63,7 +63,7 @@
                               <Insets bottom="10.0" left="20.0" top="10.0" />
                            </HBox.margin>
                         </VBox>
-                        <Button fx:id="statusAnamnese" mnemonicParsing="false" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
+                        <Button fx:id="statusAnamnese" mnemonicParsing="false" onAction="#handleStatusAnamneseAction" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
                            <HBox.margin>
                               <Insets right="20.0" />
                            </HBox.margin>
@@ -88,7 +88,7 @@
                               <Insets bottom="10.0" left="20.0" top="10.0" />
                            </HBox.margin>
                         </VBox>
-                        <Button fx:id="statusDI" mnemonicParsing="false" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
+                        <Button fx:id="statusDI" mnemonicParsing="false" onAction="#handleStatusDIAction" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
                            <HBox.margin>
                               <Insets right="20.0" />
                            </HBox.margin>
@@ -113,7 +113,7 @@
                               <Insets bottom="10.0" left="20.0" top="10.0" />
                            </HBox.margin>
                         </VBox>
-                        <Button fx:id="statusPDI" mnemonicParsing="false" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
+                        <Button fx:id="statusPDI" mnemonicParsing="false" onAction="#handleStatusPDIAction" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
                            <HBox.margin>
                               <Insets right="20.0" />
                            </HBox.margin>
@@ -138,7 +138,7 @@
                               <Insets bottom="10.0" left="20.0" top="10.0" />
                            </HBox.margin>
                         </VBox>
-                        <Button fx:id="statusPAEE" mnemonicParsing="false" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
+                        <Button fx:id="statusPAEE" mnemonicParsing="false" onAction="#handleStatusPAEEAction" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
                            <HBox.margin>
                               <Insets right="20.0" />
                            </HBox.margin>
@@ -162,7 +162,7 @@
                </HBox.margin>
             </Label>
             <Region prefHeight="44.0" prefWidth="300.0" HBox.hgrow="ALWAYS" />
-            <Button fx:id="closeProgressoAtd" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="X">
+            <Button fx:id="closeProgressoAtd" mnemonicParsing="false" onAction="#handleCloseAction" prefHeight="31.0" prefWidth="31.0" text="X">
                <HBox.margin>
                   <Insets left="20.0" />
                </HBox.margin>

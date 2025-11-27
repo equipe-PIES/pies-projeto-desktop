@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PDIController">
+
+    <!-- TOPO -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="60.0" style="-fx-background-color: #ffffff;">
+            <padding>
+                <Insets left="20.0" right="20.0" />
+            </padding>
+            <children>
+                <Region prefHeight="60.0" prefWidth="15.0" />
+                <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="140.0">
+                    <children>
+
+                        <Label id="tituloAmparoEdu" fx:id="tituloAmparoEdu" prefHeight="21.0" prefWidth="92.0" text="AmparoEdu" />
+                        <Label id="indicadorDeTela" fx:id="indicadorDeTela" prefHeight="21.0" prefWidth="131.0" text="indicadorDeTela" />
+                    </children>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                    <children>
+                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
+                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
+                        <Button id="relatoriosButton" fx:id="relatoriosButton" text="Relatórios" />
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+
+
+    <!-- MENU LATERAL -->
+    <left>
+        <VBox prefHeight="820.0" prefWidth="280.0" style="-fx-background-color: #f4f4f4;">
+            <padding>
+                <Insets left="15.0" right="15.0" top="20.0" />
+            </padding>
+            <children>
+                <HBox alignment="BOTTOM_CENTER" prefHeight="45.0" prefWidth="160.0">
+                    <children>
+                        <ImageView id="perfilUser" fx:id="perfilUser" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" />
+                        <Region prefHeight="45.0" prefWidth="16.0" />
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                            <children>
+                                <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário" />
+                                <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Professora" />
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <Region prefHeight="1024.0" prefWidth="210.0" />
+
+                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="280.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
+                    <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                    </VBox.margin>
+                </Button>
+            </children>
+        </VBox>
+    </left>
+
+
+    <!-- CONTEÚDO CENTRAL -->
+    <center>
+        <!-- ScrollPane para garantir que o conteúdo seja rolável em telas menores -->
+        <ScrollPane fitToWidth="true" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+            <content>
+                <VBox spacing="20" style="-fx-background-color: white;">
+                    <padding>
+                        <Insets bottom="30" left="30" right="30" top="30" />
+                    </padding>
+                    <children>
+                        <!-- Título do Formulário (Estilização removida) -->
+                        <Label text="Plano de Desenvolvimento Individual">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font></Label>
+
+                        <!-- POTENCIALIDADES -->
+                        <VBox spacing="8" style="-fx-border-color: #ddd; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-color: #ffffff;">
+                            <padding>
+                                <Insets bottom="20" left="20" right="20" top="20" />
+                            </padding>
+                            <children>
+                                <!-- Estilização removida -->
+                                <Label text="Potencialidades">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font></Label>
+                                <!-- Estilização removida -->
+                                <Label text="Capacidade do aluno, que pode vir a ser." />
+                                <TextArea fx:id="potencialidadesTextArea" prefHeight="120" promptText="Digite" VBox.vgrow="ALWAYS" />
+                            </children>
+                        </VBox>
+
+                        <!-- NECESSIDADES EDUCACIONAIS ESPECIAIS -->
+                        <VBox spacing="8" style="-fx-border-color: #ddd; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-color: #ffffff;">
+                            <padding>
+                                <Insets bottom="20" left="20" right="20" top="20" />
+                            </padding>
+                            <children>
+                                <!-- Estilização removida -->
+                                <Label text="Necessidades Educacionais Especiais">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font></Label>
+                                <TextArea fx:id="necessidadesTextArea" prefHeight="120" promptText="Digite" VBox.vgrow="ALWAYS" />
+                            </children>
+                        </VBox>
+
+                        <!-- HABILIDADES -->
+                        <VBox spacing="8" style="-fx-border-color: #ddd; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-color: #ffffff;">
+                            <padding>
+                                <Insets bottom="20" left="20" right="20" top="20" />
+                            </padding>
+                            <children>
+                                <!-- Estilização removida -->
+                                <Label text="Habilidades">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font></Label>
+                                <!-- Estilização removida -->
+                                <Label text="Competências, capacidade." />
+                                <TextArea fx:id="habilidadesTextArea" prefHeight="200" promptText="Digite" VBox.vgrow="ALWAYS" />
+                            </children>
+                        </VBox>
+
+
+                        <!-- BOTÕES -->
+                        <HBox alignment="CENTER_RIGHT" spacing="15">
+                            <children>
+                                <Button fx:id="cancelarButton" onAction="#handleCancelAction" style="-fx-background-color: transparent; -fx-border-color: #95a5a6; -fx-border-width: 1; -fx-border-radius: 3; -fx-padding: 8 15; -fx-text-fill: #95a5a6;" text="Cancelar" />
+                                <Button fx:id="seguinteButton" onAction="#handleGoToPdi3" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-border-radius: 3; -fx-padding: 8 15;" text="Seguinte" />
+                            </children>
+                        </HBox>
+
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

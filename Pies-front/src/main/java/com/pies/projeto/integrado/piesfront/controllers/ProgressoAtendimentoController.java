@@ -8,6 +8,10 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
 
 /**
  * Controller para a tela de progresso de atendimento
@@ -64,8 +68,16 @@ public class ProgressoAtendimentoController implements Initializable {
      */
     @FXML
     private void handleIniciarAtendimentoAction() {
-        // TODO: Implementar lógica para iniciar atendimento
-        System.out.println("Iniciar atendimento: " + (educando != null ? educando.id() : "null"));
+        if (educando == null) {
+            return;
+        }
+        AtendimentoFlowService.Etapa etapa = AtendimentoFlowService.getInstance()
+                .getEtapaAtual(educando.id());
+        if (etapa == AtendimentoFlowService.Etapa.ANAMNESE) {
+            navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
+        } else if (etapa == AtendimentoFlowService.Etapa.PDI) {
+            navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
+        }
     }
     
     /**
@@ -82,8 +94,10 @@ public class ProgressoAtendimentoController implements Initializable {
      */
     @FXML
     private void handleStatusAnamneseAction() {
-        // TODO: Implementar lógica para status da anamnese
-        System.out.println("Status anamnese: " + (educando != null ? educando.id() : "null"));
+        if (educando == null) {
+            return;
+        }
+        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
     }
     
     /**
@@ -91,8 +105,9 @@ public class ProgressoAtendimentoController implements Initializable {
      */
     @FXML
     private void handleStatusDIAction() {
-        // TODO: Implementar lógica para status do diagnóstico inicial
-        System.out.println("Status DI: " + (educando != null ? educando.id() : "null"));
+        if (educando == null) {
+            return;
+        }
     }
     
     /**
@@ -100,8 +115,10 @@ public class ProgressoAtendimentoController implements Initializable {
      */
     @FXML
     private void handleStatusPDIAction() {
-        // TODO: Implementar lógica para status do PDI
-        System.out.println("Status PDI: " + (educando != null ? educando.id() : "null"));
+        if (educando == null) {
+            return;
+        }
+        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
     }
     
     /**
@@ -109,8 +126,9 @@ public class ProgressoAtendimentoController implements Initializable {
      */
     @FXML
     private void handleStatusPAEEAction() {
-        // TODO: Implementar lógica para status do PAEE
-        System.out.println("Status PAEE: " + (educando != null ? educando.id() : "null"));
+        if (educando == null) {
+            return;
+        }
     }
     
     /**
@@ -127,6 +145,30 @@ public class ProgressoAtendimentoController implements Initializable {
         // Inicialização
         if (educando != null) {
             atualizarDados();
+        }
+    }
+
+    private void navegarNoStagePai(String resource, String titulo) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+            Parent root = loader.load();
+            Object controller = loader.getController();
+            if (controller instanceof AnamneseController c) {
+                c.setEducando(educando);
+            } else if (controller instanceof PDIController c) {
+                c.setEducando(educando);
+            }
+            Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
+            Stage parentStage = (Stage) popupStage.getOwner();
+            if (parentStage == null) {
+                parentStage = popupStage; // fallback
+            }
+            parentStage.setTitle(titulo);
+            parentStage.setScene(new Scene(root));
+            parentStage.show();
+            popupStage.close();
+        } catch (Exception e) {
+            System.err.println("Erro ao navegar: " + e.getMessage());
         }
     }
 }
