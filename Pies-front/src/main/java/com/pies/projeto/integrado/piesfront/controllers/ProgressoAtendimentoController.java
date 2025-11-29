@@ -94,9 +94,12 @@ public class ProgressoAtendimentoController implements Initializable {
      */
     @FXML
     private void handleStatusAnamneseAction() {
+        System.out.println("=== handleStatusAnamneseAction chamado ===");
         if (educando == null) {
+            System.err.println("Educando é null!");
             return;
         }
+        System.out.println("Educando: " + educando.nome() + " (ID: " + educando.id() + ")");
         navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
     }
     
@@ -150,25 +153,51 @@ public class ProgressoAtendimentoController implements Initializable {
 
     private void navegarNoStagePai(String resource, String titulo) {
         try {
+            System.out.println("=== navegarNoStagePai ===");
+            System.out.println("Resource: " + resource);
+            System.out.println("Título: " + titulo);
+            
             FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
             Parent root = loader.load();
+            System.out.println("FXML carregado com sucesso");
+            
             Object controller = loader.getController();
             if (controller instanceof AnamneseController c) {
+                System.out.println("Controller é AnamneseController, setando educando...");
                 c.setEducando(educando);
             } else if (controller instanceof PDIController c) {
+                System.out.println("Controller é PDIController, setando educando...");
                 c.setEducando(educando);
             }
+            
             Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
+            System.out.println("Popup stage: " + popupStage);
+            
             Stage parentStage = (Stage) popupStage.getOwner();
+            System.out.println("Parent stage: " + parentStage);
+            
             if (parentStage == null) {
+                System.out.println("Parent stage é null, usando popupStage como fallback");
                 parentStage = popupStage; // fallback
             }
+            
             parentStage.setTitle(titulo);
             parentStage.setScene(new Scene(root));
+            
+            // Força a maximização
+            parentStage.setMaximized(false);
+            parentStage.setMaximized(true);
+            
             parentStage.show();
+            System.out.println("Parent stage exibido");
+            
             popupStage.close();
+            System.out.println("Popup fechado");
+            System.out.println("=== Navegação concluída ===");
         } catch (Exception e) {
-            System.err.println("Erro ao navegar: " + e.getMessage());
+            System.err.println("=== ERRO ao navegar ===");
+            System.err.println("Mensagem: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
