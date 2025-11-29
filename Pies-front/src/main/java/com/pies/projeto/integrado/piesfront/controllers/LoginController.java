@@ -1,6 +1,8 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.services.AuthService;
+import com.utils.Janelas;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
@@ -12,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.event.ActionEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -54,7 +57,7 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    private void handleLoginButtonAction() {
+    private void handleLoginButtonAction(ActionEvent event) {
         String email = emailField.getText().trim();
         String senha = passwordField.getText();
 
@@ -89,14 +92,17 @@ public class LoginController implements Initializable {
 
         // 3. Lógica de Mapeamento de Tela
         String fxmlDestino = null;
+        String tituloJanela = "Amparo Edu";
 
         switch (nivelAcesso) {
             case "coordenador":
                 fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml";
+                tituloJanela = "Início - Coordenador(a)";
                 break;
             case "professor":
             case "user":  // Temporário: user também vai para tela de professor
                 fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml";
+                tituloJanela = "Início - Professor(a)";
                 break;
             default:
                 errorMessageLabel.setText("Acesso sem tela mapeada. Contate o suporte.");
@@ -105,17 +111,7 @@ public class LoginController implements Initializable {
 
         // 4. Carregar a Próxima Tela
         if (fxmlDestino != null) {
-            try {
-                Parent root = FXMLLoader.load(getClass().getResource(fxmlDestino));
-
-                Stage currentStage = (Stage) loginButton.getScene().getWindow();
-                currentStage.setScene(new Scene(root));
-                currentStage.show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                errorMessageLabel.setText("Erro interno ao carregar a tela do sistema. FXML: " + fxmlDestino);
-            }
+           Janelas.carregarTela(event, fxmlDestino, tituloJanela);
         }
     }
 }

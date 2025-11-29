@@ -4,6 +4,7 @@ import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.TurmaDTO;
 import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
+import com.utils.Janelas;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -344,19 +345,8 @@ public class ViewTurmaController implements Initializable {
      * Handler para o botão de turmas
      */
     @FXML
-    private void handleTurmasButtonAction() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(
-                    "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml"));
-
-            Stage currentStage = (Stage) turmasButton.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar a tela de turmas: " + e.getMessage());
-        }
+    private void handleTurmasButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml", "Início - Professor(a)");
     }
 
     /**
@@ -364,22 +354,11 @@ public class ViewTurmaController implements Initializable {
      * Faz logout do usuário e retorna para a tela de login.
      */
     @FXML
-    private void handleSairButtonAction() {
+    private void handleSairButtonAction(javafx.event.ActionEvent event) {
         // Faz logout - limpa o token de autenticação
         authService.logout();
 
         // Carrega a tela de login
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(
-                    "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml"));
-
-            Stage currentStage = (Stage) sairButton.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar a tela de login: " + e.getMessage());
-        }
+        Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml", "Amparo Edu - Login");
     }
 }

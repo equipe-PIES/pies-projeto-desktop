@@ -2,6 +2,7 @@ package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
+import com.utils.Janelas;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -34,15 +35,8 @@ public class PDIController {
     }
 
     @FXML
-    private void handleTurmasButtonAction() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml"));
-            Stage currentStage = (Stage) anamnese.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-        } catch (Exception e) {
-            System.err.println("Erro ao navegar para Turmas: " + e.getMessage());
-        }
+    private void handleTurmasButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml", "Início - Professor(a)");
     }
 
     @FXML
@@ -65,6 +59,12 @@ public class PDIController {
             }
             Stage currentStage = (Stage) anamnese.getScene().getWindow();
             currentStage.setScene(new Scene(root));
+            currentStage.setTitle("Visualizar Turma");
+            
+            // Força a maximização
+            currentStage.setMaximized(false);
+            currentStage.setMaximized(true);
+            
             currentStage.show();
         } catch (Exception e) {
             System.err.println("Erro ao voltar para View Turma: " + e.getMessage());

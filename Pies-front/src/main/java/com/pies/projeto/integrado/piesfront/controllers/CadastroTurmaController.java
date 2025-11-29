@@ -7,6 +7,7 @@ import com.pies.projeto.integrado.piesfront.dto.CreateTurmaDTO;
 import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
 import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
+import com.utils.Janelas;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -184,7 +185,7 @@ public class CadastroTurmaController implements Initializable {
             cadastroTurmaButton.setOnAction(e -> enviarCadastroTurma());
         }
         if (cancelCadastroBt != null) {
-            cancelCadastroBt.setOnAction(e -> handleInicioButtonAction());
+            cancelCadastroBt.setOnAction(e -> handleInicioButtonAction(e));
         }
         if (addCPFButton != null) {
             addCPFButton.setOnAction(e -> adicionarAlunoPorCPF());
@@ -474,7 +475,7 @@ public class CadastroTurmaController implements Initializable {
 
             if (response.statusCode() == 200 || response.statusCode() == 201) {
                 System.out.println("Turma cadastrada com sucesso!");
-                handleInicioButtonAction();
+                Janelas.carregarTela(new javafx.event.ActionEvent(inicioButton, null), "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml", "Início - Coordenador(a)");
             } else if (response.statusCode() == 400) {
                 mostrarErro("Dados inválidos. Verifique os campos.\n" + response.body());
             } else {
@@ -585,34 +586,13 @@ public class CadastroTurmaController implements Initializable {
     }
 
     @FXML
-    private void handleInicioButtonAction() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml"));
-
-            Stage currentStage = (Stage) inicioButton.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar a tela de início: " + e.getMessage());
-        }
+    private void handleInicioButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml", "Início - Coordenador(a)");
     }
 
     @FXML
-    private void handleSairButtonAction() {
+    private void handleSairButtonAction(javafx.event.ActionEvent event) {
         authService.logout();
-
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml"));
-
-            Stage currentStage = (Stage) sairButton.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar a tela de login: " + e.getMessage());
-        }
+        Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml", "Amparo Edu - Login");
     }
 }

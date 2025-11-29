@@ -2,6 +2,7 @@ package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
+import com.utils.Janelas;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -26,6 +27,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import javafx.event.ActionEvent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -149,7 +151,7 @@ public class CadastroProfController implements Initializable {
             cadastroProfBt.setOnAction(e -> enviarCadastroProfessor());
         }
         if (cancelCadastroBt != null) {
-            cancelCadastroBt.setOnAction(e -> handleInicioButtonAction());
+            cancelCadastroBt.setOnAction(e -> handleInicioButtonAction(e));
         }
     }
 
@@ -264,7 +266,7 @@ public class CadastroProfController implements Initializable {
                 // Após criar o professor, registra o usuário (email/senha) com role professor
                 boolean registrado = registrarUsuarioProfessor(token);
                 if (registrado) {
-                    handleInicioButtonAction();
+                    Janelas.carregarTela(new javafx.event.ActionEvent(inicioButton, null), "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml", "Início - Coordenador(a)");
                 }
             } else if (response.statusCode() == 400) {
                 // Mostra mensagem de validação retornada pelo backend
@@ -377,38 +379,17 @@ public class CadastroProfController implements Initializable {
      * Navega para a tela inicial do coordenador.
      */
     @FXML
-    private void handleInicioButtonAction() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml"));
-
-            Stage currentStage = (Stage) inicioButton.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar a tela de início: " + e.getMessage());
-        }
+    private void handleInicioButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml", "Início - Coordenador(a)");
     }
 
     /**
      * Faz logout e volta para a tela de login.
      */
     @FXML
-    private void handleSairButtonAction() {
+    private void handleSairButtonAction(javafx.event.ActionEvent event) {
         authService.logout();
-
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml"));
-
-            Stage currentStage = (Stage) sairButton.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erro ao carregar a tela de login: " + e.getMessage());
-        }
+        Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml", "Amparo Edu - Login");
     }
 
 }

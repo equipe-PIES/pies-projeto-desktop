@@ -144,6 +144,12 @@ public class CardTurmaController implements Initializable {
             // Navega para a nova tela
             Stage currentStage = (Stage) verificarTurmaButton.getScene().getWindow();
             currentStage.setScene(new javafx.scene.Scene(root));
+            currentStage.setTitle("Visualizar Turma");
+            
+            // Força a maximização
+            currentStage.setMaximized(false);
+            currentStage.setMaximized(true);
+            
             currentStage.show();
             
         } catch (IOException e) {
