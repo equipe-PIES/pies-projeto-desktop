@@ -1,17 +1,23 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.services.AuthService;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Hyperlink;
-import javafx.fxml.Initializable;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+ 
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,6 +33,7 @@ public class LoginController implements Initializable {
     @FXML private Button loginButton;
     @FXML private Label errorMessageLabel;
     @FXML private Hyperlink forgotPasswordLink;
+    @FXML private ProgressBar loginProgressBar;
     
     // Serviço de autenticação para comunicação com o backend
     private final AuthService authService;
@@ -66,56 +73,139 @@ public class LoginController implements Initializable {
             errorMessageLabel.setText("Por favor, preencha E-mail e Senha.");
             return;
         }
-
-        // ----------------------------------------------------------------------
-        // CHAMADA REAL AO BACKEND SPRING BOOT
-        // ----------------------------------------------------------------------
-        // Faz a chamada HTTP para o endpoint /auth/login do backend
-        String roleRecebidaDoServico = authService.authenticate(email, senha);
-
-        // ----------------------------------------------------------------------
-        // 2. Autenticação e Verificação de Nível (Usando o Enum UserRole)
-        // ----------------------------------------------------------------------
-
-        // Se as credenciais falharem, encerra aqui.
-        if ("INVÁLIDO".equals(roleRecebidaDoServico)) {
-            errorMessageLabel.setText("Credenciais inválidas. Tente novamente.");
-            return;
+        loginButton.setDisable(true);
+        emailField.setDisable(true);
+        passwordField.setDisable(true);
+        if (loginProgressBar != null) {
+            loginProgressBar.setProgress(0);
         }
 
-        // Usa diretamente a role do backend (simplificado)
-        String nivelAcesso = roleRecebidaDoServico.toLowerCase();
-
-
-        // 3. Lógica de Mapeamento de Tela
-        String fxmlDestino = null;
-
-        switch (nivelAcesso) {
-            case "coordenador":
-                fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml";
-                break;
-            case "professor":
-            case "user":  // Temporário: user também vai para tela de professor
-                fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml";
-                break;
-            default:
-                errorMessageLabel.setText("Acesso sem tela mapeada. Contate o suporte.");
-                return;
-        }
-
-        // 4. Carregar a Próxima Tela
-        if (fxmlDestino != null) {
-            try {
-                Parent root = FXMLLoader.load(getClass().getResource(fxmlDestino));
-
-                Stage currentStage = (Stage) loginButton.getScene().getWindow();
-                currentStage.setScene(new Scene(root));
-                currentStage.show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                errorMessageLabel.setText("Erro interno ao carregar a tela do sistema. FXML: " + fxmlDestino);
+        Task<String> loginTask = new Task<>() {
+            @Override
+            protected String call() {
+                return authService.authenticate(email, senha);
             }
-        }
+        };
+
+        Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(100), e -> {
+            if (loginProgressBar != null) {
+                double p = loginProgressBar.getProgress();
+                if (p < 0.9) {
+                    loginProgressBar.setProgress(p + 0.02);
+                }
+            }
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+
+        loginTask.setOnSucceeded(ev -> {
+            timeline.stop();
+            loginButton.setDisable(false);
+            emailField.setDisable(false);
+            passwordField.setDisable(false);
+
+            String roleRecebidaDoServico = loginTask.getValue();
+            if ("INVÁLIDO".equals(roleRecebidaDoServico)) {
+                if (loginProgressBar != null) {
+                    loginProgressBar.setProgress(0.7);
+                }
+                javafx.animation.PauseTransition ptErr = new javafx.animation.PauseTransition(javafx.util.Duration.millis(200));
+                ptErr.setOnFinished(e1 -> {
+                    if (loginProgressBar != null) {
+                        loginProgressBar.setProgress(0);
+                    }
+                    errorMessageLabel.setText("Credenciais inválidas. Tente novamente.");
+                });
+                ptErr.play();
+                return;
+            }
+
+            String nivelAcesso = roleRecebidaDoServico.toLowerCase();
+            String fxmlDestino = null;
+            switch (nivelAcesso) {
+                case "coordenador":
+                    fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml";
+                    break;
+                case "professor":
+                case "user":
+                    fxmlDestino = "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml";
+                    break;
+                default:
+                    if (loginProgressBar != null) {
+                        loginProgressBar.setProgress(0.7);
+                    }
+                    javafx.animation.PauseTransition ptErr = new javafx.animation.PauseTransition(javafx.util.Duration.millis(200));
+                    ptErr.setOnFinished(e1 -> {
+                        if (loginProgressBar != null) {
+                            loginProgressBar.setProgress(0);
+                        }
+                        errorMessageLabel.setText("Acesso sem tela mapeada. Contate o suporte.");
+                    });
+                    ptErr.play();
+                    return;
+            }
+
+            if (fxmlDestino != null) {
+                if (loginProgressBar != null) {
+                    loginProgressBar.setProgress(1.0);
+                }
+                final String destinoFXML = fxmlDestino;
+                javafx.animation.PauseTransition wait = new javafx.animation.PauseTransition(javafx.util.Duration.millis(200));
+                wait.setOnFinished(e0 -> {
+                    try {
+                        Parent root = FXMLLoader.load(getClass().getResource(destinoFXML));
+                        Label msg = new Label("Bem-vindo a plataforma AmparoEdu!");
+                        msg.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;");
+                        javafx.scene.layout.StackPane overlay = new javafx.scene.layout.StackPane(msg);
+                        overlay.setStyle("-fx-background-color: transparent;");
+                        overlay.setPadding(new javafx.geometry.Insets(50, 50, 50, 50));
+                        overlay.setMouseTransparent(true);
+                        javafx.scene.layout.StackPane container = new javafx.scene.layout.StackPane(root, overlay);
+                        javafx.scene.layout.StackPane.setAlignment(msg, javafx.geometry.Pos.CENTER);
+                        Stage currentStage = (Stage) loginButton.getScene().getWindow();
+                        currentStage.setScene(new Scene(container));
+                        currentStage.show();
+                        javafx.animation.PauseTransition pt = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(5));
+                        pt.setOnFinished(e -> container.getChildren().remove(overlay));
+                        pt.play();
+                    } catch (IOException e) {
+                        if (loginProgressBar != null) {
+                            loginProgressBar.setProgress(0.7);
+                        }
+                        javafx.animation.PauseTransition ptErr2 = new javafx.animation.PauseTransition(javafx.util.Duration.millis(200));
+                        ptErr2.setOnFinished(e2 -> {
+                            if (loginProgressBar != null) {
+                                loginProgressBar.setProgress(0);
+                            }
+                            errorMessageLabel.setText("Erro interno ao carregar a tela do sistema. FXML: " + destinoFXML);
+                        });
+                        ptErr2.play();
+                    }
+                });
+                wait.play();
+            }
+        });
+
+        loginTask.setOnFailed(ev -> {
+            timeline.stop();
+            if (loginProgressBar != null) {
+                loginProgressBar.setProgress(0.7);
+            }
+            javafx.animation.PauseTransition ptErr = new javafx.animation.PauseTransition(javafx.util.Duration.millis(200));
+            ptErr.setOnFinished(e1 -> {
+                if (loginProgressBar != null) {
+                    loginProgressBar.setProgress(0);
+                }
+                errorMessageLabel.setText("Erro ao processar login. Verifique sua conexão.");
+            });
+            ptErr.play();
+            loginButton.setDisable(false);
+            emailField.setDisable(false);
+            passwordField.setDisable(false);
+        });
+
+        Thread t = new Thread(loginTask);
+        t.setDaemon(true);
+        t.start();
     }
 }

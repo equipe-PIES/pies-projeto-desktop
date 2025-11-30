@@ -114,15 +114,15 @@
                                              <Label text="Possui algum distúrbio?" />
                                     <HBox prefHeight="0.0" prefWidth="387.0">
                                        <children>
-                                          <CheckBox mnemonicParsing="false" text="Sim" />
-                                          <CheckBox mnemonicParsing="false" text="Não">
+                                          <CheckBox fx:id="disturbioSim" mnemonicParsing="false" text="Sim" />
+                                          <CheckBox fx:id="disturbioNao" mnemonicParsing="false" text="Não">
                                              <HBox.margin>
                                                 <Insets left="20.0" />
                                              </HBox.margin>
                                           </CheckBox>
                                        </children>
                                     </HBox>
-                                    <Label text="Qual?" />
+                                    <Label fx:id="questDisturbio" text="Qual?" />
                                              <TextField fx:id="disturbio" promptText="Digite" />
                                          </children>
                                      </VBox>
@@ -199,7 +199,7 @@
                        <HBox alignment="CENTER_RIGHT" spacing="20">
                            <children>
                                <Button onAction="#handleCancelAction" text="Cancelar" />
-                               <Button onAction="#handleGoToAnamnese2" text="Voltar" />
+                               <Button onAction="#handleBackToAnamnese2" text="Voltar" />
                                <Button onAction="#handleConcluirAction" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" text="Concluir" />
                            </children>
                        </HBox>

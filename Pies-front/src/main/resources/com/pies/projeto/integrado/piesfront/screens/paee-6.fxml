@@ -8,7 +8,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PDIController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PAEEController">
 
     <!-- TOPO -->
     <top>
@@ -62,11 +62,6 @@
                         <Font name="System Bold" size="24.0" />
                     </font>
                 </Label>
-                <Label text="Plano de Atendimento Educacional Especializado">
-                    <font>
-                        <Font name="System Bold" size="18.0" />
-                    </font>
-                </Label>
 
 
                 <!-- OBJETIVOS DO PLANO -->
@@ -106,14 +101,14 @@
                                     <children>
 
                                         <Label text="AEE (Atendimento Educacional Especializado)" />
-                                        <ChoiceBox prefWidth="300.0" />
+                                        <ChoiceBox fx:id="cbAEE" prefWidth="300.0" />
                                         <Label text="Psicólogo" />
-                                        <ChoiceBox prefWidth="300.0" />
+                                        <ChoiceBox fx:id="cbPsicologo" prefWidth="300.0" />
                                         <Label text="Fisioterapeuta" />
-                                        <ChoiceBox prefWidth="300.0" />
+                                        <ChoiceBox fx:id="cbFisioterapeuta" prefWidth="300.0" />
 
                                         <Label text="Psicopedagogo" />
-                                        <ChoiceBox prefWidth="300.0" />
+                                        <ChoiceBox fx:id="cbPsicopedagogo" prefWidth="300.0" />
                                     </children>
 
                                 </VBox>
@@ -124,12 +119,12 @@
                                     <children>
 
                                         <Label text="TO (Terapia Ocupacional)" />
-                                        <ChoiceBox prefWidth="300.0" />
+                                        <ChoiceBox fx:id="cbTO" prefWidth="300.0" />
 
                                         <Label text="Educação Física" />
-                                        <ChoiceBox prefWidth="300.0" />
+                                        <ChoiceBox fx:id="cbEducacaoFisica" prefWidth="300.0" />
                                         <Label text="Estimulação Precoce" />
-                                        <ChoiceBox prefWidth="300.0" />
+                                        <ChoiceBox fx:id="cbEstimulaçãoPrecoce" prefWidth="300.0" />
                                     </children>
 
                                 </VBox>
@@ -148,7 +143,7 @@
                         <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
                         <Button fx:id="cancelButton" onAction="#handleCancelAction" text="Cancelar" />
                         <Button fx:id="voltarButton" onAction="#handleBackAction" text="Voltar" />
-                        <Button fx:id="concluirPAEE" style="-fx-background-color: #34BC74;" text="Concluir" textFill="WHITE" />
+                        <Button fx:id="concluirPAEE" onAction="#handleConcluirAction" style="-fx-background-color: #34BC74;" text="Concluir" textFill="WHITE" />
                     </children>
                 </HBox>
 

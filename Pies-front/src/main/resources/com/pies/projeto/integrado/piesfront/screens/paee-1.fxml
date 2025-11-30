@@ -8,7 +8,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PDIController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PAEEController">
 
     <!-- TOPO -->
     <top>
@@ -62,11 +62,6 @@
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-                <Label text="Plano de Atendimento Educacional Especializado">
-                    <font>
-                        <Font name="System Bold" size="18.0" />
-                    </font>
-                </Label>
 
 
                 <!-- OBJETIVOS DO PLANO -->
@@ -81,7 +76,7 @@
                         <Label style="-fx-font-weight: bold;" text="Resumo" />
 
                         <Label prefHeight="21.0" prefWidth="444.0" text="Apresente o resumo de caso do educando." />
-                        <TextArea fx:id="objetivosPlano" prefHeight="120" promptText="Digite" wrapText="true" />
+                        <TextArea fx:id="resumoCaso" prefHeight="120" promptText="Digite" wrapText="true" />
 
                     </children>
 
@@ -106,14 +101,14 @@
                                     <children>
 
                                         <Label text="Motores/Psicomotores" />
-                              <ChoiceBox prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesMotoresPsicomotoresCb" prefWidth="300.0" />
                               <Label text="Cognitivo" />
-                              <ChoiceBox prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesCognitivoCb" prefWidth="300.0" />
                               <Label text="Sensorial" />
-                              <ChoiceBox prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesSensorialCb" prefWidth="300.0" />
 
                                         <Label text="Linguagem oral/Comunicação" />
-                              <ChoiceBox prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesLinguagemComunicacaoCb" prefWidth="300.0" />
                                     </children>
 
                                 </VBox>
@@ -124,14 +119,14 @@
                                     <children>
 
                                         <Label text="Familiar" />
-                              <ChoiceBox prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesFamiliarCb" prefWidth="300.0" />
 
                                         <Label text="Afetivo/Interpessoais" />
-                              <ChoiceBox prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesAfetivoInterpessoaisCb" prefWidth="300.0" />
                               <Label text="Raciocínio Lógico/Matemático" />
-                              <ChoiceBox prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesRaciocinioLogicoMatematicoCb" prefWidth="300.0" />
                               <Label text="AVAs" />
-                              <ChoiceBox prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesAVAsCb" prefWidth="300.0" />
                                     </children>
 
                                 </VBox>
@@ -150,7 +145,7 @@
                         <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
                         <Button onAction="#handleCancelAction" text="Cancelar" />
                         <Button onAction="#handleBackAction" text="Voltar" />
-                        <Button onAction="#handleGoToPdi2" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
+                        <Button onAction="#handleGoToPaee2" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
                     </children>
                 </HBox>
 

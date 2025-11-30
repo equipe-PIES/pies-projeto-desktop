@@ -106,7 +106,9 @@ public class CardAlunoController implements Initializable {
                     .getEtapaAtual(educando.id());
             String texto = switch (etapa) {
                 case ANAMNESE -> "Anamnese";
+                case DI -> "Diagnóstico Inicial";
                 case PDI -> "PDI";
+                case PAEE -> "PAEE";
                 case COMPLETO -> "Concluído";
             };
             statusAtendimentoButton.setText(texto);
@@ -152,8 +154,12 @@ public class CardAlunoController implements Initializable {
                 .getEtapaAtual(educando.id());
         if (etapa == AtendimentoFlowService.Etapa.ANAMNESE) {
             abrirTelaAnamnese("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
+        } else if (etapa == AtendimentoFlowService.Etapa.DI) {
+            abrirTelaRelatorio("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Diagnóstico Inicial");
         } else if (etapa == AtendimentoFlowService.Etapa.PDI) {
             abrirTelaPdi("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
+        } else if (etapa == AtendimentoFlowService.Etapa.PAEE) {
+            abrirTelaPaee("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE");
         }
     }
     
@@ -268,6 +274,36 @@ public class CardAlunoController implements Initializable {
             stage.show();
         } catch (IOException e) {
             System.err.println("Erro ao abrir PDI: " + e.getMessage());
+        }
+    }
+
+    private void abrirTelaPaee(String resource, String titulo) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+            Parent root = loader.load();
+            PAEEController controller = loader.getController();
+            controller.setEducando(educando);
+            Stage stage = (Stage) statusAtendimentoButton.getScene().getWindow();
+            stage.setTitle(titulo);
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Erro ao abrir PAEE: " + e.getMessage());
+        }
+    }
+
+    private void abrirTelaRelatorio(String resource, String titulo) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+            Parent root = loader.load();
+            RelatorioIndividualController controller = loader.getController();
+            controller.setEducando(educando);
+            Stage stage = (Stage) statusAtendimentoButton.getScene().getWindow();
+            stage.setTitle(titulo);
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Erro ao abrir Diagnóstico Inicial: " + e.getMessage());
         }
     }
     

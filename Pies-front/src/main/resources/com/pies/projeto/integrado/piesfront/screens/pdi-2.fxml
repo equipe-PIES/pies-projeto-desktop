@@ -142,7 +142,7 @@
                         <HBox alignment="CENTER_RIGHT" spacing="15">
                             <children>
                                 <Button fx:id="cancelarButton" onAction="#handleCancelAction" style="-fx-background-color: transparent; -fx-border-color: #95a5a6; -fx-border-width: 1; -fx-border-radius: 3; -fx-padding: 8 15; -fx-text-fill: #95a5a6;" text="Cancelar" />
-                        <Button fx:id="cancelarButton1" onAction="#handleCancelAction" style="-fx-background-color: transparent; -fx-border-color: #95a5a6; -fx-border-width: 1; -fx-border-radius: 3; -fx-padding: 8 15; -fx-text-fill: #95a5a6;" text="Voltar" />
+                                <Button fx:id="voltarButton" onAction="#handleBackAction" style="-fx-background-color: transparent; -fx-border-color: #95a5a6; -fx-border-width: 1; -fx-border-radius: 3; -fx-padding: 8 15; -fx-text-fill: #95a5a6;" text="Voltar" />
                                 <Button fx:id="seguinteButton" onAction="#handleGoToPdi3" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-border-radius: 3; -fx-padding: 8 15;" text="Seguinte" />
                             </children>
                         </HBox>
