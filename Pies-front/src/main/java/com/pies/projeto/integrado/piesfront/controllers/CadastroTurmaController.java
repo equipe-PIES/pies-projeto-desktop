@@ -19,6 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import java.util.stream.Collectors;
 import javafx.stage.Stage;
 
@@ -75,6 +76,8 @@ public class CadastroTurmaController implements Initializable {
     private ListView<String> SugestoesAlunosList;
     @FXML
     private ListView<String> ListAlunosTurma;
+    @FXML
+    private ChoiceBox<String> filtroEscolaridade;
 
     private final AuthService authService;
     private final HttpClient httpClient;
@@ -143,6 +146,19 @@ public class CadastroTurmaController implements Initializable {
                 "Matutino",
                 "Vespertino"
             );
+        }
+
+        if (filtroEscolaridade != null && filtroEscolaridade.getItems().isEmpty()) {
+            filtroEscolaridade.getItems().addAll(
+                "Todos",
+                "Educação Infantil",
+                "Estimulação Precoce",
+                "Fundamental I",
+                "Fundamental II",
+                "Ensino Médio",
+                "Outro"
+            );
+            filtroEscolaridade.setValue("Todos");
         }
     }
 
@@ -329,20 +345,25 @@ public class CadastroTurmaController implements Initializable {
                 searchDebounce.playFromStart();
             });
         }
+
+        if (filtroEscolaridade != null) {
+            filtroEscolaridade.valueProperty().addListener((obs, ov, nv) -> atualizarSugestoesPorNome(currentQuery));
+        }
+
+        atualizarSugestoesPorNome("");
     }
 
     private void atualizarSugestoesPorNome(String query) {
         if (SugestoesAlunosList == null) return;
         String q = query == null ? "" : query.trim().toLowerCase();
-        if (q.isEmpty()) {
-            SugestoesAlunosList.getItems().clear();
-            return;
-        }
         List<AlunoSimplificadoDTO> todosAlunos = obterTodosAlunos();
         if (todosAlunos == null) return;
+        String filtro = filtroEscolaridade != null ? filtroEscolaridade.getValue() : null;
+        String filtroBackend = mapEscolaridadeAlunoToBackend(filtro);
         List<String> sugestoes = todosAlunos.stream()
-                .filter(a -> a.getNome() != null && a.getNome().toLowerCase().contains(q))
-                .limit(20)
+                .filter(a -> filtroBackend == null || filtroBackend.equalsIgnoreCase(a.getEscolaridade()))
+                .filter(a -> q.isEmpty() || (a.getNome() != null && a.getNome().toLowerCase().startsWith(q)))
+                .limit(50)
                 .map(a -> a.getNome() + " - " + a.getCpf())
                 .collect(Collectors.toList());
         SugestoesAlunosList.setItems(FXCollections.observableArrayList(sugestoes));
@@ -366,11 +387,24 @@ public class CadastroTurmaController implements Initializable {
                         response.body(),
                         new TypeReference<List<AlunoSimplificadoDTO>>() {}
                 );
+                Platform.runLater(() -> atualizarSugestoesPorNome(currentQuery));
                 return todosAlunosCache;
             }
         } catch (Exception e) {
             System.err.println("Erro ao obter alunos: " + e.getMessage());
         }
+        return null;
+    }
+
+    private String mapEscolaridadeAlunoToBackend(String valor) {
+        if (valor == null || valor.trim().isEmpty() || valor.equalsIgnoreCase("Todos")) return null;
+        String v = valor.trim();
+        if (v.equalsIgnoreCase("Educação Infantil") || v.equalsIgnoreCase("Educacao Infantil")) return "EDUCACAO_INFANTIL";
+        if (v.equalsIgnoreCase("Estimulação Precoce") || v.equalsIgnoreCase("Estimulacao Precoce")) return "ESTIMULACAO_PRECOCE";
+        if (v.equalsIgnoreCase("Fundamental I")) return "FUNDAMENTAL_I";
+        if (v.equalsIgnoreCase("Fundamental II")) return "FUNDAMENTAL_II";
+        if (v.equalsIgnoreCase("Ensino Médio") || v.equalsIgnoreCase("Ensino Medio")) return "MEDIO";
+        if (v.equalsIgnoreCase("Outro")) return "OUTRO";
         return null;
     }
 

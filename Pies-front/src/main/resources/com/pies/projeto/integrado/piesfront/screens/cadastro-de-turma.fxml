@@ -158,14 +158,24 @@
                             <children>
                                 <VBox prefHeight="670.0" prefWidth="455.0" style="-fx-border-color: #ddd;" VBox.vgrow="ALWAYS">
                                     <children>
-                                        <Label text="Adicionar alunos(as)">
+                                <Label text="Adicionar alunos(as)">
                                             <VBox.margin>
                                                 <Insets bottom="2.0" left="20.0" right="20.0" top="20.0" />
                                             </VBox.margin>
                                         </Label>
+                              <Label text="Filtrar por escolaridade">
+                                <VBox.margin>
+                                   <Insets bottom="20.0" left="20.0" right="20.0" />
+                                </VBox.margin>
+                              </Label>
+                              <ChoiceBox fx:id="filtroEscolaridade" prefHeight="31.0" prefWidth="300.0">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="20.0" right="20.0" />
+                                 </VBox.margin>
+                              </ChoiceBox>
                               <Label text="Busque o aluno(a) pelo nome.">
                                  <VBox.margin>
-                                    <Insets bottom="20.0" left="20.0" right="20.0" />
+                                    <Insets bottom="10.0" left="20.0" right="20.0" />
                                  </VBox.margin>
                               </Label>
                               <HBox prefHeight="34.0" prefWidth="433.0">
