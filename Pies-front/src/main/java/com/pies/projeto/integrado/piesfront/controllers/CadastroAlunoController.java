@@ -95,12 +95,8 @@ public class CadastroAlunoController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Atualiza o texto do indicador baseado no arquivo FXML carregado
         atualizarIndicadorDeTela(url);
-
-        // Busca e atualiza o nome do usuário
-        atualizarNomeUsuario();
-        // Garantir que a inicialização dos campos de ChoiceBox e botões dos formulários de cadastro seja feita no initialize
+        javafx.application.Platform.runLater(this::atualizarNomeUsuarioAsync);
         inicializarGeneros();
         inicializarGrauEscolarAluno();
         inicializarEstadoEnd();
@@ -152,21 +148,23 @@ public class CadastroAlunoController implements Initializable {
     /**
      * Busca as informações do usuário logado e atualiza o nome exibido.
      */
-    private void atualizarNomeUsuario() {
+    private void atualizarNomeUsuarioAsync() {
         if (nameUser == null) {
             return;
         }
-
-        // Busca as informações do usuário do backend
-        UserInfoDTO userInfo = authService.getUserInfo();
-
-        if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
-            nameUser.setText(userInfo.name());
-        } else {
-            // Se não conseguir buscar, mantém o texto padrão ou mostra uma mensagem
-            nameUser.setText("Usuário");
-            System.err.println("Não foi possível carregar o nome do usuário.");
-        }
+        Thread t = new Thread(() -> {
+            UserInfoDTO userInfo = authService.getUserInfo();
+            javafx.application.Platform.runLater(() -> {
+                if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                    nameUser.setText(userInfo.name());
+                } else {
+                    nameUser.setText("Usuário");
+                    System.err.println("Não foi possível carregar o nome do usuário.");
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     /**

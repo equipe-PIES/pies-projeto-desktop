@@ -112,6 +112,11 @@ public class LoginController implements Initializable {
         // 4. Carregar a Próxima Tela
         if (fxmlDestino != null) {
            Janelas.carregarTela(event, fxmlDestino, tituloJanela);
+           java.util.concurrent.CompletableFuture.runAsync(() -> {
+               authService.getUserInfo();
+               authService.getTurmas();
+               authService.getEducandos();
+           });
         }
     }
 }

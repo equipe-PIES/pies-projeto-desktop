@@ -100,14 +100,11 @@ public class CadastroTurmaController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         atualizarIndicadorDeTela(url);
         atualizarNomeUsuario();
-        
         inicializarChoiceBoxes();
-        carregarProfessores();
         conectarAcoesFormulario();
         configurarListViewAlunos();
         configurarBuscaAlunosPorNome();
-        
-        // Carrega o cache de alunos de forma proativa em background
+        javafx.application.Platform.runLater(this::carregarProfessoresAsync);
         carregarCacheAlunosEmBackground();
     }
 
@@ -162,52 +159,46 @@ public class CadastroTurmaController implements Initializable {
         }
     }
 
-    private void carregarProfessores() {
+    private void carregarProfessoresAsync() {
         String token = authService.getCurrentToken();
         if (token == null || token.isEmpty()) {
             mostrarErro("Sessão expirada. Faça login novamente.");
             return;
         }
-
-        try {
-            System.out.println("=== CARREGANDO PROFESSORES ===");
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/professores"))
-                    .header("Authorization", "Bearer " + token)
-                    .GET()
-                    .timeout(Duration.ofSeconds(10))
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            
-            System.out.println("Status: " + response.statusCode());
-            System.out.println("Body: " + response.body().substring(0, Math.min(200, response.body().length())) + "...");
-
-            if (response.statusCode() == 200) {
-                professoresDisponiveis = objectMapper.readValue(
-                    response.body(),
-                    new TypeReference<List<ProfessorDTO>>() {}
-                );
-
-                System.out.println("✓ " + professoresDisponiveis.size() + " professores carregados");
-
-                if (profRespon != null) {
-                    profRespon.getItems().clear();
-                    for (ProfessorDTO prof : professoresDisponiveis) {
-                        profRespon.getItems().add(prof.getNome() + " - " + prof.getCpf());
-                    }
+        Thread t = new Thread(() -> {
+            try {
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8080/professores"))
+                        .header("Authorization", "Bearer " + token)
+                        .GET()
+                        .timeout(Duration.ofSeconds(10))
+                        .build();
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                if (response.statusCode() == 200) {
+                    List<ProfessorDTO> lista = objectMapper.readValue(
+                            response.body(),
+                            new TypeReference<List<ProfessorDTO>>() {}
+                    );
+                    javafx.application.Platform.runLater(() -> {
+                        professoresDisponiveis = lista;
+                        if (profRespon != null) {
+                            profRespon.getItems().clear();
+                            for (ProfessorDTO prof : professoresDisponiveis) {
+                                profRespon.getItems().add(prof.getNome() + " - " + prof.getCpf());
+                            }
+                        }
+                    });
+                } else if (response.statusCode() == 403) {
+                    javafx.application.Platform.runLater(() -> mostrarErro("Acesso negado. Verifique suas permissões."));
+                } else {
+                    javafx.application.Platform.runLater(() -> mostrarErro("Erro ao carregar professores. Código: " + response.statusCode()));
                 }
-            } else if (response.statusCode() == 403) {
-                mostrarErro("Acesso negado. Verifique suas permissões.");
-                System.err.println("403 - Token pode estar expirado ou sem permissão");
-            } else {
-                mostrarErro("Erro ao carregar professores. Código: " + response.statusCode());
-                System.err.println("Erro HTTP: " + response.statusCode());
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() -> mostrarErro("Erro ao carregar professores: " + e.getMessage()));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            mostrarErro("Erro ao carregar professores: " + e.getMessage());
-        }
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     private void conectarAcoesFormulario() {
@@ -229,37 +220,25 @@ public class CadastroTurmaController implements Initializable {
     private void carregarCacheAlunosEmBackground() {
         String token = authService.getCurrentToken();
         if (token == null || token.isEmpty()) {
-            return; // Silenciosamente ignora se não há token
+            return;
         }
-
-        // Executa em thread separada para não bloquear a UI
         Thread thread = new Thread(() -> {
             try {
-                System.out.println("=== CARREGANDO CACHE DE ALUNOS EM BACKGROUND ===");
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:8080/api/educandos"))
-                        .header("Authorization", "Bearer " + token)
-                        .header("Content-Type", "application/json")
-                        .GET()
-                        .timeout(Duration.ofSeconds(10))
-                        .build();
-
-                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-                if (response.statusCode() == 200) {
-                    todosAlunosCache = objectMapper.readValue(
-                        response.body(),
-                        new TypeReference<List<AlunoSimplificadoDTO>>() {}
-                    );
+                System.out.println("=== CARREGANDO CACHE DE ALUNOS (AuthService cache) ===");
+                List<com.pies.projeto.integrado.piesfront.dto.EducandoDTO> educandos = authService.getEducandosSimplificados();
+                if (educandos != null && !educandos.isEmpty()) {
+                    List<AlunoSimplificadoDTO> lista = educandos.stream()
+                            .map(this::toAlunoSimplificado)
+                            .collect(java.util.stream.Collectors.toList());
+                    todosAlunosCache = lista;
                     System.out.println("✓ Cache carregado com " + todosAlunosCache.size() + " alunos");
-                } else {
-                    System.err.println("Erro ao carregar cache de alunos. Código: " + response.statusCode());
+                    Platform.runLater(() -> atualizarSugestoesPorNome(currentQuery));
                 }
             } catch (Exception e) {
-                System.err.println("Erro ao carregar cache de alunos em background: " + e.getMessage());
+                System.err.println("Erro ao carregar cache via AuthService: " + e.getMessage());
             }
         });
-        thread.setDaemon(true); // Thread daemon para não bloquear o encerramento da aplicação
+        thread.setDaemon(true);
         thread.start();
     }
 
@@ -350,7 +329,8 @@ public class CadastroTurmaController implements Initializable {
             filtroEscolaridade.valueProperty().addListener((obs, ov, nv) -> atualizarSugestoesPorNome(currentQuery));
         }
 
-        atualizarSugestoesPorNome("");
+        // A primeira atualização de sugestões será feita após
+        // o carregamento do cache de alunos em background
     }
 
     private void atualizarSugestoesPorNome(String query) {
@@ -374,26 +354,34 @@ public class CadastroTurmaController implements Initializable {
         String token = authService.getCurrentToken();
         if (token == null || token.isEmpty()) return null;
         try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/educandos"))
-                    .header("Authorization", "Bearer " + token)
-                    .header("Content-Type", "application/json")
-                    .GET()
-                    .timeout(Duration.ofSeconds(10))
-                    .build();
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == 200) {
-                todosAlunosCache = objectMapper.readValue(
-                        response.body(),
-                        new TypeReference<List<AlunoSimplificadoDTO>>() {}
-                );
+            List<com.pies.projeto.integrado.piesfront.dto.EducandoDTO> educandos = authService.getEducandosSimplificados();
+            if (educandos != null && !educandos.isEmpty()) {
+                todosAlunosCache = educandos.stream()
+                        .map(this::toAlunoSimplificado)
+                        .collect(java.util.stream.Collectors.toList());
                 Platform.runLater(() -> atualizarSugestoesPorNome(currentQuery));
                 return todosAlunosCache;
             }
         } catch (Exception e) {
-            System.err.println("Erro ao obter alunos: " + e.getMessage());
+            System.err.println("Erro ao obter alunos via AuthService: " + e.getMessage());
         }
         return null;
+    }
+
+    private AlunoSimplificadoDTO toAlunoSimplificado(com.pies.projeto.integrado.piesfront.dto.EducandoDTO e) {
+        AlunoSimplificadoDTO dto = new AlunoSimplificadoDTO();
+        dto.setId(e.id());
+        dto.setNome(e.nome());
+        dto.setCpf(e.cpf());
+        dto.setGenero(e.genero());
+        dto.setCid(e.cid());
+        dto.setNis(e.nis());
+        dto.setEscola(e.escola());
+        dto.setEscolaridade(e.escolaridade());
+        if (e.dataNascimento() != null) {
+            dto.setDataNascimento(e.dataNascimento().toString());
+        }
+        return dto;
     }
 
     private String mapEscolaridadeAlunoToBackend(String valor) {

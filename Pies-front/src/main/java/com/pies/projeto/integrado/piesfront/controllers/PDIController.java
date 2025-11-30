@@ -2,6 +2,7 @@ package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
+import com.pies.projeto.integrado.piesfront.services.AuthService;
 import com.utils.Janelas;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +30,7 @@ public class PDIController {
     private TextArea objetivosPlano;
 
     private EducandoDTO educando;
+    private final AuthService authService = AuthService.getInstance();
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
@@ -41,9 +43,29 @@ public class PDIController {
 
     @FXML
     private void handleSairButtonAction() {
-        if (anamnese != null && anamnese.getScene() != null) {
-            Stage stage = (Stage) anamnese.getScene().getWindow();
-            stage.close();
+        try {
+            authService.logout();
+            if (anamnese != null) {
+                javafx.event.ActionEvent fakeEvent = new javafx.event.ActionEvent(anamnese, null);
+                Janelas.carregarTela(fakeEvent,
+                        "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml",
+                        "Amparo Edu - Login");
+            }
+        } catch (Exception e) {
+            if (anamnese != null && anamnese.getScene() != null) {
+                Stage stage = (Stage) anamnese.getScene().getWindow();
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                            "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml"));
+                    Parent root = loader.load();
+                    stage.setScene(new Scene(root));
+                    stage.setTitle("Amparo Edu - Login");
+                    stage.setMaximized(true);
+                    stage.show();
+                } catch (Exception ex) {
+                    stage.close();
+                }
+            }
         }
     }
 

@@ -87,24 +87,17 @@ public class ViewTurmaController implements Initializable {
      */
     public void setTurmaId(String turmaId) {
         this.turmaId = turmaId;
-        // Carrega os dados após receber o ID
-        carregarInformacoesTurma();
-        carregarAlunos();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Atualiza o texto do indicador baseado no arquivo FXML carregado
         atualizarIndicadorDeTela(url);
-
-        // Busca e atualiza o nome do usuário
-        atualizarNomeUsuario();
-        
-        // Se o ID já foi definido (via setTurmaId antes do initialize), carrega os dados
-        if (turmaId != null && !turmaId.isEmpty()) {
-            carregarInformacoesTurma();
-            carregarAlunos();
-        }
+        javafx.application.Platform.runLater(() -> {
+            atualizarNomeUsuarioAsync();
+            if (turmaId != null && !turmaId.isEmpty()) {
+                carregarDadosTurmaEAlunosAsync();
+            }
+        });
     }
 
     // ----------------------------------------------------
@@ -134,29 +127,76 @@ public class ViewTurmaController implements Initializable {
     /**
      * Busca as informações do usuário logado e atualiza o nome exibido.
      */
-    private void atualizarNomeUsuario() {
-        UserInfoDTO userInfo = authService.getUserInfo();
+    private void atualizarNomeUsuarioAsync() {
+        Thread t = new Thread(() -> {
+            UserInfoDTO userInfo = authService.getUserInfo();
+            javafx.application.Platform.runLater(() -> {
+                if (userInfo != null) {
+                    if (nameUser != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                        nameUser.setText(userInfo.name());
+                    }
+                    if (cargoUser != null && userInfo.role() != null) {
+                        String cargo = switch (userInfo.role().toUpperCase()) {
+                            case "PROFESSOR" -> "Professor(a)";
+                            case "COORDENADOR" -> "Coordenador(a)";
+                            case "ADMIN" -> "Administrador(a)";
+                            default -> "Usuário";
+                        };
+                        cargoUser.setText(cargo);
+                    }
+                } else {
+                    if (nameUser != null) {
+                        nameUser.setText("Usuário");
+                    }
+                    System.err.println("Não foi possível carregar o nome do usuário.");
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
+    }
 
-        if (userInfo != null) {
-            if (nameUser != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
-                nameUser.setText(userInfo.name());
+    private void carregarDadosTurmaEAlunosAsync() {
+        java.util.concurrent.CompletableFuture<TurmaDTO> turmaFuture =
+                java.util.concurrent.CompletableFuture.supplyAsync(() -> authService.getTurmaById(turmaId));
+        java.util.concurrent.CompletableFuture<java.util.List<EducandoDTO>> educandosFuture =
+                java.util.concurrent.CompletableFuture.supplyAsync(() -> authService.getEducandosPorTurma(turmaId));
+
+        turmaFuture.thenAccept(turma -> javafx.application.Platform.runLater(() -> {
+            turmaAtual = turma;
+            if (turmaAtual != null) {
+                if (nomeTurmaLabel != null) {
+                    String nome = turmaAtual.nome() != null ? turmaAtual.nome() : "Sem nome";
+                    nomeTurmaLabel.setText(nome);
+                }
+                if (grauTurma != null) {
+                    String grau = turmaAtual.grauEscolar() != null ?
+                            formatarGrauEscolar(turmaAtual.grauEscolar()) : "Não informado";
+                    grauTurma.setText(grau);
+                }
+                if (turnoTurma != null) {
+                    String turno = turmaAtual.turno() != null ?
+                            formatarTurno(turmaAtual.turno()) : "Não informado";
+                    turnoTurma.setText(turno);
+                }
+                if (fxEtariaTurma != null) {
+                    String faixaEtaria = turmaAtual.faixaEtaria() != null ?
+                            turmaAtual.faixaEtaria() : "Não informado";
+                    fxEtariaTurma.setText(faixaEtaria);
+                }
             }
-            
-            if (cargoUser != null && userInfo.role() != null) {
-                String cargo = switch (userInfo.role().toUpperCase()) {
-                    case "PROFESSOR" -> "Professor(a)";
-                    case "COORDENADOR" -> "Coordenador(a)";
-                    case "ADMIN" -> "Administrador(a)";
-                    default -> "Usuário";
-                };
-                cargoUser.setText(cargo);
+        }));
+
+        turmaFuture.thenCombine(educandosFuture, (turma, educandos) -> {
+            if (turma == null || educandos == null) return java.util.List.<EducandoDTO>of();
+            return educandos;
+        }).thenAccept(alunos -> javafx.application.Platform.runLater(() -> {
+            educandosFiltrados = alunos;
+            if (totalAlunosTurma != null) {
+                totalAlunosTurma.setText(String.valueOf(educandosFiltrados.size()));
             }
-        } else {
-            if (nameUser != null) {
-                nameUser.setText("Usuário");
-            }
-            System.err.println("Não foi possível carregar o nome do usuário.");
-        }
+            exibirAlunos(educandosFiltrados);
+        }));
     }
     
     /**

@@ -49,9 +49,29 @@ public class AnamneseController {
 
     @FXML
     private void handleSairButtonAction() {
-        if (anamnese != null && anamnese.getScene() != null) {
-            Stage stage = (Stage) anamnese.getScene().getWindow();
-            stage.close();
+        try {
+            authService.logout();
+            if (anamnese != null) {
+                javafx.event.ActionEvent fakeEvent = new javafx.event.ActionEvent(anamnese, null);
+                Janelas.carregarTela(fakeEvent,
+                        "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml",
+                        "Amparo Edu - Login");
+            }
+        } catch (Exception e) {
+            if (anamnese != null && anamnese.getScene() != null) {
+                Stage stage = (Stage) anamnese.getScene().getWindow();
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                            "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml"));
+                    Parent root = loader.load();
+                    stage.setScene(new Scene(root));
+                    stage.setTitle("Amparo Edu - Login");
+                    stage.setMaximized(true);
+                    stage.show();
+                } catch (Exception ex) {
+                    stage.close();
+                }
+            }
         }
     }
 
@@ -134,11 +154,13 @@ public class AnamneseController {
                 stage = (Stage) anamnese.getScene().getWindow();
                 stage.setScene(new Scene(root));
                 stage.setTitle(titulo);
+                stage.setMaximized(false);
+                stage.setMaximized(true);
             } else {
                 stage = new Stage();
                 stage.setTitle(titulo);
                 stage.setScene(new Scene(root));
-                stage.setResizable(false);
+                stage.setMaximized(true);
                 stage.show();
             }
         } catch (Exception e) {

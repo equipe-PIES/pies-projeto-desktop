@@ -217,6 +217,25 @@ public class EducandoService {
         return dto;
     }
 
+    private EducandoDTO toDTOBasico(Educando e) {
+        EducandoDTO dto = new EducandoDTO();
+        org.springframework.beans.BeanUtils.copyProperties(e, dto, "responsaveis", "anamnese");
+        return dto;
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.List<EducandoDTO> listarSimplificados() {
+        return educandoRepository.findAll().stream()
+                .map(this::toDTOBasico)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public java.util.List<com.pies.api.projeto.integrado.pies_backend.controller.dto.EducandoDTO> listarPorTurma(String turmaId) {
+        java.util.List<Educando> lista = educandoRepository.findAllByTurmaId(turmaId);
+        return lista.stream().map(this::toDTO).collect(java.util.stream.Collectors.toList());
+    }
+
     /**
      * Converte um DTO EducandoDTO para uma entidade Educando.
      * 

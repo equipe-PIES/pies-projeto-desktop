@@ -33,11 +33,19 @@ public class AuthService {
     private static final String USER_INFO_ENDPOINT = "/auth/me";
     private static final String TURMAS_ENDPOINT = "/turmas";
     private static final String EDUCANDOS_ENDPOINT = "/api/educandos";
+    private static final String EDUCANDOS_SIMPLIFICADOS_ENDPOINT = "/api/educandos/simplificados";
     private static final String ANAMNESES_ENDPOINT = "/api/anamneses";
     
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private String currentToken; // Armazena o token JWT atual
+    private UserInfoDTO cachedUserInfo;
+    private java.util.List<TurmaDTO> cachedTurmas;
+    private long turmasCacheTs;
+    private final java.util.Map<String, java.util.List<EducandoDTO>> cachedEducandosPorTurma = new java.util.HashMap<>();
+    
+    private java.util.List<EducandoDTO> cachedEducandos;
+    private long educandosCacheTs;
     
     /**
      * Construtor privado para implementar o padrão singleton
@@ -180,6 +188,9 @@ public class AuthService {
         if (currentToken == null) {
             return null;
         }
+        if (cachedUserInfo != null) {
+            return cachedUserInfo;
+        }
         
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -193,8 +204,9 @@ public class AuthService {
                     HttpResponse.BodyHandlers.ofString());
             
             if (response.statusCode() == 200) {
-                return objectMapper.readValue(
+                cachedUserInfo = objectMapper.readValue(
                         response.body(), UserInfoDTO.class);
+                return cachedUserInfo;
             } else {
                 System.err.println("Erro ao buscar informações do usuário. Status: " + response.statusCode());
                 return null;
@@ -219,6 +231,10 @@ public class AuthService {
      */
     public void logout() {
         this.currentToken = null;
+        this.cachedUserInfo = null;
+        this.cachedTurmas = null;
+        this.cachedEducandos = null;
+        this.cachedEducandosPorTurma.clear();
     }
     
     /**
@@ -229,6 +245,10 @@ public class AuthService {
         if (currentToken == null) {
             System.err.println("getTurmas: Token é NULL!");
             return new ArrayList<>();
+        }
+        long now = System.currentTimeMillis();
+        if (cachedTurmas != null && (now - turmasCacheTs) < 10_000) {
+            return cachedTurmas;
         }
         
         try {
@@ -244,7 +264,9 @@ public class AuthService {
             
             if (response.statusCode() == 200) {
                 TypeReference<List<TurmaDTO>> typeRef = new TypeReference<List<TurmaDTO>>() {};
-                return objectMapper.readValue(response.body(), typeRef);
+                cachedTurmas = objectMapper.readValue(response.body(), typeRef);
+                turmasCacheTs = now;
+                return cachedTurmas;
             } else {
                 System.err.println("Erro ao buscar turmas. Status: " + response.statusCode());
                 return new ArrayList<>();
@@ -302,7 +324,10 @@ public class AuthService {
             System.err.println("getEducandos: Token é NULL!");
             return new ArrayList<>();
         }
-        
+        long now = System.currentTimeMillis();
+        if (cachedEducandos != null && (now - educandosCacheTs) < 60000) {
+            return cachedEducandos;
+        }
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + EDUCANDOS_ENDPOINT))
@@ -316,7 +341,9 @@ public class AuthService {
             
             if (response.statusCode() == 200) {
                 TypeReference<List<EducandoDTO>> typeRef = new TypeReference<List<EducandoDTO>>() {};
-                return objectMapper.readValue(response.body(), typeRef);
+                cachedEducandos = objectMapper.readValue(response.body(), typeRef);
+                educandosCacheTs = now;
+                return cachedEducandos;
             } else {
                 System.err.println("Erro ao buscar educandos. Status: " + response.statusCode());
                 return new ArrayList<>();
@@ -327,6 +354,71 @@ public class AuthService {
             e.printStackTrace();
             return new ArrayList<>();
         }
+    }
+
+    public List<EducandoDTO> getEducandosSimplificados() {
+        if (currentToken == null) {
+            System.err.println("getEducandosSimplificados: Token é NULL!");
+            return new ArrayList<>();
+        }
+        long now = System.currentTimeMillis();
+        if (cachedEducandos != null && (now - educandosCacheTs) < 60000) {
+            return cachedEducandos;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + EDUCANDOS_SIMPLIFICADOS_ENDPOINT))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                TypeReference<List<EducandoDTO>> typeRef = new TypeReference<List<EducandoDTO>>() {};
+                cachedEducandos = objectMapper.readValue(response.body(), typeRef);
+                educandosCacheTs = now;
+                return cachedEducandos;
+            } else {
+                System.err.println("Erro ao buscar educandos simplificados. Status: " + response.statusCode());
+                return new ArrayList<>();
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao buscar educandos simplificados: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+    
+    public java.util.List<EducandoDTO> getEducandosPorTurma(String turmaId) {
+        if (currentToken == null || turmaId == null || turmaId.isEmpty()) {
+            return new ArrayList<>();
+        }
+        java.util.List<EducandoDTO> cache = cachedEducandosPorTurma.get(turmaId);
+        if (cache != null) {
+            return cache;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + EDUCANDOS_ENDPOINT + "/turma/" + turmaId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                TypeReference<List<EducandoDTO>> typeRef = new TypeReference<List<EducandoDTO>>() {};
+                java.util.List<EducandoDTO> lista = objectMapper.readValue(response.body(), typeRef);
+                cachedEducandosPorTurma.put(turmaId, lista);
+                return lista;
+            } else {
+                System.err.println("Erro ao buscar educandos por turma. Status: " + response.statusCode());
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao buscar educandos por turma: " + e.getMessage());
+        }
+        return new ArrayList<>();
     }
     
     /**
@@ -365,6 +457,35 @@ public class AuthService {
             
         } catch (IOException | InterruptedException e) {
             System.err.println("Erro ao buscar professor por nome: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getProfessorId() {
+        if (currentToken == null) {
+            System.err.println("getProfessorId: Token é NULL!");
+            return null;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/professores/me"))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                var professor = objectMapper.readValue(response.body(),
+                        new TypeReference<java.util.Map<String, Object>>() {});
+                return (String) professor.get("id");
+            } else {
+                System.err.println("Erro ao buscar professor logado. Status: " + response.statusCode());
+                return null;
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao buscar professor: " + e.getMessage());
             e.printStackTrace();
             return null;
         }

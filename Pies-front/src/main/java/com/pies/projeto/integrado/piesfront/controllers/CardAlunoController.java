@@ -21,6 +21,8 @@ import java.time.Period;
 import java.util.ResourceBundle;
 
 import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
+import com.utils.Janelas;
+import javafx.event.ActionEvent;
 
 /**
  * Controller para o card de aluno (educando)
@@ -242,33 +244,19 @@ public class CardAlunoController implements Initializable {
     }
 
     private void abrirTelaAnamnese(String resource, String titulo) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-            Parent root = loader.load();
-            AnamneseController controller = loader.getController();
-            controller.setEducando(educando);
-            Stage stage = (Stage) statusAtendimentoButton.getScene().getWindow();
-            stage.setTitle(titulo);
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Erro ao abrir anamnese: " + e.getMessage());
-        }
+        Janelas.carregarTela(new ActionEvent(statusAtendimentoButton, null), resource, titulo, controller -> {
+            if (controller instanceof AnamneseController c) {
+                c.setEducando(educando);
+            }
+        });
     }
 
     private void abrirTelaPdi(String resource, String titulo) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-            Parent root = loader.load();
-            PDIController controller = loader.getController();
-            controller.setEducando(educando);
-            Stage stage = (Stage) statusAtendimentoButton.getScene().getWindow();
-            stage.setTitle(titulo);
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Erro ao abrir PDI: " + e.getMessage());
-        }
+        Janelas.carregarTela(new ActionEvent(statusAtendimentoButton, null), resource, titulo, controller -> {
+            if (controller instanceof PDIController c) {
+                c.setEducando(educando);
+            }
+        });
     }
     
     @Override

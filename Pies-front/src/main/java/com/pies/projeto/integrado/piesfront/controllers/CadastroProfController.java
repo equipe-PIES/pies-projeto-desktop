@@ -83,8 +83,7 @@ public class CadastroProfController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         atualizarIndicadorDeTela(url);
-        atualizarNomeUsuario();
-
+        javafx.application.Platform.runLater(this::atualizarNomeUsuarioAsync);
         inicializarGeneros();
         conectarAcoesFormulario();
         aplicarCpfMask(cpfProf);
@@ -120,19 +119,23 @@ public class CadastroProfController implements Initializable {
     /**
      * Busca as informações do usuário logado e atualiza o nome exibido.
      */
-    private void atualizarNomeUsuario() {
+    private void atualizarNomeUsuarioAsync() {
         if (nameUser == null) {
             return;
         }
-
-        UserInfoDTO userInfo = authService.getUserInfo();
-
-        if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
-            nameUser.setText(userInfo.name());
-        } else {
-            nameUser.setText("Usuário");
-            System.err.println("Não foi possível carregar o nome do usuário.");
-        }
+        Thread t = new Thread(() -> {
+            UserInfoDTO userInfo = authService.getUserInfo();
+            javafx.application.Platform.runLater(() -> {
+                if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                    nameUser.setText(userInfo.name());
+                } else {
+                    nameUser.setText("Usuário");
+                    System.err.println("Não foi possível carregar o nome do usuário.");
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     /**

@@ -59,6 +59,11 @@ public class EducandoController {
         return ResponseEntity.ok(educandoService.listarTodos());
     }
 
+    @GetMapping("/simplificados")
+    public ResponseEntity<List<EducandoDTO>> listarSimplificados() {
+        return ResponseEntity.ok(educandoService.listarSimplificados());
+    }
+
     /**
      * Busca um educando específico pelo seu ID.
      * 
@@ -108,6 +113,11 @@ public class EducandoController {
             // ResponseEntity.status() permite especificar o código HTTP
             return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
         });
+    }
+
+    @GetMapping("/turma/{turmaId}")
+    public ResponseEntity<java.util.List<EducandoDTO>> listarPorTurma(@PathVariable String turmaId) {
+        return ResponseEntity.ok(educandoService.listarPorTurma(turmaId));
     }
 
     /**

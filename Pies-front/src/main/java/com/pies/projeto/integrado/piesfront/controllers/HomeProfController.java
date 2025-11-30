@@ -46,14 +46,10 @@ public class HomeProfController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Atualiza o texto do indicador baseado no arquivo FXML carregado
         atualizarIndicadorDeTela(url);
-
-        // Busca e atualiza o nome do usuário
-        atualizarNomeUsuario();
-        
-        // Carrega as turmas do professor
-        carregarTurmas();
+        javafx.application.Platform.runLater(() -> {
+            carregarDadosEmParalelo();
+        });
     }
 
     // ----------------------------------------------------
@@ -92,100 +88,80 @@ public class HomeProfController implements Initializable {
     /**
      * Busca as informações do usuário logado e atualiza o nome exibido.
      */
-    private void atualizarNomeUsuario() {
-        // Busca as informações do usuário do backend
-        UserInfoDTO userInfo = authService.getUserInfo();
-
-        if (userInfo != null) {
-            if (nameUser != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
-                nameUser.setText(userInfo.name());
-            }
-            
-            if (cargoUser != null && userInfo.role() != null) {
-                String cargo = switch (userInfo.role().toUpperCase()) {
-                    case "PROFESSOR" -> "Professor(a)";
-                    case "COORDENADOR" -> "Coordenador(a)";
-                    case "ADMIN" -> "Administrador(a)";
-                    default -> "Usuário";
-                };
-                cargoUser.setText(cargo);
-            }
-        } else {
-            // Se não conseguir buscar, mantém o texto padrão ou mostra uma mensagem
-            if (nameUser != null) {
-                nameUser.setText("Usuário");
-            }
-            System.err.println("Não foi possível carregar o nome do usuário.");
-        }
+    private void atualizarNomeUsuarioAsync() {
+        Thread t = new Thread(() -> {
+            UserInfoDTO userInfo = authService.getUserInfo();
+            javafx.application.Platform.runLater(() -> {
+                if (userInfo != null) {
+                    if (nameUser != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                        nameUser.setText(userInfo.name());
+                    }
+                    if (cargoUser != null && userInfo.role() != null) {
+                        String cargo = switch (userInfo.role().toUpperCase()) {
+                            case "PROFESSOR" -> "Professor(a)";
+                            case "COORDENADOR" -> "Coordenador(a)";
+                            case "ADMIN" -> "Administrador(a)";
+                            default -> "Usuário";
+                        };
+                        cargoUser.setText(cargo);
+                    }
+                } else {
+                    if (nameUser != null) {
+                        nameUser.setText("Usuário");
+                    }
+                    System.err.println("Não foi possível carregar o nome do usuário.");
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
     }
     
     /**
      * Carrega as turmas do professor logado e exibe como cards
      */
-    private void carregarTurmas() {
-        if (containerCards == null) {
-            System.err.println("FlowPane containerCards não foi encontrado!");
-            return;
-        }
-        
-        // Limpa os cards existentes
-        containerCards.getChildren().clear();
-        
-        // Busca informações do usuário logado para filtrar as turmas
-        UserInfoDTO userInfo = authService.getUserInfo();
-        if (userInfo == null) {
-            System.err.println("Não foi possível obter informações do usuário logado.");
-            return;
-        }
-        
-        // Busca o ID do professor usando o nome do usuário logado
-        String professorId = authService.getProfessorIdByNome(userInfo.name());
-        
-        if (professorId == null) {
-            System.err.println("Professor não encontrado na tabela de professores.");
-            Label semTurmasLabel = new Label("Professor não cadastrado no sistema.");
-            semTurmasLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #e74c3c;");
-            containerCards.getChildren().add(semTurmasLabel);
-            return;
-        }
-        
-        System.out.println("Professor ID encontrado: " + professorId);
-        
-        // Busca todas as turmas do backend
-        List<TurmaDTO> todasTurmas = authService.getTurmas();
-        
-        // Filtra apenas as turmas do professor logado usando o ID do professor
-        List<TurmaDTO> turmasDoProfessor = todasTurmas.stream()
-                .filter(turma -> professorId.equals(turma.professorId()))
-                .collect(Collectors.toList());
-        
-        // Cria um card para cada turma
-        for (TurmaDTO turma : turmasDoProfessor) {
-            try {
-                // Carrega o FXML do card
-                FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                        "/com/pies/projeto/integrado/piesfront/screens/card-turma.fxml"));
-                VBox cardNode = loader.load();
-                
-                // Obtém o controller do card e define os dados
-                CardTurmaController cardController = loader.getController();
-                cardController.setTurma(turma);
-                
-                // Adiciona o card ao FlowPane
-                containerCards.getChildren().add(cardNode);
-                
-            } catch (IOException e) {
-                System.err.println("Erro ao carregar card de turma: " + e.getMessage());
-                e.printStackTrace();
+    private void carregarDadosEmParalelo() {
+        if (containerCards == null) return;
+        Label loading = new Label("Carregando turmas...");
+        loading.setStyle("-fx-font-size: 16px; -fx-text-fill: #666;");
+        containerCards.getChildren().setAll(loading);
+
+        java.util.concurrent.CompletableFuture<UserInfoDTO> userFuture =
+                java.util.concurrent.CompletableFuture.supplyAsync(authService::getUserInfo);
+        java.util.concurrent.CompletableFuture<String> profIdFuture =
+                java.util.concurrent.CompletableFuture.supplyAsync(authService::getProfessorId);
+        java.util.concurrent.CompletableFuture<java.util.List<TurmaDTO>> turmasFuture =
+                java.util.concurrent.CompletableFuture.supplyAsync(authService::getTurmas);
+
+        userFuture.thenAccept(userInfo -> javafx.application.Platform.runLater(() -> atualizarNomeUsuarioUI(userInfo)));
+
+        profIdFuture.thenCombine(turmasFuture, (profId, todasTurmas) -> {
+            if (profId == null || todasTurmas == null) return java.util.List.<TurmaDTO>of();
+            return todasTurmas.stream()
+                    .filter(t -> profId.equals(t.professorId()))
+                    .collect(java.util.stream.Collectors.toList());
+        }).thenAccept(turmasDoProfessor -> javafx.application.Platform.runLater(() -> {
+            containerCards.getChildren().clear();
+            if (turmasDoProfessor.isEmpty()) {
+                Label semTurmasLabel = new Label("Nenhuma turma designada a este professor.");
+                semTurmasLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #666;");
+                containerCards.getChildren().add(semTurmasLabel);
+                return;
             }
-        }
-        
-        // Se não houver turmas, exibe mensagem
-        if (turmasDoProfessor.isEmpty()) {
-            Label semTurmasLabel = new Label("Nenhuma turma designada a este professor.");
-            semTurmasLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #666;");
-            containerCards.getChildren().add(semTurmasLabel);
-        }
+            for (TurmaDTO turma : turmasDoProfessor) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                            "/com/pies/projeto/integrado/piesfront/screens/card-turma.fxml"));
+                    VBox cardNode = loader.load();
+                    CardTurmaController cardController = loader.getController();
+                    cardController.setTurma(turma);
+                    containerCards.getChildren().add(cardNode);
+                } catch (IOException e) {
+                    System.err.println("Erro ao carregar card de turma: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }));
     }
 
     /**
@@ -206,8 +182,29 @@ public class HomeProfController implements Initializable {
      */
     @FXML
     private void handleTurmasButtonAction() {
-        // Recarrega as turmas
-        carregarTurmas();
+        carregarDadosEmParalelo();
+    }
+
+    private void atualizarNomeUsuarioUI(UserInfoDTO userInfo) {
+        if (userInfo != null) {
+            if (nameUser != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                nameUser.setText(userInfo.name());
+            }
+            if (cargoUser != null && userInfo.role() != null) {
+                String cargo = switch (userInfo.role().toUpperCase()) {
+                    case "PROFESSOR" -> "Professor(a)";
+                    case "COORDENADOR" -> "Coordenador(a)";
+                    case "ADMIN" -> "Administrador(a)";
+                    default -> "Usuário";
+                };
+                cargoUser.setText(cargo);
+            }
+        } else {
+            if (nameUser != null) {
+                nameUser.setText("Usuário");
+            }
+            System.err.println("Não foi possível carregar o nome do usuário.");
+        }
     }
 
 

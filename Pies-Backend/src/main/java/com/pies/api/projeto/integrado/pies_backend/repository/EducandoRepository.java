@@ -44,5 +44,6 @@ public interface EducandoRepository extends JpaRepository<Educando, String> {
     List<Educando> findAllByCid(String cid);
     
     List<Educando> findAllByOrderByNomeAsc();
+    List<Educando> findAllByTurmaId(String turmaId);
     
 }
