@@ -98,7 +98,11 @@ public class ViewTurmaController implements Initializable {
         if (alunosScrollPane != null && containerAlunos != null) {
             alunosScrollPane.setFitToWidth(true);
             alunosScrollPane.viewportBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-                containerAlunos.setPrefWrapLength(newBounds.getWidth());
+                double cardWidth = 460.0;
+                double hgap = containerAlunos.getHgap();
+                double threeColsWidth = cardWidth * 3 + hgap * 2;
+                double wrap = Math.min(newBounds.getWidth(), threeColsWidth);
+                containerAlunos.setPrefWrapLength(wrap);
             });
         }
         javafx.application.Platform.runLater(() -> {

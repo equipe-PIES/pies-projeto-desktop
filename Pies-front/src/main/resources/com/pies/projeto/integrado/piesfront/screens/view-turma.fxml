@@ -38,7 +38,6 @@
                   <Insets top="10.0" />
                </HBox.margin>
                   </VBox>
-                <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="140.0" />
 
                 <Region HBox.hgrow="ALWAYS" />
 
@@ -46,7 +45,6 @@
                     <children>
                         <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
                         <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
-                        <Button id="relatoriosButton" fx:id="relatoriosButton" text="Relatórios" />
                     </children>
                 </HBox>
             </children>
@@ -127,13 +125,13 @@
                   <Insets right="20.0" />
                </VBox.margin>
             </HBox>
-            <ScrollPane fx:id="alunosScrollPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" fitToWidth="true">
+            <ScrollPane fx:id="alunosScrollPane" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets left="20.0" right="20.0" />
                </VBox.margin>
                <content>
-                  <FlowPane fx:id="containerAlunos" hgap="20.0" vgap="20.0" />
-               </content>
+                  <FlowPane fx:id="containerAlunos" alignment="TOP_CENTER" hgap="20.0" vgap="20.0" />
+                </content>
             </ScrollPane>
          </children>
       </VBox>
