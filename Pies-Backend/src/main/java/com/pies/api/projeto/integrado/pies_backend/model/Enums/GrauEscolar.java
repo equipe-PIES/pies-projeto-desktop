@@ -6,6 +6,5 @@ public enum GrauEscolar {
     FUNDAMENTAL_I,
     FUNDAMENTAL_II,
     MEDIO,
-    OUTRO,
-    PREFIRO_NAO_INFORMAR
+    OUTRO
 }

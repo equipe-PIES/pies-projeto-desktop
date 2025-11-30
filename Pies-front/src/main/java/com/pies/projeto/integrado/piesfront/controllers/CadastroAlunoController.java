@@ -106,6 +106,10 @@ public class CadastroAlunoController implements Initializable {
         inicializarEstadoEnd();
         inicializarParentesco();
         conectarAcoesFormulario();
+        aplicarCpfMask(cpfAluno);
+        aplicarCpfMask(cpfRespon);
+        aplicarTelefoneMask(contatoRespon);
+        aplicarCepMask(endCEP);
     }
 
     // ----------------------------------------------------
@@ -185,7 +189,7 @@ public class CadastroAlunoController implements Initializable {
     //Adiciona opções de genero ao choicebox de genero
     private void inicializarGrauEscolarAluno() {
         if (grauEscAluno != null && grauEscAluno.getItems().isEmpty()) {
-            grauEscAluno.getItems().addAll("Estimulação Precoce", "Fundamental I", "Fundamental II", "Ensino Médio", "Outro", "Prefiro não informar");
+            grauEscAluno.getItems().addAll("Educação Infantil", "Estimulação Precoce", "Fundamental I", "Fundamental II", "Ensino Médio", "Outro");
         }
     }
     private void inicializarEstadoEnd() {
@@ -359,11 +363,11 @@ public class CadastroAlunoController implements Initializable {
             nomeAluno.getText().trim(),
             cpfAluno.getText().trim(),
             dtNascAluno.getValue().toString(),
-            generoAluno.getValue().toString().toUpperCase(),
+            mapGeneroToBackend(generoAluno.getValue().toString()),
             cidAluno.getText().trim(),
             nisAluno.getText().trim(),
             escolaAluno.getText().trim(),
-            grauEscAluno.getValue().toString().replace(" ", "_").toUpperCase(),
+            mapEscolaridadeToBackend(grauEscAluno.getValue().toString()),
             (obsAluno != null && obsAluno.getText() != null) ? obsAluno.getText().trim() : null,
             java.util.List.of(responsavel)
         );
@@ -450,6 +454,25 @@ public class CadastroAlunoController implements Initializable {
             default: return "";
         }
     }
+    
+    private String mapGeneroToBackend(String valor) {
+        String v = valor.trim();
+        if (v.equalsIgnoreCase("Masculino")) return "MASCULINO";
+        if (v.equalsIgnoreCase("Feminino")) return "FEMININO";
+        if (v.equalsIgnoreCase("Outro")) return "OUTRO";
+        return "PREFIRO_NAO_INFORMAR";
+    }
+
+    private String mapEscolaridadeToBackend(String valor) {
+        String v = valor.trim();
+        if (v.equalsIgnoreCase("Educação Infantil") || v.equalsIgnoreCase("Educacao Infantil")) return "EDUCACAO_INFANTIL";
+        if (v.equalsIgnoreCase("Estimulação Precoce") || v.equalsIgnoreCase("Estimulacao Precoce")) return "ESTIMULACAO_PRECOCE";
+        if (v.equalsIgnoreCase("Fundamental I")) return "FUNDAMENTAL_I";
+        if (v.equalsIgnoreCase("Fundamental II")) return "FUNDAMENTAL_II";
+        if (v.equalsIgnoreCase("Ensino Médio") || v.equalsIgnoreCase("Ensino Medio")) return "MEDIO";
+        if (v.equalsIgnoreCase("Outro")) return "OUTRO";
+        return "PREFIRO_NAO_INFORMAR";
+    }
     // VALIDAÇÃO DE FORMULÁRIO COMPLETO
     private boolean validarFormularioCompleto() {
         
@@ -510,7 +533,7 @@ public class CadastroAlunoController implements Initializable {
             return false;
         }
         if (contatoRespon == null || contatoRespon.getText() == null || contatoRespon.getText().trim().isEmpty()) {
-            mostrarErro("Informe o contato do responsável.");
+            mostrarErro("Informe o telefone do responsável.");
             return false;
         }
         if (parentescoRespon == null || parentescoRespon.getValue() == null || ((String) parentescoRespon.getValue()).trim().isEmpty()) {
@@ -555,5 +578,71 @@ public class CadastroAlunoController implements Initializable {
         } catch (Exception e) {
             return "Requisição inválida.";
         }
+    }
+    
+    
+    private void aplicarCpfMask(TextField campo) {
+        if (campo == null) return;
+        campo.textProperty().addListener((obs, old, neu) -> {
+            String digits = neu.replaceAll("\\D", "");
+            if (digits.length() > 11) digits = digits.substring(0, 11);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < digits.length(); i++) {
+                if (i == 3 || i == 6) sb.append('.');
+                if (i == 9) sb.append('-');
+                sb.append(digits.charAt(i));
+            }
+            String formatted = sb.toString();
+            if (!formatted.equals(neu)) {
+                campo.setText(formatted);
+                campo.positionCaret(formatted.length());
+            }
+        });
+    }
+
+    private void aplicarTelefoneMask(TextField campo) {
+        if (campo == null) return;
+        campo.textProperty().addListener((obs, old, neu) -> {
+            String digits = neu.replaceAll("\\D", "");
+            if (digits.length() > 11) digits = digits.substring(0, 11);
+            StringBuilder sb = new StringBuilder();
+            int len = digits.length();
+            if (len > 0) sb.append('(');
+            for (int i = 0; i < len; i++) {
+                char d = digits.charAt(i);
+                if (i == 2) sb.append(") ");
+                if (len > 10) { // celular
+                    if (i == 7) sb.append('-');
+                } else { // fixo
+                    if (i == 6) sb.append('-');
+                }
+                sb.append(d);
+            }
+            String formatted = sb.toString();
+            if (len > 0 && formatted.charAt(0) != '(') formatted = "(" + formatted;
+            if (len > 0 && len < 2 && !formatted.endsWith("(")) formatted = "(" + digits;
+            if (!formatted.equals(neu)) {
+                campo.setText(formatted);
+                campo.positionCaret(formatted.length());
+            }
+        });
+    }
+
+    private void aplicarCepMask(TextField campo) {
+        if (campo == null) return;
+        campo.textProperty().addListener((obs, old, neu) -> {
+            String digits = neu.replaceAll("\\D", "");
+            if (digits.length() > 8) digits = digits.substring(0, 8);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < digits.length(); i++) {
+                if (i == 5) sb.append('-');
+                sb.append(digits.charAt(i));
+            }
+            String formatted = sb.toString();
+            if (!formatted.equals(neu)) {
+                campo.setText(formatted);
+                campo.positionCaret(formatted.length());
+            }
+        });
     }
 }

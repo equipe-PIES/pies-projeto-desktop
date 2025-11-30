@@ -16,6 +16,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+import javafx.animation.PauseTransition;
+import java.util.stream.Collectors;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -62,11 +66,13 @@ public class CadastroTurmaController implements Initializable {
     @FXML
     private Label erroMensagem;
     
-    // Campos para adicionar alunos
+    // Busca e adição de alunos por nome
     @FXML
-    private TextField addCPF;
+    private TextField buscarAlunoNome;
     @FXML
-    private Button addCPFButton;
+    private Button adicionarAlunoButton;
+    @FXML
+    private ListView<String> SugestoesAlunosList;
     @FXML
     private ListView<String> ListAlunosTurma;
 
@@ -76,6 +82,8 @@ public class CadastroTurmaController implements Initializable {
     private List<ProfessorDTO> professoresDisponiveis;
     private List<AlunoSimplificadoDTO> alunosAdicionados;
     private List<AlunoSimplificadoDTO> todosAlunosCache; // Cache para evitar múltiplas requisições
+    private PauseTransition searchDebounce;
+    private String currentQuery = "";
 
     public CadastroTurmaController() {
         this.authService = AuthService.getInstance();
@@ -94,6 +102,7 @@ public class CadastroTurmaController implements Initializable {
         carregarProfessores();
         conectarAcoesFormulario();
         configurarListViewAlunos();
+        configurarBuscaAlunosPorNome();
         
         // Carrega o cache de alunos de forma proativa em background
         carregarCacheAlunosEmBackground();
@@ -107,9 +116,12 @@ public class CadastroTurmaController implements Initializable {
         // Inicializa os graus escolares (conforme enum GrauEscolar do backend)
         if (grauTurma != null && grauTurma.getItems().isEmpty()) {
             grauTurma.getItems().addAll(
-                "EDUCACAO_INFANTIL",
-                "FUNDAMENTAL_I",
-                "FUNDAMENTAL_II"
+                "Educação Infantil",
+                "Estimulação Precoce",
+                "Fundamental I",
+                "Fundamental II",
+                "Ensino Médio",
+                "Outro"
             );
         }
 
@@ -119,15 +131,17 @@ public class CadastroTurmaController implements Initializable {
                 "4-5 anos",
                 "6-8 anos",
                 "9-11 anos",
-                "12-14 anos"
+                "12-14 anos",
+                "15-18 anos",
+                "acima de 18 anos"
             );
         }
 
         // Inicializa turnos (conforme enum Turno do backend)
         if (turnoTurma != null && turnoTurma.getItems().isEmpty()) {
             turnoTurma.getItems().addAll(
-                "MATUTINO",
-                "VESPERTINO"
+                "Matutino",
+                "Vespertino"
             );
         }
     }
@@ -187,8 +201,8 @@ public class CadastroTurmaController implements Initializable {
         if (cancelCadastroBt != null) {
             cancelCadastroBt.setOnAction(e -> handleInicioButtonAction(e));
         }
-        if (addCPFButton != null) {
-            addCPFButton.setOnAction(e -> adicionarAlunoPorCPF());
+        if (adicionarAlunoButton != null) {
+            adicionarAlunoButton.setOnAction(e -> adicionarAlunoSelecionado());
         }
     }
 
@@ -266,94 +280,137 @@ public class CadastroTurmaController implements Initializable {
         }
     }
 
-    private void adicionarAlunoPorCPF() {
-        if (addCPF == null || addCPF.getText() == null || addCPF.getText().trim().isEmpty()) {
-            mostrarErro("Digite o CPF do aluno.");
+    private void configurarBuscaAlunosPorNome() {
+        if (SugestoesAlunosList != null) {
+            SugestoesAlunosList.setItems(FXCollections.observableArrayList());
+            SugestoesAlunosList.setCellFactory(list -> new ListCell<String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        String q = currentQuery == null ? "" : currentQuery.trim().toLowerCase();
+                        if (q.isEmpty()) {
+                            setText(item);
+                            setGraphic(null);
+                        } else {
+                            String lower = item.toLowerCase();
+                            int idx = lower.indexOf(q);
+                            if (idx >= 0) {
+                                Text pre = new Text(item.substring(0, idx));
+                                Text match = new Text(item.substring(idx, idx + q.length()));
+                                match.setStyle("-fx-font-weight: bold; -fx-fill: #2c3e50;");
+                                Text post = new Text(item.substring(idx + q.length()));
+                                TextFlow flow = new TextFlow(pre, match, post);
+                                setText(null);
+                                setGraphic(flow);
+                            } else {
+                                setText(item);
+                                setGraphic(null);
+                            }
+                        }
+                    }
+                }
+            });
+            SugestoesAlunosList.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    adicionarAlunoSelecionado();
+                }
+            });
+        }
+        if (buscarAlunoNome != null) {
+            searchDebounce = new PauseTransition(javafx.util.Duration.millis(300));
+            searchDebounce.setOnFinished(e -> atualizarSugestoesPorNome(currentQuery));
+            buscarAlunoNome.textProperty().addListener((obs, oldVal, newVal) -> {
+                currentQuery = newVal;
+                searchDebounce.stop();
+                searchDebounce.playFromStart();
+            });
+        }
+    }
+
+    private void atualizarSugestoesPorNome(String query) {
+        if (SugestoesAlunosList == null) return;
+        String q = query == null ? "" : query.trim().toLowerCase();
+        if (q.isEmpty()) {
+            SugestoesAlunosList.getItems().clear();
             return;
         }
+        List<AlunoSimplificadoDTO> todosAlunos = obterTodosAlunos();
+        if (todosAlunos == null) return;
+        List<String> sugestoes = todosAlunos.stream()
+                .filter(a -> a.getNome() != null && a.getNome().toLowerCase().contains(q))
+                .limit(20)
+                .map(a -> a.getNome() + " - " + a.getCpf())
+                .collect(Collectors.toList());
+        SugestoesAlunosList.setItems(FXCollections.observableArrayList(sugestoes));
+    }
 
-        String cpf = addCPF.getText().trim();
-        limparErro();
+    private List<AlunoSimplificadoDTO> obterTodosAlunos() {
+        if (todosAlunosCache != null) return todosAlunosCache;
+        String token = authService.getCurrentToken();
+        if (token == null || token.isEmpty()) return null;
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/educandos"))
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                todosAlunosCache = objectMapper.readValue(
+                        response.body(),
+                        new TypeReference<List<AlunoSimplificadoDTO>>() {}
+                );
+                return todosAlunosCache;
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao obter alunos: " + e.getMessage());
+        }
+        return null;
+    }
 
-        // Verifica se o aluno já foi adicionado
+    private void adicionarAlunoSelecionado() {
+        if (SugestoesAlunosList == null || SugestoesAlunosList.getSelectionModel().getSelectedItem() == null) {
+            mostrarErro("Selecione um aluno na lista de sugestões.");
+            return;
+        }
+        String selecionado = SugestoesAlunosList.getSelectionModel().getSelectedItem();
+        int idx = selecionado.lastIndexOf(" - ");
+        final String cpf = (idx >= 0) ? selecionado.substring(idx + 3).trim() : null;
+        if (cpf == null || cpf.isEmpty()) {
+            mostrarErro("Não foi possível identificar o CPF do aluno selecionado.");
+            return;
+        }
         boolean jaAdicionado = alunosAdicionados.stream()
                 .anyMatch(aluno -> aluno.getCpf().equals(cpf));
-        
         if (jaAdicionado) {
             mostrarErro("Este aluno já foi adicionado à turma.");
             return;
         }
-
-        // Busca o aluno no backend
-        String token = authService.getCurrentToken();
-        if (token == null || token.isEmpty()) {
-            mostrarErro("Sessão expirada. Faça login novamente.");
+        List<AlunoSimplificadoDTO> todos = obterTodosAlunos();
+        if (todos == null) {
+            mostrarErro("Não foi possível carregar a lista de alunos.");
             return;
         }
-
-        try {
-            System.out.println("=== BUSCANDO ALUNO POR CPF ===");
-            System.out.println("CPF: " + cpf);
-
-            // Usa o cache se já tiver carregado, senão busca do backend
-            List<AlunoSimplificadoDTO> todosAlunos;
-            
-            if (todosAlunosCache == null) {
-                System.out.println("Cache vazio - buscando alunos do backend...");
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:8080/api/educandos"))
-                        .header("Authorization", "Bearer " + token)
-                        .header("Content-Type", "application/json")
-                        .GET()
-                        .timeout(Duration.ofSeconds(10))
-                        .build();
-
-                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-                if (response.statusCode() == 200) {
-                    todosAlunosCache = objectMapper.readValue(
-                        response.body(),
-                        new TypeReference<List<AlunoSimplificadoDTO>>() {}
-                    );
-                    todosAlunos = todosAlunosCache;
-                    System.out.println("Cache carregado com " + todosAlunos.size() + " alunos");
-                } else if (response.statusCode() == 403) {
-                    mostrarErro("Acesso negado ao buscar alunos.");
-                    return;
-                } else {
-                    mostrarErro("Erro ao buscar aluno. Código: " + response.statusCode());
-                    return;
-                }
-            } else {
-                System.out.println("Usando cache com " + todosAlunosCache.size() + " alunos");
-                todosAlunos = todosAlunosCache;
-            }
-
-            // Busca o aluno com o CPF informado (remove pontos e traços para comparação)
-            String cpfLimpo = cpf.replaceAll("[.\\-]", "");
-            AlunoSimplificadoDTO alunoEncontrado = todosAlunos.stream()
-                    .filter(aluno -> {
-                        String cpfBancoLimpo = aluno.getCpf().replaceAll("[.\\-]", "");
-                        return cpfBancoLimpo.equals(cpfLimpo);
-                    })
-                    .findFirst()
-                    .orElse(null);
-
-            if (alunoEncontrado != null) {
-                alunosAdicionados.add(alunoEncontrado);
-                atualizarListaAlunos();
-                addCPF.clear();
-                System.out.println("✓ Aluno vinculado: " + alunoEncontrado.getNome());
-            } else {
-                mostrarErro("CPF não encontrado. Cadastre o aluno primeiro.");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Erro ao buscar aluno: " + e.getMessage());
-            mostrarErro("Erro ao buscar aluno: " + e.getMessage());
+        AlunoSimplificadoDTO alunoEncontrado = todos.stream()
+                .filter(a -> a.getCpf().equals(cpf))
+                .findFirst()
+                .orElse(null);
+        if (alunoEncontrado != null) {
+            alunosAdicionados.add(alunoEncontrado);
+            atualizarListaAlunos();
+            System.out.println("✓ Aluno vinculado: " + alunoEncontrado.getNome());
+        } else {
+            mostrarErro("Aluno não encontrado.");
         }
     }
+
+    
 
     private void removerAluno(String nomeAluno) {
         // Remove o aluno da lista pelo nome
@@ -446,10 +503,14 @@ public class CadastroTurmaController implements Initializable {
         // Monta o DTO
         CreateTurmaDTO turmaDTO = new CreateTurmaDTO();
         turmaDTO.setNome(nomeTurma);
-        turmaDTO.setGrauEscolar(grauTurma.getValue());
+        turmaDTO.setGrauEscolar(mapGrauEscolarToBackend(grauTurma.getValue()));
         turmaDTO.setFaixaEtaria(idadeAlunos.getValue());
-        turmaDTO.setTurno(turnoTurma.getValue());
+        turmaDTO.setTurno(mapTurnoToBackend(turnoTurma.getValue()));
         turmaDTO.setProfessorId(professorId);
+        if (alunosAdicionados != null && !alunosAdicionados.isEmpty()) {
+            List<String> cpfs = alunosAdicionados.stream().map(AlunoSimplificadoDTO::getCpf).collect(Collectors.toList());
+            turmaDTO.setCpfsAlunos(cpfs);
+        }
 
         try {
             String json = objectMapper.writeValueAsString(turmaDTO);
@@ -493,6 +554,23 @@ public class CadastroTurmaController implements Initializable {
             System.err.println("======================");
             mostrarErro("Erro ao comunicar com o servidor: " + e.getMessage());
         }
+    }
+
+    private String mapGrauEscolarToBackend(String valor) {
+        String v = valor.trim();
+        if (v.equalsIgnoreCase("Educação Infantil") || v.equalsIgnoreCase("Educacao Infantil")) return "EDUCACAO_INFANTIL";
+        if (v.equalsIgnoreCase("Estimulação Precoce") || v.equalsIgnoreCase("Estimulacao Precoce")) return "ESTIMULACAO_PRECOCE";
+        if (v.equalsIgnoreCase("Fundamental I")) return "FUNDAMENTAL_I";
+        if (v.equalsIgnoreCase("Fundamental II")) return "FUNDAMENTAL_II";
+        if (v.equalsIgnoreCase("Ensino Médio") || v.equalsIgnoreCase("Ensino Medio")) return "MEDIO";
+        if (v.equalsIgnoreCase("Outro")) return "OUTRO";
+        return "PREFIRO_NAO_INFORMAR";
+    }
+
+    private String mapTurnoToBackend(String valor) {
+        String v = valor.trim();
+        if (v.equalsIgnoreCase("Matutino")) return "MATUTINO";
+        return "VESPERTINO";
     }
 
     private String obterProfessorIdSelecionado() {

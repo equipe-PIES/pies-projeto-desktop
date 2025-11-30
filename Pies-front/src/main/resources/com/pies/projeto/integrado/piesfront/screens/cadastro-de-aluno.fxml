@@ -232,7 +232,7 @@
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>
                               </ChoiceBox>
-                              <Label text="Contato:">
+                              <Label text="Telefone:">
                                  <VBox.margin>
                                     <Insets bottom="4.0" left="20.0" right="20.0" />
                                  </VBox.margin>

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.pies.api.projeto.integrado.pies_backend.model.Enums.Genero;
 import com.pies.api.projeto.integrado.pies_backend.model.Professor;
 
 /**
@@ -62,7 +63,7 @@ public interface ProfessorRepository extends JpaRepository<Professor, String> {
      * @param genero Gênero dos professores a serem buscados
      * @return Lista de professores do gênero informado
      */
-    List<Professor> findByGenero(String genero);
+    List<Professor> findByGenero(Genero genero);
     
     /**
      * Busca professores por formação

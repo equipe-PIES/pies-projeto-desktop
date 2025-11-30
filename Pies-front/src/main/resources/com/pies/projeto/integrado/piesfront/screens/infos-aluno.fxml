@@ -53,7 +53,7 @@
         <Label text="CPF Resp.:" GridPane.columnIndex="0" GridPane.rowIndex="11" />
         <Label fx:id="cpfResponsavelLabel" GridPane.columnIndex="1" GridPane.rowIndex="11" />
 
-        <Label text="Contato:" GridPane.columnIndex="0" GridPane.rowIndex="12" />
+        <Label text="Telefone:" GridPane.columnIndex="0" GridPane.rowIndex="12" />
         <Label fx:id="contatoLabel" GridPane.columnIndex="1" GridPane.rowIndex="12" />
 
         <Label text="Endereço:" GridPane.columnIndex="0" GridPane.rowIndex="13" />

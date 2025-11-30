@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.CreateProfessorDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.ProfessorDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.UpdateProfessorDTO;
+import com.pies.api.projeto.integrado.pies_backend.model.Enums.Genero;
 import com.pies.api.projeto.integrado.pies_backend.model.Professor;
 import com.pies.api.projeto.integrado.pies_backend.model.Turma;
 import com.pies.api.projeto.integrado.pies_backend.repository.ProfessorRepository;
@@ -184,7 +185,7 @@ public class ProfessorController {
      */
     @GetMapping("/genero/{genero}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('COORDENADOR')")
-    public ResponseEntity<List<ProfessorDTO>> buscarProfessoresPorGenero(@PathVariable String genero) {
+    public ResponseEntity<List<ProfessorDTO>> buscarProfessoresPorGenero(@PathVariable Genero genero) {
         List<Professor> professores = professorRepository.findByGenero(genero);
         List<ProfessorDTO> professoresDTO = professores.stream()
                 .map(ProfessorDTO::new)

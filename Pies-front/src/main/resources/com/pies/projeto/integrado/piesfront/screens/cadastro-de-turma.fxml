@@ -163,26 +163,31 @@
                                                 <Insets bottom="2.0" left="20.0" right="20.0" top="20.0" />
                                             </VBox.margin>
                                         </Label>
-                              <Label text="Insira o aluno(a) na turma atráves do CPF.">
+                              <Label text="Busque o aluno(a) pelo nome.">
                                  <VBox.margin>
                                     <Insets bottom="20.0" left="20.0" right="20.0" />
                                  </VBox.margin>
                               </Label>
                               <HBox prefHeight="34.0" prefWidth="433.0">
                                  <children>
-                                              <TextField fx:id="addCPF" prefHeight="31.0" prefWidth="245.0" promptText="000.000.000.-00">
+                                    <TextField fx:id="buscarAlunoNome" prefHeight="31.0" prefWidth="300.0" promptText="Digite o nome do aluno(a)">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
-                                              </TextField>
+                                    </TextField>
                                     <Region prefHeight="34.0" prefWidth="8.0" />
-                                    <Button fx:id="addCPFButton" mnemonicParsing="false" prefHeight="31.0" prefWidth="148.0" text="Adicionar">
+                                    <Button fx:id="adicionarAlunoButton" mnemonicParsing="false" prefHeight="31.0" prefWidth="148.0" text="Adicionar selecionado">
                                        <HBox.margin>
                                           <Insets right="20.0" />
                                        </HBox.margin>
                                     </Button>
                                  </children>
                               </HBox>
+                              <ListView fx:id="SugestoesAlunosList" prefHeight="120.0" prefWidth="433.0">
+                                 <VBox.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </VBox.margin>
+                              </ListView>
                               <Line endX="320.0" startX="-100.0" stroke="#dddbdb">
                                  <VBox.margin>
                                     <Insets top="20.0" />

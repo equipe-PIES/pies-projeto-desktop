@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
@@ -65,7 +66,9 @@ public class CadastroProfController implements Initializable {
     @FXML
     private TextField emailProf;
     @FXML
-    private TextField passwordProf;
+    private PasswordField passwordProf;
+    @FXML
+    private PasswordField confirmPasswordProf;
 
     private final AuthService authService;
     private final HttpClient httpClient;
@@ -84,6 +87,7 @@ public class CadastroProfController implements Initializable {
 
         inicializarGeneros();
         conectarAcoesFormulario();
+        aplicarCpfMask(cpfProf);
     }
 
     /**
@@ -203,8 +207,36 @@ public class CadastroProfController implements Initializable {
             mostrarErro("Informe a senha do usuário (professor).");
             return false;
         }
+        if (confirmPasswordProf == null || confirmPasswordProf.getText() == null || confirmPasswordProf.getText().trim().isEmpty()) {
+            mostrarErro("Confirme a senha do usuário (professor).");
+            return false;
+        }
+        if (!passwordProf.getText().equals(confirmPasswordProf.getText())) {
+            mostrarErro("As senhas não coincidem.");
+            return false;
+        }
 
         return true;
+    }
+
+    private void aplicarCpfMask(TextField campo) {
+        if (campo == null) return;
+        campo.textProperty().addListener((obs, old, neu) -> {
+            String digits = neu.replaceAll("\\D", "");
+            if (digits.length() > 11) digits = digits.substring(0, 11);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < digits.length(); i++) {
+                char c = digits.charAt(i);
+                if (i == 3 || i == 6) sb.append('.');
+                if (i == 9) sb.append('-');
+                sb.append(c);
+            }
+            String formatted = sb.toString();
+            if (!formatted.equals(neu)) {
+                campo.setText(formatted);
+                campo.positionCaret(formatted.length());
+            }
+        });
     }
 
     private void mostrarErro(String mensagem) {
@@ -239,7 +271,7 @@ public class CadastroProfController implements Initializable {
         requestBody.nome = nomeProf.getText().trim();
         requestBody.cpf = cpfProf.getText().trim();
         requestBody.dataNascimento = dtNascProf.getValue().format(DateTimeFormatter.ISO_LOCAL_DATE);
-        requestBody.genero = generoProf.getValue();
+        requestBody.genero = mapGeneroToBackend(generoProf.getValue());
         // Formacao é obrigatória no backend. Como não há campo na UI ainda, usamos um default.
         requestBody.formacao = "Graduação";
         requestBody.observacoes = (obsProf != null && obsProf.getText() != null) ? obsProf.getText().trim() : null;
@@ -361,6 +393,14 @@ public class CadastroProfController implements Initializable {
         
         @JsonProperty("role")
         public String role;
+    }
+
+    private String mapGeneroToBackend(String valor) {
+        String v = valor.trim();
+        if (v.equalsIgnoreCase("Masculino")) return "MASCULINO";
+        if (v.equalsIgnoreCase("Feminino")) return "FEMININO";
+        if (v.equalsIgnoreCase("Outro")) return "OUTRO";
+        return "PREFIRO_NAO_INFORMAR";
     }
 
     private String extrairMensagemErro(String responseBody) {

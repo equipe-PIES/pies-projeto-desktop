@@ -158,7 +158,12 @@ public class InfosAlunoController implements Initializable {
         }
         
         if (contatoLabel != null) {
-            contatoLabel.setText("Não informado");
+            String telefoneFormatado = "Não informado";
+            if (educando.responsaveis() != null && !educando.responsaveis().isEmpty()) {
+                String contato = educando.responsaveis().get(0).contato();
+                telefoneFormatado = formatarTelefone(contato);
+            }
+            contatoLabel.setText(telefoneFormatado);
         }
         
         if (enderecoLabel != null) {
@@ -199,6 +204,7 @@ public class InfosAlunoController implements Initializable {
             case "MASCULINO" -> "Masculino";
             case "FEMININO" -> "Feminino";
             case "OUTRO" -> "Outro";
+            case "PREFIRO_NAO_INFORMAR" -> "Prefiro não informar";
             default -> genero;
         };
     }
@@ -213,10 +219,39 @@ public class InfosAlunoController implements Initializable {
         
         return switch (escolaridade) {
             case "EDUCACAO_INFANTIL" -> "Educação Infantil";
+            case "ESTIMULACAO_PRECOCE" -> "Estimulação Precoce";
             case "FUNDAMENTAL_I" -> "Fundamental I";
             case "FUNDAMENTAL_II" -> "Fundamental II";
+            case "MEDIO" -> "Ensino Médio";
+            case "OUTRO" -> "Outro";
+            case "PREFIRO_NAO_INFORMAR" -> "Prefiro não informar";
             default -> escolaridade;
         };
+    }
+
+    private String formatarTelefone(String contato) {
+        if (contato == null || contato.trim().isEmpty()) {
+            return "Não informado";
+        }
+        String digits = contato.replaceAll("\\D", "");
+        if (digits.isEmpty()) {
+            return "Não informado";
+        }
+        if (digits.length() > 11) digits = digits.substring(0, 11);
+        StringBuilder sb = new StringBuilder();
+        int len = digits.length();
+        if (len > 0) sb.append('(');
+        for (int i = 0; i < len; i++) {
+            char d = digits.charAt(i);
+            if (i == 2) sb.append(") ");
+            if (len > 10) { // celular
+                if (i == 7) sb.append('-');
+            } else { // fixo
+                if (i == 6) sb.append('-');
+            }
+            sb.append(d);
+        }
+        return sb.toString();
     }
     
     /**

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.pies.api.projeto.integrado.pies_backend.model.Enums.Genero;
 import com.pies.api.projeto.integrado.pies_backend.model.Professor;
 
 import lombok.AllArgsConstructor;
@@ -38,7 +39,7 @@ public class ProfessorDTO {
     
     private LocalDate dataNascimento;
     
-    private String genero;
+    private Genero genero;
     
     private String formacao;
     

@@ -3,6 +3,7 @@ package com.pies.api.projeto.integrado.pies_backend.controller.dto;
 // Import para manipulação de datas
 import java.time.LocalDate;
 
+import com.pies.api.projeto.integrado.pies_backend.model.Enums.Genero;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -63,8 +64,8 @@ public class CreateProfessorDTO {
      * Gênero do professor
      * Campo obrigatório - usado para relatórios e estatísticas
      */
-    @NotBlank(message = "Gênero é obrigatório") // Gênero é obrigatório
-    private String genero;
+    @NotNull(message = "Gênero é obrigatório") // Gênero é obrigatório
+    private Genero genero;
 
     /**
      * Formação acadêmica do professor

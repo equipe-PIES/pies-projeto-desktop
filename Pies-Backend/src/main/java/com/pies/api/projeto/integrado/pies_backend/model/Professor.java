@@ -3,6 +3,9 @@ package com.pies.api.projeto.integrado.pies_backend.model;
 // Import para manipulação de datas
 import java.time.LocalDate;
 
+import com.pies.api.projeto.integrado.pies_backend.model.Enums.Genero;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -78,8 +81,9 @@ public class Professor {
      * Gênero do professor
      * Campo obrigatório - usado para relatórios e estatísticas
      */
-    @NotBlank(message = "Gênero é obrigatório") // Gênero é obrigatório
-    private String genero;
+    @NotNull(message = "Informe o gênero")
+    @Enumerated(EnumType.STRING)
+    private Genero genero;
 
     /**
      * Formação acadêmica do professor
@@ -115,7 +119,7 @@ public class Professor {
      * @param genero Gênero do professor
      * @param formacao Formação acadêmica
      */
-    public Professor(String nome, String cpf, LocalDate dataNascimento, String genero, String formacao) {
+    public Professor(String nome, String cpf, LocalDate dataNascimento, Genero genero, String formacao) {
         this.nome = nome;
         this.cpf = cpf;
         this.dataNascimento = dataNascimento;
@@ -135,7 +139,7 @@ public class Professor {
      * @param formacao Formação acadêmica
      * @param observacoes Observações adicionais (pode ser null)
      */
-    public Professor(String nome, String cpf, LocalDate dataNascimento, String genero, String formacao, String observacoes) {
+    public Professor(String nome, String cpf, LocalDate dataNascimento, Genero genero, String formacao, String observacoes) {
         this.nome = nome;
         this.cpf = cpf;
         this.dataNascimento = dataNascimento;
