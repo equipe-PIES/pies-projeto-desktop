@@ -1,5 +1,7 @@
 package com.pies.api.projeto.integrado.pies_backend.model;
 
+import java.util.List;
+
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.GrauEscolar;
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.Turno;
 
@@ -11,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -45,4 +48,20 @@ Ele só é buscado quando for realmente acessado.*/
 
     @JoinColumn(name = "professor_id") // Nome da coluna de ligação na tabela
     private Professor professor;
+
+    /**
+     * Lista de educandos matriculados nesta turma.
+     * 
+     * Relacionamento ManyToMany: uma turma pode ter múltiplos educandos
+     * e um educando pode estar em múltiplas turmas.
+     * 
+     * Configurações do relacionamento:
+     * - mappedBy: indica que o relacionamento é bidirecional e a propriedade
+     *   "turmas" na classe Educando é o dono do relacionamento (lado que define
+     *   a tabela intermediária).
+     * - fetch: LAZY significa que os educandos só são carregados quando explicitamente
+     *   acessados, melhorando a performance.
+     */
+    @ManyToMany(mappedBy = "turmas", fetch = FetchType.LAZY)
+    private List<Educando> educandos;
 }
