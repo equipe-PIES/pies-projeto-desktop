@@ -1,6 +1,10 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
+import com.pies.projeto.integrado.piesfront.dto.ResponsavelDTO;
+import com.pies.projeto.integrado.piesfront.dto.EnderecoDTO;
+import com.pies.projeto.integrado.piesfront.dto.TurmaDTO;
+import com.pies.projeto.integrado.piesfront.services.AuthService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -78,6 +82,7 @@ public class InfosAlunoController implements Initializable {
     private Button closeButton;
     
     private EducandoDTO educando;
+    private final AuthService authService = AuthService.getInstance();
     
     /**
      * Define os dados do educando a serem exibidos
@@ -140,51 +145,94 @@ public class InfosAlunoController implements Initializable {
         }
         
         if (observacoesLabel != null) {
-            // O DTO não tem campo de observações, então deixamos como "Não informado"
-            observacoesLabel.setText("Não informado");
+            observacoesLabel.setText(educando.observacao() != null && !educando.observacao().isEmpty() 
+                    ? educando.observacao() : "Não informado");
         }
         
-        // Informações do Responsável (não disponíveis no DTO atual)
+        // Informações do Responsável
+        ResponsavelDTO responsavel = null;
+        if (educando.responsaveis() != null && !educando.responsaveis().isEmpty()) {
+            responsavel = educando.responsaveis().get(0);
+        }
+        
         if (nomeResponsavelLabel != null) {
-            nomeResponsavelLabel.setText("Não informado");
+            nomeResponsavelLabel.setText(responsavel != null && responsavel.nome() != null 
+                    ? responsavel.nome() : "Não informado");
         }
         
         if (parentescoLabel != null) {
-            parentescoLabel.setText("Não informado");
+            String parentesco = "Não informado";
+            if (responsavel != null) {
+                if (responsavel.parentesco() != null) {
+                    parentesco = formatarParentesco(responsavel.parentesco());
+                    if ("OUTRO".equals(responsavel.parentesco()) && responsavel.outroParentesco() != null) {
+                        parentesco = responsavel.outroParentesco();
+                    }
+                }
+            }
+            parentescoLabel.setText(parentesco);
         }
         
         if (cpfResponsavelLabel != null) {
-            cpfResponsavelLabel.setText("Não informado");
+            cpfResponsavelLabel.setText(responsavel != null && responsavel.cpf() != null 
+                    ? responsavel.cpf() : "Não informado");
         }
         
         if (contatoLabel != null) {
             String telefoneFormatado = "Não informado";
-            if (educando.responsaveis() != null && !educando.responsaveis().isEmpty()) {
-                String contato = educando.responsaveis().get(0).contato();
-                telefoneFormatado = formatarTelefone(contato);
+            if (responsavel != null && responsavel.contato() != null) {
+                telefoneFormatado = formatarTelefone(responsavel.contato());
             }
             contatoLabel.setText(telefoneFormatado);
         }
         
         if (enderecoLabel != null) {
-            enderecoLabel.setText("Não informado");
+            String enderecoCompleto = "Não informado";
+            if (responsavel != null && responsavel.endereco() != null) {
+                enderecoCompleto = formatarEndereco(responsavel.endereco());
+            }
+            enderecoLabel.setText(enderecoCompleto);
         }
         
-        // Informações da Turma (não disponíveis no DTO atual)
-        if (turmaLabel != null) {
-            turmaLabel.setText("Não informado");
-        }
-        
-        if (professoraResponsavelLabel != null) {
-            professoraResponsavelLabel.setText("Não informado");
-        }
-        
-        if (grauEscolaridadeTurmaLabel != null) {
-            grauEscolaridadeTurmaLabel.setText("Não informado");
-        }
-        
-        if (turnoLabel != null) {
-            turnoLabel.setText("Não informado");
+        // Informações da Turma
+        if (educando.turmaId() != null) {
+            try {
+                TurmaDTO turma = authService.getTurmaById(educando.turmaId());
+                
+                if (turmaLabel != null) {
+                    turmaLabel.setText(turma != null && turma.nome() != null 
+                            ? turma.nome() : "Não informado");
+                }
+                
+                if (professoraResponsavelLabel != null) {
+                    professoraResponsavelLabel.setText(turma != null && turma.professorNome() != null 
+                            ? turma.professorNome() : "Não informado");
+                }
+                
+                if (grauEscolaridadeTurmaLabel != null) {
+                    grauEscolaridadeTurmaLabel.setText(turma != null && turma.grauEscolar() != null 
+                            ? turma.grauEscolar() : "Não informado");
+                }
+                
+                if (turnoLabel != null) {
+                    String turnoFormatado = "Não informado";
+                    if (turma != null && turma.turno() != null) {
+                        turnoFormatado = formatarTurno(turma.turno());
+                    }
+                    turnoLabel.setText(turnoFormatado);
+                }
+            } catch (Exception e) {
+                System.err.println("Erro ao buscar informações da turma: " + e.getMessage());
+                if (turmaLabel != null) turmaLabel.setText("Não informado");
+                if (professoraResponsavelLabel != null) professoraResponsavelLabel.setText("Não informado");
+                if (grauEscolaridadeTurmaLabel != null) grauEscolaridadeTurmaLabel.setText("Não informado");
+                if (turnoLabel != null) turnoLabel.setText("Não informado");
+            }
+        } else {
+            if (turmaLabel != null) turmaLabel.setText("Não informado");
+            if (professoraResponsavelLabel != null) professoraResponsavelLabel.setText("Não informado");
+            if (grauEscolaridadeTurmaLabel != null) grauEscolaridadeTurmaLabel.setText("Não informado");
+            if (turnoLabel != null) turnoLabel.setText("Não informado");
         }
         
         if (horarioAtendimentoLabel != null) {
@@ -229,6 +277,89 @@ public class InfosAlunoController implements Initializable {
         };
     }
 
+    /**
+     * Formata o parentesco para exibição mais amigável
+     */
+    private String formatarParentesco(String parentesco) {
+        if (parentesco == null) {
+            return "Não informado";
+        }
+        
+        return switch (parentesco) {
+            case "PAI" -> "Pai";
+            case "MAE" -> "Mãe";
+            case "AVO" -> "Avô(ó)";
+            case "TIO" -> "Tio(a)";
+            case "IRMAO" -> "Irmão(ã)";
+            case "OUTRO" -> "Outro";
+            default -> parentesco;
+        };
+    }
+    
+    /**
+     * Formata o endereço completo
+     */
+    private String formatarEndereco(EnderecoDTO endereco) {
+        if (endereco == null) {
+            return "Não informado";
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        
+        if (endereco.rua() != null && !endereco.rua().isEmpty()) {
+            sb.append(endereco.rua());
+        }
+        
+        if (endereco.numero() != null && !endereco.numero().isEmpty()) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(endereco.numero());
+        }
+        
+        if (endereco.complemento() != null && !endereco.complemento().isEmpty()) {
+            if (sb.length() > 0) sb.append(" - ");
+            sb.append(endereco.complemento());
+        }
+        
+        if (endereco.bairro() != null && !endereco.bairro().isEmpty()) {
+            if (sb.length() > 0) sb.append(" - ");
+            sb.append(endereco.bairro());
+        }
+        
+        if (endereco.cidade() != null && !endereco.cidade().isEmpty()) {
+            if (sb.length() > 0) sb.append(" - ");
+            sb.append(endereco.cidade());
+        }
+        
+        if (endereco.uf() != null && !endereco.uf().isEmpty()) {
+            if (sb.length() > 0) sb.append("/");
+            sb.append(endereco.uf());
+        }
+        
+        if (endereco.cep() != null && !endereco.cep().isEmpty()) {
+            if (sb.length() > 0) sb.append(" - CEP: ");
+            sb.append(endereco.cep());
+        }
+        
+        return sb.length() > 0 ? sb.toString() : "Não informado";
+    }
+    
+    /**
+     * Formata o turno para exibição mais amigável
+     */
+    private String formatarTurno(String turno) {
+        if (turno == null) {
+            return "Não informado";
+        }
+        
+        return switch (turno) {
+            case "MANHA" -> "Manhã";
+            case "TARDE" -> "Tarde";
+            case "NOITE" -> "Noite";
+            case "INTEGRAL" -> "Integral";
+            default -> turno;
+        };
+    }
+    
     private String formatarTelefone(String contato) {
         if (contato == null || contato.trim().isEmpty()) {
             return "Não informado";

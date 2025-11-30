@@ -1,47 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Hyperlink?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.shape.Ellipse?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
    <center>
       <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: default;">
           <children>
-            <Ellipse fill="#3f9bd2" layoutX="889.0" layoutY="401.0" radiusX="312.0" radiusY="399.0" stroke="TRANSPARENT" strokeType="INSIDE" />
-              <Label fx:id="fraseAutoria" layoutX="729.0" layoutY="606.0" text="Você está usando um sistema desenvolvido por quixada.ufc.br" textFill="WHITE" />
-            <Text fx:id="nomeDoSoftware" fill="#26568c" layoutX="147.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="AmparoEdu" wrappingWidth="280.958984375">
+              <ImageView fx:id="logoAmparoEdu" fitHeight="254.0" fitWidth="266.0" layoutX="154.0" layoutY="226.0" pickOnBounds="true" preserveRatio="true" />
+              <Rectangle fx:id="barraLateral" arcHeight="10.0" arcWidth="10.0" fill="#d6d6d6" height="800.0" layoutX="573.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="627.0" />
+              <Label fx:id="fraseAutoria" layoutX="681.0" layoutY="728.0" text="Você está usando um sistema desenvolvido por quixada.ufc.br" textFill="WHITE" />
+            <Text fx:id="nomeDoSoftware" layoutX="147.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="AmparoEdu" wrappingWidth="280.958984375">
                <font>
                   <Font name="System Bold" size="49.0" />
                </font>
             </Text>
-            <Rectangle arcHeight="30.0" arcWidth="30.0" fill="WHITE" height="398.0" layoutX="722.0" layoutY="171.0" stroke="#0000003b" strokeType="INSIDE" width="330.0" />
+            <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="398.0" layoutX="722.0" layoutY="171.0" stroke="#0000003b" strokeType="INSIDE" width="330.0" />
             <Button fx:id="loginButton" layoutX="746.0" layoutY="423.0" mnemonicParsing="false" onAction="#handleLoginButtonAction" prefHeight="38.0" prefWidth="281.0" text="Entrar" />
             <PasswordField fx:id="passwordField" layoutX="747.0" layoutY="370.0" prefHeight="38.0" prefWidth="281.0" promptText="Senha" />
             <TextField fx:id="emailField" layoutX="747.0" layoutY="298.0" prefHeight="38.0" prefWidth="281.0" promptText="Email" />
             <Label fx:id="legendaEmail" layoutX="748.0" layoutY="268.0" text="E-mail:" />
-            <Label fx:id="titleLogin" layoutX="853.0" layoutY="203.0" text="Login" textFill="#26568c">
+            <Label fx:id="titleLogin" layoutX="853.0" layoutY="203.0" text="Login">
                <font>
                   <Font name="System Bold" size="26.0" />
                </font>
             </Label>
             <Label fx:id="legendaPassword" layoutX="749.0" layoutY="342.0" text="Senha:" />
-            <Hyperlink fx:id="forgotPasswordLink" layoutX="833.0" layoutY="496.0" onAction="#handleForgotPasswordAction" text="Esqueci minha senha." textFill="#8a8686" />
-              <ImageView fx:id="logoAmparoEdu" fitHeight="254.0" fitWidth="266.0" layoutX="160.0" layoutY="296.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../../../../../../../../../../../../../Downloads/Logo%201.png" />
-               </image>
-            </ImageView>
+            <Hyperlink fx:id="forgotPasswordLink" layoutX="811.0" layoutY="499.0" onAction="#handleForgotPasswordAction" text="Esqueci minha senha." textFill="#8a8686" />
             <Label fx:id="errorMessageLabel" layoutX="746.0" layoutY="470.0" prefHeight="21.0" prefWidth="281.0" textFill="#ee7d7d" />
           </children>
       </AnchorPane>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
 <?import javafx.scene.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
@@ -24,37 +23,66 @@
             <padding>
                 <Insets left="20.0" right="20.0" />
             </padding>
-            <children>
+           <children>
+            <Region prefHeight="60.0" prefWidth="15.0" />
+            <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="140.0">
+               <children>
+      
+                     <Label id="tituloAmparoEdu" fx:id="tituloAmparoEdu" prefHeight="21.0" prefWidth="92.0" text="AmparoEdu" />
+                  <Label id="indicadorDeTela" fx:id="indicadorDeTela" prefHeight="21.0" prefWidth="131.0" text="indicadorDeTela" />
+               </children>
+            </VBox>
 
-                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair" />
-                <Region prefHeight="60.0" prefWidth="15.0" />
-                <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="165.0">
-                    <children>
-                        <Region prefHeight="45.0" prefWidth="16.0" />
-                        <VBox prefHeight="200.0" prefWidth="200.0">
-                            <children>
-                                <Label id="nameUser" fx:id="nameUser" prefHeight="21.0" prefWidth="140.0" style="-fx-font-weight: bold;" text="Nome de Usuário" />
-                                <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Coordenadora" />
-                            </children>
-                        </VBox>
-                    </children>
-               <HBox.margin>
-                  <Insets top="10.0" />
-               </HBox.margin>
-                </HBox>
-                <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="559.0" HBox.hgrow="ALWAYS" />
+               <Region HBox.hgrow="ALWAYS" />
 
-                <HBox alignment="CENTER_RIGHT" spacing="15.0">
-                    <children>
-                        <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" text="Início" />
-                        <Button id="turmasButton" fx:id="turmasButton" text="Turmas" />
-                        <Button id="professoresButton" fx:id="professoresButton" text="Professores" />
-                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
-                    </children>
-                </HBox>
-            </children>
+               <HBox alignment="CENTER_RIGHT" spacing="15.0">
+      <children>
+                      <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" text="Início" />
+                      <Button id="turmasButton" fx:id="turmasButton" text="Turmas" />
+                      <Button id="professoresButton" fx:id="professoresButton" text="Professores" />
+                      <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
+      </children>
+               </HBox>
+           </children>
         </HBox>
     </top>
+
+    <!-- MENU LATERAL -->
+    <left>
+        <VBox prefHeight="820.0" prefWidth="280.0" style="-fx-background-color: #f4f4f4;">
+            <padding>
+                <Insets left="15.0" right="15.0" top="20.0" />
+            </padding>
+           <children>
+            <HBox alignment="BOTTOM_CENTER" prefHeight="45.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <ImageView id="perfilUser" fx:id="perfilUser" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" />
+                  <Region prefHeight="45.0" prefWidth="16.0" />
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                                 <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário" />
+                           <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Coordenadora" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+
+                     <Region prefHeight="1024.0" prefWidth="210.0">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets right="20.0" />
+               </padding></Region>
+
+               <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
+                   <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+               </Button>
+           </children>
+        </VBox>
+    </left>
 
     <!-- CONTEÚDO CENTRAL -->
     <center>
@@ -62,81 +90,72 @@
             <padding>
                 <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
             </padding>
-            <children>
-                  <Label id="indicadorDeTela" fx:id="indicadorDeTela" prefHeight="35.0" prefWidth="304.0" text="indicadorDeTela">
-               <VBox.margin>
-                  <Insets right="50.0" />
-               </VBox.margin>
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
-            </Label>
+           <children>
 
-                <!-- SEÇÃO DE DESTAQUE -->
-                <VBox prefHeight="250.0" style="-fx-alignment: center;">
-               <children>
-                  <ImageView fitHeight="250.0" fitWidth="1000.0" pickOnBounds="true" />
-               </children>
-                </VBox>
+               <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Início" />
 
-                <!-- CARDS -->
-                <HBox alignment="CENTER" spacing="30.0">
-                    <children>
+               <!-- SEÇÃO DE DESTAQUE -->
+               <VBox prefHeight="250.0" style="-fx-background-color: #f0f0f0; -fx-alignment: center;">
+      <children>
+                      <Label alignment="CENTER" text="[Grande Placeholder para Gráfico/Informação]" VBox.vgrow="ALWAYS" />
+      </children>
+               </VBox>
 
-                        <!-- CARD 1 -->
-                        <VBox alignment="TOP_CENTER" prefHeight="415.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 15;">
-                            <children>
-                                <Region prefHeight="40.0" prefWidth="241.0" />
-                                <ImageView fitHeight="100.0" fitWidth="100.0" style="-fx-background-color: #f0f0f0;" />
-                                <Region prefHeight="80.0" prefWidth="270.0" />
-                                <Label style="-fx-font-weight: bold;" text="Cadastrar Turma">
-                                    <VBox.margin>
-                                        <Insets top="10.0" />
-                                    </VBox.margin>
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                                </Label>
-                                <Label alignment="CENTER" text="Adicione uma nova turma à lista de turmas no seu sistema." textAlignment="CENTER" wrapText="true" />
-                                <Button fx:id="addTurma" onAction="#handleAddTurmaAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
-                            </children>
-                        </VBox>
+               <!-- CARDS -->
+               <HBox alignment="CENTER" spacing="30.0">
+      <children>
 
-                        <!-- CARD 2 -->
-                        <VBox alignment="TOP_CENTER" prefHeight="350.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 15;">
-                            <children>
-                                <Region prefHeight="40.0" prefWidth="241.0" />
-                                <ImageView fitHeight="100.0" fitWidth="100.0" style="-fx-background-color: #f0f0f0;" />
-                                <Region prefHeight="80.0" prefWidth="270.0" />
-                                <Label style="-fx-font-weight: bold;" text="Cadastrar Professor(a)">
-                                    <VBox.margin>
-                                        <Insets top="10.0" />
-                                    </VBox.margin>
-                                </Label>
-                                <Label alignment="CENTER" text="Adicione um novo professor(a) ao seu sistema." textAlignment="CENTER" wrapText="true" />
-                                <Button fx:id="addProf" onAction="#handleAddProfAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
-                            </children>
-                        </VBox>
+                      <!-- CARD 1 -->
+                      <VBox alignment="TOP_CENTER" prefHeight="350.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 15;">
+         <children>
+                        <Region prefHeight="40.0" prefWidth="241.0" />
+                             <ImageView fitHeight="100.0" fitWidth="100.0" style="-fx-background-color: #f0f0f0;" />
+                        <Region prefHeight="50.0" prefWidth="241.0" />
+                             <Label style="-fx-font-weight: bold;" text="Cadastrar Turma">
+                                 <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                             </Label>
+                             <Label alignment="CENTER" text="Adicione uma nova turma à lista de turmas no seu sistema." wrapText="true" />
+                             <Button fx:id="addTurma" onAction="#handleAddTurmaAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
+         </children>
+                      </VBox>
 
-                        <!-- CARD 3 -->
-                        <VBox alignment="TOP_CENTER" prefHeight="350.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 15;">
-                            <children>
-                                <Region prefHeight="40.0" prefWidth="241.0" />
-                                <ImageView fitHeight="100.0" fitWidth="100.0" style="-fx-background-color: #f0f0f0;" />
-                                <Region prefHeight="80.0" prefWidth="241.0" />
-                                <Label style="-fx-font-weight: bold;" text="Cadastrar Aluno(a)">
-                                    <VBox.margin>
-                                        <Insets top="10.0" />
-                                    </VBox.margin>
-                                </Label>
-                                <Label alignment="CENTER" text="Adicione um novo aluno(a) à lista de alunos no seu sistema." textAlignment="CENTER" wrapText="true" />
-                                <Button fx:id="addAluno" onAction="#handleAddAlunoAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
-                            </children>
-                        </VBox>
-                    </children>
+                      <!-- CARD 2 -->
+                      <VBox alignment="TOP_CENTER" prefHeight="350.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 15;">
+         <children>
+                        <Region prefHeight="40.0" prefWidth="241.0" />
+                             <ImageView fitHeight="100.0" fitWidth="100.0" style="-fx-background-color: #f0f0f0;" />
+                        <Region prefHeight="50.0" prefWidth="241.0" />
+                             <Label style="-fx-font-weight: bold;" text="Cadastrar Professor(a)">
+                                 <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                             </Label>
+                             <Label alignment="CENTER" text="Adicione um novo professor(a) ao seu sistema." wrapText="true" />
+                             <Button fx:id="addProf" onAction="#handleAddProfAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
+         </children>
+                      </VBox>
 
-                </HBox>
-            </children>
+                      <!-- CARD 3 -->
+                      <VBox alignment="TOP_CENTER" prefHeight="350.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 15;">
+         <children>
+                        <Region prefHeight="40.0" prefWidth="241.0" />
+                             <ImageView fitHeight="100.0" fitWidth="100.0" style="-fx-background-color: #f0f0f0;" />
+                        <Region prefHeight="50.0" prefWidth="241.0" />
+                             <Label style="-fx-font-weight: bold;" text="Cadastrar Aluno(a)">
+                                 <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                             </Label>
+                             <Label alignment="CENTER" text="Adicione um novo aluno(a) à lista de alunos no seu sistema." wrapText="true" />
+                             <Button fx:id="addAluno" onAction="#handleAddAlunoAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
+         </children>
+                      </VBox>
+      </children>
+
+               </HBox>
+           </children>
         </VBox>
     </center>
 

@@ -1,6 +1,8 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.TurmaDTO;
+import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
+import com.pies.projeto.integrado.piesfront.services.AuthService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,6 +15,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -46,6 +49,7 @@ public class CardTurmaController implements Initializable {
     private Button verificarTurmaButton;
     
     private TurmaDTO turma;
+    private final AuthService authService = AuthService.getInstance();
     
     /**
      * Define os dados da turma a serem exibidos no card
@@ -84,9 +88,16 @@ public class CardTurmaController implements Initializable {
             turnoTurmaCard.setText("Turno: " + turno);
         }
         
-        // Por enquanto, o total de alunos é 0 pois não há relação direta entre Educando e Turma no backend
-        if (totalAlunoCard != null) {
-            totalAlunoCard.setText("Total de alunos: 0");
+        // Busca o total de alunos da turma
+        if (totalAlunoCard != null && turma.id() != null) {
+            try {
+                List<EducandoDTO> alunos = authService.getEducandosPorTurma(turma.id());
+                int total = alunos != null ? alunos.size() : 0;
+                totalAlunoCard.setText("Total de alunos: " + total);
+            } catch (Exception e) {
+                System.err.println("Erro ao buscar alunos da turma: " + e.getMessage());
+                totalAlunoCard.setText("Total de alunos: 0");
+            }
         }
     }
     
