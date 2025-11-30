@@ -150,7 +150,7 @@
                         <Label style="-fx-font-weight: bold;" text="Objetivos do Plano" />
 
                         <Label text="O que é preciso atingir, meta." />
-                        <TextArea fx:id="objetivosPlano" prefHeight="120" promptText="Digite" />
+                        <TextArea fx:id="objetivosPlano" prefHeight="120" promptText="Digite" wrapText="true" />
 
                     </children>
 

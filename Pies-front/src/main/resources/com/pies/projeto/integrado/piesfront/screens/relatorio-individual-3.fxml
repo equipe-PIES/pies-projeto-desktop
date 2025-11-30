@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PDIController">
+
+    <!-- TOPO -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="60.0" style="-fx-background-color: #ffffff;">
+            <padding>
+                <Insets left="20.0" right="20.0" />
+            </padding>
+            <children>
+                <Region prefHeight="60.0" prefWidth="15.0" />
+
+                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
+                    <HBox.margin>
+                        <Insets right="10.0" />
+                    </HBox.margin>
+                </Button>
+                <VBox prefHeight="42.0" prefWidth="227.0">
+                    <children>
+                        <Label id="nameUser" fx:id="nameUser" prefHeight="21.0" prefWidth="150.0" style="-fx-font-weight: bold;" text="Nome de Usuário" />
+                        <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Professora" />
+                    </children>
+                    <HBox.margin>
+                        <Insets top="10.0" />
+                    </HBox.margin>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="140.0" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                    <children>
+                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
+                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
+                        <Button id="relatoriosButton" fx:id="relatoriosButton" text="Relatórios" />
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+
+
+    <!-- CONTEÚDO CENTRAL -->
+    <center>
+        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefViewportHeight="820.0" prefViewportWidth="1220.0">
+            <content>
+                <VBox spacing="20" style="-fx-background-color: white;">
+                    <padding>
+                        <Insets bottom="20.0" left="30.0" right="30.0" top="30.0" />
+                    </padding>
+
+                    <children>
+                        <Label id="indicadorDeTela" fx:id="indicadorDeTela" prefHeight="35.0" prefWidth="516.0" text="indicadorDeTela">
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Label>
+                        <Label text="Relatório Individual">
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Label>
+
+
+                        <!-- OBJETIVOS DO PLANO -->
+                        <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+
+                            <padding>
+                                <Insets bottom="20" left="20" right="20" top="20" />
+                            </padding>
+
+                            <children>
+
+                                <Label style="-fx-font-weight: bold;" text="Interação com a Professora" />
+
+                                <Label prefHeight="47.0" text="Descrever como o aluno se relaciona equal a intervenção para que a interação ocorra de forma efetiva." wrapText="true" VBox.vgrow="SOMETIMES" />
+                                <TextArea fx:id="dificuldadesRaciocinio" prefHeight="120" promptText="Digite" wrapText="true" />
+
+                            </children>
+
+                        </VBox>
+                        <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                            <children>
+                                <Label style="-fx-font-weight: bold;" text="Atividades de Vida Diária (AVDs)" />
+                                <Label prefHeight="47.0" text="Informar se o aluno possui habilidadesde autocuidado como: higiene pessoal, alimentação, vestuário, autonomia parautilizar o banheiro, faz uso de fraldas, qual dificuldade motora possui (caso afirmativo),necessidade de auxílio na locomoção." wrapText="true" VBox.vgrow="SOMETIMES" />
+                                <TextArea fx:id="dificuldadesRaciocinio1" prefHeight="120" promptText="Digite" wrapText="true" />
+                            </children>
+                            <padding>
+                                <Insets bottom="20" left="20" right="20" top="20" />
+                            </padding>
+                        </VBox>
+                  <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+
+
+                        <!-- BOTÕES -->
+                        <HBox alignment="BOTTOM_RIGHT" spacing="20">
+                            <children>
+                                <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
+                                <Button onAction="#handleCancelAction" text="Cancelar" />
+                                <Button onAction="#handleBackAction" text="Voltar" />
+                                <Button onAction="#handleGoToPdi2" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
+                            </children>
+                        </HBox>
+
+
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+
+</BorderPane>

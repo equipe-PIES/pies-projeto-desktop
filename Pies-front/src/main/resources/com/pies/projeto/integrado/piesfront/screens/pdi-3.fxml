@@ -99,7 +99,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font></Label>
                                 <Label text="O que será trabalhado no atendimento ao educando." />
-                                <TextArea fx:id="atividadesTextArea" prefHeight="120" promptText="Digite" VBox.vgrow="ALWAYS" />
+                                <TextArea fx:id="atividadesTextArea" prefHeight="120" promptText="Digite" wrapText="true" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 
@@ -114,7 +114,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font></Label>
                                 <Label text="O que será utilizado com o educando." />
-                                <TextArea fx:id="recursosMateriaisTextArea" prefHeight="120" promptText="Digite" VBox.vgrow="ALWAYS" />
+                                <TextArea fx:id="recursosMateriaisTextArea" prefHeight="120" promptText="Digite" wrapText="true" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 
@@ -129,7 +129,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font></Label>
                                 <Label text="Exemplo: engrossadores de lápis, papel com pauta ampliada." />
-                                <TextArea fx:id="recursosAdequacaoTextArea" prefHeight="200" promptText="Digite" VBox.vgrow="ALWAYS" />
+                                <TextArea fx:id="recursosAdequacaoTextArea" prefHeight="200" promptText="Digite" wrapText="true" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 
