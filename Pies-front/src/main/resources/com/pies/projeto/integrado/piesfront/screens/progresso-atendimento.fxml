@@ -50,7 +50,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
                      <children>
-                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="350.0">
+                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="300.0">
                            <children>
                               <Label text="Anamnese">
                                  <font>
@@ -63,9 +63,14 @@
                               <Insets bottom="10.0" left="20.0" top="10.0" />
                            </HBox.margin>
                         </VBox>
-                        <Button fx:id="statusAnamnese" mnemonicParsing="false" onAction="#handleStatusAnamneseAction" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
+                        <Button fx:id="editarAnamnese" mnemonicParsing="false" text="Editar">
                            <HBox.margin>
-                              <Insets right="20.0" />
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="statusAnamnese" mnemonicParsing="false" onAction="#handleStatusAnamneseAction" prefHeight="31.0" prefWidth="70.0" text="Iniciar">
+                           <HBox.margin>
+                              <Insets right="10.0" />
                            </HBox.margin>
                         </Button>
                      </children>
@@ -75,7 +80,7 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
                      <children>
-                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="350.0">
+                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="300.0">
                            <children>
                               <Label text="Diagnóstico Inicial">
                                  <font>
@@ -88,7 +93,12 @@
                               <Insets bottom="10.0" left="20.0" top="10.0" />
                            </HBox.margin>
                         </VBox>
-                        <Button fx:id="statusDI" mnemonicParsing="false" onAction="#handleStatusDIAction" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
+                        <Button fx:id="editarDiagnosticoInicial" mnemonicParsing="false" text="Editar">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="statusDI" mnemonicParsing="false" onAction="#handleStatusDIAction" prefHeight="31.0" prefWidth="70.0" text="Iniciar">
                            <HBox.margin>
                               <Insets right="20.0" />
                            </HBox.margin>
@@ -100,7 +110,7 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
                      <children>
-                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="350.0">
+                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="300.0">
                            <children>
                               <Label text="PDI">
                                  <font>
@@ -113,7 +123,12 @@
                               <Insets bottom="10.0" left="20.0" top="10.0" />
                            </HBox.margin>
                         </VBox>
-                        <Button fx:id="statusPDI" mnemonicParsing="false" onAction="#handleStatusPDIAction" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
+                        <Button fx:id="editarPDI" mnemonicParsing="false" text="Editar">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="statusPDI" mnemonicParsing="false" onAction="#handleStatusPDIAction" prefHeight="31.0" prefWidth="70.0" text="Iniciar">
                            <HBox.margin>
                               <Insets right="20.0" />
                            </HBox.margin>
@@ -125,20 +140,25 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="210.0" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
                      <children>
-                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="350.0">
+                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="300.0">
                            <children>
                               <Label text="PAEE">
                                  <font>
                                     <Font name="System Bold" size="22.0" />
                                  </font>
                               </Label>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Plano do Atendimento Educacional Especializado" />
+                              <Label text="Plano do Atendimento Educacional Especializado" wrapText="true" />
                            </children>
                            <HBox.margin>
                               <Insets bottom="10.0" left="20.0" top="10.0" />
                            </HBox.margin>
                         </VBox>
-                        <Button fx:id="statusPAEE" mnemonicParsing="false" onAction="#handleStatusPAEEAction" prefHeight="31.0" prefWidth="100.0" text="Iniciar">
+                        <Button fx:id="editarPAEE" mnemonicParsing="false" text="Editar">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="statusPAEE" mnemonicParsing="false" onAction="#handleStatusPAEEAction" prefHeight="31.0" prefWidth="70.0" text="Iniciar">
                            <HBox.margin>
                               <Insets right="20.0" />
                            </HBox.margin>

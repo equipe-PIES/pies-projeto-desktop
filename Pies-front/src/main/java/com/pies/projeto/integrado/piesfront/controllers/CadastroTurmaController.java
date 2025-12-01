@@ -22,6 +22,11 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import java.util.stream.Collectors;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+import javafx.scene.layout.StackPane;
+import javafx.scene.control.Label;
 
 import java.io.IOException;
 import java.net.URI;
@@ -29,7 +34,7 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
+ 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -90,7 +95,7 @@ public class CadastroTurmaController implements Initializable {
 
     public CadastroTurmaController() {
         this.authService = AuthService.getInstance();
-        this.httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+        this.httpClient = HttpClient.newBuilder().connectTimeout(java.time.Duration.ofSeconds(10)).build();
         this.objectMapper = new ObjectMapper();
         this.alunosAdicionados = new ArrayList<>();
         this.todosAlunosCache = null; // Inicialmente sem cache
@@ -167,18 +172,24 @@ public class CadastroTurmaController implements Initializable {
         }
         Thread t = new Thread(() -> {
             try {
+                System.out.println("=== CARREGANDO PROFESSORES ===");
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:8080/professores"))
                         .header("Authorization", "Bearer " + token)
                         .GET()
-                        .timeout(Duration.ofSeconds(10))
+                        .timeout(java.time.Duration.ofSeconds(10))
                         .build();
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                
+                System.out.println("Status: " + response.statusCode());
+                System.out.println("Body: " + response.body().substring(0, Math.min(200, response.body().length())) + "...");
+                
                 if (response.statusCode() == 200) {
                     List<ProfessorDTO> lista = objectMapper.readValue(
                             response.body(),
                             new TypeReference<List<ProfessorDTO>>() {}
                     );
+                    System.out.println("✓ " + lista.size() + " professores carregados");
                     javafx.application.Platform.runLater(() -> {
                         professoresDisponiveis = lista;
                         if (profRespon != null) {
@@ -190,15 +201,39 @@ public class CadastroTurmaController implements Initializable {
                     });
                 } else if (response.statusCode() == 403) {
                     javafx.application.Platform.runLater(() -> mostrarErro("Acesso negado. Verifique suas permissões."));
+                    System.err.println("403 - Token pode estar expirado ou sem permissão");
                 } else {
                     javafx.application.Platform.runLater(() -> mostrarErro("Erro ao carregar professores. Código: " + response.statusCode()));
+                    System.err.println("Erro HTTP: " + response.statusCode());
                 }
             } catch (Exception e) {
                 javafx.application.Platform.runLater(() -> mostrarErro("Erro ao carregar professores: " + e.getMessage()));
+                e.printStackTrace();
             }
         });
         t.setDaemon(true);
         t.start();
+    }
+
+    private void showPopup(String mensagem, boolean sucesso) {
+        Stage currentStage = (Stage) (inicioButton != null ? inicioButton.getScene().getWindow() : cadastroTurmaButton.getScene().getWindow());
+        Label msg = new Label(mensagem);
+        String style = sucesso ? "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;"
+                : "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;";
+        msg.setStyle(style);
+        javafx.scene.layout.StackPane overlay = new javafx.scene.layout.StackPane(msg);
+        overlay.setStyle("-fx-background-color: transparent;");
+        overlay.setMouseTransparent(true);
+        javafx.scene.layout.StackPane.setAlignment(msg, javafx.geometry.Pos.CENTER);
+        javafx.scene.Parent root = currentStage.getScene().getRoot();
+        if (root instanceof javafx.scene.layout.Pane p) {
+            overlay.prefWidthProperty().bind(p.widthProperty());
+            overlay.prefHeightProperty().bind(p.heightProperty());
+            p.getChildren().add(overlay);
+            PauseTransition pt = new PauseTransition(Duration.seconds(5));
+            pt.setOnFinished(e -> p.getChildren().remove(overlay));
+            pt.play();
+        }
     }
 
     private void conectarAcoesFormulario() {
@@ -553,7 +588,7 @@ public class CadastroTurmaController implements Initializable {
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + token)
                     .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .timeout(Duration.ofSeconds(10))
+                    .timeout(java.time.Duration.ofSeconds(10))
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -565,11 +600,16 @@ public class CadastroTurmaController implements Initializable {
 
             if (response.statusCode() == 200 || response.statusCode() == 201) {
                 System.out.println("Turma cadastrada com sucesso!");
+                showPopup("Turma cadastrada com sucesso!", true);
                 Janelas.carregarTela(new javafx.event.ActionEvent(inicioButton, null), "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml", "Início - Coordenador(a)");
             } else if (response.statusCode() == 400) {
-                mostrarErro("Dados inválidos. Verifique os campos.\n" + response.body());
+                String msg = "Dados inválidos. Verifique os campos.\n" + response.body();
+                mostrarErro(msg);
+                showPopup(msg, false);
             } else {
-                mostrarErro("Falha ao cadastrar turma. Código: " + response.statusCode());
+                String msg = "Falha ao cadastrar turma. Código: " + response.statusCode();
+                mostrarErro(msg);
+                showPopup(msg, false);
             }
 
         } catch (Exception e) {
@@ -581,7 +621,9 @@ public class CadastroTurmaController implements Initializable {
                 System.err.println("Causa: " + e.getCause().getMessage());
             }
             System.err.println("======================");
-            mostrarErro("Erro ao comunicar com o servidor: " + e.getMessage());
+            String msg = "Erro ao comunicar com o servidor: " + e.getMessage();
+            mostrarErro(msg);
+            showPopup(msg, false);
         }
     }
 

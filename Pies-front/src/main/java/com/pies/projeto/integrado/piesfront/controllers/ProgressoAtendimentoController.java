@@ -36,6 +36,14 @@ public class ProgressoAtendimentoController implements Initializable {
     
     @FXML
     private Button statusPAEE;
+    @FXML
+    private Button editAnamnese;
+    @FXML
+    private Button editDI;
+    @FXML
+    private Button editPDI;
+    @FXML
+    private Button editPAEE;
     
     @FXML
     private Button closeProgressoAtd;
@@ -58,9 +66,43 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
-        
-        // TODO: Implementar lógica para carregar o progresso do educando
-        // Por enquanto, os botões mantêm seus estados padrão
+        var etapa = AtendimentoFlowService.getInstance().getEtapaAtual(educando.id());
+        if (statusAnamnese != null) {
+            boolean concluido = etapa != AtendimentoFlowService.Etapa.ANAMNESE;
+            statusAnamnese.setText(concluido ? "Concluído" : "Iniciar");
+            statusAnamnese.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
+            if (editAnamnese != null) {
+                editAnamnese.setVisible(concluido);
+                editAnamnese.setManaged(concluido);
+            }
+        }
+        if (statusDI != null) {
+            boolean concluido = etapa == AtendimentoFlowService.Etapa.PDI || etapa == AtendimentoFlowService.Etapa.PAEE || etapa == AtendimentoFlowService.Etapa.COMPLETO;
+            statusDI.setText(concluido ? "Concluído" : "Iniciar");
+            statusDI.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
+            if (editDI != null) {
+                editDI.setVisible(concluido);
+                editDI.setManaged(concluido);
+            }
+        }
+        if (statusPDI != null) {
+            boolean concluido = etapa == AtendimentoFlowService.Etapa.PAEE || etapa == AtendimentoFlowService.Etapa.COMPLETO;
+            statusPDI.setText(concluido ? "Concluído" : "Iniciar");
+            statusPDI.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
+            if (editPDI != null) {
+                editPDI.setVisible(concluido);
+                editPDI.setManaged(concluido);
+            }
+        }
+        if (statusPAEE != null) {
+            boolean concluido = etapa == AtendimentoFlowService.Etapa.COMPLETO;
+            statusPAEE.setText(concluido ? "Concluído" : "Iniciar");
+            statusPAEE.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
+            if (editPAEE != null) {
+                editPAEE.setVisible(concluido);
+                editPAEE.setManaged(concluido);
+            }
+        }
     }
     
     /**
@@ -71,12 +113,15 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
-        AtendimentoFlowService.Etapa etapa = AtendimentoFlowService.getInstance()
-                .getEtapaAtual(educando.id());
+        AtendimentoFlowService.Etapa etapa = AtendimentoFlowService.getInstance().getEtapaAtual(educando.id());
         if (etapa == AtendimentoFlowService.Etapa.ANAMNESE) {
             navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
+        } else if (etapa == AtendimentoFlowService.Etapa.DI) {
+            navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Diagnóstico Inicial");
         } else if (etapa == AtendimentoFlowService.Etapa.PDI) {
             navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
+        } else if (etapa == AtendimentoFlowService.Etapa.PAEE) {
+            navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE");
         }
     }
     
@@ -111,6 +156,39 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
+        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Diagnóstico Inicial");
+    }
+
+    @FXML
+    private void handleEditAnamneseAction() {
+        if (educando == null) {
+            return;
+        }
+        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
+    }
+
+    @FXML
+    private void handleEditDIAction() {
+        if (educando == null) {
+            return;
+        }
+        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Diagnóstico Inicial");
+    }
+
+    @FXML
+    private void handleEditPDIAction() {
+        if (educando == null) {
+            return;
+        }
+        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
+    }
+
+    @FXML
+    private void handleEditPAEEAction() {
+        if (educando == null) {
+            return;
+        }
+        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE");
     }
     
     /**
@@ -132,6 +210,7 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
+        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE");
     }
     
     /**
@@ -167,6 +246,10 @@ public class ProgressoAtendimentoController implements Initializable {
                 c.setEducando(educando);
             } else if (controller instanceof PDIController c) {
                 System.out.println("Controller é PDIController, setando educando...");
+                c.setEducando(educando);
+            } else if (controller instanceof PAEEController c) {
+                c.setEducando(educando);
+            } else if (controller instanceof RelatorioIndividualController c) {
                 c.setEducando(educando);
             }
             

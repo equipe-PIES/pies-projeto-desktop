@@ -16,6 +16,10 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,9 +31,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
 import javafx.event.ActionEvent;
-
+import com.utils.Janelas;
+ 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -76,7 +80,7 @@ public class CadastroProfController implements Initializable {
 
     public CadastroProfController() {
         this.authService = AuthService.getInstance();
-        this.httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+        this.httpClient = HttpClient.newBuilder().connectTimeout(java.time.Duration.ofSeconds(10)).build();
         this.objectMapper = new ObjectMapper();
     }
 
@@ -256,6 +260,27 @@ public class CadastroProfController implements Initializable {
         }
     }
 
+    private void showPopup(String mensagem, boolean sucesso) {
+        Stage currentStage = (Stage) (inicioButton != null ? inicioButton.getScene().getWindow() : cadastroProfBt.getScene().getWindow());
+        Label msg = new Label(mensagem);
+        String style = sucesso ? "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;"
+                : "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;";
+        msg.setStyle(style);
+        javafx.scene.layout.StackPane overlay = new javafx.scene.layout.StackPane(msg);
+        overlay.setStyle("-fx-background-color: transparent;");
+        overlay.setMouseTransparent(true);
+        javafx.scene.layout.StackPane.setAlignment(msg, javafx.geometry.Pos.CENTER);
+        javafx.scene.Parent root = currentStage.getScene().getRoot();
+        if (root instanceof javafx.scene.layout.Pane p) {
+            overlay.prefWidthProperty().bind(p.widthProperty());
+            overlay.prefHeightProperty().bind(p.heightProperty());
+            p.getChildren().add(overlay);
+            PauseTransition pt = new PauseTransition(Duration.seconds(5));
+            pt.setOnFinished(e -> p.getChildren().remove(overlay));
+            pt.play();
+        }
+    }
+
     private void enviarCadastroProfessor() {
         if (!validarFormulario()) {
             return;
@@ -292,7 +317,7 @@ public class CadastroProfController implements Initializable {
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + token)
                     .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .timeout(Duration.ofSeconds(10))
+                    .timeout(java.time.Duration.ofSeconds(10))
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -301,13 +326,18 @@ public class CadastroProfController implements Initializable {
                 // Após criar o professor, registra o usuário (email/senha) com role professor
                 boolean registrado = registrarUsuarioProfessor(token);
                 if (registrado) {
+                    showPopup("Professor cadastrado com sucesso!", true);
                     Janelas.carregarTela(new javafx.event.ActionEvent(inicioButton, null), "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml", "Início - Coordenador(a)");
                 }
             } else if (response.statusCode() == 400) {
                 // Mostra mensagem de validação retornada pelo backend
-                mostrarErro(extrairMensagemErro(response.body()));
+                String msg = extrairMensagemErro(response.body());
+                mostrarErro(msg);
+                showPopup(msg, false);
             } else {
-                mostrarErro("Falha ao cadastrar professor. Código: " + response.statusCode());
+                String msg = "Falha ao cadastrar professor. Código: " + response.statusCode();
+                mostrarErro(msg);
+                showPopup(msg, false);
             }
 
         } catch (Exception e) {
@@ -319,7 +349,9 @@ public class CadastroProfController implements Initializable {
                 System.err.println("Causa: " + e.getCause().getMessage());
             }
             System.err.println("======================");
-            mostrarErro("Erro ao comunicar com o servidor: " + e.getMessage());
+            String msg = "Erro ao comunicar com o servidor: " + e.getMessage();
+            mostrarErro(msg);
+            showPopup(msg, false);
         }
     }
 
@@ -342,7 +374,7 @@ public class CadastroProfController implements Initializable {
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + token)
                     .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .timeout(Duration.ofSeconds(10))
+                    .timeout(java.time.Duration.ofSeconds(10))
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -353,15 +385,18 @@ public class CadastroProfController implements Initializable {
 
             if (response.statusCode() == 400) {
                 mostrarErro("E-mail já cadastrado. Escolha outro e-mail.");
+                showPopup("E-mail já cadastrado. Escolha outro e-mail.", false);
                 return false;
             }
 
             mostrarErro("Falha ao registrar usuário. Código: " + response.statusCode());
+            showPopup("Falha ao registrar usuário. Código: " + response.statusCode(), false);
             return false;
 
         } catch (Exception e) {
             e.printStackTrace();
             mostrarErro("Erro ao registrar usuário: " + e.getMessage());
+            showPopup("Erro ao registrar usuário: " + e.getMessage(), false);
             return false;
         }
     }

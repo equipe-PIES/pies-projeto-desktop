@@ -35,6 +35,9 @@ public class AuthService {
     private static final String EDUCANDOS_ENDPOINT = "/api/educandos";
     private static final String EDUCANDOS_SIMPLIFICADOS_ENDPOINT = "/api/educandos/simplificados";
     private static final String ANAMNESES_ENDPOINT = "/api/anamneses";
+    private static final String RELATORIOS_INDIVIDUAIS_ENDPOINT = "/api/relatorios-individuais";
+    private static final String PAEES_ENDPOINT = "/api/paees";
+    private static final String PDIS_ENDPOINT = "/api/pdis";
     
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
@@ -617,6 +620,166 @@ public class AuthService {
             System.err.println("Erro ao atualizar anamnese: " + e.getMessage());
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO criarRelatorioIndividual(
+            com.pies.projeto.integrado.piesfront.dto.CreateRelatorioIndividualDTO dto) {
+        if (currentToken == null || dto == null || dto.educandoId() == null) {
+            System.err.println("criarRelatorioIndividual: Token ou DTO inválido");
+            return null;
+        }
+        try {
+            String requestBody = objectMapper.writeValueAsString(dto);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + RELATORIOS_INDIVIDUAIS_ENDPOINT))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 201 || response.statusCode() == 200) {
+                return objectMapper.readValue(response.body(),
+                        com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO.class);
+            } else {
+                System.err.println("Erro ao criar relatório individual. Status: " + response.statusCode());
+                return null;
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao criar relatório individual: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public java.util.List<com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO> getRelatoriosIndividuaisPorEducando(String educandoId) {
+        if (currentToken == null || educandoId == null) {
+            return new java.util.ArrayList<>();
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + RELATORIOS_INDIVIDUAIS_ENDPOINT + "/educando/" + educandoId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                com.fasterxml.jackson.core.type.TypeReference<java.util.List<com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO>> typeRef =
+                        new com.fasterxml.jackson.core.type.TypeReference<java.util.List<com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO>>() {};
+                return objectMapper.readValue(response.body(), typeRef);
+            } else {
+                return new java.util.ArrayList<>();
+            }
+        } catch (IOException | InterruptedException e) {
+            return new java.util.ArrayList<>();
+        }
+    }
+
+    public boolean criarPAEE(
+            com.pies.projeto.integrado.piesfront.controllers.PAEEController.CreatePAEEDTO dto) {
+        if (currentToken == null || dto == null || dto.educandoId == null) {
+            System.err.println("criarPAEE: Token ou DTO inválido");
+            return false;
+        }
+        try {
+            String requestBody = objectMapper.writeValueAsString(dto);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + PAEES_ENDPOINT))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 201 || response.statusCode() == 200) {
+                return true;
+            } else {
+                System.err.println("Erro ao criar PAEE. Status: " + response.statusCode());
+                return false;
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao criar PAEE: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public java.util.List<java.util.Map<String, Object>> getPdisPorEducandoRaw(String educandoId) {
+        if (currentToken == null || educandoId == null) {
+            return new java.util.ArrayList<>();
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + PDIS_ENDPOINT + "/educando/" + educandoId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                com.fasterxml.jackson.core.type.TypeReference<java.util.List<java.util.Map<String, Object>>> typeRef =
+                        new com.fasterxml.jackson.core.type.TypeReference<java.util.List<java.util.Map<String, Object>>>() {};
+                return objectMapper.readValue(response.body(), typeRef);
+            } else {
+                return new java.util.ArrayList<>();
+            }
+        } catch (IOException | InterruptedException e) {
+            return new java.util.ArrayList<>();
+        }
+    }
+
+    public java.util.List<java.util.Map<String, Object>> getPaeesPorEducandoRaw(String educandoId) {
+        if (currentToken == null || educandoId == null) {
+            return new java.util.ArrayList<>();
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + PAEES_ENDPOINT + "/educando/" + educandoId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                com.fasterxml.jackson.core.type.TypeReference<java.util.List<java.util.Map<String, Object>>> typeRef =
+                        new com.fasterxml.jackson.core.type.TypeReference<java.util.List<java.util.Map<String, Object>>>() {};
+                return objectMapper.readValue(response.body(), typeRef);
+            } else {
+                return new java.util.ArrayList<>();
+            }
+        } catch (IOException | InterruptedException e) {
+            return new java.util.ArrayList<>();
+        }
+    }
+
+
+    public boolean criarPDI(com.pies.projeto.integrado.piesfront.dto.CreatePDIDTO dto) {
+        if (currentToken == null || dto == null || dto.educandoId() == null) {
+            System.err.println("criarPDI: Token ou DTO inválido");
+            return false;
+        }
+        try {
+            String requestBody = objectMapper.writeValueAsString(dto);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + PDIS_ENDPOINT))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 201 || response.statusCode() == 200) {
+                return true;
+            } else {
+                System.err.println("Erro ao criar PDI. Status: " + response.statusCode());
+                return false;
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao criar PDI: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
     }
 }

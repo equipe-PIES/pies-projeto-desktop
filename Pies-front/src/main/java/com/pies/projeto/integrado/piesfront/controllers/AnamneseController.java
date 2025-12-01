@@ -1,6 +1,7 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
+import com.pies.projeto.integrado.piesfront.dto.AnamneseDTO;
 import com.pies.projeto.integrado.piesfront.dto.AnamneseRequestDTO;
 import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
 import com.pies.projeto.integrado.piesfront.services.AnamneseService;
@@ -10,6 +11,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.StageStyle;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+import javafx.scene.layout.StackPane;
+import javafx.scene.control.Label;
 import javafx.scene.Node;
 import javafx.collections.FXCollections;
 import javafx.scene.control.CheckBox;
@@ -29,11 +35,12 @@ public class AnamneseController {
 
     private EducandoDTO educando;
     private AnamneseRequestDTO formData = new AnamneseRequestDTO();
-    private final AnamneseService anamneseService = new AnamneseService();
     private final AuthService authService = AuthService.getInstance();
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
+        carregarAnamneseExistente();
+        populateFromFormData();
     }
 
     public void setFormData(AnamneseRequestDTO data) {
@@ -130,15 +137,17 @@ public class AnamneseController {
     private void handleConcluirAction() {
         captureCurrentStepData();
         if (educando != null) {
-            String token = authService.getCurrentToken();
-            boolean ok = anamneseService.submit(educando.id(), formData, token);
-            if (ok) {
+            AnamneseDTO dto = toAnamneseDTO();
+            var created = authService.criarAnamnese(educando.id(), dto);
+            if (created != null) {
                 AtendimentoFlowService.getInstance().concluirAnamnese(educando.id());
+                showPopup("Anamnese registrada com sucesso!", true);
+                handleCancelAction();
             } else {
                 System.err.println("Falha ao enviar anamnese");
+                showPopup("Falha ao enviar anamnese.", false);
             }
         }
-        handleSairButtonAction();
     }
 
     private void abrir(String resource, String titulo) {
@@ -195,6 +204,40 @@ public class AnamneseController {
     private TextField prematuridade1;
     @FXML
     private ChoiceBox<String> tipoParto;
+    @FXML
+    private TextField duracaoGestacao1;
+    @FXML
+    private CheckBox preNatalSim, preNatalNao;
+    @FXML
+    private TextField servicos;
+    @FXML
+    private ChoiceBox<String> balbucio;
+    @FXML
+    private TextField primeiraPalavra;
+    @FXML
+    private TextField primeiraFrase;
+    @FXML
+    private ChoiceBox<String> tipoFala;
+    @FXML
+    private TextField disturbio;
+    @FXML
+    private ChoiceBox<String> dormeSozinho;
+    @FXML
+    private ChoiceBox<String> temQuarto;
+    @FXML
+    private ChoiceBox<String> sono;
+    @FXML
+    private ChoiceBox<String> respeitaRegras;
+    @FXML
+    private ChoiceBox<String> desmotivado;
+    @FXML
+    private ChoiceBox<String> agressivo;
+    @FXML
+    private ChoiceBox<String> inquietacao;
+    @FXML
+    private CheckBox disturbioSim, disturbioNao;
+    @FXML
+    private Label questDisturbio;
 
     @FXML
     private void initialize() {
@@ -209,6 +252,35 @@ public class AnamneseController {
         }
         if (tipoParto != null && (tipoParto.getItems() == null || tipoParto.getItems().isEmpty())) {
             tipoParto.setItems(FXCollections.observableArrayList("Normal", "Cesáreo", "Fórceps"));
+        }
+        if (balbucio != null && (balbucio.getItems() == null || balbucio.getItems().isEmpty())) {
+            balbucio.setItems(FXCollections.observableArrayList(
+                    "1-3 meses", "4-6 meses", "7-9 meses", "10-12 meses"));
+        }
+        if (tipoFala != null && (tipoFala.getItems() == null || tipoFala.getItems().isEmpty())) {
+            tipoFala.setItems(FXCollections.observableArrayList("Natural", "Inibido"));
+        }
+        var simNao = FXCollections.observableArrayList("Sim", "Não");
+        if (dormeSozinho != null && (dormeSozinho.getItems() == null || dormeSozinho.getItems().isEmpty())) {
+            dormeSozinho.setItems(simNao);
+        }
+        if (temQuarto != null && (temQuarto.getItems() == null || temQuarto.getItems().isEmpty())) {
+            temQuarto.setItems(simNao);
+        }
+        if (respeitaRegras != null && (respeitaRegras.getItems() == null || respeitaRegras.getItems().isEmpty())) {
+            respeitaRegras.setItems(simNao);
+        }
+        if (desmotivado != null && (desmotivado.getItems() == null || desmotivado.getItems().isEmpty())) {
+            desmotivado.setItems(simNao);
+        }
+        if (agressivo != null && (agressivo.getItems() == null || agressivo.getItems().isEmpty())) {
+            agressivo.setItems(simNao);
+        }
+        if (inquietacao != null && (inquietacao.getItems() == null || inquietacao.getItems().isEmpty())) {
+            inquietacao.setItems(simNao);
+        }
+        if (sono != null && (sono.getItems() == null || sono.getItems().isEmpty())) {
+            sono.setItems(FXCollections.observableArrayList("Calmo", "Agitado"));
         }
     }
 
@@ -267,6 +339,7 @@ public class AnamneseController {
                 medicacaoSim, medicacaoNao,
                 dificuldadesSim, dificuldadesNao,
                 apoioPedagogicoSim, apoioPedagogicoNao,
+                preNatalSim, preNatalNao,
                 prematuridadeSim, prematuridadeNao);
 
         return !emptyText && !missingChecks;
@@ -309,6 +382,7 @@ public class AnamneseController {
         toggle(false, lblAndouMeses, andou);
         toggle(false, lblTerapiaMotivo, terapia);
         toggle(false, lblFalouMeses, falou);
+        toggle(false, questDisturbio, disturbio);
 
         wire(convenioSim, convenioNao, questConvenio, convenio);
         wire(doencaContagiosaSim, doencaContagiosaNao, questDoencaContagiosa, doencaContagiosa);
@@ -322,6 +396,7 @@ public class AnamneseController {
         wire(andouSim, andouNao, lblAndouMeses, andou);
         wire(terapiaSim, terapiaNao, lblTerapiaMotivo, terapia);
         wire(falouSim, falouNao, lblFalouMeses, falou);
+        wire(disturbioSim, disturbioNao, questDisturbio, disturbio);
     }
 
     private void wire(CheckBox sim, CheckBox nao, Node... dependents) {
@@ -341,6 +416,23 @@ public class AnamneseController {
         }
     }
 
+    private void showPopup(String mensagem, boolean sucesso) {
+        Label msg = new Label(mensagem);
+        String style = sucesso ? "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;"
+                : "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;";
+        msg.setStyle(style);
+        javafx.scene.layout.StackPane overlay = new javafx.scene.layout.StackPane(msg);
+        overlay.setStyle("-fx-background-color: transparent;");
+        overlay.setMouseTransparent(true);
+        javafx.scene.layout.StackPane.setAlignment(msg, javafx.geometry.Pos.CENTER);
+        overlay.prefWidthProperty().bind(anamnese.widthProperty());
+        overlay.prefHeightProperty().bind(anamnese.heightProperty());
+        anamnese.getChildren().add(overlay);
+        PauseTransition pt = new PauseTransition(Duration.seconds(5));
+        pt.setOnFinished(e -> anamnese.getChildren().remove(overlay));
+        pt.play();
+    }
+
     private void captureCurrentStepData() {
         if (convulsaoSim != null) formData.convulsao = convulsaoSim.isSelected();
         if (vacinacaoSim != null) formData.vacinacaoEmDia = vacinacaoSim.isSelected();
@@ -352,11 +444,24 @@ public class AnamneseController {
         if (medicacoes != null && medicacoes.isVisible()) formData.medicacoes = safeText(medicacoes);
 
         if (servicosFrequentados1 != null) formData.servicosFrequentados = safeText(servicosFrequentados1);
+        if (servicos != null) {
+            String s = safeText(servicos);
+            if (s != null && !s.isEmpty()) formData.servicosFrequentados = s;
+        }
         if (inicioEscolarizacao != null) formData.inicioEscolarizacao = safeText(inicioEscolarizacao);
         if (dificuldadesSim != null) formData.apresentaDificuldades = dificuldadesSim.isSelected();
         if (dificuldades != null && dificuldades.isVisible()) formData.dificuldades = safeText(dificuldades);
         if (apoioPedagogicoSim != null) formData.apoioPedagogicoEmCasa = apoioPedagogicoSim.isSelected();
         if (apoioPedagogico != null && apoioPedagogico.isVisible()) formData.apoioPedagogico = safeText(apoioPedagogico);
+        if (duracaoGestacao1 != null) formData.duracaoGestacao = safeText(duracaoGestacao1);
+        if (preNatalSim != null) formData.fezPreNatal = preNatalSim.isSelected();
+        if (prematuridadeSim != null) {
+            if (prematuridadeSim.isSelected() && prematuridade1 != null && prematuridade1.isVisible()) {
+                formData.prematuridade = safeText(prematuridade1);
+            } else {
+                formData.prematuridade = null;
+            }
+        }
 
         if (cidadeNascimento != null) formData.cidadeNascimento = safeText(cidadeNascimento);
         if (maternidade != null) formData.maternidade = safeText(maternidade);
@@ -379,6 +484,116 @@ public class AnamneseController {
         if (terapia != null && terapia.isVisible()) formData.terapiaMotivo = safeText(terapia);
         if (falouSim != null) formData.falou = falouSim.isSelected();
         if (falou != null && falou.isVisible()) formData.falouMeses = safeText(falou);
+
+        if (balbucio != null && balbucio.getValue() != null) formData.primeiroBalbucioMeses = balbucio.getValue();
+        if (primeiraPalavra != null) formData.primeiraPalavraQuando = safeText(primeiraPalavra);
+        if (primeiraFrase != null) formData.primeiraFraseQuando = safeText(primeiraFrase);
+        if (tipoFala != null && tipoFala.getValue() != null) formData.falaNaturalOuInibido = tipoFala.getValue();
+        if (disturbioSim != null && disturbioSim.isSelected() && disturbio != null && disturbio.isVisible()) {
+            formData.disturbioFala = safeText(disturbio);
+        } else {
+            formData.disturbioFala = null;
+        }
+
+        if (dormeSozinho != null && dormeSozinho.getValue() != null) formData.dormeSozinho = dormeSozinho.getValue();
+        if (temQuarto != null && temQuarto.getValue() != null) formData.temQuartoProprio = temQuarto.getValue();
+        if (sono != null && sono.getValue() != null) formData.sonoCalmoOuAgitado = sono.getValue();
+
+        if (respeitaRegras != null && respeitaRegras.getValue() != null) formData.respeitaRegras = respeitaRegras.getValue();
+        if (desmotivado != null && desmotivado.getValue() != null) formData.desmotivado = desmotivado.getValue();
+        if (agressivo != null && agressivo.getValue() != null) formData.agressivo = agressivo.getValue();
+        if (inquietacao != null && inquietacao.getValue() != null) formData.apresentaInquietacao = inquietacao.getValue();
+    }
+
+    private String convertSimNao(String s) {
+        if (s == null) return null;
+        return "Não".equalsIgnoreCase(s) ? "NAO" : ("Sim".equalsIgnoreCase(s) ? "SIM" : s);
+    }
+
+    private AnamneseDTO toAnamneseDTO() {
+        String temConvulsao = formData.convulsao ? "SIM" : "NAO";
+        String convenioMedico = formData.possuiConvenio ? val(formData.convenio) : null;
+        String vacinacaoEmDia = formData.vacinacaoEmDia ? "SIM" : "NAO";
+        String doencaContagiosa = formData.teveDoencaContagiosa ? val(formData.doencaContagiosa) : null;
+        String usoMedicacoes = formData.fazUsoMedicacoes ? val(formData.medicacoes) : null;
+        String servicosSaudeOuEducacao = val(formData.servicosFrequentados);
+        String inicioEscolarizacao = val(formData.inicioEscolarizacao);
+        String dificuldadesEscolares = formData.apresentaDificuldades ? val(formData.dificuldades) : null;
+        String apoioPedagogicoEmCasa = formData.apoioPedagogicoEmCasa ? val(formData.apoioPedagogico) : null;
+        String duracaoGestacao = val(formData.duracaoGestacao);
+        String fezPreNatal = formData.fezPreNatal ? "SIM" : "NAO";
+        String prematuridade = val(formData.prematuridade);
+
+        String cidadeNascimento = val(formData.cidadeNascimento);
+        String maternidadeNascimento = val(formData.maternidade);
+        String tipoParto = formData.tipoParto;
+
+        String chorouAoNascer = formData.chorouAoNascer ? "SIM" : "NAO";
+        String ficouRoxo = formData.ficouRoxo ? "SIM" : "NAO";
+        String usoIncubadora = formData.usoIncubadora ? "SIM" : "NAO";
+        String foiAmamentado = formData.foiAmamentado ? "SIM" : "NAO";
+
+        String sustentouCabecaMeses = formData.sustentouCabeca ? val(formData.sustentouCabecaMeses) : null;
+        String engatinhouMeses = formData.engatinhou ? val(formData.engatinhouMeses) : null;
+        String sentouMeses = formData.sentou ? val(formData.sentouMeses) : null;
+        String andouMeses = formData.andou ? val(formData.andouMeses) : null;
+        String precisouTerapiaMotivo = formData.precisouTerapia ? val(formData.terapiaMotivo) : null;
+        String falouMeses = formData.falou ? val(formData.falouMeses) : null;
+
+        String primeiroBalbucioMeses = val(formData.primeiroBalbucioMeses);
+        String primeiraPalavraQuando = val(formData.primeiraPalavraQuando);
+        String primeiraFraseQuando = val(formData.primeiraFraseQuando);
+        String falaNaturalOuInibido = val(formData.falaNaturalOuInibido);
+        String disturbioFala = val(formData.disturbioFala);
+
+        String dormeSozinho = convertSimNao(formData.dormeSozinho);
+        String temQuartoProprio = convertSimNao(formData.temQuartoProprio);
+        String sonoCalmoOuAgitado = val(formData.sonoCalmoOuAgitado);
+        String respeitaRegras = convertSimNao(formData.respeitaRegras);
+        String desmotivado = convertSimNao(formData.desmotivado);
+        String agressivo = convertSimNao(formData.agressivo);
+        String apresentaInquietacao = convertSimNao(formData.apresentaInquietacao);
+
+        return new AnamneseDTO(
+                null,
+                temConvulsao,
+                convenioMedico,
+                vacinacaoEmDia,
+                doencaContagiosa,
+                usoMedicacoes,
+                servicosSaudeOuEducacao,
+                inicioEscolarizacao,
+                dificuldadesEscolares,
+                apoioPedagogicoEmCasa,
+                duracaoGestacao,
+                fezPreNatal,
+                prematuridade,
+                cidadeNascimento,
+                maternidadeNascimento,
+                tipoParto,
+                chorouAoNascer,
+                ficouRoxo,
+                usoIncubadora,
+                foiAmamentado,
+                sustentouCabecaMeses,
+                engatinhouMeses,
+                sentouMeses,
+                andouMeses,
+                precisouTerapiaMotivo,
+                falouMeses,
+                primeiroBalbucioMeses,
+                primeiraPalavraQuando,
+                primeiraFraseQuando,
+                falaNaturalOuInibido,
+                disturbioFala,
+                dormeSozinho,
+                temQuartoProprio,
+                sonoCalmoOuAgitado,
+                respeitaRegras,
+                desmotivado,
+                agressivo,
+                apresentaInquietacao
+        );
     }
 
     private String safeText(TextField tf) {
@@ -394,6 +609,8 @@ public class AnamneseController {
         if (inicioEscolarizacao != null) inicioEscolarizacao.setText(val(formData.inicioEscolarizacao));
         if (dificuldades != null) dificuldades.setText(val(formData.dificuldades));
         if (apoioPedagogico != null) apoioPedagogico.setText(val(formData.apoioPedagogico));
+        if (duracaoGestacao1 != null) duracaoGestacao1.setText(val(formData.duracaoGestacao));
+        if (prematuridade1 != null) prematuridade1.setText(val(formData.prematuridade));
         if (cidadeNascimento != null) cidadeNascimento.setText(val(formData.cidadeNascimento));
         if (maternidade != null) maternidade.setText(val(formData.maternidade));
         if (tipoParto != null && formData.tipoParto != null) tipoParto.setValue(formData.tipoParto);
@@ -403,7 +620,99 @@ public class AnamneseController {
         if (andou != null) andou.setText(val(formData.andouMeses));
         if (terapia != null) terapia.setText(val(formData.terapiaMotivo));
         if (falou != null) falou.setText(val(formData.falouMeses));
+
+        if (balbucio != null && formData.primeiroBalbucioMeses != null) balbucio.setValue(formData.primeiroBalbucioMeses);
+        if (primeiraPalavra != null) primeiraPalavra.setText(val(formData.primeiraPalavraQuando));
+        if (primeiraFrase != null) primeiraFrase.setText(val(formData.primeiraFraseQuando));
+        if (tipoFala != null && formData.falaNaturalOuInibido != null) tipoFala.setValue(formData.falaNaturalOuInibido);
+        if (disturbio != null) disturbio.setText(val(formData.disturbioFala));
+        if (disturbioSim != null && disturbioNao != null) {
+            String d = val(formData.disturbioFala);
+            boolean has = d != null && !d.isEmpty();
+            disturbioSim.setSelected(has);
+            disturbioNao.setSelected(!has);
+        }
+
+        if (dormeSozinho != null && formData.dormeSozinho != null) dormeSozinho.setValue(toDisplaySimNao(formData.dormeSozinho));
+        if (temQuarto != null && formData.temQuartoProprio != null) temQuarto.setValue(toDisplaySimNao(formData.temQuartoProprio));
+        if (sono != null && formData.sonoCalmoOuAgitado != null) sono.setValue(formData.sonoCalmoOuAgitado);
+        if (respeitaRegras != null && formData.respeitaRegras != null) respeitaRegras.setValue(toDisplaySimNao(formData.respeitaRegras));
+        if (desmotivado != null && formData.desmotivado != null) desmotivado.setValue(toDisplaySimNao(formData.desmotivado));
+        if (agressivo != null && formData.agressivo != null) agressivo.setValue(toDisplaySimNao(formData.agressivo));
+        if (inquietacao != null && formData.apresentaInquietacao != null) inquietacao.setValue(toDisplaySimNao(formData.apresentaInquietacao));
+    }
+
+    private String toDisplaySimNao(String s) {
+        if (s == null) return null;
+        if ("SIM".equalsIgnoreCase(s)) return "Sim";
+        if ("NAO".equalsIgnoreCase(s) || "NÃO".equalsIgnoreCase(s)) return "Não";
+        return s;
+    }
+
+    @FXML
+    private void handleBackToAnamnese2() {
+        abrir("/com/pies/projeto/integrado/piesfront/screens/anamnese-2.fxml", "Anamnese");
     }
 
     private String val(String s) { return s == null ? "" : s; }
+
+    private boolean parseBool(String s) {
+        if (s == null) return false;
+        String t = s.trim();
+        return t.equalsIgnoreCase("true") || t.equalsIgnoreCase("sim") || t.equalsIgnoreCase("s") || t.equals("1");
+    }
+
+    private void carregarAnamneseExistente() {
+        if (educando == null || educando.id() == null) return;
+        AnamneseDTO dto = authService.getAnamnesePorEducando(educando.id());
+        if (dto == null) return;
+        formData.convulsao = parseBool(dto.temConvulsao());
+        formData.possuiConvenio = dto.convenioMedico() != null && !dto.convenioMedico().isEmpty();
+        formData.convenio = dto.convenioMedico();
+        formData.vacinacaoEmDia = parseBool(dto.vacinacaoEmDia());
+        formData.teveDoencaContagiosa = dto.doencaContagiosa() != null && !dto.doencaContagiosa().isEmpty();
+        formData.doencaContagiosa = dto.doencaContagiosa();
+        formData.fazUsoMedicacoes = dto.usoMedicacoes() != null && !dto.usoMedicacoes().isEmpty();
+        formData.medicacoes = dto.usoMedicacoes();
+        formData.servicosFrequentados = dto.servicosSaudeOuEducacao();
+        formData.inicioEscolarizacao = dto.inicioEscolarizacao();
+        formData.apresentaDificuldades = dto.dificuldadesEscolares() != null && !dto.dificuldadesEscolares().isEmpty();
+        formData.dificuldades = dto.dificuldadesEscolares();
+        formData.apoioPedagogicoEmCasa = parseBool(dto.apoioPedagogicoEmCasa());
+        formData.apoioPedagogico = null;
+        formData.duracaoGestacao = dto.duracaoGestacao();
+        formData.fezPreNatal = parseBool(dto.fezPreNatal());
+        formData.prematuridade = dto.prematuridade();
+        formData.cidadeNascimento = dto.cidadeNascimento();
+        formData.maternidade = dto.maternidadeNascimento();
+        formData.tipoParto = dto.tipoParto();
+        formData.chorouAoNascer = parseBool(dto.chorouAoNascer());
+        formData.ficouRoxo = parseBool(dto.ficouRoxo());
+        formData.usoIncubadora = parseBool(dto.usoIncubadora());
+        formData.foiAmamentado = parseBool(dto.foiAmamentado());
+        formData.sustentouCabeca = dto.sustentouCabecaMeses() != null && !dto.sustentouCabecaMeses().isEmpty();
+        formData.sustentouCabecaMeses = dto.sustentouCabecaMeses();
+        formData.engatinhou = dto.engatinhouMeses() != null && !dto.engatinhouMeses().isEmpty();
+        formData.engatinhouMeses = dto.engatinhouMeses();
+        formData.sentou = dto.sentouMeses() != null && !dto.sentouMeses().isEmpty();
+        formData.sentouMeses = dto.sentouMeses();
+        formData.andou = dto.andouMeses() != null && !dto.andouMeses().isEmpty();
+        formData.andouMeses = dto.andouMeses();
+        formData.precisouTerapia = dto.precisouTerapiaMotivo() != null && !dto.precisouTerapiaMotivo().isEmpty();
+        formData.terapiaMotivo = dto.precisouTerapiaMotivo();
+        formData.falou = dto.falouMeses() != null && !dto.falouMeses().isEmpty();
+        formData.falouMeses = dto.falouMeses();
+        formData.primeiroBalbucioMeses = dto.primeiroBalbucioMeses();
+        formData.primeiraPalavraQuando = dto.primeiraPalavraQuando();
+        formData.primeiraFraseQuando = dto.primeiraFraseQuando();
+        formData.falaNaturalOuInibido = dto.falaNaturalOuInibido();
+        formData.disturbioFala = dto.disturbioFala();
+        formData.dormeSozinho = dto.dormeSozinho();
+        formData.temQuartoProprio = dto.temQuartoProprio();
+        formData.sonoCalmoOuAgitado = dto.sonoCalmoOuAgitado();
+        formData.respeitaRegras = dto.respeitaRegras();
+        formData.desmotivado = dto.desmotivado();
+        formData.agressivo = dto.agressivo();
+        formData.apresentaInquietacao = dto.apresentaInquietacao();
+    }
 }

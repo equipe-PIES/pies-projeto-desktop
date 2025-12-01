@@ -79,7 +79,7 @@
                            </font></Label>
                                 <!-- Estilização removida -->
                                 <Label text="Capacidade do aluno, que pode vir a ser." />
-                                <TextArea fx:id="potencialidadesTextArea" prefHeight="120" promptText="Digite" VBox.vgrow="ALWAYS" />
+                                <TextArea fx:id="potencialidadesTextArea" prefHeight="120" promptText="Digite" wrapText="true" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 
@@ -94,7 +94,7 @@
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font></Label>
-                                <TextArea fx:id="necessidadesTextArea" prefHeight="120" promptText="Digite" VBox.vgrow="ALWAYS" />
+                                <TextArea fx:id="necessidadesTextArea" prefHeight="120" promptText="Digite" wrapText="true" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 
@@ -111,7 +111,7 @@
                            </font></Label>
                                 <!-- Estilização removida -->
                                 <Label text="Competências, capacidade." />
-                                <TextArea fx:id="habilidadesTextArea" prefHeight="200" promptText="Digite" VBox.vgrow="ALWAYS" />
+                                <TextArea fx:id="habilidadesTextArea" prefHeight="200" promptText="Digite" wrapText="true" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 
@@ -120,6 +120,7 @@
                         <HBox alignment="CENTER_RIGHT" spacing="15">
                             <children>
                                 <Button fx:id="cancelarButton" onAction="#handleCancelAction" style="-fx-background-color: transparent; -fx-border-color: #95a5a6; -fx-border-width: 1; -fx-border-radius: 3; -fx-padding: 8 15; -fx-text-fill: #95a5a6;" text="Cancelar" />
+                                <Button fx:id="voltarButton" onAction="#handleBackAction" style="-fx-background-color: transparent; -fx-border-color: #95a5a6; -fx-border-width: 1; -fx-border-radius: 3; -fx-padding: 8 15; -fx-text-fill: #95a5a6;" text="Voltar" />
                                 <Button fx:id="seguinteButton" onAction="#handleGoToPdi3" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-border-radius: 3; -fx-padding: 8 15;" text="Seguinte" />
                             </children>
                         </HBox>

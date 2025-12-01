@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AtendimentoFlowService {
-    public enum Etapa { ANAMNESE, PDI, COMPLETO }
+    public enum Etapa { ANAMNESE, DI, PDI, PAEE, COMPLETO }
 
     private static AtendimentoFlowService instance;
     private final Map<String, Etapa> estado = new ConcurrentHashMap<>();
@@ -29,6 +29,13 @@ public class AtendimentoFlowService {
         if (educandoId == null || educandoId.isEmpty()) {
             return;
         }
+        estado.put(educandoId, Etapa.DI);
+    }
+
+    public void concluirDI(String educandoId) {
+        if (educandoId == null || educandoId.isEmpty()) {
+            return;
+        }
         estado.put(educandoId, Etapa.PDI);
     }
 
@@ -36,7 +43,13 @@ public class AtendimentoFlowService {
         if (educandoId == null || educandoId.isEmpty()) {
             return;
         }
+        estado.put(educandoId, Etapa.PAEE);
+    }
+
+    public void concluirPAEE(String educandoId) {
+        if (educandoId == null || educandoId.isEmpty()) {
+            return;
+        }
         estado.put(educandoId, Etapa.COMPLETO);
     }
 }
-

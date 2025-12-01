@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TitledPane animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="450.0" style="-fx-label-padding: 5; -fx-border-radius: 20; -fx-background-radius: 20;" text="Notificação" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+  <content>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="200.0" style="-fx-border-radius: ;">
+         <children>
+            <Label style="-fx-label-padding: 15;" text="Mensagem descrevendo o status do cadastro executado!" />
+         </children></AnchorPane>
+  </content>
+</TitledPane>

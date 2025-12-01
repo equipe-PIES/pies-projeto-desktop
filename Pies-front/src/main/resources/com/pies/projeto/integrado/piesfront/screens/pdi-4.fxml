@@ -75,7 +75,7 @@
                                 <!-- Primeiro Label em negrito -->
                                 <Label style="-fx-font-weight: bold;" text="Recursos Materiais a serem produzidos para o educando" />
                                 <Label text="O que será produzido de forma específica para o educando." />
-                                <TextArea fx:id="recursosProduzidosTextArea" prefHeight="120" promptText="Digite" VBox.vgrow="ALWAYS" />
+                                <TextArea fx:id="recursosProduzidosTextArea" prefHeight="120" promptText="Digite" wrapText="true" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 
@@ -88,7 +88,7 @@
                                 <!-- Primeiro Label em negrito -->
                                 <Label style="-fx-font-weight: bold;" text="Parcerias necessárias para aprimoramento do Atendimento da Produção de Materiais" />
                                 <Label text="Exemplo: terapeuta ocupacional, costureira, marceneiro, psicopedagoga, psicólogo." />
-                                <TextArea fx:id="parceriasTextArea" prefHeight="200" promptText="Digite" VBox.vgrow="ALWAYS" />
+                                <TextArea fx:id="parceriasTextArea" prefHeight="200" promptText="Digite" wrapText="true" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 

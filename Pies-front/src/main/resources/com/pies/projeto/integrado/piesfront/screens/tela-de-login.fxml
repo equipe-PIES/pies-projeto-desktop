@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
    <center>
       <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #ffffff;">
           <children>
@@ -21,7 +19,7 @@
                   <Font name="System Bold" size="49.0" />
                </font>
             </Text>
-            <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="398.0" layoutX="722.0" layoutY="171.0" stroke="#0000003b" strokeType="INSIDE" width="330.0" />
+            <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="429.0" layoutX="722.0" layoutY="171.0" stroke="#0000003b" strokeType="INSIDE" width="330.0" />
             <Button fx:id="loginButton" layoutX="746.0" layoutY="423.0" mnemonicParsing="false" onAction="#handleLoginButtonAction" prefHeight="38.0" prefWidth="281.0" text="Entrar" />
             <PasswordField fx:id="passwordField" layoutX="747.0" layoutY="370.0" prefHeight="38.0" prefWidth="281.0" promptText="Senha" />
             <TextField fx:id="emailField" layoutX="747.0" layoutY="298.0" prefHeight="38.0" prefWidth="281.0" promptText="Email" />
@@ -34,6 +32,7 @@
             <Label fx:id="legendaPassword" layoutX="749.0" layoutY="342.0" text="Senha:" />
             <Hyperlink fx:id="forgotPasswordLink" layoutX="811.0" layoutY="499.0" onAction="#handleForgotPasswordAction" text="Esqueci minha senha." textFill="#8a8686" />
             <Label fx:id="errorMessageLabel" layoutX="746.0" layoutY="470.0" prefHeight="21.0" prefWidth="281.0" textFill="#ee7d7d" />
+            <ProgressBar fx:id="loginProgressBar" layoutX="787.0" layoutY="550.0" prefWidth="200.0" progress="0.0" />
           </children>
       </AnchorPane>
    </center>

@@ -13,6 +13,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Duration;
+import javafx.animation.PauseTransition;
+import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 import java.net.URL;
@@ -297,6 +301,27 @@ public class CadastroAlunoController implements Initializable {
         }
     }
     
+    private void showPopup(String mensagem, boolean sucesso) {
+        Stage currentStage = (Stage) (inicioButton != null ? inicioButton.getScene().getWindow() : cadastroAlunoBt.getScene().getWindow());
+        Label msg = new Label(mensagem);
+        String style = sucesso ? "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;"
+                : "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;";
+        msg.setStyle(style);
+        javafx.scene.layout.StackPane overlay = new javafx.scene.layout.StackPane(msg);
+        overlay.setStyle("-fx-background-color: transparent;");
+        overlay.setMouseTransparent(true);
+        javafx.scene.layout.StackPane.setAlignment(msg, javafx.geometry.Pos.CENTER);
+        javafx.scene.Parent root = currentStage.getScene().getRoot();
+        if (root instanceof javafx.scene.layout.Pane p) {
+            overlay.prefWidthProperty().bind(p.widthProperty());
+            overlay.prefHeightProperty().bind(p.heightProperty());
+            p.getChildren().add(overlay);
+            PauseTransition pt = new PauseTransition(Duration.seconds(5));
+            pt.setOnFinished(e -> p.getChildren().remove(overlay));
+            pt.play();
+        }
+    }
+    
     /// LIMPAR FORMULÁRIO
     private void limparFormulario() {
         if (nomeAluno != null) nomeAluno.clear();
@@ -386,6 +411,7 @@ public class CadastroAlunoController implements Initializable {
             if (response.statusCode() == 201) {
                 limparFormulario();
                 mostrarSucesso("Aluno cadastrado com sucesso!");
+                showPopup("Aluno cadastrado com sucesso!", true);
                 // Aguarda 2 segundos antes de voltar
                 new Thread(() -> {
                     try {
@@ -401,21 +427,27 @@ public class CadastroAlunoController implements Initializable {
                 }).start();
             } else if (response.statusCode() == 409) {
                 mostrarErro("CPF já cadastrado. Verifique os dados.");
+                showPopup("CPF já cadastrado. Verifique os dados.", false);
             } else if (response.statusCode() == 400) {
                 String mensagemErro = extrairMensagemErro(response.body());
                 if (mensagemErro.contains("CPF inválido") || mensagemErro.contains("CPF")) {
                     mostrarErro("CPF inválido. Use CPFs válidos para teste.");
+                    showPopup("CPF inválido. Use CPFs válidos para teste.", false);
                 } else {
                     mostrarErro("Dados inválidos: " + mensagemErro);
+                    showPopup("Dados inválidos: " + mensagemErro, false);
                 }
             } else if (response.statusCode() == 403) {
                 mostrarErro("Acesso negado. Verifique suas permissões.");
+                showPopup("Acesso negado. Verifique suas permissões.", false);
             } else {
                 mostrarErro("Erro inesperado. Código: " + response.statusCode());
+                showPopup("Erro inesperado. Código: " + response.statusCode(), false);
             }
         } catch (Exception e) {
             e.printStackTrace();
             mostrarErro("Erro ao enviar os dados: " + e.getMessage());
+            showPopup("Erro ao enviar os dados: " + e.getMessage(), false);
         }
     }
 
