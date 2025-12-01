@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -70,6 +71,8 @@ public class ViewTurmaController implements Initializable {
     private Button buscarAlunoButton;
     @FXML
     private FlowPane containerAlunos;
+    @FXML
+    private ScrollPane alunosScrollPane;
     
     private final AuthService authService;
     private String turmaId; // ID da turma sendo visualizada
@@ -92,6 +95,16 @@ public class ViewTurmaController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         atualizarIndicadorDeTela(url);
+        if (alunosScrollPane != null && containerAlunos != null) {
+            alunosScrollPane.setFitToWidth(true);
+            alunosScrollPane.viewportBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+                double cardWidth = 460.0;
+                double hgap = containerAlunos.getHgap();
+                double threeColsWidth = cardWidth * 3 + hgap * 2;
+                double wrap = Math.min(newBounds.getWidth(), threeColsWidth);
+                containerAlunos.setPrefWrapLength(wrap);
+            });
+        }
         javafx.application.Platform.runLater(() -> {
             atualizarNomeUsuarioAsync();
             if (turmaId != null && !turmaId.isEmpty()) {

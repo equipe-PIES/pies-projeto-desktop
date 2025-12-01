@@ -66,12 +66,15 @@
                   <Font name="System Bold" size="24.0" />
                </font>
                <VBox.margin>
-                  <Insets bottom="20.0" top="20.0" />
+                  <Insets bottom="20.0" left="60.0" top="20.0" />
                </VBox.margin>
             </Label>
-            <ScrollPane VBox.vgrow="ALWAYS">
+            <ScrollPane fx:id="turmasScrollPane" VBox.vgrow="ALWAYS" fitToWidth="true">
+               <VBox.margin>
+                  <Insets left="60.0" right="60.0" />
+               </VBox.margin>
                <content>
-                      <FlowPane fx:id="containerCards" alignment="TOP_LEFT" hgap="20" prefWidth="600" style="-fx-padding: 20;" vgap="20">
+                      <FlowPane fx:id="containerCards" alignment="TOP_CENTER" hgap="30" style="-fx-padding: 20;" vgap="30">
                 </FlowPane>
                </content>
             </ScrollPane>

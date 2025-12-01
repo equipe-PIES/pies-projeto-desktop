@@ -11,7 +11,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
    <center>
-      <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: default;">
+      <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #ffffff;">
           <children>
               <ImageView fx:id="logoAmparoEdu" fitHeight="254.0" fitWidth="266.0" layoutX="154.0" layoutY="226.0" pickOnBounds="true" preserveRatio="true" />
               <Rectangle fx:id="barraLateral" arcHeight="10.0" arcWidth="10.0" fill="#d6d6d6" height="800.0" layoutX="573.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="627.0" />

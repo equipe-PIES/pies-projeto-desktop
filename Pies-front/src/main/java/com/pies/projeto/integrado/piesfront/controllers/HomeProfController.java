@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -37,6 +38,8 @@ public class HomeProfController implements Initializable {
     private Button turmasButton;
     @FXML
     private FlowPane containerCards;
+    @FXML
+    private ScrollPane turmasScrollPane;
 
     private final AuthService authService;
 
@@ -47,6 +50,16 @@ public class HomeProfController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         atualizarIndicadorDeTela(url);
+        if (turmasScrollPane != null && containerCards != null) {
+            turmasScrollPane.setFitToWidth(true);
+            turmasScrollPane.viewportBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+                double cardWidth = 350.0;
+                double hgap = containerCards.getHgap();
+                double threeColsWidth = cardWidth * 3 + hgap * 2;
+                double wrap = Math.min(newBounds.getWidth(), threeColsWidth);
+                containerCards.setPrefWrapLength(wrap);
+            });
+        }
         javafx.application.Platform.runLater(() -> {
             carregarDadosEmParalelo();
         });

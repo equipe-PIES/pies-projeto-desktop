@@ -336,9 +336,16 @@ public class CadastroTurmaController implements Initializable {
     private void atualizarSugestoesPorNome(String query) {
         if (SugestoesAlunosList == null) return;
         String q = query == null ? "" : query.trim().toLowerCase();
+        String filtro = filtroEscolaridade != null ? filtroEscolaridade.getValue() : null;
+        
+        // Só mostra sugestões se houver texto digitado OU filtro selecionado
+        if (q.isEmpty() && filtro == null) {
+            SugestoesAlunosList.setItems(FXCollections.observableArrayList());
+            return;
+        }
+        
         List<AlunoSimplificadoDTO> todosAlunos = obterTodosAlunos();
         if (todosAlunos == null) return;
-        String filtro = filtroEscolaridade != null ? filtroEscolaridade.getValue() : null;
         String filtroBackend = mapEscolaridadeAlunoToBackend(filtro);
         List<String> sugestoes = todosAlunos.stream()
                 .filter(a -> filtroBackend == null || filtroBackend.equalsIgnoreCase(a.getEscolaridade()))

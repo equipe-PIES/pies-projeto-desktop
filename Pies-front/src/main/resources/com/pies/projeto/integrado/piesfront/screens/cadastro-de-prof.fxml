@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.*?>
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="cadastroProf" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CadastroProfController">
+<BorderPane fx:id="cadastroProf" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CadastroProfController">
 
     <!-- TOPO -->
     <top>
@@ -27,12 +23,20 @@
             </padding>
             <children>
                 <Region prefHeight="60.0" prefWidth="15.0" />
-                <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="140.0">
-                    <children>
 
-                        <Label id="tituloAmparoEdu" fx:id="tituloAmparoEdu" prefHeight="21.0" prefWidth="92.0" text="AmparoEdu" />
-                        <Label id="indicadorDeTela" fx:id="indicadorDeTela" prefHeight="21.0" prefWidth="131.0" text="indicadorDeTela" />
-                    </children>
+                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair" />
+                <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="140.0">
+               <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                            <children>
+                                <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário" />
+                                <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Coordenadora" />
+                            </children>
+                     <VBox.margin>
+                        <Insets left="10.0" top="10.0" />
+                     </VBox.margin>
+                        </VBox>
+               </children>
                 </VBox>
 
                 <Region HBox.hgrow="ALWAYS" />
@@ -49,43 +53,6 @@
         </HBox>
     </top>
 
-    <!-- MENU LATERAL -->
-    <left>
-        <VBox prefHeight="820.0" prefWidth="280.0" style="-fx-background-color: #f4f4f4;">
-            <padding>
-                <Insets left="15.0" right="15.0" top="20.0" />
-            </padding>
-            <children>
-                <HBox alignment="BOTTOM_CENTER" prefHeight="45.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
-                    <children>
-                        <ImageView id="perfilUser" fx:id="perfilUser" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" />
-                        <Region prefHeight="45.0" prefWidth="16.0" />
-                        <VBox prefHeight="200.0" prefWidth="100.0">
-                            <children>
-                                <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário" />
-                                <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Coordenadora" />
-                            </children>
-                        </VBox>
-                    </children>
-                </HBox>
-
-                <Region prefHeight="1024.0" prefWidth="210.0">
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
-                    <padding>
-                        <Insets right="20.0" />
-                    </padding></Region>
-
-                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
-                    <VBox.margin>
-                        <Insets bottom="10.0" top="10.0" />
-                    </VBox.margin>
-                </Button>
-            </children>
-        </VBox>
-    </left>
-
     <!-- CONTEÚDO CENTRAL -->
     <center>
         <VBox spacing="20.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
@@ -95,7 +62,7 @@
             <children>
                 <HBox alignment="CENTER" prefHeight="717.0" prefWidth="880.0" VBox.vgrow="ALWAYS">
                     <children>
-                        <VBox prefHeight="1024.0" prefWidth="455.0" style="-fx-border-color: #ddd;" HBox.hgrow="ALWAYS">
+                        <VBox prefHeight="720.0" prefWidth="674.0" style="-fx-border-color: #ddd;" HBox.hgrow="ALWAYS">
                             <children>
                                 <Label text="Dados do Professor(a)">
                                     <VBox.margin>
