@@ -57,11 +57,16 @@ public class PDIController {
     private int currentStep = 1;
     private final AuthService authService = AuthService.getInstance();
     private PDIFormData formData = new PDIFormData();
+    private boolean novoRegistro = false;
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
         atualizarIndicadorDeTela();
-        carregarPdiExistente();
+        if (!novoRegistro) {
+            carregarPdiExistente();
+        } else {
+            this.formData = new PDIFormData();
+        }
         preencherCamposComFormData();
     }
 
@@ -70,6 +75,10 @@ public class PDIController {
             this.formData = data;
             preencherCamposComFormData();
         }
+    }
+
+    public void setNovoRegistro(boolean novo) {
+        this.novoRegistro = novo;
     }
 
     @FXML
@@ -149,10 +158,6 @@ public class PDIController {
 
     @FXML
     private void handleGoToPdi2() {
-        if (!canStartPDI()) {
-            showValidation("Só é possível fazer PDI após Anamnese concluída.");
-            return;
-        }
         captureCurrentStepData();
         if (validatePdi1()) {
             abrir("/com/pies/projeto/integrado/piesfront/screens/pdi-2.fxml", "PDI", 2);
@@ -164,13 +169,21 @@ public class PDIController {
     @FXML
     private void handleGoToPdi3() {
         captureCurrentStepData();
-        abrir("/com/pies/projeto/integrado/piesfront/screens/pdi-3.fxml", "PDI", 3);
+        if (validatePdi2()) {
+            abrir("/com/pies/projeto/integrado/piesfront/screens/pdi-3.fxml", "PDI", 3);
+        } else {
+            showValidation("Algum campo está em branco. Preencha para prosseguir.");
+        }
     }
 
     @FXML
     private void handleGoToPdi4() {
         captureCurrentStepData();
-        abrir("/com/pies/projeto/integrado/piesfront/screens/pdi-4.fxml", "PDI", 4);
+        if (validatePdi3()) {
+            abrir("/com/pies/projeto/integrado/piesfront/screens/pdi-4.fxml", "PDI", 4);
+        } else {
+            showValidation("Algum campo está em branco. Preencha para prosseguir.");
+        }
     }
 
     @FXML
@@ -228,8 +241,8 @@ public class PDIController {
             Parent root = loader.load();
             PDIController controller = loader.getController();
             controller.setEducando(educando);
-            controller.setFormData(formData);
             controller.currentStep = step;
+            controller.setFormData(formData);
             Stage stage;
             if (anamnese != null && anamnese.getScene() != null) {
                 stage = (Stage) anamnese.getScene().getWindow();
@@ -288,10 +301,20 @@ public class PDIController {
         return !textEmpty && !choiceEmpty;
     }
 
+    private boolean validatePdi2() {
+        boolean p2Empty = isEmpty(potencialidadesTextArea) || isEmpty(necessidadesTextArea) || isEmpty(habilidadesTextArea);
+        return !p2Empty;
+    }
+
+    private boolean validatePdi3() {
+        boolean p3Empty = isEmpty(atividadesTextArea) || isEmpty(recursosMateriaisTextArea) || isEmpty(recursosAdequacaoTextArea);
+        return !p3Empty;
+    }
+
     private boolean validateAll() {
         if (!validatePdi1()) return false;
-        boolean p2Empty = isEmpty(potencialidadesTextArea) || isEmpty(necessidadesTextArea) || isEmpty(habilidadesTextArea);
-        boolean p3Empty = isEmpty(atividadesTextArea) || isEmpty(recursosMateriaisTextArea) || isEmpty(recursosAdequacaoTextArea);
+        boolean p2Empty = !validatePdi2();
+        boolean p3Empty = !validatePdi3();
         boolean p4Empty = isEmpty(recursosProduzidosTextArea) || isEmpty(parceriasTextArea);
         return !p2Empty && !p3Empty && !p4Empty;
     }
@@ -317,9 +340,9 @@ public class PDIController {
     }
 
     private boolean canStartPDI() {
-        if (educando == null) return false;
-        AtendimentoFlowService.Etapa etapa = AtendimentoFlowService.getInstance().getEtapaAtual(educando.id());
-        return etapa == AtendimentoFlowService.Etapa.PDI;
+        if (educando == null || educando.id() == null) return false;
+        var a = authService.getAnamnesePorEducando(educando.id());
+        return a != null;
     }
 
     private void inicializarChoiceBoxes() {

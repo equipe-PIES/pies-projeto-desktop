@@ -26,6 +26,16 @@ public class ProgressoAtendimentoController implements Initializable {
     
     @FXML
     private Button viewRelatorios;
+
+    @FXML
+    private Button iniciarRelatorioIndividual;
+
+    @FXML
+    private Button baixarRelatorioIndividual;
+    @FXML
+    private Button excluirRelatorioIndividual;
+    @FXML
+    private Button editarRelatorioIndividual1;
     
     @FXML
     private Button statusAnamnese;
@@ -85,26 +95,43 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
-        var etapa = AtendimentoFlowService.getInstance().getEtapaAtual(educando.id());
+        boolean hasAnamnese = false;
+        boolean hasDI = false;
+        boolean hasPDI = false;
+        boolean hasPAEE = false;
+        if (educando.id() != null) {
+            var a = authService.getAnamnesePorEducando(educando.id());
+            hasAnamnese = a != null;
+            var di = authService.getDiagnosticoInicialPorEducandoRaw(educando.id());
+            hasDI = di != null;
+            var pdis = authService.getPdisPorEducandoRaw(educando.id());
+            hasPDI = pdis != null && !pdis.isEmpty();
+            var paees = authService.getPaeesPorEducandoRaw(educando.id());
+            hasPAEE = paees != null && !paees.isEmpty();
+        }
         if (statusAnamnese != null) {
-            boolean concluido = etapa != AtendimentoFlowService.Etapa.ANAMNESE;
+            boolean concluido = hasAnamnese;
             statusAnamnese.setText(concluido ? "Concluído" : "Iniciar");
             statusAnamnese.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
+            statusAnamnese.setDisable(concluido);
         }
         if (statusDI != null) {
-            boolean concluido = etapa == AtendimentoFlowService.Etapa.PDI || etapa == AtendimentoFlowService.Etapa.PAEE || etapa == AtendimentoFlowService.Etapa.COMPLETO;
+            boolean concluido = hasDI;
             statusDI.setText(concluido ? "Concluído" : "Iniciar");
             statusDI.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
+            statusDI.setDisable(concluido);
         }
         if (statusPDI != null) {
-            boolean concluido = etapa == AtendimentoFlowService.Etapa.PAEE || etapa == AtendimentoFlowService.Etapa.COMPLETO;
-            statusPDI.setText(concluido ? "Concluído" : "Iniciar");
-            statusPDI.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
+            boolean existeAlgum = hasPDI;
+            statusPDI.setText(existeAlgum ? "Novo" : "Iniciar");
+            statusPDI.setStyle("");
+            statusPDI.setDisable(false);
         }
         if (statusPAEE != null) {
-            boolean concluido = etapa == AtendimentoFlowService.Etapa.COMPLETO;
-            statusPAEE.setText(concluido ? "Concluído" : "Iniciar");
-            statusPAEE.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
+            boolean existeAlgum = hasPAEE;
+            statusPAEE.setText(existeAlgum ? "Novo" : "Iniciar");
+            statusPAEE.setStyle("");
+            statusPAEE.setDisable(false);
         }
         atualizarVisibilidadePorExistencia();
     }
@@ -201,7 +228,27 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
-        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml"));
+            Parent root = loader.load();
+            Object controller = loader.getController();
+            if (controller instanceof PDIController c) {
+                c.setNovoRegistro(true);
+                c.setEducando(educando);
+            }
+            Stage popupStage = getStageFromAnyNode();
+            Stage parentStage = (Stage) popupStage.getOwner();
+            if (parentStage == null) parentStage = popupStage;
+            parentStage.setTitle("PDI");
+            parentStage.setScene(new Scene(root));
+            parentStage.setMaximized(false);
+            parentStage.setMaximized(true);
+            parentStage.show();
+            popupStage.close();
+        } catch (Exception e) {
+            System.err.println("Erro ao iniciar novo PDI: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -212,7 +259,27 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
-        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml"));
+            Parent root = loader.load();
+            Object controller = loader.getController();
+            if (controller instanceof PAEEController c) {
+                c.setNovoRegistro(true);
+                c.setEducando(educando);
+            }
+            Stage popupStage = getStageFromAnyNode();
+            Stage parentStage = (Stage) popupStage.getOwner();
+            if (parentStage == null) parentStage = popupStage;
+            parentStage.setTitle("PAEE");
+            parentStage.setScene(new Scene(root));
+            parentStage.setMaximized(false);
+            parentStage.setMaximized(true);
+            parentStage.show();
+            popupStage.close();
+        } catch (Exception e) {
+            System.err.println("Erro ao iniciar novo PAEE: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -230,12 +297,18 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando != null) {
             atualizarDados();
         }
+        if (closeProgressoAtd != null) { closeProgressoAtd.setVisible(false); closeProgressoAtd.setManaged(false); }
         if (editarAnamnese != null) editarAnamnese.setOnAction(e -> handleEditAnamneseAction());
         if (verAnamnese != null) verAnamnese.setOnAction(e -> handleEditAnamneseAction());
         if (excluirAnamnese != null) {
-            excluirAnamnese.setOnAction(e -> {});
-            excluirAnamnese.setVisible(false);
-            excluirAnamnese.setManaged(false);
+            excluirAnamnese.setOnAction(e -> {
+                if (educando == null) return;
+                var a = authService.getAnamnesePorEducando(educando.id());
+                if (a != null) {
+                    atualizarVisibilidadePorExistencia();
+                    atualizarDados();
+                }
+            });
         }
         if (editarDiagnosticoInicial != null) editarDiagnosticoInicial.setOnAction(e -> handleStatusDIAction());
         if (verDiagnosticoInicial != null) verDiagnosticoInicial.setOnAction(e -> handleStatusDIAction());
@@ -245,6 +318,7 @@ public class ProgressoAtendimentoController implements Initializable {
             String id = getIdFromMap(di);
             if (id != null && authService.deletarDiagnosticoInicial(id)) {
                 atualizarVisibilidadePorExistencia();
+                atualizarDados();
             }
         });
         if (editarPDI != null) editarPDI.setOnAction(e -> handleEditPDIAction());
@@ -256,6 +330,7 @@ public class ProgressoAtendimentoController implements Initializable {
                 String id = getIdFromMap(pdis.get(pdis.size() - 1));
                 if (id != null && authService.deletarPDI(id)) {
                     atualizarVisibilidadePorExistencia();
+                    atualizarDados();
                 }
             }
         });
@@ -268,6 +343,22 @@ public class ProgressoAtendimentoController implements Initializable {
                 String id = getIdFromMap(paees.get(paees.size() - 1));
                 if (id != null && authService.deletarPAEE(id)) {
                     atualizarVisibilidadePorExistencia();
+                    atualizarDados();
+                }
+            }
+        });
+        if (editarRelatorioIndividual1 != null) editarRelatorioIndividual1.setOnAction(e -> {
+            if (educando == null) return;
+            navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual");
+        });
+        if (excluirRelatorioIndividual != null) excluirRelatorioIndividual.setOnAction(e -> {
+            if (educando == null) return;
+            java.util.List<com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO> rels = authService.getRelatoriosIndividuaisPorEducando(educando.id());
+            if (rels != null && !rels.isEmpty()) {
+                String id = rels.get(rels.size() - 1).id();
+                if (id != null && authService.deletarRelatorioIndividual(id)) {
+                    atualizarVisibilidadePorExistencia();
+                    atualizarDados();
                 }
             }
         });
@@ -298,7 +389,7 @@ public class ProgressoAtendimentoController implements Initializable {
                 c.setEducando(educando);
             }
             
-            Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
+            Stage popupStage = getStageFromAnyNode();
             System.out.println("Popup stage: " + popupStage);
             
             Stage parentStage = (Stage) popupStage.getOwner();
@@ -329,11 +420,32 @@ public class ProgressoAtendimentoController implements Initializable {
         }
     }
 
+    private Stage getStageFromAnyNode() {
+        Button[] candidates = new Button[]{
+                statusAnamnese, statusDI, statusPDI, statusPAEE,
+                iniciarAtendimento, viewRelatorios,
+                iniciarRelatorioIndividual, baixarRelatorioIndividual,
+                editarRelatorioIndividual1, excluirRelatorioIndividual,
+                editarAnamnese, verAnamnese,
+                editarDiagnosticoInicial, verDiagnosticoInicial,
+                editarPDI, verPDI,
+                editarPAEE, verPAEE,
+                closeProgressoAtd
+        };
+        for (Button b : candidates) {
+            if (b != null && b.getScene() != null) {
+                return (Stage) b.getScene().getWindow();
+            }
+        }
+        return null;
+    }
+
     private void atualizarVisibilidadePorExistencia() {
         boolean hasAnamnese = false;
         boolean hasDI = false;
         boolean hasPDI = false;
         boolean hasPAEE = false;
+        boolean hasRelatorioIndividual = false;
         if (educando != null && educando.id() != null) {
             var a = authService.getAnamnesePorEducando(educando.id());
             hasAnamnese = a != null;
@@ -343,10 +455,12 @@ public class ProgressoAtendimentoController implements Initializable {
             hasPDI = pdis != null && !pdis.isEmpty();
             var paees = authService.getPaeesPorEducandoRaw(educando.id());
             hasPAEE = paees != null && !paees.isEmpty();
+            var rels = authService.getRelatoriosIndividuaisPorEducando(educando.id());
+            hasRelatorioIndividual = rels != null && !rels.isEmpty();
         }
         if (editarAnamnese != null) { editarAnamnese.setVisible(hasAnamnese); editarAnamnese.setManaged(hasAnamnese); }
         if (verAnamnese != null) { verAnamnese.setVisible(hasAnamnese); verAnamnese.setManaged(hasAnamnese); }
-        if (excluirAnamnese != null) { excluirAnamnese.setVisible(false); excluirAnamnese.setManaged(false); }
+        if (excluirAnamnese != null) { excluirAnamnese.setVisible(hasAnamnese); excluirAnamnese.setManaged(hasAnamnese); }
 
         if (editarDiagnosticoInicial != null) { editarDiagnosticoInicial.setVisible(hasDI); editarDiagnosticoInicial.setManaged(hasDI); }
         if (verDiagnosticoInicial != null) { verDiagnosticoInicial.setVisible(hasDI); verDiagnosticoInicial.setManaged(hasDI); }
@@ -359,6 +473,10 @@ public class ProgressoAtendimentoController implements Initializable {
         if (editarPAEE != null) { editarPAEE.setVisible(hasPAEE); editarPAEE.setManaged(hasPAEE); }
         if (verPAEE != null) { verPAEE.setVisible(hasPAEE); verPAEE.setManaged(hasPAEE); }
         if (excluirPAEE != null) { excluirPAEE.setVisible(hasPAEE); excluirPAEE.setManaged(hasPAEE); }
+
+        if (editarRelatorioIndividual1 != null) { editarRelatorioIndividual1.setVisible(hasRelatorioIndividual); editarRelatorioIndividual1.setManaged(hasRelatorioIndividual); }
+        if (excluirRelatorioIndividual != null) { excluirRelatorioIndividual.setVisible(hasRelatorioIndividual); excluirRelatorioIndividual.setManaged(hasRelatorioIndividual); }
+        if (baixarRelatorioIndividual != null) { baixarRelatorioIndividual.setVisible(hasRelatorioIndividual); baixarRelatorioIndividual.setManaged(hasRelatorioIndividual); }
     }
 
     @FXML

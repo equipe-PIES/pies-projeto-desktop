@@ -33,7 +33,17 @@
                         <Insets left="20.0" right="20.0" />
                      </VBox.margin>
                   </Text>
-                  <Region prefHeight="298.0" prefWidth="250.0" VBox.vgrow="ALWAYS" />
+                  <Region prefHeight="145.0" prefWidth="251.0" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="excluirRelatorioIndividual" mnemonicParsing="false" onAction="#handleViewRelatoriosAction" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: da0d0d;" text="Excluir" textFill="WHITE">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="editarRelatorioIndividual1" mnemonicParsing="false" onAction="#handleViewRelatoriosAction" prefHeight="50.0" prefWidth="300.0" text="Editar">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </Button>
                   <Button fx:id="baixarRelatorioIndividual" mnemonicParsing="false" onAction="#handleViewRelatoriosAction" prefHeight="50.0" prefWidth="300.0" text="Baixar Relatório Final">
                      <VBox.margin>
                         <Insets bottom="5.0" left="20.0" right="20.0" />
@@ -50,7 +60,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="300.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
                      <children>
-                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="280.0">
+                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="260.0">
                            <children>
                               <Label text="Anamnese">
                                  <font>
@@ -78,9 +88,10 @@
                               <Insets right="5.0" />
                            </HBox.margin>
                         </Button>
-                        <Button fx:id="statusAnamnese" mnemonicParsing="false" onAction="#handleStatusAnamneseAction" prefHeight="31.0" prefWidth="70.0" text="Iniciar">
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="statusAnamnese" mnemonicParsing="false" onAction="#handleStatusAnamneseAction" prefHeight="31.0" prefWidth="70.0" text="Iniciar" HBox.hgrow="ALWAYS">
                            <HBox.margin>
-                              <Insets right="10.0" />
+                              <Insets right="20.0" />
                            </HBox.margin>
                         </Button>
                      </children>
@@ -90,7 +101,7 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
                      <children>
-                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="280.0">
+                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="260.0">
                            <children>
                               <Label text="Diagnóstico Inicial">
                                  <font>
@@ -118,7 +129,8 @@
                               <Insets right="5.0" />
                            </HBox.margin>
                         </Button>
-                        <Button fx:id="statusDI" mnemonicParsing="false" onAction="#handleStatusDIAction" prefHeight="31.0" prefWidth="70.0" text="Iniciar">
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="statusDI" mnemonicParsing="false" onAction="#handleStatusDIAction" prefHeight="31.0" prefWidth="70.0" text="Iniciar" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets right="20.0" />
                            </HBox.margin>
@@ -130,7 +142,7 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
                      <children>
-                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="280.0">
+                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="260.0">
                            <children>
                               <Label text="PDI">
                                  <font>
@@ -158,7 +170,8 @@
                               <Insets right="5.0" />
                            </HBox.margin>
                         </Button>
-                        <Button fx:id="statusPDI" mnemonicParsing="false" onAction="#handleStatusPDIAction" prefHeight="31.0" prefWidth="70.0" text="Iniciar">
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="statusPDI" mnemonicParsing="false" onAction="#handleStatusPDIAction" prefHeight="31.0" prefWidth="70.0" text="Iniciar" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets right="20.0" />
                            </HBox.margin>
@@ -170,7 +183,7 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="210.0" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: #c0c0c0; -fx-border-radius: 8;">
                      <children>
-                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="280.0">
+                        <VBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="260.0">
                            <children>
                               <Label text="PAEE">
                                  <font>
@@ -198,7 +211,8 @@
                               <Insets right="5.0" />
                            </HBox.margin>
                         </Button>
-                        <Button fx:id="statusPAEE" mnemonicParsing="false" onAction="#handleStatusPAEEAction" prefHeight="31.0" prefWidth="70.0" text="Iniciar">
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="statusPAEE" mnemonicParsing="false" onAction="#handleStatusPAEEAction" prefHeight="31.0" prefWidth="70.0" text="Iniciar" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets right="20.0" />
                            </HBox.margin>
@@ -212,17 +226,18 @@
    </center>
    <top>
       <HBox prefHeight="51.0" prefWidth="964.0" BorderPane.alignment="CENTER_LEFT">
-         <children>
+        <children>
             <Label text="Progresso de Atendimento">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
-               <HBox.margin>
-                  <Insets right="20.0" />
-               </HBox.margin>
+                <font>
+                   <Font name="System Bold" size="24.0" />
+                </font>
+                <HBox.margin>
+                   <Insets right="20.0" />
+                </HBox.margin>
             </Label>
             <Region prefHeight="44.0" prefWidth="300.0" HBox.hgrow="ALWAYS" />
-         </children>
+            <Button fx:id="closeProgressoAtd" managed="false" mnemonicParsing="false" onAction="#handleCloseAction" text="Fechar" visible="false" />
+        </children>
          <BorderPane.margin>
             <Insets left="30.0" right="30.0" top="30.0" />
          </BorderPane.margin>

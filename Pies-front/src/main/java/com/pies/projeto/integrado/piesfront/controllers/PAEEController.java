@@ -96,11 +96,16 @@ public class PAEEController implements Initializable {
     private EducandoDTO educando;
     private final AuthService authService = AuthService.getInstance();
     private PaeeFormData formData = new PaeeFormData();
+    private boolean novoRegistro = false;
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
         atualizarIndicadorDeTela();
-        carregarPaeeExistente();
+        if (!novoRegistro) {
+            carregarPaeeExistente();
+        } else {
+            this.formData = new PaeeFormData();
+        }
         preencherCamposComFormData();
     }
 
@@ -109,6 +114,10 @@ public class PAEEController implements Initializable {
             this.formData = data;
             preencherCamposComFormData();
         }
+    }
+
+    public void setNovoRegistro(boolean novo) {
+        this.novoRegistro = novo;
     }
 
     @Override
@@ -179,25 +188,41 @@ public class PAEEController implements Initializable {
     @FXML
     private void handleGoToPaee3() {
         captureCurrentStepData();
-        abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-3.fxml", 3);
+        if (validateStep2()) {
+            abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-3.fxml", 3);
+        } else {
+            showValidation("Algum campo está em branco. Preencha para prosseguir.");
+        }
     }
 
     @FXML
     private void handleGoToPaee4() {
         captureCurrentStepData();
-        abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-4.fxml", 4);
+        if (validateStep3()) {
+            abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-4.fxml", 4);
+        } else {
+            showValidation("Algum campo está em branco. Preencha para prosseguir.");
+        }
     }
 
     @FXML
     private void handleGoToPaee5() {
         captureCurrentStepData();
-        abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-5.fxml", 5);
+        if (validateStep4()) {
+            abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-5.fxml", 5);
+        } else {
+            showValidation("Algum campo está em branco. Preencha para prosseguir.");
+        }
     }
 
     @FXML
     private void handleGoToPaee6() {
         captureCurrentStepData();
-        abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-6.fxml", 6);
+        if (validateStep5()) {
+            abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-6.fxml", 6);
+        } else {
+            showValidation("Algum campo está em branco. Preencha para prosseguir.");
+        }
     }
 
     @FXML
@@ -254,8 +279,8 @@ public class PAEEController implements Initializable {
             Parent root = loader.load();
             PAEEController controller = loader.getController();
             controller.setEducando(educando);
-            controller.setFormData(formData);
             controller.currentStep = step;
+            controller.setFormData(formData);
             Stage stage;
             if (anamnese != null && anamnese.getScene() != null) {
                 stage = (Stage) anamnese.getScene().getWindow();
@@ -411,6 +436,45 @@ public class PAEEController implements Initializable {
         if (objetivosPlano == null) return true;
         String t = objetivosPlano.getText() != null ? objetivosPlano.getText().trim() : "";
         return !t.isEmpty();
+    }
+
+    private boolean isEmpty(TextArea ta) {
+        if (ta == null) return false;
+        if (!ta.isVisible()) return false;
+        String t = ta.getText() != null ? ta.getText().trim() : null;
+        return t == null || t.isEmpty();
+    }
+
+    private boolean validateStep2() {
+        boolean e = isEmpty(desenvolvimentoMotoresPsicomotoresDificuldadesTa)
+                || isEmpty(desenvolvimentoMotoresPsicomotoresIntervencoesTa)
+                || isEmpty(comunicacaoLinguagemDificuldadesTa)
+                || isEmpty(comunicacaoLinguagemIntervencoesTa);
+        return !e;
+    }
+
+    private boolean validateStep3() {
+        boolean e = isEmpty(dificuldadesRaciocinioTa)
+                || isEmpty(intervencoesRaciocinioTa)
+                || isEmpty(dificuldadesAtencaoTa)
+                || isEmpty(intervencoesAtencaoTa);
+        return !e;
+    }
+
+    private boolean validateStep4() {
+        boolean e = isEmpty(dificuldadesMemoriaTa)
+                || isEmpty(intervencoesMemoriaTa)
+                || isEmpty(dificuldadesPercepcaoTa)
+                || isEmpty(intervencoesPercepcaoTa);
+        return !e;
+    }
+
+    private boolean validateStep5() {
+        boolean e = isEmpty(dificuldadesSociabilidadeTa)
+                || isEmpty(intervencoesSociabilidadeTa)
+                || isEmpty(dificuldadesAVATa)
+                || isEmpty(intervencoesAVATa);
+        return !e;
     }
 
     private String getValue(ChoiceBox<String> cb, String fallback) {

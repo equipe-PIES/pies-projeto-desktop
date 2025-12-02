@@ -266,8 +266,8 @@ public class DIController implements Initializable {
             Parent root = loader.load();
             DIController controller = loader.getController();
             controller.setEducando(educando);
-            controller.setFormData(formData);
             controller.currentStep = step;
+            controller.setFormData(formData);
             Stage stage;
             if (anamnese != null && anamnese.getScene() != null) {
                 stage = (Stage) anamnese.getScene().getWindow();
@@ -863,4 +863,3 @@ public class DIController implements Initializable {
         public String observacoes;
     }
 }
-
