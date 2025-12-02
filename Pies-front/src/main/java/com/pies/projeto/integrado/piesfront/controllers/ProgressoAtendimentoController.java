@@ -85,27 +85,27 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
-        var etapa = AtendimentoFlowService.getInstance().getEtapaAtual(educando.id());
+        // Todos os botões sempre mostram "Iniciar" para permitir múltiplos cadastros
         if (statusAnamnese != null) {
-            boolean concluido = etapa != AtendimentoFlowService.Etapa.ANAMNESE;
-            statusAnamnese.setText(concluido ? "Concluído" : "Iniciar");
-            statusAnamnese.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
+            statusAnamnese.setText("Iniciar");
+            statusAnamnese.setStyle("");
         }
+        
         if (statusDI != null) {
-            boolean concluido = etapa == AtendimentoFlowService.Etapa.PDI || etapa == AtendimentoFlowService.Etapa.PAEE || etapa == AtendimentoFlowService.Etapa.COMPLETO;
-            statusDI.setText(concluido ? "Concluído" : "Iniciar");
-            statusDI.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
+            statusDI.setText("Iniciar");
+            statusDI.setStyle("");
         }
+        
         if (statusPDI != null) {
-            boolean concluido = etapa == AtendimentoFlowService.Etapa.PAEE || etapa == AtendimentoFlowService.Etapa.COMPLETO;
-            statusPDI.setText(concluido ? "Concluído" : "Iniciar");
-            statusPDI.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
+            statusPDI.setText("Iniciar");
+            statusPDI.setStyle("");
         }
+        
         if (statusPAEE != null) {
-            boolean concluido = etapa == AtendimentoFlowService.Etapa.COMPLETO;
-            statusPAEE.setText(concluido ? "Concluído" : "Iniciar");
-            statusPAEE.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
+            statusPAEE.setText("Iniciar");
+            statusPAEE.setStyle("");
         }
+        
         atualizarVisibilidadePorExistencia();
     }
     
@@ -149,7 +149,10 @@ public class ProgressoAtendimentoController implements Initializable {
             return;
         }
         System.out.println("Educando: " + educando.nome() + " (ID: " + educando.id() + ")");
-        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
+        // Verifica se já existe anamnese - se não existir, abre em modo novo
+        var anamnese = authService.getAnamnesePorEducando(educando.id());
+        boolean carregar = anamnese != null;
+        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese", carregar);
     }
     
     /**
@@ -166,7 +169,8 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
-        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
+        // Botão Editar sempre carrega dados existentes
+        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese", true);
     }
 
     @FXML
@@ -283,6 +287,64 @@ public class ProgressoAtendimentoController implements Initializable {
             // else if (controller instanceof DIController c) {
             //     c.setEducando(educando);
             // }
+            
+            Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
+            System.out.println("Popup stage: " + popupStage);
+            
+            Stage parentStage = (Stage) popupStage.getOwner();
+            System.out.println("Parent stage: " + parentStage);
+            
+            if (parentStage == null) {
+                System.out.println("Parent stage é null, usando popupStage como fallback");
+                parentStage = popupStage; // fallback
+            }
+            
+            parentStage.setTitle(titulo);
+            parentStage.setScene(new Scene(root));
+            
+            // Força a maximização
+            parentStage.setMaximized(false);
+            parentStage.setMaximized(true);
+            
+            parentStage.show();
+            System.out.println("Parent stage exibido");
+            
+            popupStage.close();
+            System.out.println("Popup fechado");
+            System.out.println("=== Navegação concluída ===");
+        } catch (Exception e) {
+            System.err.println("=== ERRO ao navegar ===");
+            System.err.println("Mensagem: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void navegarNoStagePaiComModo(String resource, String titulo, boolean carregarDadosExistentes) {
+        try {
+            System.out.println("=== navegarNoStagePaiComModo ===");
+            System.out.println("Resource: " + resource);
+            System.out.println("Título: " + titulo);
+            System.out.println("Carregar dados existentes: " + carregarDadosExistentes);
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+            Parent root = loader.load();
+            System.out.println("FXML carregado com sucesso");
+            
+            Object controller = loader.getController();
+            if (controller instanceof AnamneseController c) {
+                System.out.println("Controller é AnamneseController, setando educando...");
+                c.setEducando(educando);
+                if (!carregarDadosExistentes) {
+                    c.setModoNovo(); // Define que é um novo cadastro
+                }
+            } else if (controller instanceof PDIController c) {
+                System.out.println("Controller é PDIController, setando educando...");
+                c.setEducando(educando);
+            } else if (controller instanceof PAEEController c) {
+                c.setEducando(educando);
+            } else if (controller instanceof RelatorioIndividualController c) {
+                c.setEducando(educando);
+            }
             
             Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
             System.out.println("Popup stage: " + popupStage);

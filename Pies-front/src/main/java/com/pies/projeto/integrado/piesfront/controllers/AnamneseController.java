@@ -36,11 +36,20 @@ public class AnamneseController {
     private EducandoDTO educando;
     private AnamneseRequestDTO formData = new AnamneseRequestDTO();
     private final AuthService authService = AuthService.getInstance();
+    private boolean carregarDadosExistentes = true; // Por padrão carrega dados existentes
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
-        carregarAnamneseExistente();
-        // Chamar populateFromFormData no initialize ou depois de carregar os componentes
+        // Agora que o educando foi definido, carrega os dados se necessário
+        if (carregarDadosExistentes && educando != null) {
+            carregarAnamneseExistente();
+            populateFromFormData();
+        }
+    }
+    
+    public void setModoNovo() {
+        this.carregarDadosExistentes = false;
+        this.formData = new AnamneseRequestDTO(); // Limpa os dados
     }
 
     public void setFormData(AnamneseRequestDTO data) {
@@ -141,12 +150,16 @@ public class AnamneseController {
             AnamneseDTO dto = toAnamneseDTO();
             
             // Verificar se já existe uma anamnese
+            System.out.println("=== SALVANDO ANAMNESE ===");
             AnamneseDTO existente = authService.getAnamnesePorEducando(educando.id());
+            System.out.println("Anamnese existente: " + (existente != null ? existente.id() : "null"));
+            
             AnamneseDTO resultado;
             
             if (existente != null) {
                 // Se já existe, atualizar
                 System.out.println("Anamnese já existe, atualizando...");
+                System.out.println("Dados sendo enviados: " + dto);
                 resultado = authService.atualizarAnamnese(educando.id(), dto);
             } else {
                 // Se não existe, criar nova
@@ -154,8 +167,9 @@ public class AnamneseController {
                 resultado = authService.criarAnamnese(educando.id(), dto);
             }
             
+            System.out.println("Resultado: " + (resultado != null ? "ID=" + resultado.id() : "null"));
+            
             if (resultado != null) {
-                AtendimentoFlowService.getInstance().concluirAnamnese(educando.id());
                 showPopup("Anamnese salva com sucesso!", true);
                 handleCancelAction();
             } else {
@@ -257,7 +271,11 @@ public class AnamneseController {
     @FXML
     private void initialize() {
         setupConditionalVisibility();
-        populateFromFormData();
+        // NÃO carrega dados aqui - será feito no setEducando após o educando ser definido
+        // Apenas popula com dados do formData se houver (para navegação entre telas)
+        if (educando == null) {
+            populateFromFormData();
+        }
         if (indicadorDeTela != null) {
             indicadorDeTela.setText("Anamnese");
         }
@@ -766,12 +784,19 @@ public class AnamneseController {
             return;
         }
         System.out.println("Tentando carregar anamnese para educando ID: " + educando.id());
+        
+        // Força uma nova busca no backend
         AnamneseDTO dto = authService.getAnamnesePorEducando(educando.id());
+        
         if (dto == null) {
             System.out.println("Nenhuma anamnese encontrada para o educando");
             return;
         }
-        System.out.println("Anamnese encontrada! Carregando dados...");
+        System.out.println("Anamnese encontrada! ID: " + dto.id() + " Carregando dados...");
+        
+        // Limpa os dados antigos antes de carregar novos
+        formData = new AnamneseRequestDTO();
+        
         formData.convulsao = parseBool(dto.temConvulsao());
         formData.possuiConvenio = dto.convenioMedico() != null && !dto.convenioMedico().isEmpty();
         formData.convenio = dto.convenioMedico();

@@ -162,7 +162,6 @@ public class RelatorioIndividualController {
         );
         var created = authService.criarRelatorioIndividual(dto);
         if (created != null) {
-            com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService.getInstance().concluirDI(educando.id());
             showPopup("Diagnóstico Inicial registrado com sucesso!", true);
             handleCancelAction();
         } else {

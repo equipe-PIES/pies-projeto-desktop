@@ -2,7 +2,6 @@ package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.CreatePDIDTO;
-import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import com.utils.Janelas;
 import javafx.collections.FXCollections;
@@ -60,9 +59,11 @@ public class PDIController {
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
-        atualizarIndicadorDeTela();
-        carregarPdiExistente();
-        preencherCamposComFormData();
+        // Se já foi inicializado E formData está vazio, carrega agora
+        if (anamnese != null && formData.periodoPlanoAEE == null) {
+            carregarPdiExistente();
+            preencherCamposComFormData();
+        }
     }
 
     public void setFormData(PDIFormData data) {
@@ -209,7 +210,6 @@ public class PDIController {
             );
             boolean ok = authService.criarPDI(dto);
             if (ok) {
-                AtendimentoFlowService.getInstance().concluirPDI(educando.id());
                 showPopup("PDI registrado com sucesso!", true);
                 handleCancelAction();
             } else {
@@ -227,9 +227,10 @@ public class PDIController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
             Parent root = loader.load();
             PDIController controller = loader.getController();
-            controller.setEducando(educando);
-            controller.setFormData(formData);
+            // IMPORTANTE: Define o formData ANTES do educando para não sobrescrever
             controller.currentStep = step;
+            controller.setFormData(formData);
+            controller.setEducando(educando);
             Stage stage;
             if (anamnese != null && anamnese.getScene() != null) {
                 stage = (Stage) anamnese.getScene().getWindow();
@@ -255,6 +256,16 @@ public class PDIController {
             validationMsg.setVisible(false);
             validationMsg.setManaged(true);
         }
+        System.out.println("=== PDI INITIALIZE ===");
+        System.out.println("Educando: " + (educando != null ? educando.nome() : "null"));
+        System.out.println("FormData.periodoPlanoAEE: " + formData.periodoPlanoAEE);
+        System.out.println("FormData.potencialidades: " + formData.potencialidades);
+        // Se o educando já foi definido E o formData está vazio (primeira abertura)
+        if (educando != null && formData.periodoPlanoAEE == null) {
+            System.out.println("Carregando PDI do backend...");
+            carregarPdiExistente();
+        }
+        // Sempre preenche os campos com o formData (seja recém carregado ou de navegação entre telas)
         preencherCamposComFormData();
     }
 
@@ -318,8 +329,14 @@ public class PDIController {
 
     private boolean canStartPDI() {
         if (educando == null) return false;
-        AtendimentoFlowService.Etapa etapa = AtendimentoFlowService.getInstance().getEtapaAtual(educando.id());
-        return etapa == AtendimentoFlowService.Etapa.PDI;
+        // Verifica no backend se existe anamnese cadastrada
+        try {
+            com.pies.projeto.integrado.piesfront.dto.AnamneseDTO anamnese = authService.getAnamnesePorEducando(educando.id());
+            return anamnese != null;
+        } catch (Exception e) {
+            System.err.println("Erro ao verificar anamnese: " + e.getMessage());
+            return false;
+        }
     }
 
     private void inicializarChoiceBoxes() {

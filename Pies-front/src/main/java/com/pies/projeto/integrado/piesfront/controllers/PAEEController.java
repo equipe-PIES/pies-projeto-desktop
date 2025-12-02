@@ -235,7 +235,6 @@ public class PAEEController implements Initializable {
             );
             boolean ok = authService.criarPAEE(dto);
             if (ok) {
-                com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService.getInstance().concluirPAEE(educando.id());
                 showPopup("PAEE registrado com sucesso!", true);
                 handleCancelAction();
             } else {
