@@ -1,6 +1,5 @@
 package com.pies.api.projeto.integrado.pies_backend.controller.dto;
 
-import com.pies.api.projeto.integrado.pies_backend.model.Enums.SimNao;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -9,12 +8,12 @@ public class AnamneseDTO {
 
     private String id;
 
-    private SimNao temConvulsao;
+    private String temConvulsao;
 
     @Size(max = 200)
     private String convenioMedico;
 
-    private SimNao vacinacaoEmDia;
+    private String vacinacaoEmDia;
 
     @Size(max = 500)
     private String doencaContagiosa;
@@ -37,7 +36,7 @@ public class AnamneseDTO {
     @Size(max = 100)
     private String duracaoGestacao;
 
-    private SimNao fezPreNatal;
+    private String fezPreNatal;
 
     @Size(max = 500)
     private String prematuridade;
@@ -51,13 +50,13 @@ public class AnamneseDTO {
     @Size(max = 200)
     private String tipoParto;
 
-    private SimNao chorouAoNascer;
+    private String chorouAoNascer;
 
-    private SimNao ficouRoxo;
+    private String ficouRoxo;
 
-    private SimNao usoIncubadora;
+    private String usoIncubadora;
 
-    private SimNao foiAmamentado;
+    private String foiAmamentado;
 
     @Size(max = 100)
     private String sustentouCabecaMeses;
@@ -92,19 +91,19 @@ public class AnamneseDTO {
     @Size(max = 500)
     private String disturbioFala;
 
-    private SimNao dormeSozinho;
+    private String dormeSozinho;
 
-    private SimNao temQuartoProprio;
+    private String temQuartoProprio;
 
     @Size(max = 100)
     private String sonoCalmoOuAgitado;
 
-    private SimNao respeitaRegras;
+    private String respeitaRegras;
 
-    private SimNao desmotivado;
+    private String desmotivado;
 
-    private SimNao agressivo;
+    private String agressivo;
 
-    private SimNao apresentaInquietacao;
+    private String apresentaInquietacao;
 }
 

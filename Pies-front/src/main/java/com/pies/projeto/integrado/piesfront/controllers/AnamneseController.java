@@ -40,12 +40,13 @@ public class AnamneseController {
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
         carregarAnamneseExistente();
-        populateFromFormData();
+        // Chamar populateFromFormData no initialize ou depois de carregar os componentes
     }
 
     public void setFormData(AnamneseRequestDTO data) {
         if (data != null) {
             this.formData = data;
+            populateFromFormData();
         }
     }
 
@@ -138,14 +139,28 @@ public class AnamneseController {
         captureCurrentStepData();
         if (educando != null) {
             AnamneseDTO dto = toAnamneseDTO();
-            var created = authService.criarAnamnese(educando.id(), dto);
-            if (created != null) {
+            
+            // Verificar se já existe uma anamnese
+            AnamneseDTO existente = authService.getAnamnesePorEducando(educando.id());
+            AnamneseDTO resultado;
+            
+            if (existente != null) {
+                // Se já existe, atualizar
+                System.out.println("Anamnese já existe, atualizando...");
+                resultado = authService.atualizarAnamnese(educando.id(), dto);
+            } else {
+                // Se não existe, criar nova
+                System.out.println("Criando nova anamnese...");
+                resultado = authService.criarAnamnese(educando.id(), dto);
+            }
+            
+            if (resultado != null) {
                 AtendimentoFlowService.getInstance().concluirAnamnese(educando.id());
-                showPopup("Anamnese registrada com sucesso!", true);
+                showPopup("Anamnese salva com sucesso!", true);
                 handleCancelAction();
             } else {
-                System.err.println("Falha ao enviar anamnese");
-                showPopup("Falha ao enviar anamnese.", false);
+                System.err.println("Falha ao salvar anamnese");
+                showPopup("Falha ao salvar anamnese.", false);
             }
         }
     }
@@ -602,6 +617,89 @@ public class AnamneseController {
 
     private void populateFromFormData() {
         if (formData == null) return;
+        
+        // Página 1 - CheckBoxes
+        if (convulsaoSim != null && convulsaoNao != null) {
+            convulsaoSim.setSelected(formData.convulsao);
+            convulsaoNao.setSelected(!formData.convulsao);
+        }
+        if (convenioSim != null && convenioNao != null) {
+            convenioSim.setSelected(formData.possuiConvenio);
+            convenioNao.setSelected(!formData.possuiConvenio);
+        }
+        if (vacinacaoSim != null && vacinacaoNao != null) {
+            vacinacaoSim.setSelected(formData.vacinacaoEmDia);
+            vacinacaoNao.setSelected(!formData.vacinacaoEmDia);
+        }
+        if (doencaContagiosaSim != null && doencaContagiosaNao != null) {
+            doencaContagiosaSim.setSelected(formData.teveDoencaContagiosa);
+            doencaContagiosaNao.setSelected(!formData.teveDoencaContagiosa);
+        }
+        if (medicacaoSim != null && medicacaoNao != null) {
+            medicacaoSim.setSelected(formData.fazUsoMedicacoes);
+            medicacaoNao.setSelected(!formData.fazUsoMedicacoes);
+        }
+        if (dificuldadesSim != null && dificuldadesNao != null) {
+            dificuldadesSim.setSelected(formData.apresentaDificuldades);
+            dificuldadesNao.setSelected(!formData.apresentaDificuldades);
+        }
+        if (apoioPedagogicoSim != null && apoioPedagogicoNao != null) {
+            apoioPedagogicoSim.setSelected(formData.apoioPedagogicoEmCasa);
+            apoioPedagogicoNao.setSelected(!formData.apoioPedagogicoEmCasa);
+        }
+        if (preNatalSim != null && preNatalNao != null) {
+            preNatalSim.setSelected(formData.fezPreNatal);
+            preNatalNao.setSelected(!formData.fezPreNatal);
+        }
+        if (prematuridadeSim != null && prematuridadeNao != null) {
+            boolean hasPrematuridade = formData.prematuridade != null && !formData.prematuridade.isEmpty();
+            prematuridadeSim.setSelected(hasPrematuridade);
+            prematuridadeNao.setSelected(!hasPrematuridade);
+        }
+        
+        // Página 2 - CheckBoxes
+        if (chorouSim != null && chorouNao != null) {
+            chorouSim.setSelected(formData.chorouAoNascer);
+            chorouNao.setSelected(!formData.chorouAoNascer);
+        }
+        if (ficouRoxoSim != null && ficouRoxoNao != null) {
+            ficouRoxoSim.setSelected(formData.ficouRoxo);
+            ficouRoxoNao.setSelected(!formData.ficouRoxo);
+        }
+        if (incubadoraSim != null && incubadoraNao != null) {
+            incubadoraSim.setSelected(formData.usoIncubadora);
+            incubadoraNao.setSelected(!formData.usoIncubadora);
+        }
+        if (amamentadoSim != null && amamentadoNao != null) {
+            amamentadoSim.setSelected(formData.foiAmamentado);
+            amamentadoNao.setSelected(!formData.foiAmamentado);
+        }
+        if (sustentouCabecaSim != null && sustentouCabecaNao != null) {
+            sustentouCabecaSim.setSelected(formData.sustentouCabeca);
+            sustentouCabecaNao.setSelected(!formData.sustentouCabeca);
+        }
+        if (engatinhouSim != null && engatinhouNao != null) {
+            engatinhouSim.setSelected(formData.engatinhou);
+            engatinhouNao.setSelected(!formData.engatinhou);
+        }
+        if (sentouSim != null && sentouNao != null) {
+            sentouSim.setSelected(formData.sentou);
+            sentouNao.setSelected(!formData.sentou);
+        }
+        if (andouSim != null && andouNao != null) {
+            andouSim.setSelected(formData.andou);
+            andouNao.setSelected(!formData.andou);
+        }
+        if (terapiaSim != null && terapiaNao != null) {
+            terapiaSim.setSelected(formData.precisouTerapia);
+            terapiaNao.setSelected(!formData.precisouTerapia);
+        }
+        if (falouSim != null && falouNao != null) {
+            falouSim.setSelected(formData.falou);
+            falouNao.setSelected(!formData.falou);
+        }
+        
+        // TextFields
         if (convenio != null) convenio.setText(val(formData.convenio));
         if (doencaContagiosa != null) doencaContagiosa.setText(val(formData.doencaContagiosa));
         if (medicacoes != null) medicacoes.setText(val(formData.medicacoes));
@@ -663,9 +761,17 @@ public class AnamneseController {
     }
 
     private void carregarAnamneseExistente() {
-        if (educando == null || educando.id() == null) return;
+        if (educando == null || educando.id() == null) {
+            System.out.println("Educando é null ou não tem ID, não pode carregar anamnese");
+            return;
+        }
+        System.out.println("Tentando carregar anamnese para educando ID: " + educando.id());
         AnamneseDTO dto = authService.getAnamnesePorEducando(educando.id());
-        if (dto == null) return;
+        if (dto == null) {
+            System.out.println("Nenhuma anamnese encontrada para o educando");
+            return;
+        }
+        System.out.println("Anamnese encontrada! Carregando dados...");
         formData.convulsao = parseBool(dto.temConvulsao());
         formData.possuiConvenio = dto.convenioMedico() != null && !dto.convenioMedico().isEmpty();
         formData.convenio = dto.convenioMedico();
