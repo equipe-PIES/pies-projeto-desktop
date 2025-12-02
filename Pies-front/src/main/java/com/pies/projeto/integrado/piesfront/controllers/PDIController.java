@@ -56,14 +56,24 @@ public class PDIController {
     private int currentStep = 1;
     private final AuthService authService = AuthService.getInstance();
     private PDIFormData formData = new PDIFormData();
+    private boolean modoNovo = false;
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
         // Se já foi inicializado E formData está vazio, carrega agora
-        if (anamnese != null && formData.periodoPlanoAEE == null) {
+        if (anamnese != null && formData.periodoPlanoAEE == null && !modoNovo) {
             carregarPdiExistente();
             preencherCamposComFormData();
         }
+    }
+
+    /**
+     * Define que o controller está em modo de novo cadastro.
+     * Neste modo, não carrega dados existentes.
+     */
+    public void setModoNovo() {
+        this.modoNovo = true;
+        this.formData = new PDIFormData(); // Limpa os dados
     }
 
     public void setFormData(PDIFormData data) {
@@ -229,6 +239,9 @@ public class PDIController {
             PDIController controller = loader.getController();
             // IMPORTANTE: Define o formData ANTES do educando para não sobrescrever
             controller.currentStep = step;
+            if (modoNovo) {
+                controller.setModoNovo();
+            }
             controller.setFormData(formData);
             controller.setEducando(educando);
             Stage stage;

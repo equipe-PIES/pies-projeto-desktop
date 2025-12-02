@@ -118,6 +118,66 @@ public record CreatePAEEDTO(
     @Size(max = 2000, message = "Intervenções de comunicação e linguagem não podem exceder 2000 caracteres")
     String comunicacaoLinguagemIntervencoes,
 
+    @Size(max = 2000, message = "Dificuldades de raciocínio não podem exceder 2000 caracteres")
+    String dificuldadesRaciocinio,
+
+    @Size(max = 2000, message = "Intervenções de raciocínio não podem exceder 2000 caracteres")
+    String intervencoesRaciocinio,
+
+    @Size(max = 2000, message = "Dificuldades de atenção não podem exceder 2000 caracteres")
+    String dificuldadesAtencao,
+
+    @Size(max = 2000, message = "Intervenções de atenção não podem exceder 2000 caracteres")
+    String intervencoesAtencao,
+
+    @Size(max = 2000, message = "Dificuldades de memória não podem exceder 2000 caracteres")
+    String dificuldadesMemoria,
+
+    @Size(max = 2000, message = "Intervenções de memória não podem exceder 2000 caracteres")
+    String intervencoesMemoria,
+
+    @Size(max = 2000, message = "Dificuldades de percepção não podem exceder 2000 caracteres")
+    String dificuldadesPercepcao,
+
+    @Size(max = 2000, message = "Intervenções de percepção não podem exceder 2000 caracteres")
+    String intervencoesPercepcao,
+
+    @Size(max = 2000, message = "Dificuldades de sociabilidade não podem exceder 2000 caracteres")
+    String dificuldadesSociabilidade,
+
+    @Size(max = 2000, message = "Intervenções de sociabilidade não podem exceder 2000 caracteres")
+    String intervencoesSociabilidade,
+
+    @Size(max = 2000, message = "Dificuldades de AVA não podem exceder 2000 caracteres")
+    String dificuldadesAVA,
+
+    @Size(max = 2000, message = "Intervenções de AVA não podem exceder 2000 caracteres")
+    String intervencoesAVA,
+
+    @Size(max = 2000, message = "Objetivos AEE não podem exceder 2000 caracteres")
+    String objetivosAEE,
+
+    @Size(max = 50, message = "Encaminhamento AEE não pode exceder 50 caracteres")
+    String envAEE,
+
+    @Size(max = 50, message = "Encaminhamento Psicólogo não pode exceder 50 caracteres")
+    String envPsicologo,
+
+    @Size(max = 50, message = "Encaminhamento Fisioterapeuta não pode exceder 50 caracteres")
+    String envFisioterapeuta,
+
+    @Size(max = 50, message = "Encaminhamento Psicopedagogo não pode exceder 50 caracteres")
+    String envPsicopedagogo,
+
+    @Size(max = 50, message = "Encaminhamento TO não pode exceder 50 caracteres")
+    String envTO,
+
+    @Size(max = 50, message = "Encaminhamento Educação Física não pode exceder 50 caracteres")
+    String envEducacaoFisica,
+
+    @Size(max = 50, message = "Encaminhamento Estimulação Precoce não pode exceder 50 caracteres")
+    String envEstimulacaoPrecoce,
+
     /**
      * ID do educando ao qual este PAEE pertence.
      * Campo obrigatório - deve ser um ID válido de um educando existente

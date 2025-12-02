@@ -141,6 +141,159 @@ public class PAEE {
     private String comunicacaoLinguagemIntervencoes;
 
     /**
+     * Raciocínio - Dificuldades.
+     * Campo opcional - descrição das dificuldades
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String dificuldadesRaciocinio;
+
+    /**
+     * Raciocínio - Intervenções.
+     * Campo opcional - descrição das intervenções
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String intervencoesRaciocinio;
+
+    /**
+     * Atenção - Dificuldades.
+     * Campo opcional - descrição das dificuldades
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String dificuldadesAtencao;
+
+    /**
+     * Atenção - Intervenções.
+     * Campo opcional - descrição das intervenções
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String intervencoesAtencao;
+
+    /**
+     * Memória - Dificuldades.
+     * Campo opcional - descrição das dificuldades
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String dificuldadesMemoria;
+
+    /**
+     * Memória - Intervenções.
+     * Campo opcional - descrição das intervenções
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String intervencoesMemoria;
+
+    /**
+     * Percepção - Dificuldades.
+     * Campo opcional - descrição das dificuldades
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String dificuldadesPercepcao;
+
+    /**
+     * Percepção - Intervenções.
+     * Campo opcional - descrição das intervenções
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String intervencoesPercepcao;
+
+    /**
+     * Sociabilidade - Dificuldades.
+     * Campo opcional - descrição das dificuldades
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String dificuldadesSociabilidade;
+
+    /**
+     * Sociabilidade - Intervenções.
+     * Campo opcional - descrição das intervenções
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String intervencoesSociabilidade;
+
+    /**
+     * AVA - Dificuldades.
+     * Campo opcional - descrição das dificuldades
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String dificuldadesAVA;
+
+    /**
+     * AVA - Intervenções.
+     * Campo opcional - descrição das intervenções
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String intervencoesAVA;
+
+    /**
+     * Objetivos AEE.
+     * Campo opcional - descrição dos objetivos
+     * Permite até 2000 caracteres
+     */
+    @Column(length = 2000)
+    private String objetivosAEE;
+
+    /**
+     * Encaminhamento AEE.
+     * Campo opcional - Sim/Não
+     */
+    @Column(length = 50)
+    private String envAEE;
+
+    /**
+     * Encaminhamento Psicólogo.
+     * Campo opcional - Sim/Não
+     */
+    @Column(length = 50)
+    private String envPsicologo;
+
+    /**
+     * Encaminhamento Fisioterapeuta.
+     * Campo opcional - Sim/Não
+     */
+    @Column(length = 50)
+    private String envFisioterapeuta;
+
+    /**
+     * Encaminhamento Psicopedagogo.
+     * Campo opcional - Sim/Não
+     */
+    @Column(length = 50)
+    private String envPsicopedagogo;
+
+    /**
+     * Encaminhamento TO (Terapeuta Ocupacional).
+     * Campo opcional - Sim/Não
+     */
+    @Column(length = 50)
+    private String envTO;
+
+    /**
+     * Encaminhamento Educação Física.
+     * Campo opcional - Sim/Não
+     */
+    @Column(length = 50)
+    private String envEducacaoFisica;
+
+    /**
+     * Encaminhamento Estimulação Precoce.
+     * Campo opcional - Sim/Não
+     */
+    @Column(length = 50)
+    private String envEstimulacaoPrecoce;
+
+    /**
      * Relacionamento com Educando.
      * ManyToOne: múltiplos PAEEs podem pertencer a um educando
      * O educando não pode ser nulo

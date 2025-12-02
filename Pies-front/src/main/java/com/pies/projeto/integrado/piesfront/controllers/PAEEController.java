@@ -30,6 +30,8 @@ public class PAEEController implements Initializable {
     @FXML
     private TextArea objetivosPlano;
     @FXML
+    private TextArea resumoCaso;
+    @FXML
     private ChoiceBox<String> dificuldadesMotoresPsicomotoresCb;
     @FXML
     private ChoiceBox<String> dificuldadesCognitivoCb;
@@ -90,18 +92,31 @@ public class PAEEController implements Initializable {
     @FXML
     private ChoiceBox<String> cbEducacaoFisica;
     @FXML
-    private ChoiceBox<String> cbEstimulaçãoPrecoce;
+    private ChoiceBox<String> cbEstimulacaoPrecoce;
 
     private int currentStep = 1;
     private EducandoDTO educando;
     private final AuthService authService = AuthService.getInstance();
     private PaeeFormData formData = new PaeeFormData();
+    private boolean modoNovo = false;
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
         atualizarIndicadorDeTela();
-        carregarPaeeExistente();
+        // Só carrega do backend se formData estiver vazio E não for modo novo
+        if (!modoNovo && formData.resumoCaso == null) {
+            carregarPaeeExistente();
+        }
         preencherCamposComFormData();
+    }
+
+    /**
+     * Define que o controller está em modo de novo cadastro.
+     * Neste modo, não carrega dados existentes.
+     */
+    public void setModoNovo() {
+        this.modoNovo = true;
+        this.formData = new PaeeFormData(); // Limpa os dados
     }
 
     public void setFormData(PaeeFormData data) {
@@ -202,17 +217,23 @@ public class PAEEController implements Initializable {
 
     @FXML
     private void handleConcluirAction() {
+        System.out.println("=== handleConcluirAction PAEE ===");
         captureCurrentStepData();
         if (educando == null || educando.id() == null) {
+            System.err.println("Educando inválido!");
             showValidation("Educando inválido.");
             return;
         }
+        System.out.println("Educando ID: " + educando.id());
         if (!validateResumo()) {
+            System.err.println("Resumo do caso não preenchido!");
             showValidation("Informe o resumo do caso.");
             return;
         }
+        System.out.println("Resumo validado!");
         try {
             String token = authService.getCurrentToken();
+            System.out.println("Token presente: " + (token != null && !token.isEmpty()));
             if (token == null || token.isEmpty()) {
                 showValidation("Sessão expirada.");
                 return;
@@ -231,9 +252,33 @@ public class PAEEController implements Initializable {
                     formData.desenvolvimentoMotoresPsicomotoresIntervencoes,
                     formData.comunicacaoLinguagemDificuldades,
                     formData.comunicacaoLinguagemIntervencoes,
+                    formData.dificuldadesRaciocinio,
+                    formData.intervencoesRaciocinio,
+                    formData.dificuldadesAtencao,
+                    formData.intervencoesAtencao,
+                    formData.dificuldadesMemoria,
+                    formData.intervencoesMemoria,
+                    formData.dificuldadesPercepcao,
+                    formData.intervencoesPercepcao,
+                    formData.dificuldadesSociabilidade,
+                    formData.intervencoesSociabilidade,
+                    formData.dificuldadesAVA,
+                    formData.intervencoesAVA,
+                    formData.objetivosAEE,
+                    formData.envAEE,
+                    formData.envPsicologo,
+                    formData.envFisioterapeuta,
+                    formData.envPsicopedagogo,
+                    formData.envTO,
+                    formData.envEducacaoFisica,
+                    formData.envEstimulacaoPrecoce,
                     educando.id()
             );
+            System.out.println("DTO criado. Resumo: " + dto.resumoCaso);
+            System.out.println("Educando ID no DTO: " + dto.educandoId);
+            System.out.println("Chamando authService.criarPAEE...");
             boolean ok = authService.criarPAEE(dto);
+            System.out.println("Resultado criarPAEE: " + ok);
             if (ok) {
                 showPopup("PAEE registrado com sucesso!", true);
                 handleCancelAction();
@@ -242,6 +287,8 @@ public class PAEEController implements Initializable {
                 showValidation("Falha ao enviar PAEE.");
             }
         } catch (Exception e) {
+            System.err.println("Exceção ao criar PAEE: " + e.getMessage());
+            e.printStackTrace();
             showPopup("Falha ao enviar PAEE.", false);
             showValidation("Falha ao enviar PAEE.");
         }
@@ -252,9 +299,13 @@ public class PAEEController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
             Parent root = loader.load();
             PAEEController controller = loader.getController();
-            controller.setEducando(educando);
-            controller.setFormData(formData);
             controller.currentStep = step;
+            if (modoNovo) {
+                controller.setModoNovo();
+            }
+            // IMPORTANTE: setFormData ANTES de setEducando para não sobrescrever os dados carregados
+            controller.setFormData(formData);
+            controller.setEducando(educando);
             Stage stage;
             if (anamnese != null && anamnese.getScene() != null) {
                 stage = (Stage) anamnese.getScene().getWindow();
@@ -317,12 +368,12 @@ public class PAEEController implements Initializable {
         if (cbPsicopedagogo != null && cbPsicopedagogo.getItems().isEmpty()) cbPsicopedagogo.getItems().addAll("Sim", "Não");
         if (cbTO != null && cbTO.getItems().isEmpty()) cbTO.getItems().addAll("Sim", "Não");
         if (cbEducacaoFisica != null && cbEducacaoFisica.getItems().isEmpty()) cbEducacaoFisica.getItems().addAll("Sim", "Não");
-        if (cbEstimulaçãoPrecoce != null && cbEstimulaçãoPrecoce.getItems().isEmpty()) cbEstimulaçãoPrecoce.getItems().addAll("Sim", "Não");
+        if (cbEstimulacaoPrecoce != null && cbEstimulacaoPrecoce.getItems().isEmpty()) cbEstimulacaoPrecoce.getItems().addAll("Sim", "Não");
     }
 
     private void captureCurrentStepData() {
         if (currentStep == 1) {
-            formData.resumoCaso = objetivosPlano != null ? objetivosPlano.getText() : formData.resumoCaso;
+            formData.resumoCaso = resumoCaso != null ? resumoCaso.getText() : formData.resumoCaso;
             formData.dificuldadesMotoresPsicomotores = getValue(dificuldadesMotoresPsicomotoresCb, formData.dificuldadesMotoresPsicomotores);
             formData.dificuldadesCognitivo = getValue(dificuldadesCognitivoCb, formData.dificuldadesCognitivo);
             formData.dificuldadesSensorial = getValue(dificuldadesSensorialCb, formData.dificuldadesSensorial);
@@ -359,13 +410,13 @@ public class PAEEController implements Initializable {
             formData.envPsicopedagogo = getValue(cbPsicopedagogo, formData.envPsicopedagogo);
             formData.envTO = getValue(cbTO, formData.envTO);
             formData.envEducacaoFisica = getValue(cbEducacaoFisica, formData.envEducacaoFisica);
-            formData.envEstimulaçãoPrecoce = getValue(cbEstimulaçãoPrecoce, formData.envEstimulaçãoPrecoce);
+            formData.envEstimulacaoPrecoce = getValue(cbEstimulacaoPrecoce, formData.envEstimulacaoPrecoce);
         }
     }
 
     private void preencherCamposComFormData() {
         if (currentStep == 1) {
-            if (objetivosPlano != null && formData.resumoCaso != null) objetivosPlano.setText(formData.resumoCaso);
+            if (resumoCaso != null && formData.resumoCaso != null) resumoCaso.setText(formData.resumoCaso);
             setChoice(dificuldadesMotoresPsicomotoresCb, formData.dificuldadesMotoresPsicomotores);
             setChoice(dificuldadesCognitivoCb, formData.dificuldadesCognitivo);
             setChoice(dificuldadesSensorialCb, formData.dificuldadesSensorial);
@@ -402,13 +453,13 @@ public class PAEEController implements Initializable {
             setChoice(cbPsicopedagogo, formData.envPsicopedagogo);
             setChoice(cbTO, formData.envTO);
             setChoice(cbEducacaoFisica, formData.envEducacaoFisica);
-            setChoice(cbEstimulaçãoPrecoce, formData.envEstimulaçãoPrecoce);
+            setChoice(cbEstimulacaoPrecoce, formData.envEstimulacaoPrecoce);
         }
     }
 
     private boolean validateResumo() {
-        if (objetivosPlano == null) return true;
-        String t = objetivosPlano.getText() != null ? objetivosPlano.getText().trim() : "";
+        if (resumoCaso == null) return true;
+        String t = resumoCaso.getText() != null ? resumoCaso.getText().trim() : "";
         return !t.isEmpty();
     }
 
@@ -508,8 +559,8 @@ public class PAEEController implements Initializable {
         formData.envTO = toSimNao(o);
         o = dto.get("envEducacaoFisica");
         formData.envEducacaoFisica = toSimNao(o);
-        o = dto.get("envEstimulaçãoPrecoce");
-        formData.envEstimulaçãoPrecoce = toSimNao(o);
+        o = dto.get("envEstimulacaoPrecoce");
+        formData.envEstimulacaoPrecoce = toSimNao(o);
     }
 
     private void showValidation(String msg) {
@@ -550,6 +601,26 @@ public class PAEEController implements Initializable {
         public String desenvolvimentoMotoresPsicomotoresIntervencoes;
         public String comunicacaoLinguagemDificuldades;
         public String comunicacaoLinguagemIntervencoes;
+        public String dificuldadesRaciocinio;
+        public String intervencoesRaciocinio;
+        public String dificuldadesAtencao;
+        public String intervencoesAtencao;
+        public String dificuldadesMemoria;
+        public String intervencoesMemoria;
+        public String dificuldadesPercepcao;
+        public String intervencoesPercepcao;
+        public String dificuldadesSociabilidade;
+        public String intervencoesSociabilidade;
+        public String dificuldadesAVA;
+        public String intervencoesAVA;
+        public String objetivosAEE;
+        public String envAEE;
+        public String envPsicologo;
+        public String envFisioterapeuta;
+        public String envPsicopedagogo;
+        public String envTO;
+        public String envEducacaoFisica;
+        public String envEstimulacaoPrecoce;
         public String educandoId;
         public CreatePAEEDTO(String resumoCaso,
                              String dificuldadesMotoresPsicomotores,
@@ -564,6 +635,26 @@ public class PAEEController implements Initializable {
                              String desenvolvimentoMotoresPsicomotoresIntervencoes,
                              String comunicacaoLinguagemDificuldades,
                              String comunicacaoLinguagemIntervencoes,
+                             String dificuldadesRaciocinio,
+                             String intervencoesRaciocinio,
+                             String dificuldadesAtencao,
+                             String intervencoesAtencao,
+                             String dificuldadesMemoria,
+                             String intervencoesMemoria,
+                             String dificuldadesPercepcao,
+                             String intervencoesPercepcao,
+                             String dificuldadesSociabilidade,
+                             String intervencoesSociabilidade,
+                             String dificuldadesAVA,
+                             String intervencoesAVA,
+                             String objetivosAEE,
+                             String envAEE,
+                             String envPsicologo,
+                             String envFisioterapeuta,
+                             String envPsicopedagogo,
+                             String envTO,
+                             String envEducacaoFisica,
+                             String envEstimulacaoPrecoce,
                              String educandoId) {
             this.resumoCaso = resumoCaso;
             this.dificuldadesMotoresPsicomotores = dificuldadesMotoresPsicomotores;
@@ -578,6 +669,26 @@ public class PAEEController implements Initializable {
             this.desenvolvimentoMotoresPsicomotoresIntervencoes = desenvolvimentoMotoresPsicomotoresIntervencoes;
             this.comunicacaoLinguagemDificuldades = comunicacaoLinguagemDificuldades;
             this.comunicacaoLinguagemIntervencoes = comunicacaoLinguagemIntervencoes;
+            this.dificuldadesRaciocinio = dificuldadesRaciocinio;
+            this.intervencoesRaciocinio = intervencoesRaciocinio;
+            this.dificuldadesAtencao = dificuldadesAtencao;
+            this.intervencoesAtencao = intervencoesAtencao;
+            this.dificuldadesMemoria = dificuldadesMemoria;
+            this.intervencoesMemoria = intervencoesMemoria;
+            this.dificuldadesPercepcao = dificuldadesPercepcao;
+            this.intervencoesPercepcao = intervencoesPercepcao;
+            this.dificuldadesSociabilidade = dificuldadesSociabilidade;
+            this.intervencoesSociabilidade = intervencoesSociabilidade;
+            this.dificuldadesAVA = dificuldadesAVA;
+            this.intervencoesAVA = intervencoesAVA;
+            this.objetivosAEE = objetivosAEE;
+            this.envAEE = envAEE;
+            this.envPsicologo = envPsicologo;
+            this.envFisioterapeuta = envFisioterapeuta;
+            this.envPsicopedagogo = envPsicopedagogo;
+            this.envTO = envTO;
+            this.envEducacaoFisica = envEducacaoFisica;
+            this.envEstimulacaoPrecoce = envEstimulacaoPrecoce;
             this.educandoId = educandoId;
         }
     }
@@ -615,6 +726,6 @@ public class PAEEController implements Initializable {
         public String envPsicopedagogo;
         public String envTO;
         public String envEducacaoFisica;
-        public String envEstimulaçãoPrecoce;
+        public String envEstimulacaoPrecoce;
     }
 }

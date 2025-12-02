@@ -679,24 +679,41 @@ public class AuthService {
 
     public boolean criarPAEE(
             com.pies.projeto.integrado.piesfront.controllers.PAEEController.CreatePAEEDTO dto) {
+        System.out.println("=== AuthService.criarPAEE ===");
         if (currentToken == null || dto == null || dto.educandoId == null) {
             System.err.println("criarPAEE: Token ou DTO inválido");
+            System.err.println("Token null? " + (currentToken == null));
+            System.err.println("DTO null? " + (dto == null));
+            System.err.println("EducandoId null? " + (dto != null && dto.educandoId == null));
             return false;
         }
         try {
             String requestBody = objectMapper.writeValueAsString(dto);
+            System.out.println("Request Body:");
+            System.out.println(requestBody);
+            String url = BASE_URL + PAEES_ENDPOINT;
+            System.out.println("URL: " + url);
+            System.out.println("Token (primeiros 20 chars): " + currentToken.substring(0, Math.min(20, currentToken.length())) + "...");
+            
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + PAEES_ENDPOINT))
+                    .uri(URI.create(url))
                     .header("Authorization", "Bearer " + currentToken)
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .timeout(Duration.ofSeconds(10))
                     .build();
+            
+            System.out.println("Enviando requisição...");
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("Status Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
+            
             if (response.statusCode() == 201 || response.statusCode() == 200) {
+                System.out.println("PAEE criado com sucesso!");
                 return true;
             } else {
                 System.err.println("Erro ao criar PAEE. Status: " + response.statusCode());
+                System.err.println("Response body: " + response.body());
                 return false;
             }
         } catch (IOException | InterruptedException e) {

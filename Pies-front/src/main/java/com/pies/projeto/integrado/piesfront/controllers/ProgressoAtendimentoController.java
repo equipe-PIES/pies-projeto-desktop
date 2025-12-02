@@ -194,7 +194,8 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
-        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE");
+        // Botão Editar sempre carrega dados existentes
+        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE", true);
     }
     
     /**
@@ -213,10 +214,16 @@ public class ProgressoAtendimentoController implements Initializable {
      */
     @FXML
     private void handleStatusPAEEAction() {
+        System.out.println("=== handleStatusPAEEAction chamado ===");
         if (educando == null) {
+            System.err.println("Educando é null!");
             return;
         }
-        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE");
+        System.out.println("Educando: " + educando.nome() + " (ID: " + educando.id() + ")");
+        // Verifica se já existe PAEE - se não existir, abre em modo novo
+        var paees = authService.getPaeesPorEducandoRaw(educando.id());
+        boolean carregar = paees != null && !paees.isEmpty();
+        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE", carregar);
     }
     
     /**
@@ -279,6 +286,7 @@ public class ProgressoAtendimentoController implements Initializable {
                 System.out.println("Controller é PDIController, setando educando...");
                 c.setEducando(educando);
             } else if (controller instanceof PAEEController c) {
+                System.out.println("Controller é PAEEController, setando educando...");
                 c.setEducando(educando);
             } else if (controller instanceof RelatorioIndividualController c) {
                 c.setEducando(educando);
@@ -340,8 +348,15 @@ public class ProgressoAtendimentoController implements Initializable {
             } else if (controller instanceof PDIController c) {
                 System.out.println("Controller é PDIController, setando educando...");
                 c.setEducando(educando);
+                if (!carregarDadosExistentes) {
+                    c.setModoNovo(); // Define que é um novo cadastro
+                }
             } else if (controller instanceof PAEEController c) {
+                System.out.println("Controller é PAEEController, setando educando...");
                 c.setEducando(educando);
+                if (!carregarDadosExistentes) {
+                    c.setModoNovo(); // Define que é um novo cadastro
+                }
             } else if (controller instanceof RelatorioIndividualController c) {
                 c.setEducando(educando);
             }

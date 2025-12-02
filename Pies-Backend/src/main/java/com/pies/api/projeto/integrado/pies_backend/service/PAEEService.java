@@ -155,6 +155,26 @@ public class PAEEService {
         entity.setDesenvolvimentoMotoresPsicomotoresIntervencoes(dto.desenvolvimentoMotoresPsicomotoresIntervencoes());
         entity.setComunicacaoLinguagemDificuldades(dto.comunicacaoLinguagemDificuldades());
         entity.setComunicacaoLinguagemIntervencoes(dto.comunicacaoLinguagemIntervencoes());
+        entity.setDificuldadesRaciocinio(dto.dificuldadesRaciocinio());
+        entity.setIntervencoesRaciocinio(dto.intervencoesRaciocinio());
+        entity.setDificuldadesAtencao(dto.dificuldadesAtencao());
+        entity.setIntervencoesAtencao(dto.intervencoesAtencao());
+        entity.setDificuldadesMemoria(dto.dificuldadesMemoria());
+        entity.setIntervencoesMemoria(dto.intervencoesMemoria());
+        entity.setDificuldadesPercepcao(dto.dificuldadesPercepcao());
+        entity.setIntervencoesPercepcao(dto.intervencoesPercepcao());
+        entity.setDificuldadesSociabilidade(dto.dificuldadesSociabilidade());
+        entity.setIntervencoesSociabilidade(dto.intervencoesSociabilidade());
+        entity.setDificuldadesAVA(dto.dificuldadesAVA());
+        entity.setIntervencoesAVA(dto.intervencoesAVA());
+        entity.setObjetivosAEE(dto.objetivosAEE());
+        entity.setEnvAEE(dto.envAEE());
+        entity.setEnvPsicologo(dto.envPsicologo());
+        entity.setEnvFisioterapeuta(dto.envFisioterapeuta());
+        entity.setEnvPsicopedagogo(dto.envPsicopedagogo());
+        entity.setEnvTO(dto.envTO());
+        entity.setEnvEducacaoFisica(dto.envEducacaoFisica());
+        entity.setEnvEstimulacaoPrecoce(dto.envEstimulacaoPrecoce());
         entity.setEducando(educando);
         
         // Salva a entidade atualizada e converte para DTO antes de retornar
@@ -233,6 +253,26 @@ public class PAEEService {
         p.setDesenvolvimentoMotoresPsicomotoresIntervencoes(dto.desenvolvimentoMotoresPsicomotoresIntervencoes());
         p.setComunicacaoLinguagemDificuldades(dto.comunicacaoLinguagemDificuldades());
         p.setComunicacaoLinguagemIntervencoes(dto.comunicacaoLinguagemIntervencoes());
+        p.setDificuldadesRaciocinio(dto.dificuldadesRaciocinio());
+        p.setIntervencoesRaciocinio(dto.intervencoesRaciocinio());
+        p.setDificuldadesAtencao(dto.dificuldadesAtencao());
+        p.setIntervencoesAtencao(dto.intervencoesAtencao());
+        p.setDificuldadesMemoria(dto.dificuldadesMemoria());
+        p.setIntervencoesMemoria(dto.intervencoesMemoria());
+        p.setDificuldadesPercepcao(dto.dificuldadesPercepcao());
+        p.setIntervencoesPercepcao(dto.intervencoesPercepcao());
+        p.setDificuldadesSociabilidade(dto.dificuldadesSociabilidade());
+        p.setIntervencoesSociabilidade(dto.intervencoesSociabilidade());
+        p.setDificuldadesAVA(dto.dificuldadesAVA());
+        p.setIntervencoesAVA(dto.intervencoesAVA());
+        p.setObjetivosAEE(dto.objetivosAEE());
+        p.setEnvAEE(dto.envAEE());
+        p.setEnvPsicologo(dto.envPsicologo());
+        p.setEnvFisioterapeuta(dto.envFisioterapeuta());
+        p.setEnvPsicopedagogo(dto.envPsicopedagogo());
+        p.setEnvTO(dto.envTO());
+        p.setEnvEducacaoFisica(dto.envEducacaoFisica());
+        p.setEnvEstimulacaoPrecoce(dto.envEstimulacaoPrecoce());
         p.setEducando(educando);
         
         return p;
