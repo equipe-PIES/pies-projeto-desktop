@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.AnamneseController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PAEEController">
 
     <!-- TOPO -->
     <top>
@@ -22,24 +17,31 @@
                 <Insets left="20.0" right="20.0" />
             </padding>
             <children>
+                <Region prefHeight="60.0" prefWidth="15.0" />
 
-                            <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair" />
-                  <VBox prefHeight="50.0" prefWidth="187.0">
-                      <children>
-                          <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário" />
-                          <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Professora" />
-                      </children>
-               <HBox.margin>
-                  <Insets left="10.0" top="10.0" />
-               </HBox.margin>
-                  </VBox>
+                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
+                    <HBox.margin>
+                        <Insets right="10.0" />
+                    </HBox.margin>
+                </Button>
+                <VBox prefHeight="42.0" prefWidth="227.0">
+                    <children>
+                        <Label id="nameUser" fx:id="nameUser" prefHeight="21.0" prefWidth="150.0" style="-fx-font-weight: bold;" text="Nome de Usuário" />
+                        <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Professora" />
+                    </children>
+                    <HBox.margin>
+                        <Insets top="10.0" />
+                    </HBox.margin>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="140.0" />
 
-                <Region prefHeight="60.0" prefWidth="738.0" HBox.hgrow="ALWAYS" />
+                <Region HBox.hgrow="ALWAYS" />
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
                         <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
                         <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
+                        <Button id="relatoriosButton" fx:id="relatoriosButton" text="Relatórios" />
                     </children>
                 </HBox>
             </children>
@@ -53,157 +55,114 @@
             <padding>
                 <Insets bottom="20" left="30" right="30" top="30" />
             </padding>
-         <children>
-            <AnchorPane prefHeight="710.0" prefWidth="1159.0">
+
+            <children>
+                <Label id="indicadorDeTela" fx:id="indicadorDeTela" prefHeight="35.0" prefWidth="516.0" text="indicadorDeTela">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+
+
+                <!-- OBJETIVOS DO PLANO -->
+                <VBox prefHeight="201.0" prefWidth="1160.0" spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+
+                    <padding>
+                        <Insets bottom="20" left="20" right="20" top="20" />
+                    </padding>
+
+                    <children>
+
+                        <Label style="-fx-font-weight: bold;" text="AVDs - Atividades de Vida Diária" />
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                            <children>
+                                <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <CheckBox mnemonicParsing="false" text="Usa o sanitário sem ajuda" />
+                                        <CheckBox mnemonicParsing="false" text="Penteia-se só " />
+                                        <CheckBox mnemonicParsing="false" text="Consegue vestir-se e despir-se" />
+                                        <CheckBox mnemonicParsing="false" text="Lava e seca as mãos" />
+                                    </children>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </VBox>
+                                <VBox layoutX="20.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <CheckBox mnemonicParsing="false" text="Banha-se com moderação" />
+                                        <CheckBox mnemonicParsing="false" text="Calça-se só" />
+                                        <CheckBox mnemonicParsing="false" text="Reconhece suas roupas" />
+                                        <CheckBox mnemonicParsing="false" text="Abre e fecha a torneira" />
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_LEFT" layoutX="420.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <CheckBox mnemonicParsing="false" text="Escova os dentes sem ajuda" />
+                                        <CheckBox mnemonicParsing="false" text="Consegue dar nós nos laços" />
+                                        <CheckBox mnemonicParsing="false" text="Abotoa e desabotoa roupas" />
+                                        <CheckBox mnemonicParsing="false" text="Identifica as partes do seu corpo" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                    </children>
+
+                </VBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Label layoutX="50.0" layoutY="40.0" text="AVDs - Atividades de vida diária">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <AnchorPane layoutX="50.0" layoutY="100.0" prefHeight="200.0" prefWidth="220.0">
+                      <VBox prefHeight="144.0" prefWidth="1160.0" spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                          <children>
+                                <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0">
+                                    <children>
+                                    <Label style="-fx-font-weight: bold;" text="Níveis de Aprendizagem" />
+                                        <CheckBox mnemonicParsing="false" text="Garatujas" />
+                                        <CheckBox mnemonicParsing="false" text="Silábico Alfabético" />
+                                        <CheckBox mnemonicParsing="false" text="Alfabético" />
+                                        <CheckBox mnemonicParsing="false" text="Pré-silábico" />
+                                        <CheckBox mnemonicParsing="false" text="Silábico" />
+                                    </children>
+                                </VBox>
+                          </children>
+                          <padding>
+                              <Insets bottom="20" left="20" right="20" top="20" />
+                          </padding>
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                      </VBox>
+                  <VBox layoutX="10.0" layoutY="10.0" prefHeight="144.0" prefWidth="1160.0" spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                      <children>
-                        <CheckBox fx:id="usasanitario" mnemonicParsing="false" text="Usa o sanitário sem ajuda">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="penteiaso" layoutY="35.0" mnemonicParsing="false" text="Penteia-se só">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="conseguevestir" layoutY="70.0" mnemonicParsing="false" text="Consegue vestir-se e despir-se">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="lavamao" layoutY="105.0" mnemonicParsing="false" text="Lava e seca as mãos">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
+                        <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0">
+                           <children>
+                              <Label style="-fx-font-weight: bold;" text="Observações" />
+                              <TextArea prefHeight="200.0" prefWidth="200.0" />
+                           </children>
+                        </VBox>
                      </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="450.0" layoutY="100.0" prefHeight="200.0" prefWidth="220.0">
-                     <children>
-                        <CheckBox fx:id="banha" mnemonicParsing="false" text="Banha-se com moderação">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="calca" layoutY="35.0" mnemonicParsing="false" text="Calça-se só">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="reconheceroupa" layoutY="70.0" mnemonicParsing="false" text="Reconhece suas roupas">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="abretorneira" layoutY="105.0" mnemonicParsing="false" text="Abre e fecha a torneira">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="800.0" layoutY="100.0" prefHeight="200.0" prefWidth="220.0">
-                     <children>
-                        <CheckBox fx:id="escovadentes" mnemonicParsing="false" text="Escova os dentes sem ajuda">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="darnoslacos" layoutY="35.0" mnemonicParsing="false" text="Consegue dar nós nos laços">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="abotoaroupa" layoutY="70.0" mnemonicParsing="false" text="Abotoa e desabotoa as roupas">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="identificacorpo" layoutY="105.0" mnemonicParsing="false" text="Identifica as partes do seu corpo">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                     </children>
-                  </AnchorPane>
-                  <Label layoutX="50.0" layoutY="330.0" text="Níveis de aprendizagem">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <AnchorPane layoutX="50.0" layoutY="390.0" prefHeight="100.0" prefWidth="234.0">
-                     <children>
-                        <CheckBox fx:id="garatujas" mnemonicParsing="false" text="Garatujas">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="presilabico" layoutY="35.0" mnemonicParsing="false" text="Pré-silábico">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="450.0" layoutY="390.0" prefHeight="100.0" prefWidth="234.0">
-                     <children>
-                        <CheckBox fx:id="silabico" mnemonicParsing="false" text="Silábico">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="silabicoalfabetico" layoutY="35.0" mnemonicParsing="false" text="Silábico alfabético">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="800.0" layoutY="390.0" prefHeight="100.0" prefWidth="234.0">
-                     <children>
-                        <CheckBox fx:id="alfabetico" mnemonicParsing="false" text="Alfabético">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                     </children>
-                  </AnchorPane>
-                  <Label layoutX="50.0" layoutY="520.0" text="Observações">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <TextArea fx:id="odservacoes" layoutX="50.0" layoutY="560.0" prefHeight="120.0" prefWidth="1050.0" text="Digite...." />
+                     <padding>
+                        <Insets bottom="20" left="20" right="20" top="20" />
+                     </padding>
+                  </VBox>
                </children>
-            </AnchorPane>
-            <ButtonBar prefHeight="40.0" prefWidth="200.0">
-              <buttons>
-                <Button fx:id="cancelarButton" mnemonicParsing="false" text="Cancelar">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="anteriorButton" mnemonicParsing="false" text="Anterior">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="concluirButton" mnemonicParsing="false" text="Concluir">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Button>
-              </buttons>
-            </ButtonBar>
-         </children>
+            </HBox>
+                <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+
+
+                <!-- BOTÕES -->
+                <HBox alignment="CENTER_RIGHT" spacing="20">
+                    <children>
+                        <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
+                        <Button onAction="#handleCancelAction" text="Cancelar" />
+                        <Button onAction="#handleBackAction" text="Voltar" />
+                        <Button style="-fx-background-color: #bdbdbd;" text="Concluir" />
+                    </children>
+                </HBox>
+
+
+            </children>
         </VBox>
     </center>
+
 
 </BorderPane>

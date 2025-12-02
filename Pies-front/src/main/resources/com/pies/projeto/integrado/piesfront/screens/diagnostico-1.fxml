@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.AnamneseController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PAEEController">
 
     <!-- TOPO -->
     <top>
@@ -21,24 +17,31 @@
                 <Insets left="20.0" right="20.0" />
             </padding>
             <children>
+                <Region prefHeight="60.0" prefWidth="15.0" />
 
-                            <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair" />
-                  <VBox prefHeight="50.0" prefWidth="187.0">
-                      <children>
-                          <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário" />
-                          <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Professora" />
-                      </children>
-               <HBox.margin>
-                  <Insets left="10.0" top="10.0" />
-               </HBox.margin>
-                  </VBox>
+                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
+                    <HBox.margin>
+                        <Insets right="10.0" />
+                    </HBox.margin>
+                </Button>
+                <VBox prefHeight="42.0" prefWidth="227.0">
+                    <children>
+                        <Label id="nameUser" fx:id="nameUser" prefHeight="21.0" prefWidth="150.0" style="-fx-font-weight: bold;" text="Nome de Usuário" />
+                        <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Professora" />
+                    </children>
+                    <HBox.margin>
+                        <Insets top="10.0" />
+                    </HBox.margin>
+                </VBox>
+                <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="140.0" />
 
-                <Region prefHeight="60.0" prefWidth="738.0" HBox.hgrow="ALWAYS" />
+                <Region HBox.hgrow="ALWAYS" />
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
                         <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
                         <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
+                        <Button id="relatoriosButton" fx:id="relatoriosButton" text="Relatórios" />
                     </children>
                 </HBox>
             </children>
@@ -52,196 +55,119 @@
             <padding>
                 <Insets bottom="20" left="30" right="30" top="30" />
             </padding>
-         <children>
-            <AnchorPane prefHeight="710.0" prefWidth="1159.0">
+
+            <children>
+                <Label id="indicadorDeTela" fx:id="indicadorDeTela" prefHeight="35.0" prefWidth="516.0" text="indicadorDeTela">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+
+
+                <!-- OBJETIVOS DO PLANO -->
+                <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+
+                    <padding>
+                        <Insets bottom="20" left="20" right="20" top="20" />
+                    </padding>
+
+                    <children>
+
+                        <Label style="-fx-font-weight: bold;" text="Área da Comunicação" />
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0">
+                           <children>
+                              <CheckBox mnemonicParsing="false" text="Fala seu nome" />
+                              <CheckBox mnemonicParsing="false" text="Diz a data do nascimento" />
+                              <CheckBox mnemonicParsing="false" text="Lê palavras" />
+                              <CheckBox mnemonicParsing="false" text="Informa o número de telefone" />
+                              <CheckBox mnemonicParsing="false" text="Emite respostas" />
+                              <CheckBox mnemonicParsing="false" text="Transmite recado" />
+                           </children>
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox layoutX="20.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
+                           <children>
+                              <CheckBox mnemonicParsing="false" text="Informa seu endereço" />
+                              <CheckBox mnemonicParsing="false" text="Informa o nome dos pais" />
+                              <CheckBox mnemonicParsing="false" text="Compreende ordens" />
+                              <CheckBox mnemonicParsing="false" text="Expõe suas ideias" />
+                              <CheckBox mnemonicParsing="false" text="Reconta histórias" />
+                              <CheckBox mnemonicParsing="false" text="Usa o sistema de C.A" />
+                           </children>
+                        </VBox>
+                        <VBox layoutX="420.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
+                           <children>
+                              <CheckBox mnemonicParsing="false" text="Relata fatos com coerência" />
+                              <CheckBox mnemonicParsing="false" text="Pronuncia as letras do alfabeto" />
+                              <CheckBox mnemonicParsing="false" text="Verbaliza músicas" />
+                              <CheckBox mnemonicParsing="false" text="Interpreta histórias" />
+                              <CheckBox mnemonicParsing="false" text="Formula perguntas" />
+                              <CheckBox mnemonicParsing="false" text="Utiliza gestos para se comunicar" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+
+                    </children>
+
+                </VBox>
+            <VBox layoutX="40.0" layoutY="95.0" spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                <children>
-                  <Label layoutX="50.0" layoutY="40.0" text="Área da comunicação">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <AnchorPane layoutX="50.0" layoutY="100.0" prefHeight="200.0" prefWidth="220.0">
+                  <Label style="-fx-font-weight: bold;" text="Área Afetiva" />
+                  <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <CheckBox fx:id="falanome" mnemonicParsing="false" text="Fala seu nome">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="diznascimento" layoutY="35.0" mnemonicParsing="false" text="Diz a data do nascimento">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="lepalavras" layoutY="70.0" mnemonicParsing="false" text="Lê palavras">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="informatelefone" layoutY="105.0" mnemonicParsing="false" text="Informa o número de telefone">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="emiterespostas" layoutY="140.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="177.0" text="Emite respostas">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="transmiterecados" layoutY="175.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="209.0" text="Transmite recados">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
+                        <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0">
+                           <children>
+                              <CheckBox mnemonicParsing="false" text="Demonstra cooperação" />
+                              <CheckBox mnemonicParsing="false" text="É tímido(a), inseguro(a)" />
+                              <CheckBox mnemonicParsing="false" text="Faz &quot;birra&quot;" />
+                           </children>
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox layoutX="20.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
+                           <children>
+                              <CheckBox mnemonicParsing="false" text="Solicita e oferece ajuda" />
+                              <CheckBox mnemonicParsing="false" text="Ri com frequência" />
+                              <CheckBox mnemonicParsing="false" text="Compartilha o que é seu" />
+                           </children>
+                        </VBox>
+                        <VBox layoutX="420.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
+                           <children>
+                              <CheckBox mnemonicParsing="false" text="Demonstra amor, gentileza e atenção" />
+                              <CheckBox mnemonicParsing="false" text="Chora com frequência" />
+                              <CheckBox mnemonicParsing="false" text="Interage com os colegas" />
+                           </children>
+                        </VBox>
                      </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="450.0" layoutY="100.0" prefHeight="200.0" prefWidth="220.0">
-                     <children>
-                        <CheckBox fx:id="informaendereco" mnemonicParsing="false" text="Informa o seu endereço">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="informapais" layoutY="35.0" mnemonicParsing="false" text="Informa o nome dos pais">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="compreendeordens" layoutY="70.0" mnemonicParsing="false" text="Compreende ordens">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="expoeideias" layoutY="105.0" mnemonicParsing="false" text="Expõe suas ideias">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="recontahistorias" layoutY="140.0" mnemonicParsing="false" text="Reconta histórias">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="usasistemaca" layoutY="175.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="217.0" text="Usa o sistema de C.A">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="800.0" layoutY="100.0" prefHeight="200.0" prefWidth="220.0">
-                     <children>
-                        <CheckBox fx:id="relatafatos" mnemonicParsing="false" text="Relata fatos com coerência">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="pronunciaalfabeto" layoutY="35.0" mnemonicParsing="false" text="Pronuncia as letras do alfabeto">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="verbalizamusicas" layoutY="70.0" mnemonicParsing="false" text="Verbaliza músicas">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="interpretahistorias" layoutY="105.0" mnemonicParsing="false" text="Interpreta histórias">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="formulaperguntas" layoutY="140.0" mnemonicParsing="false" text="Formula perguntas">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="utilizagestos" layoutY="175.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="292.0" text="Utiliza gestos para se comunicar">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                     </children>
-                  </AnchorPane>
-                  <Label layoutX="50.0" layoutY="330.0" text="Área afetiva">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <AnchorPane layoutX="50.0" layoutY="390.0" prefHeight="100.0" prefWidth="234.0">
-                     <children>
-                        <CheckBox fx:id="cooperacao" mnemonicParsing="false" text="Demonstra cooperação">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="timido" layoutY="35.0" mnemonicParsing="false" text="É tímido, inseguro">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="birra" layoutY="70.0" mnemonicParsing="false" text="Faz birra">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="450.0" layoutY="390.0" prefHeight="100.0" prefWidth="234.0">
-                     <children>
-                        <CheckBox fx:id="solicitaajuda" mnemonicParsing="false" text="Solicita e oferece ajuda">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="ri" layoutY="35.0" mnemonicParsing="false" text="Ri com frequência">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="compartilhaoqueeseu" layoutY="70.0" mnemonicParsing="false" text="Compartilha o que é seu">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane layoutX="800.0" layoutY="390.0" prefHeight="100.0" prefWidth="234.0">
-                     <children>
-                        <CheckBox fx:id="amor" mnemonicParsing="false" text="Demonstra amor, gentileza e atenção">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="chora" layoutY="35.0" mnemonicParsing="false" text="Chora com frequência">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                        <CheckBox fx:id="interage" layoutY="70.0" mnemonicParsing="false" text="Interage com os colegas">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </CheckBox>
-                     </children>
-                  </AnchorPane>
+                  </HBox>
                </children>
-            </AnchorPane>
-            <ButtonBar prefHeight="40.0" prefWidth="200.0">
-              <buttons>
-                <Button fx:id="cancelarButton" mnemonicParsing="false" text="Cancelar">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="seguinteButton" mnemonicParsing="false" text="Seguinte">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Button>
-              </buttons>
-            </ButtonBar>
-         </children>
+               <padding>
+                  <Insets bottom="20" left="20" right="20" top="20" />
+               </padding>
+            </VBox>
+            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+
+
+                <!-- BOTÕES -->
+                <HBox alignment="CENTER_RIGHT" spacing="20">
+                    <children>
+                        <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
+                        <Button onAction="#handleCancelAction" text="Cancelar" />
+                        <Button onAction="#handleBackAction" text="Voltar" />
+                        <Button onAction="#handleGoToPaee3" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
+                    </children>
+                </HBox>
+
+
+            </children>
         </VBox>
     </center>
+
 
 </BorderPane>
