@@ -8,7 +8,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PAEEController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.DIController">
 
     <!-- TOPO -->
     <top>
@@ -78,10 +78,10 @@
                             <children>
                                 <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                                     <children>
-                                        <CheckBox mnemonicParsing="false" text="Capta detalhes em gravura" />
-                                        <CheckBox mnemonicParsing="false" text="Reconhece vozes" />
-                                        <CheckBox mnemonicParsing="false" text="Reconhece canções" />
-                                        <CheckBox mnemonicParsing="false" text="Percebe as texturas" />
+                                        <CheckBox fx:id="captaDetalhesGravura" mnemonicParsing="false" text="Capta detalhes em gravura" />
+                                        <CheckBox fx:id="reconheceVozes" mnemonicParsing="false" text="Reconhece vozes" />
+                                        <CheckBox fx:id="reconheceCancoes" mnemonicParsing="false" text="Reconhece canções" />
+                                        <CheckBox fx:id="percebeTexturas" mnemonicParsing="false" text="Percebe as texturas" />
                                     </children>
                                     <HBox.margin>
                                         <Insets left="10.0" />
@@ -89,18 +89,18 @@
                                 </VBox>
                                 <VBox layoutX="20.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                                     <children>
-                                        <CheckBox mnemonicParsing="false" text="Percepção de cores" />
-                                        <CheckBox mnemonicParsing="false" text="Discrimina sons" />
-                                        <CheckBox mnemonicParsing="false" text="Discrimina odores" />
-                                        <CheckBox mnemonicParsing="false" text="Aceita diferentes texturas" />
+                                        <CheckBox fx:id="percepcaoCores" mnemonicParsing="false" text="Percepção de cores" />
+                                        <CheckBox fx:id="discriminaSons" mnemonicParsing="false" text="Discrimina sons" />
+                                        <CheckBox fx:id="discriminaOdores" mnemonicParsing="false" text="Discrimina odores" />
+                                        <CheckBox fx:id="aceitaDiferentesTexturas" mnemonicParsing="false" text="Aceita diferentes texturas" />
                                     </children>
                                 </VBox>
                                 <VBox layoutX="420.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                                     <children>
-                                        <CheckBox mnemonicParsing="false" text="Percepção de formas" />
-                                        <CheckBox mnemonicParsing="false" text="Identifica a direção do som" />
-                                        <CheckBox mnemonicParsing="false" text="Percebe e discrimina sabores" />
-                                        <CheckBox mnemonicParsing="false" text="Acompanha foco luminoso" />
+                                        <CheckBox fx:id="percepcaoFormas" mnemonicParsing="false" text="Percepção de formas" />
+                                        <CheckBox fx:id="identificaDirecaoSom" mnemonicParsing="false" text="Identifica a direção do som" />
+                                        <CheckBox fx:id="percebeDiscriminaSabores" mnemonicParsing="false" text="Percebe e discrimina sabores" />
+                                        <CheckBox fx:id="acompanhaFocoLuminoso" mnemonicParsing="false" text="Acompanha foco luminoso" />
                                     </children>
                                 </VBox>
                             </children>
@@ -116,10 +116,10 @@
                             <children>
                                 <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                                     <children>
-                                        <CheckBox mnemonicParsing="false" text="Faz movimento de pinça com tesoura" />
-                                        <CheckBox mnemonicParsing="false" text="Amassa papel" />
-                                        <CheckBox mnemonicParsing="false" text="Cai com facilidade" />
-                              <CheckBox mnemonicParsing="false" text="Encaixa peças" />
+                                        <CheckBox fx:id="movimentoPincaComTesoura" mnemonicParsing="false" text="Faz movimento de pinça com tesoura" />
+                                        <CheckBox fx:id="amassaPapel" mnemonicParsing="false" text="Amassa papel" />
+                                        <CheckBox fx:id="caiComFacilidade" mnemonicParsing="false" text="Cai com facilidade" />
+                              <CheckBox fx:id="encaixaPecas" mnemonicParsing="false" text="Encaixa peças" />
                                     </children>
                                     <HBox.margin>
                                         <Insets left="10.0" />
@@ -127,18 +127,18 @@
                                 </VBox>
                                 <VBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                                     <children>
-                                        <CheckBox mnemonicParsing="false" text="Recorta" />
-                                        <CheckBox mnemonicParsing="false" text="Une pontos" />
-                                        <CheckBox mnemonicParsing="false" text="Consegue correr" />
-                              <CheckBox mnemonicParsing="false" text="Empilha" />
+                                        <CheckBox fx:id="recorta" mnemonicParsing="false" text="Recorta" />
+                                        <CheckBox fx:id="unePontos" mnemonicParsing="false" text="Une pontos" />
+                                        <CheckBox fx:id="consegueCorrer" mnemonicParsing="false" text="Consegue correr" />
+                              <CheckBox fx:id="empilha" mnemonicParsing="false" text="Empilha" />
                                     </children>
                                 </VBox>
                                 <VBox layoutX="420.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                                     <children>
-                                        <CheckBox mnemonicParsing="false" text="Apresenta agitação motora" />
-                                        <CheckBox mnemonicParsing="false" text="Anda em linha reta" />
-                                        <CheckBox mnemonicParsing="false" text="Sobe e desce escadas" />
-                              <CheckBox mnemonicParsing="false" text="Arremessa bola" />
+                                        <CheckBox fx:id="agitacaoMotora" mnemonicParsing="false" text="Apresenta agitação motora" />
+                                        <CheckBox fx:id="andaLinhaReta" mnemonicParsing="false" text="Anda em linha reta" />
+                                        <CheckBox fx:id="sobeDesceEscadas" mnemonicParsing="false" text="Sobe e desce escadas" />
+                              <CheckBox fx:id="arremessaBola" mnemonicParsing="false" text="Arremessa bola" />
                                     </children>
                                 </VBox>
                             </children>
@@ -157,7 +157,7 @@
                         <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
                         <Button onAction="#handleCancelAction" text="Cancelar" />
                         <Button onAction="#handleBackAction" text="Voltar" />
-                        <Button onAction="#handleGoToPaee3" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
+                        <Button onAction="#handleGoToDI3" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
                     </children>
                 </HBox>
 

@@ -8,7 +8,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PAEEController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.DIController">
 
     <!-- TOPO -->
     <top>
@@ -78,10 +78,10 @@
                             <children>
                                 <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <CheckBox mnemonicParsing="false" text="Usa o sanitário sem ajuda" />
-                                        <CheckBox mnemonicParsing="false" text="Penteia-se só " />
-                                        <CheckBox mnemonicParsing="false" text="Consegue vestir-se e despir-se" />
-                                        <CheckBox mnemonicParsing="false" text="Lava e seca as mãos" />
+                                        <CheckBox fx:id="usaSanitarioSemAjuda" mnemonicParsing="false" text="Usa o sanitário sem ajuda" />
+                                        <CheckBox fx:id="penteiaSeSo" mnemonicParsing="false" text="Penteia-se só " />
+                                        <CheckBox fx:id="consegueVestirDespirSe" mnemonicParsing="false" text="Consegue vestir-se e despir-se" />
+                                        <CheckBox fx:id="lavaSecaAsMaos" mnemonicParsing="false" text="Lava e seca as mãos" />
                                     </children>
                                     <HBox.margin>
                                         <Insets left="10.0" />
@@ -89,18 +89,18 @@
                                 </VBox>
                                 <VBox layoutX="20.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <CheckBox mnemonicParsing="false" text="Banha-se com moderação" />
-                                        <CheckBox mnemonicParsing="false" text="Calça-se só" />
-                                        <CheckBox mnemonicParsing="false" text="Reconhece suas roupas" />
-                                        <CheckBox mnemonicParsing="false" text="Abre e fecha a torneira" />
+                                        <CheckBox fx:id="banhoComModeracao" mnemonicParsing="false" text="Banha-se com moderação" />
+                                        <CheckBox fx:id="calcaSeSo" mnemonicParsing="false" text="Calça-se só" />
+                                        <CheckBox fx:id="reconheceRoupas" mnemonicParsing="false" text="Reconhece suas roupas" />
+                                        <CheckBox fx:id="abreFechaTorneira" mnemonicParsing="false" text="Abre e fecha a torneira" />
                                     </children>
                                 </VBox>
                                 <VBox alignment="CENTER_LEFT" layoutX="420.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <CheckBox mnemonicParsing="false" text="Escova os dentes sem ajuda" />
-                                        <CheckBox mnemonicParsing="false" text="Consegue dar nós nos laços" />
-                                        <CheckBox mnemonicParsing="false" text="Abotoa e desabotoa roupas" />
-                                        <CheckBox mnemonicParsing="false" text="Identifica as partes do seu corpo" />
+                                        <CheckBox fx:id="escovaDentesSemAjuda" mnemonicParsing="false" text="Escova os dentes sem ajuda" />
+                                        <CheckBox fx:id="consegueDarNosLacos" mnemonicParsing="false" text="Consegue dar nós nos laços" />
+                                        <CheckBox fx:id="abotoaDesabotoaRoupas" mnemonicParsing="false" text="Abotoa e desabotoa roupas" />
+                                        <CheckBox fx:id="identificaPartesDoCorpo" mnemonicParsing="false" text="Identifica as partes do seu corpo" />
                                     </children>
                                 </VBox>
                             </children>
@@ -116,11 +116,11 @@
                                 <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                                     <children>
                                     <Label style="-fx-font-weight: bold;" text="Níveis de Aprendizagem" />
-                                        <CheckBox mnemonicParsing="false" text="Garatujas" />
-                                        <CheckBox mnemonicParsing="false" text="Silábico Alfabético" />
-                                        <CheckBox mnemonicParsing="false" text="Alfabético" />
-                                        <CheckBox mnemonicParsing="false" text="Pré-silábico" />
-                                        <CheckBox mnemonicParsing="false" text="Silábico" />
+                                        <CheckBox fx:id="garatujas" mnemonicParsing="false" text="Garatujas" />
+                                        <CheckBox fx:id="silabicoAlfabetico" mnemonicParsing="false" text="Silábico Alfabético" />
+                                        <CheckBox fx:id="alfabetico" mnemonicParsing="false" text="Alfabético" />
+                                        <CheckBox fx:id="preSilabico" mnemonicParsing="false" text="Pré-silábico" />
+                                        <CheckBox fx:id="silabico" mnemonicParsing="false" text="Silábico" />
                                     </children>
                                 </VBox>
                           </children>
@@ -136,7 +136,7 @@
                         <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                            <children>
                               <Label style="-fx-font-weight: bold;" text="Observações" />
-                              <TextArea prefHeight="200.0" prefWidth="200.0" />
+                              <TextArea fx:id="observacoes" prefHeight="200.0" prefWidth="200.0" />
                            </children>
                         </VBox>
                      </children>
@@ -155,7 +155,7 @@
                         <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
                         <Button onAction="#handleCancelAction" text="Cancelar" />
                         <Button onAction="#handleBackAction" text="Voltar" />
-                        <Button style="-fx-background-color: #bdbdbd;" text="Concluir" />
+                        <Button onAction="#handleConcluirAction" style="-fx-background-color: #bdbdbd;" text="Concluir" />
                     </children>
                 </HBox>
 

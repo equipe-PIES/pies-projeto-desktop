@@ -8,7 +8,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PAEEController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.DIController">
 
     <!-- TOPO -->
     <top>
@@ -57,7 +57,7 @@
             </padding>
 
             <children>
-                <Label id="indicadorDeTela" fx:id="indicadorDeTela" prefHeight="35.0" prefWidth="516.0" text="indicadorDeTela">
+                        <Label id="indicadorDeTela" fx:id="indicadorDeTela" prefHeight="35.0" prefWidth="516.0" text="indicadorDeTela">
                     <font>
                         <Font name="System Bold" size="24.0" />
                     </font>
@@ -78,12 +78,12 @@
                      <children>
                         <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                            <children>
-                              <CheckBox mnemonicParsing="false" text="Fala seu nome" />
-                              <CheckBox mnemonicParsing="false" text="Diz a data do nascimento" />
-                              <CheckBox mnemonicParsing="false" text="Lê palavras" />
-                              <CheckBox mnemonicParsing="false" text="Informa o número de telefone" />
-                              <CheckBox mnemonicParsing="false" text="Emite respostas" />
-                              <CheckBox mnemonicParsing="false" text="Transmite recado" />
+                              <CheckBox fx:id="falaSeuNome" mnemonicParsing="false" text="Fala seu nome" />
+                              <CheckBox fx:id="dizDataNascimento" mnemonicParsing="false" text="Diz a data do nascimento" />
+                              <CheckBox fx:id="lePalavras" mnemonicParsing="false" text="Lê palavras" />
+                              <CheckBox fx:id="informaNumeroTelefone" mnemonicParsing="false" text="Informa o número de telefone" />
+                              <CheckBox fx:id="emiteRespostas" mnemonicParsing="false" text="Emite respostas" />
+                              <CheckBox fx:id="transmiteRecado" mnemonicParsing="false" text="Transmite recado" />
                            </children>
                            <HBox.margin>
                               <Insets left="10.0" />
@@ -91,22 +91,22 @@
                         </VBox>
                         <VBox layoutX="20.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                            <children>
-                              <CheckBox mnemonicParsing="false" text="Informa seu endereço" />
-                              <CheckBox mnemonicParsing="false" text="Informa o nome dos pais" />
-                              <CheckBox mnemonicParsing="false" text="Compreende ordens" />
-                              <CheckBox mnemonicParsing="false" text="Expõe suas ideias" />
-                              <CheckBox mnemonicParsing="false" text="Reconta histórias" />
-                              <CheckBox mnemonicParsing="false" text="Usa o sistema de C.A" />
+                              <CheckBox fx:id="informaEndereco" mnemonicParsing="false" text="Informa seu endereço" />
+                              <CheckBox fx:id="informaNomePais" mnemonicParsing="false" text="Informa o nome dos pais" />
+                              <CheckBox fx:id="compreendeOrdens" mnemonicParsing="false" text="Compreende ordens" />
+                              <CheckBox fx:id="expoeIdeias" mnemonicParsing="false" text="Expõe suas ideias" />
+                              <CheckBox fx:id="recontaHistorias" mnemonicParsing="false" text="Reconta histórias" />
+                              <CheckBox fx:id="usaSistemaCA" mnemonicParsing="false" text="Usa o sistema de C.A" />
                            </children>
                         </VBox>
                         <VBox layoutX="420.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                            <children>
-                              <CheckBox mnemonicParsing="false" text="Relata fatos com coerência" />
-                              <CheckBox mnemonicParsing="false" text="Pronuncia as letras do alfabeto" />
-                              <CheckBox mnemonicParsing="false" text="Verbaliza músicas" />
-                              <CheckBox mnemonicParsing="false" text="Interpreta histórias" />
-                              <CheckBox mnemonicParsing="false" text="Formula perguntas" />
-                              <CheckBox mnemonicParsing="false" text="Utiliza gestos para se comunicar" />
+                              <CheckBox fx:id="relataFatosComCoerencia" mnemonicParsing="false" text="Relata fatos com coerência" />
+                              <CheckBox fx:id="pronunciaLetrasAlfabeto" mnemonicParsing="false" text="Pronuncia as letras do alfabeto" />
+                              <CheckBox fx:id="verbalizaMusicas" mnemonicParsing="false" text="Verbaliza músicas" />
+                              <CheckBox fx:id="interpretaHistorias" mnemonicParsing="false" text="Interpreta histórias" />
+                              <CheckBox fx:id="formulaPerguntas" mnemonicParsing="false" text="Formula perguntas" />
+                              <CheckBox fx:id="utilizaGestosParaSeComunicar" mnemonicParsing="false" text="Utiliza gestos para se comunicar" />
                            </children>
                         </VBox>
                      </children>
@@ -122,9 +122,9 @@
                      <children>
                         <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                            <children>
-                              <CheckBox mnemonicParsing="false" text="Demonstra cooperação" />
-                              <CheckBox mnemonicParsing="false" text="É tímido(a), inseguro(a)" />
-                              <CheckBox mnemonicParsing="false" text="Faz &quot;birra&quot;" />
+                              <CheckBox fx:id="demonstraCooperacao" mnemonicParsing="false" text="Demonstra cooperação" />
+                              <CheckBox fx:id="timidoInseguro" mnemonicParsing="false" text="É tímido(a), inseguro(a)" />
+                              <CheckBox fx:id="fazBirra" mnemonicParsing="false" text="Faz &quot;birra&quot;" />
                            </children>
                            <HBox.margin>
                               <Insets left="10.0" />
@@ -132,16 +132,16 @@
                         </VBox>
                         <VBox layoutX="20.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                            <children>
-                              <CheckBox mnemonicParsing="false" text="Solicita e oferece ajuda" />
-                              <CheckBox mnemonicParsing="false" text="Ri com frequência" />
-                              <CheckBox mnemonicParsing="false" text="Compartilha o que é seu" />
+                              <CheckBox fx:id="solicitaOfereceAjuda" mnemonicParsing="false" text="Solicita e oferece ajuda" />
+                              <CheckBox fx:id="riComFrequencia" mnemonicParsing="false" text="Ri com frequência" />
+                              <CheckBox fx:id="compartilhaOQueESeu" mnemonicParsing="false" text="Compartilha o que é seu" />
                            </children>
                         </VBox>
                         <VBox layoutX="420.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0">
                            <children>
-                              <CheckBox mnemonicParsing="false" text="Demonstra amor, gentileza e atenção" />
-                              <CheckBox mnemonicParsing="false" text="Chora com frequência" />
-                              <CheckBox mnemonicParsing="false" text="Interage com os colegas" />
+                              <CheckBox fx:id="demonstraAmorGentilezaAtencao" mnemonicParsing="false" text="Demonstra amor, gentileza e atenção" />
+                              <CheckBox fx:id="choraComFrequencia" mnemonicParsing="false" text="Chora com frequência" />
+                              <CheckBox fx:id="interageComColegas" mnemonicParsing="false" text="Interage com os colegas" />
                            </children>
                         </VBox>
                      </children>
@@ -160,7 +160,7 @@
                         <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
                         <Button onAction="#handleCancelAction" text="Cancelar" />
                         <Button onAction="#handleBackAction" text="Voltar" />
-                        <Button onAction="#handleGoToPaee3" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
+                        <Button onAction="#handleGoToDI2" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
                     </children>
                 </HBox>
 

@@ -38,6 +38,7 @@ public class AuthService {
     private static final String RELATORIOS_INDIVIDUAIS_ENDPOINT = "/api/relatorios-individuais";
     private static final String PAEES_ENDPOINT = "/api/paees";
     private static final String PDIS_ENDPOINT = "/api/pdis";
+    private static final String DIAGNOSTICOS_INICIAIS_ENDPOINT = "/api/diagnosticos-iniciais";
     
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
@@ -780,6 +781,207 @@ public class AuthService {
             System.err.println("Erro ao criar PDI: " + e.getMessage());
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public boolean criarDiagnosticoInicial(com.pies.projeto.integrado.piesfront.controllers.DIController.CreateDiagnosticoInicialDTO dto, String educandoId) {
+        if (currentToken == null || dto == null || educandoId == null) {
+            System.err.println("criarDiagnosticoInicial: Token ou DTO inválido");
+            return false;
+        }
+        try {
+            String requestBody = objectMapper.writeValueAsString(dto);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + DIAGNOSTICOS_INICIAIS_ENDPOINT + "/educando/" + educandoId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 201 || response.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao criar Diagnóstico Inicial: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public java.util.Map<String, Object> getDiagnosticoInicialPorEducandoRaw(String educandoId) {
+        if (currentToken == null || educandoId == null) {
+            return null;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + DIAGNOSTICOS_INICIAIS_ENDPOINT + "/educando/" + educandoId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                return objectMapper.readValue(response.body(), new com.fasterxml.jackson.core.type.TypeReference<java.util.Map<String, Object>>() {});
+            } else {
+                return null;
+            }
+        } catch (IOException | InterruptedException e) {
+            return null;
+        }
+    }
+
+    public boolean deletarDiagnosticoInicial(String id) {
+        if (currentToken == null || id == null) {
+            return false;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + DIAGNOSTICOS_INICIAIS_ENDPOINT + "/" + id))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .DELETE()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 204 || response.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+    }
+
+    public boolean deletarPDI(String id) {
+        if (currentToken == null || id == null) {
+            return false;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + PDIS_ENDPOINT + "/" + id))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .DELETE()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 204 || response.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+    }
+
+    public boolean deletarPAEE(String id) {
+        if (currentToken == null || id == null) {
+            return false;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + PAEES_ENDPOINT + "/" + id))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .DELETE()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 204 || response.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+    }
+
+    public boolean deletarRelatorioIndividual(String id) {
+        if (currentToken == null || id == null) {
+            return false;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + RELATORIOS_INDIVIDUAIS_ENDPOINT + "/" + id))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .DELETE()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 204 || response.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+    }
+
+    public boolean atualizarDiagnosticoInicial(String id, String educandoId, com.pies.projeto.integrado.piesfront.controllers.DIController.CreateDiagnosticoInicialDTO dto) {
+        if (currentToken == null || id == null || educandoId == null || dto == null) {
+            return false;
+        }
+        try {
+            String requestBody = objectMapper.writeValueAsString(dto);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + DIAGNOSTICOS_INICIAIS_ENDPOINT + "/" + id + "/educando/" + educandoId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+    }
+
+    public boolean atualizarPDI(String id, com.pies.projeto.integrado.piesfront.dto.CreatePDIDTO dto) {
+        if (currentToken == null || id == null || dto == null) {
+            return false;
+        }
+        try {
+            String requestBody = objectMapper.writeValueAsString(dto);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + PDIS_ENDPOINT + "/" + id))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+    }
+
+    public boolean atualizarPAEE(String id, com.pies.projeto.integrado.piesfront.controllers.PAEEController.CreatePAEEDTO dto) {
+        if (currentToken == null || id == null || dto == null) {
+            return false;
+        }
+        try {
+            String requestBody = objectMapper.writeValueAsString(dto);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + PAEES_ENDPOINT + "/" + id))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+    }
+
+    public com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO atualizarRelatorioIndividual(String id, com.pies.projeto.integrado.piesfront.dto.CreateRelatorioIndividualDTO dto) {
+        if (currentToken == null || id == null || dto == null) {
+            return null;
+        }
+        try {
+            String requestBody = objectMapper.writeValueAsString(dto);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + RELATORIOS_INDIVIDUAIS_ENDPOINT + "/" + id))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                return objectMapper.readValue(response.body(), com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO.class);
+            } else {
+                return null;
+            }
+        } catch (IOException | InterruptedException e) {
+            return null;
         }
     }
 }

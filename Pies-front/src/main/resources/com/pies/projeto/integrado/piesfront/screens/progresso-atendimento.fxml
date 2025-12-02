@@ -39,7 +39,7 @@
                         <Insets bottom="5.0" left="20.0" right="20.0" />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="criarRelatorioIndividual1" mnemonicParsing="false" onAction="#handleViewRelatoriosAction" prefHeight="50.0" prefWidth="300.0" text="Criar Relatório Final">
+                  <Button fx:id="iniciarRelatorioIndividual" mnemonicParsing="false" onAction="#handleIniciarRelatorioIndividualAction" prefHeight="50.0" prefWidth="300.0" text="Iniciar Relatório Individual">
                      <VBox.margin>
                         <Insets bottom="20.0" left="20.0" right="20.0" />
                      </VBox.margin>
