@@ -624,6 +624,24 @@ public class AuthService {
         }
     }
 
+    public boolean deletarAnamnesePorEducando(String educandoId) {
+        if (currentToken == null || educandoId == null) {
+            return false;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + ANAMNESES_ENDPOINT + "/educando/" + educandoId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .DELETE()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 204 || response.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+    }
+
     public com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO criarRelatorioIndividual(
             com.pies.projeto.integrado.piesfront.dto.CreateRelatorioIndividualDTO dto) {
         if (currentToken == null || dto == null || dto.educandoId() == null) {

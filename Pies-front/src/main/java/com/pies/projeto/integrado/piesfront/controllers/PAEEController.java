@@ -12,7 +12,6 @@ import javafx.util.Duration;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -29,6 +28,8 @@ public class PAEEController implements Initializable {
     private Label validationMsg;
     @FXML
     private TextArea objetivosPlano;
+    @FXML
+    private TextArea resumoCaso;
     @FXML
     private ChoiceBox<String> dificuldadesMotoresPsicomotoresCb;
     @FXML
@@ -348,7 +349,7 @@ public class PAEEController implements Initializable {
 
     private void captureCurrentStepData() {
         if (currentStep == 1) {
-            formData.resumoCaso = objetivosPlano != null ? objetivosPlano.getText() : formData.resumoCaso;
+            formData.resumoCaso = resumoCaso != null ? resumoCaso.getText() : formData.resumoCaso;
             formData.dificuldadesMotoresPsicomotores = getValue(dificuldadesMotoresPsicomotoresCb, formData.dificuldadesMotoresPsicomotores);
             formData.dificuldadesCognitivo = getValue(dificuldadesCognitivoCb, formData.dificuldadesCognitivo);
             formData.dificuldadesSensorial = getValue(dificuldadesSensorialCb, formData.dificuldadesSensorial);
@@ -391,7 +392,7 @@ public class PAEEController implements Initializable {
 
     private void preencherCamposComFormData() {
         if (currentStep == 1) {
-            if (objetivosPlano != null && formData.resumoCaso != null) objetivosPlano.setText(formData.resumoCaso);
+            if (resumoCaso != null && formData.resumoCaso != null) resumoCaso.setText(formData.resumoCaso);
             setChoice(dificuldadesMotoresPsicomotoresCb, formData.dificuldadesMotoresPsicomotores);
             setChoice(dificuldadesCognitivoCb, formData.dificuldadesCognitivo);
             setChoice(dificuldadesSensorialCb, formData.dificuldadesSensorial);
@@ -433,8 +434,8 @@ public class PAEEController implements Initializable {
     }
 
     private boolean validateResumo() {
-        if (objetivosPlano == null) return true;
-        String t = objetivosPlano.getText() != null ? objetivosPlano.getText().trim() : "";
+        if (resumoCaso == null) return true;
+        String t = resumoCaso.getText() != null ? resumoCaso.getText().trim() : "";
         return !t.isEmpty();
     }
 

@@ -2,6 +2,7 @@ package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.CreateRelatorioIndividualDTO;
+import com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -26,16 +27,6 @@ public class ProgressoAtendimentoController implements Initializable {
     
     @FXML
     private Button viewRelatorios;
-
-    @FXML
-    private Button iniciarRelatorioIndividual;
-
-    @FXML
-    private Button baixarRelatorioIndividual;
-    @FXML
-    private Button excluirRelatorioIndividual;
-    @FXML
-    private Button editarRelatorioIndividual1;
     
     @FXML
     private Button statusAnamnese;
@@ -72,6 +63,16 @@ public class ProgressoAtendimentoController implements Initializable {
     private Button verPAEE;
     @FXML
     private Button excluirPAEE;
+    @FXML
+    private Button editarRelatorioIndividual;
+    @FXML
+    private Button verRelatorioIndividual;
+    @FXML
+    private Button excluirRelatorioIndividual;
+    @FXML
+    private Button editarRelatorioIndividual1;
+    @FXML
+    private Button baixarRelatorioIndividual;
     
     @FXML
     private Button closeProgressoAtd;
@@ -99,6 +100,7 @@ public class ProgressoAtendimentoController implements Initializable {
         boolean hasDI = false;
         boolean hasPDI = false;
         boolean hasPAEE = false;
+        boolean hasRI = false;
         if (educando.id() != null) {
             var a = authService.getAnamnesePorEducando(educando.id());
             hasAnamnese = a != null;
@@ -108,28 +110,26 @@ public class ProgressoAtendimentoController implements Initializable {
             hasPDI = pdis != null && !pdis.isEmpty();
             var paees = authService.getPaeesPorEducandoRaw(educando.id());
             hasPAEE = paees != null && !paees.isEmpty();
+            var ris = authService.getRelatoriosIndividuaisPorEducando(educando.id());
+            hasRI = ris != null && !ris.isEmpty();
         }
         if (statusAnamnese != null) {
-            boolean concluido = hasAnamnese;
-            statusAnamnese.setText(concluido ? "Concluído" : "Iniciar");
-            statusAnamnese.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
-            statusAnamnese.setDisable(concluido);
+            statusAnamnese.setText(hasAnamnese ? "Novo" : "Iniciar");
+            statusAnamnese.setStyle("");
+            statusAnamnese.setDisable(false);
         }
         if (statusDI != null) {
-            boolean concluido = hasDI;
-            statusDI.setText(concluido ? "Concluído" : "Iniciar");
-            statusDI.setStyle(concluido ? "-fx-background-color: #2ecc71; -fx-text-fill: white;" : "");
-            statusDI.setDisable(concluido);
+            statusDI.setText(hasDI ? "Novo" : "Iniciar");
+            statusDI.setStyle("");
+            statusDI.setDisable(false);
         }
         if (statusPDI != null) {
-            boolean existeAlgum = hasPDI;
-            statusPDI.setText(existeAlgum ? "Novo" : "Iniciar");
+            statusPDI.setText(hasPDI ? "Novo" : "Iniciar");
             statusPDI.setStyle("");
             statusPDI.setDisable(false);
         }
         if (statusPAEE != null) {
-            boolean existeAlgum = hasPAEE;
-            statusPAEE.setText(existeAlgum ? "Novo" : "Iniciar");
+            statusPAEE.setText(hasPAEE ? "Novo" : "Iniciar");
             statusPAEE.setStyle("");
             statusPAEE.setDisable(false);
         }
@@ -236,7 +236,7 @@ public class ProgressoAtendimentoController implements Initializable {
                 c.setNovoRegistro(true);
                 c.setEducando(educando);
             }
-            Stage popupStage = getStageFromAnyNode();
+            Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
             Stage parentStage = (Stage) popupStage.getOwner();
             if (parentStage == null) parentStage = popupStage;
             parentStage.setTitle("PDI");
@@ -267,7 +267,7 @@ public class ProgressoAtendimentoController implements Initializable {
                 c.setNovoRegistro(true);
                 c.setEducando(educando);
             }
-            Stage popupStage = getStageFromAnyNode();
+            Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
             Stage parentStage = (Stage) popupStage.getOwner();
             if (parentStage == null) parentStage = popupStage;
             parentStage.setTitle("PAEE");
@@ -297,14 +297,12 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando != null) {
             atualizarDados();
         }
-        if (closeProgressoAtd != null) { closeProgressoAtd.setVisible(false); closeProgressoAtd.setManaged(false); }
         if (editarAnamnese != null) editarAnamnese.setOnAction(e -> handleEditAnamneseAction());
         if (verAnamnese != null) verAnamnese.setOnAction(e -> handleEditAnamneseAction());
         if (excluirAnamnese != null) {
             excluirAnamnese.setOnAction(e -> {
                 if (educando == null) return;
-                var a = authService.getAnamnesePorEducando(educando.id());
-                if (a != null) {
+                if (educando.id() != null && authService.deletarAnamnesePorEducando(educando.id())) {
                     atualizarVisibilidadePorExistencia();
                     atualizarDados();
                 }
@@ -347,15 +345,27 @@ public class ProgressoAtendimentoController implements Initializable {
                 }
             }
         });
+        if (editarRelatorioIndividual != null) editarRelatorioIndividual.setOnAction(e -> {
+            if (educando == null) return;
+            navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual");
+        });
         if (editarRelatorioIndividual1 != null) editarRelatorioIndividual1.setOnAction(e -> {
             if (educando == null) return;
             navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual");
         });
+        if (verRelatorioIndividual != null) verRelatorioIndividual.setOnAction(e -> {
+            if (educando == null) return;
+            navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual");
+        });
+        if (baixarRelatorioIndividual != null) baixarRelatorioIndividual.setOnAction(e -> {
+            if (educando == null) return;
+            System.out.println("Baixar Relatório Individual ainda não implementado");
+        });
         if (excluirRelatorioIndividual != null) excluirRelatorioIndividual.setOnAction(e -> {
             if (educando == null) return;
-            java.util.List<com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO> rels = authService.getRelatoriosIndividuaisPorEducando(educando.id());
-            if (rels != null && !rels.isEmpty()) {
-                String id = rels.get(rels.size() - 1).id();
+            java.util.List<RelatorioIndividualDTO> ris = authService.getRelatoriosIndividuaisPorEducando(educando.id());
+            if (ris != null && !ris.isEmpty()) {
+                String id = ris.get(ris.size() - 1).id();
                 if (id != null && authService.deletarRelatorioIndividual(id)) {
                     atualizarVisibilidadePorExistencia();
                     atualizarDados();
@@ -389,7 +399,7 @@ public class ProgressoAtendimentoController implements Initializable {
                 c.setEducando(educando);
             }
             
-            Stage popupStage = getStageFromAnyNode();
+            Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
             System.out.println("Popup stage: " + popupStage);
             
             Stage parentStage = (Stage) popupStage.getOwner();
@@ -420,32 +430,12 @@ public class ProgressoAtendimentoController implements Initializable {
         }
     }
 
-    private Stage getStageFromAnyNode() {
-        Button[] candidates = new Button[]{
-                statusAnamnese, statusDI, statusPDI, statusPAEE,
-                iniciarAtendimento, viewRelatorios,
-                iniciarRelatorioIndividual, baixarRelatorioIndividual,
-                editarRelatorioIndividual1, excluirRelatorioIndividual,
-                editarAnamnese, verAnamnese,
-                editarDiagnosticoInicial, verDiagnosticoInicial,
-                editarPDI, verPDI,
-                editarPAEE, verPAEE,
-                closeProgressoAtd
-        };
-        for (Button b : candidates) {
-            if (b != null && b.getScene() != null) {
-                return (Stage) b.getScene().getWindow();
-            }
-        }
-        return null;
-    }
-
     private void atualizarVisibilidadePorExistencia() {
         boolean hasAnamnese = false;
         boolean hasDI = false;
         boolean hasPDI = false;
         boolean hasPAEE = false;
-        boolean hasRelatorioIndividual = false;
+        boolean hasRI = false;
         if (educando != null && educando.id() != null) {
             var a = authService.getAnamnesePorEducando(educando.id());
             hasAnamnese = a != null;
@@ -455,8 +445,8 @@ public class ProgressoAtendimentoController implements Initializable {
             hasPDI = pdis != null && !pdis.isEmpty();
             var paees = authService.getPaeesPorEducandoRaw(educando.id());
             hasPAEE = paees != null && !paees.isEmpty();
-            var rels = authService.getRelatoriosIndividuaisPorEducando(educando.id());
-            hasRelatorioIndividual = rels != null && !rels.isEmpty();
+            var ris = authService.getRelatoriosIndividuaisPorEducando(educando.id());
+            hasRI = ris != null && !ris.isEmpty();
         }
         if (editarAnamnese != null) { editarAnamnese.setVisible(hasAnamnese); editarAnamnese.setManaged(hasAnamnese); }
         if (verAnamnese != null) { verAnamnese.setVisible(hasAnamnese); verAnamnese.setManaged(hasAnamnese); }
@@ -474,9 +464,11 @@ public class ProgressoAtendimentoController implements Initializable {
         if (verPAEE != null) { verPAEE.setVisible(hasPAEE); verPAEE.setManaged(hasPAEE); }
         if (excluirPAEE != null) { excluirPAEE.setVisible(hasPAEE); excluirPAEE.setManaged(hasPAEE); }
 
-        if (editarRelatorioIndividual1 != null) { editarRelatorioIndividual1.setVisible(hasRelatorioIndividual); editarRelatorioIndividual1.setManaged(hasRelatorioIndividual); }
-        if (excluirRelatorioIndividual != null) { excluirRelatorioIndividual.setVisible(hasRelatorioIndividual); excluirRelatorioIndividual.setManaged(hasRelatorioIndividual); }
-        if (baixarRelatorioIndividual != null) { baixarRelatorioIndividual.setVisible(hasRelatorioIndividual); baixarRelatorioIndividual.setManaged(hasRelatorioIndividual); }
+        if (editarRelatorioIndividual != null) { editarRelatorioIndividual.setVisible(hasRI); editarRelatorioIndividual.setManaged(hasRI); }
+        if (verRelatorioIndividual != null) { verRelatorioIndividual.setVisible(hasRI); verRelatorioIndividual.setManaged(hasRI); }
+        if (excluirRelatorioIndividual != null) { excluirRelatorioIndividual.setVisible(hasRI); excluirRelatorioIndividual.setManaged(hasRI); }
+        if (editarRelatorioIndividual1 != null) { editarRelatorioIndividual1.setVisible(hasRI); editarRelatorioIndividual1.setManaged(hasRI); }
+        if (baixarRelatorioIndividual != null) { baixarRelatorioIndividual.setVisible(hasRI); baixarRelatorioIndividual.setManaged(hasRI); }
     }
 
     @FXML

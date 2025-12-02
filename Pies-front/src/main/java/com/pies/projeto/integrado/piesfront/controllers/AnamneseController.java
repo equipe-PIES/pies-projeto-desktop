@@ -39,9 +39,7 @@ public class AnamneseController {
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
-        if (servicosFrequentados1 != null) {
-            carregarAnamneseExistente();
-        }
+        carregarAnamneseExistente();
         populateFromFormData();
     }
 
