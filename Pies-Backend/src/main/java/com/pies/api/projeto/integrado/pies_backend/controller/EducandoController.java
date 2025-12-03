@@ -2,14 +2,25 @@ package com.pies.api.projeto.integrado.pies_backend.controller;
 
 import java.util.List;
 import java.util.function.Supplier;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.EducandoDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.ResponsavelDTO;
 import com.pies.api.projeto.integrado.pies_backend.exception.CpfJaCadastradoException;
 import com.pies.api.projeto.integrado.pies_backend.exception.EducandoNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.service.EducandoService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -103,6 +114,7 @@ public class EducandoController {
      *         ou 409 Conflict se o CPF já estiver cadastrado
      */
     @PostMapping
+    @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN')")
     public ResponseEntity<EducandoDTO> criar(@RequestBody @Valid EducandoDTO dto) {
         // Usa handleRequest() para tratamento centralizado de exceções
         // Lambda com bloco {} permite executar múltiplas instruções
@@ -142,6 +154,7 @@ public class EducandoController {
      *         ou 409 Conflict se o novo CPF já estiver cadastrado
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN')")
     public ResponseEntity<EducandoDTO> atualizar(@PathVariable String id, @RequestBody @Valid EducandoDTO dto) {
         // Usa handleRequest() para tratamento centralizado de exceções
         // Lambda inline executa a operação e retorna o resultado
@@ -166,6 +179,7 @@ public class EducandoController {
      *         ou 404 Not Found se o educando não existir
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN')")
     public ResponseEntity<Void> deletar(@PathVariable String id) {
         // Usa handleRequest() para tratamento centralizado de exceções
         // Lambda com bloco {} permite executar múltiplas instruções

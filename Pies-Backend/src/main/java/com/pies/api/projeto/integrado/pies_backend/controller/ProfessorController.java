@@ -298,7 +298,7 @@ public class ProfessorController {
      * @return ResponseEntity confirmando a remoção ou 404 se não encontrado
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN')")
     public ResponseEntity<?> removerProfessor(@PathVariable String id) {
         Optional<Professor> professor = professorRepository.findById(id);
         if (!professor.isPresent()) {
