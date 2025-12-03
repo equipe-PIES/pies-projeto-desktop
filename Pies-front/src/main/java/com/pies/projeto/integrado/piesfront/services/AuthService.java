@@ -50,6 +50,8 @@ public class AuthService {
     
     private java.util.List<EducandoDTO> cachedEducandos;
     private long educandosCacheTs;
+    private java.util.List<com.pies.projeto.integrado.piesfront.dto.ProfessorDTO> cachedProfessores;
+    private long professoresCacheTs;
     
     /**
      * Construtor privado para implementar o padrão singleton
@@ -280,6 +282,36 @@ public class AuthService {
             System.err.println("Erro ao buscar turmas: " + e.getMessage());
             e.printStackTrace();
             return new ArrayList<>();
+        }
+    }
+
+    public java.util.List<com.pies.projeto.integrado.piesfront.dto.ProfessorDTO> getProfessores() {
+        if (currentToken == null) {
+            return new java.util.ArrayList<>();
+        }
+        long now = System.currentTimeMillis();
+        if (cachedProfessores != null && (now - professoresCacheTs) < 10000) {
+            return cachedProfessores;
+        }
+        try {
+            java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                    .uri(java.net.URI.create(BASE_URL + "/professores"))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(java.time.Duration.ofSeconds(10))
+                    .build();
+            java.net.http.HttpResponse<String> response = httpClient.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                com.fasterxml.jackson.core.type.TypeReference<java.util.List<com.pies.projeto.integrado.piesfront.dto.ProfessorDTO>> typeRef =
+                        new com.fasterxml.jackson.core.type.TypeReference<java.util.List<com.pies.projeto.integrado.piesfront.dto.ProfessorDTO>>() {};
+                cachedProfessores = objectMapper.readValue(response.body(), typeRef);
+                professoresCacheTs = now;
+                return cachedProfessores;
+            } else {
+                return new java.util.ArrayList<>();
+            }
+        } catch (java.io.IOException | java.lang.InterruptedException e) {
+            return new java.util.ArrayList<>();
         }
     }
     

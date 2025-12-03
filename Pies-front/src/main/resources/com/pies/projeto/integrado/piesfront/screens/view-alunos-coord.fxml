@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="coordInicioPane" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.ViewAlunosCoordController">
+
+    <!-- TOPO -->
+    <!-- TOPO -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="60.0" style="-fx-background-color: #ffffff;">
+            <padding>
+                <Insets left="20.0" right="20.0" />
+            </padding>
+            <children>
+                <Region prefHeight="60.0" prefWidth="15.0" />
+
+                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
+                    <HBox.margin>
+                        <Insets right="10.0" />
+                    </HBox.margin>
+                </Button>
+                <VBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="270.0">
+                    <children>
+                        <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário" />
+                        <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Coordenadora" />
+                    </children>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                    <children>
+                        <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" text="Início" />
+                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
+                        <Button id="professoresButton" fx:id="professoresButton" onAction="#handleProfessoresButtonAction" text="Professores" />
+                        <Button id="alunosButton" fx:id="alunosButton" onAction="#handleAlunosButtonAction" text="Alunos" />
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label id="indicadorDeTela" fx:id="indicadorDeTela" prefHeight="35.0" prefWidth="413.0" text="indicadorDeTela" VBox.vgrow="ALWAYS">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="20.0" left="5.0" top="20.0" />
+                    </VBox.margin>
+                </Label>
+                <HBox alignment="CENTER" prefHeight="82.0" prefWidth="1160.0" spacing="20.0">
+                    <children>
+                        <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="295.0">
+                            <children>
+                                <Label text="Filtrar por: " />
+                                <ChoiceBox fx:id="filterTipo" prefHeight="31.0" prefWidth="296.0" />
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="295.0">
+                            <children>
+                                <Label text="Opções: " />
+                                <ChoiceBox fx:id="filterOpcoes" prefHeight="31.0" prefWidth="296.0" />
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="295.0">
+                            <children>
+                                <Label prefHeight="21.0" prefWidth="297.0" text="Busque por um(a) aluno(a):" />
+                                <TextField fx:id="buscarAluno" />
+                            </children>
+                        </VBox>
+                  <Button fx:id="buscarAlunoButton" mnemonicParsing="false" prefWidth="100.0" text="Buscar">
+                     <HBox.margin>
+                        <Insets top="20.0" />
+                     </HBox.margin>
+                  </Button>
+                    </children>
+                </HBox>
+                <ScrollPane fx:id="turmasScrollPane" fitToWidth="true" VBox.vgrow="ALWAYS">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                    <content>
+                        <FlowPane fx:id="containerCards" alignment="TOP_CENTER" hgap="30" prefWrapLength="800.0" style="-fx-padding: 20;" vgap="30">
+                        </FlowPane>
+                    </content>
+                </ScrollPane>
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="30.0" left="30.0" right="30.0" />
+            </BorderPane.margin>
+        </VBox>
+    </center>
+
+</BorderPane>

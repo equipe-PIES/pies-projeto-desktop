@@ -232,6 +232,42 @@ public class CadastroTurmaController implements Initializable {
         }
     }
 
+    @FXML
+    private void handleInicioButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml",
+                "Início - Coordenador(a)");
+    }
+
+    @FXML
+    private void handleSairButtonAction(javafx.event.ActionEvent event) {
+        authService.logout();
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml",
+                "Amparo Edu - Login");
+    }
+
+    @FXML
+    private void handleProfessoresButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/view-profs-coord.fxml",
+                "Professores");
+    }
+
+    @FXML
+    private void handleTurmasButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/view-turmas-coord.fxml",
+                "Turmas");
+    }
+
+    @FXML
+    private void handleAlunosButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/view-alunos-coord.fxml",
+                "Alunos");
+    }
+
     /**
      * Carrega o cache de alunos de forma proativa em background
      * para que a primeira busca por CPF seja instantânea
@@ -727,5 +763,10 @@ public class CadastroTurmaController implements Initializable {
     private void handleSairButtonAction(javafx.event.ActionEvent event) {
         authService.logout();
         Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml", "Amparo Edu - Login");
+    }
+
+    @FXML
+    private void handleProfessoresButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/view-profs-coord.fxml", "Professores");
     }
 }
