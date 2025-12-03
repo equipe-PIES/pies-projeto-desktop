@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.*?>
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PAEEController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PAEEController">
 
     <!-- TOPO -->
     <top>
@@ -39,9 +36,9 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
-                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
-                        <Button id="relatoriosButton" fx:id="relatoriosButton" text="Relatórios" />
+                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" styleClass="botao-topo" text="Turmas" />
+                        <Button id="alunosButton" fx:id="alunosButton" styleClass="botao-topo" text="Alunos" />
+                        <Button id="relatoriosButton" fx:id="relatoriosButton" styleClass="botao-topo" text="Relatórios" />
                     </children>
                 </HBox>
             </children>
@@ -65,7 +62,7 @@
 
 
                 <!-- OBJETIVOS DO PLANO -->
-                <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                <VBox style="-fx-border-color: #ddd; -fx-border-radius: 5;">
 
                     <padding>
                         <Insets bottom="20" left="20" right="20" top="20" />
@@ -73,23 +70,35 @@
 
                     <children>
 
-                        <Label style="-fx-font-weight: bold;" text="Raciocínio Lógico" />
+                        <Label style="-fx-font-weight: bold;" text="Raciocínio Lógico">
+                     <VBox.margin>
+                        <Insets bottom="12.0" />
+                     </VBox.margin></Label>
 
                         <Label prefHeight="21.0" prefWidth="444.0" text="Dificuldades" />
-                        <TextArea fx:id="dificuldadesRaciocinioTa" prefHeight="120" promptText="Digite" wrapText="true" />
+                        <TextArea fx:id="dificuldadesRaciocinioTa" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true">
+                     <VBox.margin>
+                        <Insets bottom="12.0" />
+                     </VBox.margin></TextArea>
                   <Label prefHeight="21.0" prefWidth="444.0" text="Intervenções" />
-                  <TextArea fx:id="intervencoesRaciocinioTa" prefHeight="120" promptText="Digite" wrapText="true" />
+                  <TextArea fx:id="intervencoesRaciocinioTa" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" />
 
                     </children>
 
                 </VBox>
-            <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+            <VBox style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                <children>
-                  <Label style="-fx-font-weight: bold;" text="Atenção e Concentração" />
+                  <Label style="-fx-font-weight: bold;" text="Atenção e Concentração">
+                     <VBox.margin>
+                        <Insets bottom="12.0" />
+                     </VBox.margin></Label>
                   <Label prefHeight="21.0" prefWidth="444.0" text="Dificuldades" />
-                  <TextArea fx:id="dificuldadesAtencaoTa" prefHeight="120" promptText="Digite" wrapText="true" />
+                  <TextArea fx:id="dificuldadesAtencaoTa" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true">
+                     <VBox.margin>
+                        <Insets bottom="12.0" />
+                     </VBox.margin></TextArea>
                   <Label prefHeight="21.0" prefWidth="444.0" text="Intervenções" />
-                  <TextArea fx:id="intervencoesAtencaoTa" prefHeight="120" promptText="Digite" wrapText="true" />
+                  <TextArea fx:id="intervencoesAtencaoTa" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" />
                </children>
                <padding>
                   <Insets bottom="20" left="20" right="20" top="20" />
@@ -98,12 +107,20 @@
 
 
                 <!-- BOTÕES -->
-                <HBox alignment="CENTER_RIGHT" spacing="20">
+                <HBox alignment="CENTER_RIGHT">
                     <children>
-                        <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
-                        <Button onAction="#handleCancelAction" text="Cancelar" />
-                        <Button onAction="#handleBackAction" text="Voltar" />
-                        <Button onAction="#handleGoToPaee4" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
+                  <HBox HBox.hgrow="ALWAYS">
+                     <children>
+                              <Button onAction="#handleCancelAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Cancelar" />
+                              <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
+                     </children>
+                  </HBox>
+                  <HBox spacing="20.0">
+                     <children>
+                              <Button onAction="#handleBackAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Voltar" />
+                              <Button onAction="#handleGoToPaee4" prefWidth="220.0" styleClass="botao-seguinte" text="Seguinte" />
+                     </children>
+                  </HBox>
                     </children>
                 </HBox>
 
