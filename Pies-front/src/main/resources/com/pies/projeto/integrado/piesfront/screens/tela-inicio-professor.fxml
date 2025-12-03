@@ -22,7 +22,7 @@
             <children>
                 <Region prefHeight="60.0" prefWidth="15.0" />
 
-                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
+                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: #FF0000; -fx-text-fill: white;" text="Sair">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
@@ -45,8 +45,8 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
-                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
+                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" style="-fx-background-color: #26568C;" text="Turmas" textFill="WHITE" />
+                        <Button id="alunosButton" fx:id="alunosButton" style="-fx-background-color: #26568C;" text="Alunos" textFill="WHITE" />
                     </children>
                 </HBox>
             </children>

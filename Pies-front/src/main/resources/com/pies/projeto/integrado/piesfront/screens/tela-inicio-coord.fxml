@@ -33,10 +33,10 @@
 
                <HBox alignment="CENTER_RIGHT" spacing="15.0">
       <children>
-                      <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" text="Início" />
-                      <Button id="turmasButton" fx:id="turmasButton" text="Turmas" />
-                      <Button id="professoresButton" fx:id="professoresButton" text="Professores" />
-                      <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
+                      <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" style="-fx-background-color: #26568C;" text="Início" textFill="WHITE" />
+                      <Button id="turmasButton" fx:id="turmasButton" style="-fx-background-color: #26568C;" text="Turmas" textFill="WHITE" />
+                      <Button id="professoresButton" fx:id="professoresButton" style="-fx-background-color: #26568C;" text="Professores" textFill="WHITE" />
+                      <Button id="alunosButton" fx:id="alunosButton" style="-fx-background-color: #26568C;" text="Alunos" textFill="WHITE" />
       </children>
                </HBox>
            </children>
@@ -71,7 +71,7 @@
                   <Insets right="20.0" />
                </padding></Region>
 
-               <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
+               <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #FF0000; -fx-text-fill: white;" text="Sair">
                    <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
@@ -117,7 +117,7 @@
                            </font>
                                 </Label>
                                 <Label alignment="CENTER" text="Adicione uma nova turma à lista de turmas no seu sistema." textAlignment="CENTER" wrapText="true" />
-                                <Button fx:id="addTurma" onAction="#handleAddTurmaAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
+                                <Button fx:id="addTurma" onAction="#handleAddTurmaAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #26568C; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 
@@ -133,7 +133,7 @@
                            </font>
                                 </Label>
                                 <Label alignment="CENTER" text="Adicione um novo professor(a) ao seu sistema." textAlignment="CENTER" wrapText="true" />
-                                <Button fx:id="addProf" onAction="#handleAddProfAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS">
+                                <Button fx:id="addProf" onAction="#handleAddProfAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #26568C; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS">
                            <VBox.margin>
                               <Insets top="15.0" />
                            </VBox.margin></Button>
@@ -152,7 +152,7 @@
                            </font>
                                 </Label>
                                 <Label alignment="CENTER" text="Adicione um novo aluno(a) à lista de alunos no seu sistema." textAlignment="CENTER" wrapText="true" />
-                                <Button fx:id="addAluno" onAction="#handleAddAlunoAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
+                                <Button fx:id="addAluno" onAction="#handleAddAlunoAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #26568C; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
                     </children>

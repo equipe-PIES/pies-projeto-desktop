@@ -22,7 +22,7 @@
             <children>
                 <Region prefHeight="60.0" prefWidth="15.0" />
 
-                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair" />
+                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: FF0000; -fx-text-fill: white;" text="Sair" />
                 <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="140.0">
                     <children>
                         <VBox prefHeight="200.0" prefWidth="100.0">
@@ -41,10 +41,10 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" text="Início" />
-                        <Button id="turmasButton" fx:id="turmasButton" text="Turmas" />
-                        <Button id="professoresButton" fx:id="professoresButton" text="Professores" />
-                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
+                        <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" style="-fx-background-color: #26568C;" text="Início" textFill="WHITE" />
+                        <Button id="turmasButton" fx:id="turmasButton" style="-fx-background-color: #26568C;" text="Turmas" textFill="WHITE" />
+                        <Button id="professoresButton" fx:id="professoresButton" style="-fx-background-color: #26568C;" text="Professores" textFill="WHITE" />
+                        <Button id="alunosButton" fx:id="alunosButton" style="-fx-background-color: #26568C;" text="Alunos" textFill="WHITE" />
                     </children>
                 </HBox>
             </children>
@@ -148,7 +148,7 @@
                                                     </HBox.margin>
                                                 </TextField>
                                                 <Region prefHeight="34.0" prefWidth="8.0" />
-                                                <Button fx:id="adicionarAlunoButton" mnemonicParsing="false" prefWidth="220.0" text="Adicionar selecionado">
+                                                <Button fx:id="adicionarAlunoButton" mnemonicParsing="false" prefWidth="220.0" style="-fx-background-color: #26568C;" text="Adicionar selecionado" textFill="WHITE">
                                                     <HBox.margin>
                                                         <Insets right="20.0" />
                                                     </HBox.margin>
@@ -180,7 +180,7 @@
                                 <HBox alignment="BOTTOM_RIGHT" spacing="20.0">
                                     <children>
                                         <Button fx:id="cancelCadastroBt" mnemonicParsing="false" prefHeight="30.0" prefWidth="220.0" text="Cancelar" />
-                                        <Button fx:id="cadastroTurmaButton" mnemonicParsing="false" prefWidth="220.0" text="Cadastrar Turma" />
+                                        <Button fx:id="cadastroTurmaButton" mnemonicParsing="false" prefWidth="220.0" style="-fx-background-color: #26568C;" text="Cadastrar Turma" textFill="WHITE" />
                                     </children>
                                 </HBox>
                             </children>

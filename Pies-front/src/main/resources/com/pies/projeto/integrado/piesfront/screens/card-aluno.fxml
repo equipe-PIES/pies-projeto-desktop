@@ -41,7 +41,7 @@
       </HBox>
       <HBox alignment="BOTTOM_RIGHT">
          <children>
-            <Button fx:id="verProgressoButton" mnemonicParsing="false" onAction="#handleVerProgressoAction" prefWidth="220.0" text="Ver Progresso">
+            <Button fx:id="verProgressoButton" mnemonicParsing="false" onAction="#handleVerProgressoAction" prefWidth="220.0" style="-fx-background-color: #26568C;" text="Ver Progresso" textFill="WHITE">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
