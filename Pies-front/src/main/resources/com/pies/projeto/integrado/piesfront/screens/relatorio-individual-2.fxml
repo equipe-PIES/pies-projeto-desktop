@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.*?>
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.RelatorioIndividualController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.RelatorioIndividualController">
 
     <!-- TOPO -->
     <top>
@@ -67,7 +64,7 @@
 
 
                         <!-- OBJETIVOS DO PLANO -->
-                        <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                        <VBox style="-fx-border-color: #ddd; -fx-border-radius: 5;">
 
                             <padding>
                                 <Insets bottom="20" left="20" right="20" top="20" />
@@ -75,29 +72,41 @@
 
                             <children>
 
-                                <Label style="-fx-font-weight: bold;" text="Adaptações Curriculares" />
+                                <Label style="-fx-font-weight: bold;" text="Adaptações Curriculares">
+                           <VBox.margin>
+                              <Insets bottom="12.0" />
+                           </VBox.margin></Label>
 
-                                <Label prefHeight="47.0" text="Detalhe os ajustes realizados para atender àsnecessidades do aluno. Cite a metodologia utilizada para facilitar a aprendizagem eos resultados alcançados com essas adaptações." wrapText="true" VBox.vgrow="SOMETIMES" />
-                                <TextArea fx:id="dificuldadesRaciocinio" prefHeight="120" promptText="Digite" wrapText="true" />
+                                <Label text="Detalhe os ajustes realizados para atender àsnecessidades do aluno. Cite a metodologia utilizada para facilitar a aprendizagem eos resultados alcançados com essas adaptações." wrapText="true" VBox.vgrow="SOMETIMES">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin></Label>
+                                <TextArea fx:id="dificuldadesRaciocinio" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" />
 
                             </children>
 
                         </VBox>
-                        <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                        <VBox style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                             <children>
-                                <Label style="-fx-font-weight: bold;" text="Participação nas Atividades Propostas " />
-                                <Label prefHeight="47.0" text="Descreva como o alunoparticipa das atividades. Indique os momentos em que demonstra interesse oudesinteresse durante as aulas." wrapText="true" VBox.vgrow="SOMETIMES" />
-                                <TextArea fx:id="dificuldadesRaciocinio1" prefHeight="120" promptText="Digite" wrapText="true" />
+                                <Label style="-fx-font-weight: bold;" text="Participação nas Atividades Propostas ">
+                           <VBox.margin>
+                              <Insets bottom="12.0" />
+                           </VBox.margin></Label>
+                                <Label text="Descreva como o alunoparticipa das atividades. Indique os momentos em que demonstra interesse oudesinteresse durante as aulas." wrapText="true" VBox.vgrow="SOMETIMES" />
+                                <TextArea fx:id="dificuldadesRaciocinio1" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" />
                             </children>
                             <padding>
                                 <Insets bottom="20" left="20" right="20" top="20" />
                             </padding>
                         </VBox>
-                        <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                        <VBox style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                             <children>
-                                <Label style="-fx-font-weight: bold;" text="Autonomia" />
+                                <Label style="-fx-font-weight: bold;" text="Autonomia">
+                           <VBox.margin>
+                              <Insets bottom="12.0" />
+                           </VBox.margin></Label>
                                 <Label prefHeight="47.0" text="Relate como e o que é trabalhado para promover a autonomia doaluno em diferentes contextos escolares. Isso inclui habilidades para fazer escolhas,tomar iniciativas, cumprir planejamentos, atender aos próprios interesses, realizar tarefas, resolver conflitos, defender-se, explicar-se e solicitar ajuda." wrapText="true" VBox.vgrow="SOMETIMES" />
-                                <TextArea fx:id="dificuldadesRaciocinio11" prefHeight="120" promptText="Digite" wrapText="true" />
+                                <TextArea fx:id="dificuldadesRaciocinio11" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" />
                             </children>
                             <padding>
                                 <Insets bottom="20" left="20" right="20" top="20" />
@@ -106,12 +115,20 @@
 
 
                         <!-- BOTÕES -->
-                        <HBox alignment="CENTER_RIGHT" spacing="20">
+                        <HBox alignment="CENTER_RIGHT">
                             <children>
-                                <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
-                                <Button onAction="#handleCancelAction" text="Cancelar" />
-                                <Button onAction="#handleBackAction" text="Voltar" />
-                                <Button onAction="#handleGoToPdi2" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
+                        <HBox HBox.hgrow="ALWAYS">
+                           <children>
+                                      <Button onAction="#handleCancelAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Cancelar" />
+                                      <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
+                           </children>
+                        </HBox>
+                        <HBox spacing="20.0">
+                           <children>
+                                      <Button onAction="#handleBackAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Voltar" />
+                                      <Button onAction="#handleGoToPdi2" prefWidth="220.0" styleClass="botao-seguinte" text="Seguinte" />
+                           </children>
+                        </HBox>
                             </children>
                         </HBox>
 
