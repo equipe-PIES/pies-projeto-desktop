@@ -7,14 +7,17 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox prefWidth="500.0" spacing="10" style="-fx-background-color: #ffffff; -fx-padding: 20;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.InfosAlunoController">
+<VBox prefWidth="500.0" spacing="10" style="-fx-background-color: #ffffff; -fx-border-color: #c0c0c0; -fx-border-radius: 8; -fx-background-radius: 8;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.InfosAlunoController">
   <children>
-    <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="Informações do Aluno" />
+    <Label style="-fx-font-weight: bold; -fx-font-size: 24px;" text="Informações do Aluno">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font></Label>
 
-    <GridPane hgap="10" vgap="8">
+    <GridPane hgap="10" vgap="10.0">
       <columnConstraints>
-        <ColumnConstraints halignment="RIGHT" maxWidth="275.0" minWidth="120.0" prefWidth="150.0" />
-        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="608.0" minWidth="475.0" prefWidth="600.0" />
+        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="0.0" />
+        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
       </columnConstraints>
       <children>
         <Label text="Nome:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -50,7 +53,7 @@
         <Label text="Parentesco:" GridPane.columnIndex="0" GridPane.rowIndex="10" />
         <Label fx:id="parentescoLabel" GridPane.columnIndex="1" GridPane.rowIndex="10" />
 
-        <Label text="CPF Resp.:" GridPane.columnIndex="0" GridPane.rowIndex="11" />
+        <Label text="CPF Responsável:" GridPane.columnIndex="0" GridPane.rowIndex="11" />
         <Label fx:id="cpfResponsavelLabel" GridPane.columnIndex="1" GridPane.rowIndex="11" />
 
         <Label text="Telefone:" GridPane.columnIndex="0" GridPane.rowIndex="12" />
@@ -62,7 +65,7 @@
         <Label text="Turma:" GridPane.columnIndex="0" GridPane.rowIndex="14" />
         <Label fx:id="turmaLabel" GridPane.columnIndex="1" GridPane.rowIndex="14" />
 
-        <Label text="Professora Resp.:" GridPane.columnIndex="0" GridPane.rowIndex="15" />
+        <Label text="Professora Responsável:" GridPane.columnIndex="0" GridPane.rowIndex="15" />
         <Label fx:id="professoraResponsavelLabel" GridPane.columnIndex="1" GridPane.rowIndex="15" />
 
         <Label text="Grau da Turma:" GridPane.columnIndex="0" GridPane.rowIndex="16" />
@@ -99,8 +102,11 @@
 
     <HBox alignment="CENTER_RIGHT" spacing="10">
       <children>
-        <Button fx:id="closeButton" onAction="#handleCloseAction" text="Fechar" />
+        <Button fx:id="closeButton" onAction="#handleCloseAction" prefWidth="220.0" text="Fechar" />
       </children>
     </HBox>
   </children>
+   <padding>
+      <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+   </padding>
 </VBox>
