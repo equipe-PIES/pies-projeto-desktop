@@ -36,12 +36,19 @@ public class RelatorioIndividualController {
     private RelatorioIndividualRequestDTO formData = new RelatorioIndividualRequestDTO();
     private final AuthService authService = AuthService.getInstance();
     private int currentStep = 1;
+    private boolean novoRegistro = false;
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
         atualizarIndicador();
-        carregarRelatorioExistente();
+        if (!novoRegistro) {
+            carregarRelatorioExistente();
+        }
         populateFromFormData();
+    }
+
+    public void setNovoRegistro(boolean novo) {
+        this.novoRegistro = novo;
     }
 
     public void setFormData(RelatorioIndividualRequestDTO data) {
@@ -176,6 +183,7 @@ public class RelatorioIndividualController {
             Parent root = loader.load();
             RelatorioIndividualController controller = loader.getController();
             captureCurrentStepData();
+            // Mesma lógica do PDI: setEducando primeiro (carrega backend), depois setFormData (sobrescreve)
             controller.setEducando(educando);
             controller.setFormData(formData);
             controller.setStep(step);

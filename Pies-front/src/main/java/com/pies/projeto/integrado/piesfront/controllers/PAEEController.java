@@ -101,17 +101,27 @@ public class PAEEController implements Initializable {
     private boolean novoRegistro = false;
 
     public void setEducando(EducandoDTO educando) {
+        System.out.println("=== PAEEController.setEducando ===");
+        System.out.println("Educando: " + (educando != null ? educando.nome() : "null"));
+        System.out.println("novoRegistro: " + novoRegistro);
+        System.out.println("currentStep: " + currentStep);
         this.educando = educando;
         atualizarIndicadorDeTela();
-        // Só carrega do backend se formData estiver vazio E não for modo novo
-        // if (!modoNovo && formData.resumoCaso == null) {
-        //     carregarPaeeExistente();
         if (!novoRegistro) {
+            System.out.println("Carregando PAEE existente do backend...");
             carregarPaeeExistente();
+            System.out.println("PAEE carregado. resumoCaso: " + (formData.resumoCaso != null ? formData.resumoCaso.substring(0, Math.min(50, formData.resumoCaso.length())) + "..." : "null"));
         } else {
-            this.formData = new PaeeFormData();
+            // Apenas cria novo formData se ainda não tiver dados (primeiro acesso)
+            if (this.formData == null || isFormDataEmpty(this.formData)) {
+                System.out.println("Criando novo formData vazio");
+                this.formData = new PaeeFormData();
+            } else {
+                System.out.println("Mantendo formData existente (já tem dados)");
+            }
         }
         preencherCamposComFormData();
+        System.out.println("=== Fim setEducando ===");
     }
 
     /**
@@ -124,7 +134,12 @@ public class PAEEController implements Initializable {
     // }
 
     public void setFormData(PaeeFormData data) {
+        System.out.println("=== setFormData ===");
+        System.out.println("Data null? " + (data == null));
         if (data != null) {
+            System.out.println("resumoCaso: " + (data.resumoCaso != null ? "presente" : "null"));
+            System.out.println("desenvolvimentoMotoresPsicomotoresDificuldades: " + (data.desenvolvimentoMotoresPsicomotoresDificuldades != null ? "presente" : "null"));
+            System.out.println("dificuldadesRaciocinio: " + (data.dificuldadesRaciocinio != null ? "presente" : "null"));
             this.formData = data;
             preencherCamposComFormData();
         }
@@ -319,20 +334,21 @@ public class PAEEController implements Initializable {
     }
 
     private void abrirPaee(String resource, int step) {
+        System.out.println("=== abrirPaee ===");
+        System.out.println("Resource: " + resource + ", Step: " + step);
+        System.out.println("formData.resumoCaso: " + (formData.resumoCaso != null ? "presente" : "null"));
+        System.out.println("formData.desenvolvimentoMotoresPsicomotoresDificuldades: " + (formData.desenvolvimentoMotoresPsicomotoresDificuldades != null ? "presente" : "null"));
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
             Parent root = loader.load();
             PAEEController controller = loader.getController();
-            // controller.currentStep = step;
-            // if (modoNovo) {
-            //     controller.setModoNovo();
-            // }
-            // // IMPORTANTE: setFormData ANTES de setEducando para não sobrescrever os dados carregados
-            // controller.setFormData(formData);
-            // controller.setEducando(educando);
-            controller.setEducando(educando);
-            controller.currentStep = step;
-            controller.setFormData(formData);
+            // IMPORTANTE: Ao navegar entre páginas, passar formData primeiro para preservar dados
+            controller.setNovoRegistro(true); // Evita recarregar do backend nas navegações
+            controller.currentStep = step; // Define step antes de carregar dados
+            System.out.println("Chamando setFormData no novo controller...");
+            controller.setFormData(formData); // Define formData ANTES de setEducando
+            System.out.println("Chamando setEducando no novo controller...");
+            controller.setEducando(educando); // Agora setEducando não vai sobrescrever formData
             Stage stage;
             if (anamnese != null && anamnese.getScene() != null) {
                 stage = (Stage) anamnese.getScene().getWindow();
@@ -399,8 +415,10 @@ public class PAEEController implements Initializable {
     }
 
     private void captureCurrentStepData() {
+        System.out.println("=== captureCurrentStepData (Step " + currentStep + ") ===");
         if (currentStep == 1) {
             formData.resumoCaso = resumoCaso != null ? resumoCaso.getText() : formData.resumoCaso;
+            System.out.println("Capturado resumoCaso: " + (formData.resumoCaso != null ? "presente" : "null"));
             formData.dificuldadesMotoresPsicomotores = getValue(dificuldadesMotoresPsicomotoresCb, formData.dificuldadesMotoresPsicomotores);
             formData.dificuldadesCognitivo = getValue(dificuldadesCognitivoCb, formData.dificuldadesCognitivo);
             formData.dificuldadesSensorial = getValue(dificuldadesSensorialCb, formData.dificuldadesSensorial);
@@ -411,11 +429,13 @@ public class PAEEController implements Initializable {
             formData.dificuldadesAVAs = getValue(dificuldadesAVAsCb, formData.dificuldadesAVAs);
         } else if (currentStep == 2) {
             formData.desenvolvimentoMotoresPsicomotoresDificuldades = getText(desenvolvimentoMotoresPsicomotoresDificuldadesTa, formData.desenvolvimentoMotoresPsicomotoresDificuldades);
+            System.out.println("Capturado desenvolvimentoMotoresPsicomotoresDificuldades: " + (formData.desenvolvimentoMotoresPsicomotoresDificuldades != null ? "presente" : "null"));
             formData.desenvolvimentoMotoresPsicomotoresIntervencoes = getText(desenvolvimentoMotoresPsicomotoresIntervencoesTa, formData.desenvolvimentoMotoresPsicomotoresIntervencoes);
             formData.comunicacaoLinguagemDificuldades = getText(comunicacaoLinguagemDificuldadesTa, formData.comunicacaoLinguagemDificuldades);
             formData.comunicacaoLinguagemIntervencoes = getText(comunicacaoLinguagemIntervencoesTa, formData.comunicacaoLinguagemIntervencoes);
         } else if (currentStep == 3) {
             formData.dificuldadesRaciocinio = getText(dificuldadesRaciocinioTa, formData.dificuldadesRaciocinio);
+            System.out.println("Capturado dificuldadesRaciocinio: " + (formData.dificuldadesRaciocinio != null ? "presente" : "null"));
             formData.intervencoesRaciocinio = getText(intervencoesRaciocinioTa, formData.intervencoesRaciocinio);
             formData.dificuldadesAtencao = getText(dificuldadesAtencaoTa, formData.dificuldadesAtencao);
             formData.intervencoesAtencao = getText(intervencoesAtencaoTa, formData.intervencoesAtencao);
@@ -442,6 +462,7 @@ public class PAEEController implements Initializable {
     }
 
     private void preencherCamposComFormData() {
+        System.out.println("=== preencherCamposComFormData (Step " + currentStep + ") ===");
         if (currentStep == 1) {
             if (resumoCaso != null && formData.resumoCaso != null) resumoCaso.setText(formData.resumoCaso);
             setChoice(dificuldadesMotoresPsicomotoresCb, formData.dificuldadesMotoresPsicomotores);
@@ -555,14 +576,44 @@ public class PAEEController implements Initializable {
         return s;
     }
 
+    private boolean isFormDataEmpty(PaeeFormData data) {
+        if (data == null) return true;
+        // Verifica se todos os campos principais estão vazios
+        return data.resumoCaso == null &&
+               data.dificuldadesMotoresPsicomotores == null &&
+               data.desenvolvimentoMotoresPsicomotoresDificuldades == null &&
+               data.desenvolvimentoMotoresPsicomotoresIntervencoes == null &&
+               data.comunicacaoLinguagemDificuldades == null &&
+               data.objetivosAEE == null;
+    }
+
     private void carregarPaeeExistente() {
-        if (educando == null || educando.id() == null) return;
+        System.out.println("=== carregarPaeeExistente ===");
+        if (educando == null || educando.id() == null) {
+            System.out.println("Educando null ou sem ID, abortando");
+            return;
+        }
         java.util.List<java.util.Map<String, Object>> lista = authService.getPaeesPorEducandoRaw(educando.id());
-        if (lista == null || lista.isEmpty()) return;
+        System.out.println("Lista de PAEEs retornada: " + (lista != null ? lista.size() + " registros" : "null"));
+        if (lista == null || lista.isEmpty()) {
+            System.out.println("Nenhum PAEE encontrado");
+            return;
+        }
         java.util.Map<String, Object> dto = lista.get(lista.size() - 1);
+        System.out.println("DTO recuperado com " + dto.size() + " campos");
+        System.out.println("Campos no DTO: " + dto.keySet());
+        System.out.println("Valores:");
+        dto.forEach((key, value) -> {
+            String valorStr = value != null ? value.toString() : "null";
+            if (valorStr.length() > 50) valorStr = valorStr.substring(0, 50) + "...";
+            System.out.println("  " + key + " = " + valorStr);
+        });
         Object o;
         o = dto.get("resumoCaso");
-        if (o instanceof String s) formData.resumoCaso = s;
+        if (o instanceof String s) {
+            formData.resumoCaso = s;
+            System.out.println("resumoCaso carregado: " + s.substring(0, Math.min(50, s.length())) + "...");
+        }
         o = dto.get("dificuldadesMotoresPsicomotores");
         if (o instanceof String s) formData.dificuldadesMotoresPsicomotores = toSimNao(s);
         o = dto.get("dificuldadesCognitivo");
@@ -580,9 +631,15 @@ public class PAEEController implements Initializable {
         o = dto.get("dificuldadesAVAs");
         if (o instanceof String s) formData.dificuldadesAVAs = toSimNao(s);
         o = dto.get("desenvolvimentoMotoresPsicomotoresDificuldades");
-        if (o instanceof String s) formData.desenvolvimentoMotoresPsicomotoresDificuldades = s;
+        if (o instanceof String s) {
+            formData.desenvolvimentoMotoresPsicomotoresDificuldades = s;
+            System.out.println("desenvolvimentoMotoresPsicomotoresDificuldades carregado: " + s.length() + " chars");
+        }
         o = dto.get("desenvolvimentoMotoresPsicomotoresIntervencoes");
-        if (o instanceof String s) formData.desenvolvimentoMotoresPsicomotoresIntervencoes = s;
+        if (o instanceof String s) {
+            formData.desenvolvimentoMotoresPsicomotoresIntervencoes = s;
+            System.out.println("desenvolvimentoMotoresPsicomotoresIntervencoes carregado: " + s.length() + " chars");
+        }
         o = dto.get("comunicacaoLinguagemDificuldades");
         if (o instanceof String s) formData.comunicacaoLinguagemDificuldades = s;
         o = dto.get("comunicacaoLinguagemIntervencoes");

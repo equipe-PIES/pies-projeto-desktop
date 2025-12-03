@@ -357,15 +357,18 @@ public class ProgressoAtendimentoController implements Initializable {
         });
         if (editarRelatorioIndividual != null) editarRelatorioIndividual.setOnAction(e -> {
             if (educando == null) return;
-            navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual");
+            // Botão Editar sempre carrega dados existentes
+            navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual", true);
         });
         if (editarRelatorioIndividual1 != null) editarRelatorioIndividual1.setOnAction(e -> {
             if (educando == null) return;
-            navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual");
+            // Botão Editar sempre carrega dados existentes
+            navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual", true);
         });
         if (verRelatorioIndividual != null) verRelatorioIndividual.setOnAction(e -> {
             if (educando == null) return;
-            navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual");
+            // Botão Ver sempre carrega dados existentes
+            navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual", true);
         });
         if (baixarRelatorioIndividual != null) baixarRelatorioIndividual.setOnAction(e -> {
             if (educando == null) return;
@@ -465,23 +468,19 @@ public class ProgressoAtendimentoController implements Initializable {
                 c.setEducando(educando);
             } else if (controller instanceof PDIController c) {
                 System.out.println("Controller é PDIController, setando educando...");
-                if (!carregarDadosExistentes) {
-                    c.setNovoRegistro(true);
-                }
+                c.setNovoRegistro(!carregarDadosExistentes);
                 c.setEducando(educando);
             } else if (controller instanceof PAEEController c) {
                 System.out.println("Controller é PAEEController, setando educando...");
-                if (!carregarDadosExistentes) {
-                    c.setNovoRegistro(true);
-                }
+                c.setNovoRegistro(!carregarDadosExistentes);
                 c.setEducando(educando);
             } else if (controller instanceof DIController c) {
                 System.out.println("Controller é DIController, setando educando...");
-                if (!carregarDadosExistentes) {
-                    c.setNovoRegistro(true);
-                }
+                c.setNovoRegistro(!carregarDadosExistentes);
                 c.setEducando(educando);
             } else if (controller instanceof RelatorioIndividualController c) {
+                System.out.println("Controller é RelatorioIndividualController, setando educando...");
+                c.setNovoRegistro(!carregarDadosExistentes);
                 c.setEducando(educando);
             }
             
