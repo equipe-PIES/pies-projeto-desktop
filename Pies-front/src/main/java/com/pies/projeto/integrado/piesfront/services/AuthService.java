@@ -46,6 +46,7 @@ public class AuthService {
     private java.util.List<TurmaDTO> cachedTurmas;
     private long turmasCacheTs;
     private final java.util.Map<String, java.util.List<EducandoDTO>> cachedEducandosPorTurma = new java.util.HashMap<>();
+    private final java.util.Map<String, Long> educandosPorTurmaCacheTs = new java.util.HashMap<>();
     
     private java.util.List<EducandoDTO> cachedEducandos;
     private long educandosCacheTs;
@@ -238,6 +239,7 @@ public class AuthService {
         this.cachedTurmas = null;
         this.cachedEducandos = null;
         this.cachedEducandosPorTurma.clear();
+        this.educandosPorTurmaCacheTs.clear();
     }
     
     /**
@@ -397,8 +399,10 @@ public class AuthService {
         if (currentToken == null || turmaId == null || turmaId.isEmpty()) {
             return new ArrayList<>();
         }
+        long now = System.currentTimeMillis();
         java.util.List<EducandoDTO> cache = cachedEducandosPorTurma.get(turmaId);
-        if (cache != null) {
+        Long ts = educandosPorTurmaCacheTs.get(turmaId);
+        if (cache != null && ts != null && (now - ts) < 60_000) {
             return cache;
         }
         try {
@@ -414,6 +418,7 @@ public class AuthService {
                 TypeReference<List<EducandoDTO>> typeRef = new TypeReference<List<EducandoDTO>>() {};
                 java.util.List<EducandoDTO> lista = objectMapper.readValue(response.body(), typeRef);
                 cachedEducandosPorTurma.put(turmaId, lista);
+                educandosPorTurmaCacheTs.put(turmaId, now);
                 return lista;
             } else {
                 System.err.println("Erro ao buscar educandos por turma. Status: " + response.statusCode());

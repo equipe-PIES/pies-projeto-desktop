@@ -17,6 +17,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import com.utils.Janelas;
+import javafx.event.ActionEvent;
 
 public class RelatorioIndividualController {
     @FXML
@@ -75,44 +77,34 @@ public class RelatorioIndividualController {
 
     @FXML
     private void handleTurmasButtonAction() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml"));
-            Stage currentStage = (Stage) anamnese.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-        } catch (Exception e) {
-            System.err.println("Erro ao navegar para Turmas: " + e.getMessage());
+        if (anamnese != null) {
+            Janelas.carregarTela(new ActionEvent(anamnese, null),
+                    "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml",
+                    "Início - Professor(a)");
         }
     }
 
     @FXML
     private void handleSairButtonAction() {
         authService.logout();
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml"));
-            Stage currentStage = (Stage) anamnese.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-        } catch (Exception e) {
-            System.err.println("Erro ao carregar a tela de login: " + e.getMessage());
+        if (anamnese != null) {
+            Janelas.carregarTela(new ActionEvent(anamnese, null),
+                    "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml",
+                    "Amparo Edu - Login");
         }
     }
 
     @FXML
     private void handleCancelAction() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml"));
-            Parent root = loader.load();
-            ViewTurmaController controller = loader.getController();
-            if (educando != null && educando.turmaId() != null) {
-                controller.setTurmaId(educando.turmaId());
-            }
-            Stage currentStage = (Stage) anamnese.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-        } catch (Exception e) {
-            System.err.println("Erro ao voltar para View Turma: " + e.getMessage());
+        if (anamnese != null) {
+            Janelas.carregarTela(new ActionEvent(anamnese, null),
+                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml",
+                    "Visualizar Turma",
+                    controller -> {
+                        if (controller instanceof ViewTurmaController c && educando != null && educando.turmaId() != null) {
+                            c.setTurmaId(educando.turmaId());
+                        }
+                    });
         }
     }
 
@@ -171,19 +163,15 @@ public class RelatorioIndividualController {
     }
 
     private void abrir(String resource, int step) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-            Parent root = loader.load();
-            RelatorioIndividualController controller = loader.getController();
-            captureCurrentStepData();
-            controller.setEducando(educando);
-            controller.setFormData(formData);
-            controller.setStep(step);
-            Stage stage = (Stage) anamnese.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            System.err.println("Erro ao abrir relatório individual: " + e.getMessage());
+        captureCurrentStepData();
+        if (anamnese != null) {
+            Janelas.carregarTela(new ActionEvent(anamnese, null), resource, null, controller -> {
+                if (controller instanceof RelatorioIndividualController c) {
+                    c.setEducando(educando);
+                    c.setFormData(formData);
+                    c.setStep(step);
+                }
+            });
         }
     }
 

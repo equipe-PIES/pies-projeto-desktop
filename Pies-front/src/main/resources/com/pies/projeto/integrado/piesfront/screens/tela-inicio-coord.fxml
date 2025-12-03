@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -88,12 +89,18 @@
            <children>
 
                <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Início" />
-               <!-- SEÇÃO DE DESTAQUE -->
-               <VBox prefHeight="250.0" style="-fx-background-color: #f0f0f0; -fx-alignment: center;">
-      <children>
-                      <Label alignment="CENTER" text="[Grande Placeholder para Gráfico/Informação]" VBox.vgrow="ALWAYS" />
-      </children>
-               </VBox>
+            <HBox alignment="CENTER">
+                <VBox.margin>
+                    <Insets top="80.0" />
+                </VBox.margin>
+                <children>
+                    <ImageView fitHeight="230.0" fitWidth="880.0" pickOnBounds="true">
+                        <image>
+                            <Image url="@../images/frente_apapeq.jpg" />
+                        </image>
+                    </ImageView>
+                </children>
+        </HBox>
                 <!-- CARDS -->
                 <HBox alignment="CENTER" prefHeight="114.0" prefWidth="1159.0" spacing="80.0">
                     <children>
@@ -149,6 +156,9 @@
                             </children>
                         </VBox>
                     </children>
+               <VBox.margin>
+                  <Insets top="80.0" />
+               </VBox.margin>
                 </HBox>
            </children>
         </VBox>

@@ -94,26 +94,15 @@ public class AnamneseController {
 
     @FXML
     private void handleCancelAction() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml"));
-            Parent root = loader.load();
-            ViewTurmaController controller = loader.getController();
-            if (educando != null && educando.turmaId() != null) {
-                controller.setTurmaId(educando.turmaId());
-            }
-            Stage currentStage = (Stage) anamnese.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.setTitle("Visualizar Turma");
-            
-            // Força a maximização
-            currentStage.setMaximized(false);
-            currentStage.setMaximized(true);
-            
-            currentStage.show();
-        } catch (Exception e) {
-            System.err.println("Erro ao voltar para View Turma: " + e.getMessage());
-            handleSairButtonAction();
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null),
+                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml",
+                    "Visualizar Turma",
+                    controller -> {
+                        if (controller instanceof ViewTurmaController c && educando != null && educando.turmaId() != null) {
+                            c.setTurmaId(educando.turmaId());
+                        }
+                    });
         }
     }
 
@@ -180,29 +169,14 @@ public class AnamneseController {
     }
 
     private void abrir(String resource, String titulo) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-            Parent root = loader.load();
-            AnamneseController controller = loader.getController();
-            captureCurrentStepData();
-            controller.setEducando(educando);
-            controller.setFormData(formData);
-            Stage stage;
-            if (anamnese != null && anamnese.getScene() != null) {
-                stage = (Stage) anamnese.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.setTitle(titulo);
-                stage.setMaximized(false);
-                stage.setMaximized(true);
-            } else {
-                stage = new Stage();
-                stage.setTitle(titulo);
-                stage.setScene(new Scene(root));
-                stage.setMaximized(true);
-                stage.show();
-            }
-        } catch (Exception e) {
-            System.err.println("Erro ao abrir anamnese: " + e.getMessage());
+        captureCurrentStepData();
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, titulo, controller -> {
+                if (controller instanceof AnamneseController c) {
+                    c.setEducando(educando);
+                    c.setFormData(formData);
+                }
+            });
         }
     }
 

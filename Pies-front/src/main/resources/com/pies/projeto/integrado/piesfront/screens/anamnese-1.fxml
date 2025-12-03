@@ -64,7 +64,7 @@
                                          <!-- COLUNA ESQUERDA -->
                              <VBox prefWidth="500.0" spacing="15" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                                  <padding>
-                                     <Insets bottom="20" left="20" right="20" top="20" />
+                                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                  </padding>
          
                                              <children>
@@ -165,9 +165,9 @@
          
          
                              <!-- COLUNA DIREITA -->
-                             <VBox spacing="15" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                             <VBox spacing="15.0" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                                  <padding>
-                                     <Insets bottom="20" left="20" right="20" top="20" />
+                                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                  </padding>
          
                                  <children>
@@ -207,7 +207,7 @@
          
                                  </children>
                              </VBox>
-                        <VBox spacing="15" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                        <VBox spacing="15.0" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                            <children>
                               <Label style="-fx-font-weight: bold;" text="Condições da Gravidez e do Nascimento" />
                               <Label text="Duração da gestação" />
@@ -238,7 +238,7 @@
                               <TextField fx:id="prematuridade1" />
                            </children>
                            <padding>
-                              <Insets bottom="20" left="20" right="20" top="20" />
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </padding>
                            <VBox.margin>
                               <Insets top="20.0" />

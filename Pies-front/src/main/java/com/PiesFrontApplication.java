@@ -18,8 +18,9 @@ public class PiesFrontApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
         stage.setTitle("Amparo Edu");
         stage.setScene(scene);
-        stage.setMaximized(true);
+        
         stage.show();
+        stage.setMaximized(true);
     }
 
     public static void main(String[] args) {

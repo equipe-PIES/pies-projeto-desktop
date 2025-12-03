@@ -12,6 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import com.utils.Janelas;
+import javafx.event.ActionEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -141,32 +143,14 @@ public class CardTurmaController implements Initializable {
             System.err.println("Turma não definida!");
             return;
         }
-        
-        try {
-            // Carrega o FXML da view-turma
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml"));
-            Parent root = loader.load();
-            
-            // Obtém o controller e define o ID da turma
-            ViewTurmaController controller = loader.getController();
-            controller.setTurmaId(turma.id());
-            
-            // Navega para a nova tela
-            Stage currentStage = (Stage) verificarTurmaButton.getScene().getWindow();
-            currentStage.setScene(new javafx.scene.Scene(root));
-            currentStage.setTitle("Visualizar Turma");
-            
-            // Força a maximização
-            currentStage.setMaximized(false);
-            currentStage.setMaximized(true);
-            
-            currentStage.show();
-            
-        } catch (IOException e) {
-            System.err.println("Erro ao carregar a tela de visualização da turma: " + e.getMessage());
-            e.printStackTrace();
-        }
+        Janelas.carregarTela(new ActionEvent(verificarTurmaButton, null),
+                "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml",
+                "Visualizar Turma",
+                controller -> {
+                    if (controller instanceof ViewTurmaController c) {
+                        c.setTurmaId(turma.id());
+                    }
+                });
     }
     
     @Override

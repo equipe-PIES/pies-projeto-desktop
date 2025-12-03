@@ -1,39 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.SepiaTone?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
-   <center>
-      <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #ffffff;">
-          <children>
-              <ImageView fx:id="logoAmparoEdu" fitHeight="254.0" fitWidth="266.0" layoutX="154.0" layoutY="226.0" pickOnBounds="true" preserveRatio="true" />
-              <Rectangle fx:id="barraLateral" arcHeight="10.0" arcWidth="10.0" fill="#d6d6d6" height="800.0" layoutX="573.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="627.0" />
-              <Label fx:id="fraseAutoria" layoutX="681.0" layoutY="728.0" text="Você está usando um sistema desenvolvido por quixada.ufc.br" textFill="WHITE" />
-            <Text fx:id="nomeDoSoftware" layoutX="147.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="AmparoEdu" wrappingWidth="280.958984375">
+<HBox prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.LoginController">
+      
+   <children>
+   
+      <VBox alignment="CENTER" spacing="20.0" style="-fx-background-color: white;" HBox.hgrow="ALWAYS">
+         <children>
+            <Text fx:id="nomeDoSoftware" fill="#26568c" strokeType="OUTSIDE" strokeWidth="0.0" text="AmparoEdu">
                <font>
                   <Font name="System Bold" size="49.0" />
                </font>
             </Text>
-            <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="429.0" layoutX="722.0" layoutY="171.0" stroke="#0000003b" strokeType="INSIDE" width="330.0" />
-            <Button fx:id="loginButton" layoutX="746.0" layoutY="423.0" mnemonicParsing="false" onAction="#handleLoginButtonAction" prefHeight="38.0" prefWidth="281.0" text="Entrar" />
-            <PasswordField fx:id="passwordField" layoutX="747.0" layoutY="370.0" prefHeight="38.0" prefWidth="281.0" promptText="Senha" />
-            <TextField fx:id="emailField" layoutX="747.0" layoutY="298.0" prefHeight="38.0" prefWidth="281.0" promptText="Email" />
-            <Label fx:id="legendaEmail" layoutX="748.0" layoutY="268.0" text="E-mail:" />
-            <Label fx:id="titleLogin" layoutX="853.0" layoutY="203.0" text="Login">
-               <font>
-                  <Font name="System Bold" size="26.0" />
-               </font>
+            
+            <ImageView fx:id="logoAmparoEdu" fitHeight="508.0" fitWidth="532.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                   <Image url="@../images/logo_amparo_edu.png.png" />
+               </image>
+            </ImageView>
+         </children>
+      </VBox>
+
+      <StackPane prefHeight="800.0" prefWidth="700.0" style="-fx-background-color: #3f9bd2;" HBox.hgrow="ALWAYS">
+         <children>
+            
+            <VBox alignment="CENTER_LEFT" maxHeight="520.0" maxWidth="350.0" spacing="10.0" style="-fx-background-color: WHITE; -fx-background-radius: 10; -fx-padding: 30;">
+               <children>
+                  <Label fx:id="titleLogin" text="Login" textFill="#26568c">
+                     <font>
+                        <Font name="System Bold" size="26.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="20.0" left="110.0" />
+                     </VBox.margin>
+                  </Label>
+
+                  <Label fx:id="legendaEmail" text="E-mail:" />
+                  <TextField fx:id="emailField" prefHeight="38.0" promptText="Email" />
+                  
+                  <Label fx:id="legendaPassword" text="Senha:" />
+                  <PasswordField fx:id="passwordField" prefHeight="38.0" promptText="Senha" />
+                  
+                  <Button fx:id="loginButton" mnemonicParsing="false" onAction="#handleLoginButtonAction" prefHeight="38.0" prefWidth="290.0" style="-fx-background-color: #3f9bd2;" text="Entrar" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <effect>
+                        <Blend>
+                           <topInput>
+                              <SepiaTone />
+                           </topInput>
+                        </Blend>
+                     </effect></Button>
+                  
+                  <Hyperlink fx:id="forgotPasswordLink" onAction="#handleForgotPasswordAction" text="Esqueci minha senha." textFill="#8a8686" />
+                  
+                  <Label fx:id="errorMessageLabel" textFill="#ee7d7d" wrapText="true" />
+                  
+                  <ProgressBar fx:id="loginProgressBar" prefWidth="290.0" progress="0.0" visible="true" />
+               </children>
+               <effect>
+                  <javafx.scene.effect.DropShadow color="#00000040" radius="10" />
+               </effect>
+            </VBox>
+
+            <Label fx:id="fraseAutoria" text="Desenvolvido por quixada.ufc.br" textFill="WHITE" StackPane.alignment="BOTTOM_CENTER">
+               <StackPane.margin>
+                  <Insets bottom="20.0" />
+               </StackPane.margin>
             </Label>
-            <Label fx:id="legendaPassword" layoutX="749.0" layoutY="342.0" text="Senha:" />
-            <Hyperlink fx:id="forgotPasswordLink" layoutX="811.0" layoutY="499.0" onAction="#handleForgotPasswordAction" text="Esqueci minha senha." textFill="#8a8686" />
-            <Label fx:id="errorMessageLabel" layoutX="746.0" layoutY="470.0" prefHeight="21.0" prefWidth="281.0" textFill="#ee7d7d" />
-            <ProgressBar fx:id="loginProgressBar" layoutX="787.0" layoutY="550.0" prefWidth="200.0" progress="0.0" />
-          </children>
-      </AnchorPane>
-   </center>
-</BorderPane>
+         </children>
+      </StackPane>
+      
+   </children>
+</HBox>
