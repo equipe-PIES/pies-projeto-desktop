@@ -240,34 +240,14 @@ public class PDIController {
     }
 
     private void abrir(String resource, String titulo, int step) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-            Parent root = loader.load();
-            PDIController controller = loader.getController();
-            // // IMPORTANTE: Define o formData ANTES do educando para não sobrescrever
-            // controller.currentStep = step;
-            // if (modoNovo) {
-            //     controller.setModoNovo();
-            // }
-            // controller.setFormData(formData);
-            // controller.setEducando(educando);
-            controller.setEducando(educando);
-            controller.currentStep = step;
-            controller.setFormData(formData);
-            Stage stage;
-            if (anamnese != null && anamnese.getScene() != null) {
-                stage = (Stage) anamnese.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.setTitle(titulo);
-            } else {
-                stage = new Stage();
-                stage.setTitle(titulo);
-                stage.setScene(new Scene(root));
-                stage.setResizable(false);
-                stage.show();
-            }
-        } catch (Exception e) {
-            System.err.println("Erro ao abrir PDI: " + e.getMessage());
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, titulo, controller -> {
+                if (controller instanceof PDIController c) {
+                    c.setEducando(educando);
+                    c.currentStep = step;
+                    c.setFormData(formData);
+                }
+            });
         }
     }
 

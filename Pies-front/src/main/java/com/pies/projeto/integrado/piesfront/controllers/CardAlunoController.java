@@ -285,18 +285,11 @@ public class CardAlunoController implements Initializable {
     }
 
     private void abrirTelaDiagnosticoInicial(String resource, String titulo) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-            Parent root = loader.load();
-            DIController controller = loader.getController();
-            controller.setEducando(educando);
-            Stage stage = (Stage) statusAtendimentoButton.getScene().getWindow();
-            stage.setTitle(titulo);
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Erro ao abrir Diagnóstico Inicial: " + e.getMessage());
-        }
+        Janelas.carregarTela(new javafx.event.ActionEvent(statusAtendimentoButton, null), resource, titulo, controller -> {
+            if (controller instanceof DIController c) {
+                c.setEducando(educando);
+            }
+        });
     }
     
     @Override

@@ -5,9 +5,6 @@ import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualRequestDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.StageStyle;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
@@ -170,20 +167,15 @@ public class RelatorioIndividualController {
     }
 
     private void abrir(String resource, int step) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-            Parent root = loader.load();
-            RelatorioIndividualController controller = loader.getController();
-            captureCurrentStepData();
-            // Mesma lógica do PDI: setEducando primeiro (carrega backend), depois setFormData (sobrescreve)
-            controller.setEducando(educando);
-            controller.setFormData(formData);
-            controller.setStep(step);
-            Stage stage = (Stage) anamnese.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            System.err.println("Erro ao abrir relatório individual: " + e.getMessage());
+        captureCurrentStepData();
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, "Relatório Individual", controller -> {
+                if (controller instanceof RelatorioIndividualController c) {
+                    c.setEducando(educando);
+                    c.setFormData(formData);
+                    c.setStep(step);
+                }
+            });
         }
     }
 
