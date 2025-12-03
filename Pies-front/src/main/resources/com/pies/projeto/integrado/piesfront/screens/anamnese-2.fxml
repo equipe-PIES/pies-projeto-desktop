@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.AnamneseController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.AnamneseController">
 
     <!-- TOPO -->
     <top>
@@ -53,7 +45,7 @@
 
     <!-- CONTEÚDO CENTRAL -->
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background-color: white;">
+        <ScrollPane fitToWidth="true" prefWidth="1220.0" style="-fx-background-color: white;">
             <VBox spacing="20" style="-fx-background-color: white;">
                 <padding>
                     <Insets bottom="20" left="30" right="30" top="30" />
@@ -63,42 +55,42 @@
 
                 <HBox spacing="20" VBox.vgrow="ALWAYS">
    <children>
-   
+
                        <!-- COLUNA ESQUERDA -->
-                       <VBox prefWidth="520" spacing="20">
+                       <VBox spacing="20" HBox.hgrow="ALWAYS">
       <children>
-      
+
                               <!-- CONDIÇÕES DA GRAVIDEZ E DO NASCIMENTO -->
-                              <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                              <VBox spacing="10.0" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                                   <padding>
                                       <Insets bottom="20" left="20" right="20" top="20" />
                                   </padding>
-      
+
                                   <children>
                                       <Label style="-fx-font-weight: bold;" text="Condições da Gravidez e do Nascimento" />
-      
+
                                       <Label text="Cidade de nascimento" />
                                       <TextField fx:id="cidadeNascimento" promptText="Digite" />
-      
+
                                       <Label text="Maternidade em que nasceu" />
                                       <TextField fx:id="maternidade" promptText="Digite" />
-      
+
                                       <Label text="Tipo de parto" />
-                              <ChoiceBox fx:id="tipoParto" prefHeight="31.0" prefWidth="212.0" />
+                              <ChoiceBox fx:id="tipoParto" prefWidth="200.0" />
                                   </children>
                               </VBox>
-      
+
                               <!-- PRIMEIRAS REAÇÕES DO BEBÊ -->
-                              <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                              <VBox spacing="10.0" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                                   <padding>
                                       <Insets bottom="20" left="20" right="20" top="20" />
                                   </padding>
-      
+
                                   <children>
                                       <Label style="-fx-font-weight: bold;" text="Primeiras Reações do Bebê" />
-      
+
                                       <Label text="Chorou?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
+                              <HBox>
                                  <children>
                                     <CheckBox fx:id="chorouSim" mnemonicParsing="false" text="Sim" />
                                     <CheckBox fx:id="chorouNao" mnemonicParsing="false" text="Não">
@@ -108,9 +100,9 @@
                                     </CheckBox>
                                  </children>
                               </HBox>
-      
+
                                       <Label text="Ficou roxo?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
+                              <HBox>
                                  <children>
                                     <CheckBox fx:id="ficouRoxoSim" mnemonicParsing="false" text="Sim" />
                                     <CheckBox fx:id="ficouRoxoNao" mnemonicParsing="false" text="Não">
@@ -120,9 +112,9 @@
                                     </CheckBox>
                                  </children>
                               </HBox>
-      
+
                                       <Label text="Fez uso de incubadora?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
+                              <HBox>
                                  <children>
                               <CheckBox fx:id="incubadoraSim" mnemonicParsing="false" text="Sim" />
                               <CheckBox fx:id="incubadoraNao" mnemonicParsing="false" text="Não">
@@ -132,9 +124,9 @@
                                </CheckBox>
                                  </children>
                               </HBox>
-      
+
                                       <Label text="Foi amamentado?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
+                              <HBox>
                                  <children>
                                     <CheckBox fx:id="amamentadoSim" mnemonicParsing="false" text="Sim" />
                                     <CheckBox fx:id="amamentadoNao" mnemonicParsing="false" text="Não">
@@ -146,122 +138,130 @@
                               </HBox>
                                   </children>
                               </VBox>
+                           <HBox alignment="BOTTOM_LEFT" VBox.vgrow="ALWAYS">
+                              <children>
+                                    <Button onAction="#handleCancelAction" prefWidth="200.0" text="Cancelar" />
+                              </children>
+                           </HBox>
       </children>
                      <HBox.margin>
-                        <Insets left="50.0" />
+                        <Insets />
                      </HBox.margin>
-   
+
                        </VBox>
-   
-   
-                       <!-- COLUNA DIREITA -->
-                       <VBox prefWidth="520" spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
-                           <padding>
-                               <Insets bottom="20" left="20" right="20" top="20" />
-                           </padding>
-   
-                           <children>
-                               <Label style="-fx-font-weight: bold;" text="Aspectos Desenvolvimento Psicomotor" />
-   
-                               <Label text="Sustentou a cabeça?" />
-                        <HBox prefHeight="0.0" prefWidth="388.0">
-                           <children>
-                              <CheckBox fx:id="sustentouCabecaSim" mnemonicParsing="false" text="Sim" />
-                              <CheckBox fx:id="sustentouCabecaNao" mnemonicParsing="false" text="Não">
-                                 <HBox.margin>
-                                    <Insets left="20.0" />
-                                 </HBox.margin>
-                              </CheckBox>
-                           </children>
-                        </HBox>
-                        <Label fx:id="lblSustentouCabecaMeses" text="Com quantos meses?" />
-                               <TextField fx:id="sustentouCabeca" promptText="Digite" />
-   
-                               <Label text="Engatinhou?" />
-                        <HBox prefHeight="0.0" prefWidth="388.0">
-                           <children>
-                              <CheckBox fx:id="engatinhouSim" mnemonicParsing="false" text="Sim" />
-                              <CheckBox fx:id="engatinhouNao" mnemonicParsing="false" text="Não">
-                                  <HBox.margin>
-                                     <Insets left="20.0" />
-                                  </HBox.margin>
-                               </CheckBox>
-                           </children>
-                        </HBox>
-                        <Label fx:id="lblEngatinhouMeses" text="Com quantos meses?" />
-                               <TextField fx:id="engatinhou" promptText="Digite" />
-   
-                               <Label text="Sentou?" />
-                        <HBox prefHeight="0.0" prefWidth="388.0">
-                           <children>
-                              <CheckBox fx:id="sentouSim" mnemonicParsing="false" text="Sim" />
-                              <CheckBox fx:id="sentouNao" mnemonicParsing="false" text="Não">
-                                  <HBox.margin>
-                                     <Insets left="20.0" />
-                                  </HBox.margin>
-                               </CheckBox>
-                           </children>
-                        </HBox>
-                        <Label fx:id="lblSentouMeses" text="Com quantos meses?" />
-                               <TextField fx:id="sentou" promptText="Digite" />
-   
-                               <Label text="Andou? " />
-                        <HBox prefHeight="0.0" prefWidth="388.0">
-                           <children>
-                              <CheckBox fx:id="andouSim" mnemonicParsing="false" text="Sim" />
-                              <CheckBox fx:id="andouNao" mnemonicParsing="false" text="Não">
-                                  <HBox.margin>
-                                     <Insets left="20.0" />
-                                  </HBox.margin>
-                               </CheckBox>
-                           </children>
-                        </HBox>
-                        <Label fx:id="lblAndouMeses" text="Com quantos meses?" />
-                               <TextField fx:id="andou" promptText="Digite" />
-   
-                               <Label text="Precisou de terapia? " />
-                        <HBox prefHeight="0.0" prefWidth="388.0">
-                           <children>
-                              <CheckBox fx:id="terapiaSim" mnemonicParsing="false" text="Sim" />
-                              <CheckBox fx:id="terapiaNao" mnemonicParsing="false" text="Não">
-                                  <HBox.margin>
-                                     <Insets left="20.0" />
-                                  </HBox.margin>
-                               </CheckBox>
-                           </children>
-                        </HBox>
-                        <Label fx:id="lblTerapiaMotivo" text="Qual o motivo?" />
-                               <TextField fx:id="terapia" promptText="Digite" />
-   
-                               <Label text="Falou?" />
-                        <HBox prefHeight="0.0" prefWidth="388.0">
-                           <children>
-                              <CheckBox fx:id="falouSim" mnemonicParsing="false" text="Sim" />
-                              <CheckBox fx:id="falouNao" mnemonicParsing="false" text="Não">
-                                  <HBox.margin>
-                                     <Insets left="20.0" />
-                                  </HBox.margin>
-                               </CheckBox>
-                           </children>
-                        </HBox>
-                        <Label fx:id="lblFalouMeses" text="Com quantos meses?" />
-                               <TextField fx:id="falou" promptText="Digite" />
-                           </children>
-   
-                       </VBox>
+                     <VBox spacing="20.0">
+                        <children>
+      
+      
+                             <!-- COLUNA DIREITA -->
+                             <VBox spacing="10.0" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                                 <padding>
+                                     <Insets bottom="20" left="20" right="20" top="20" />
+                                 </padding>
+      
+                                 <children>
+                                     <Label style="-fx-font-weight: bold;" text="Aspectos Desenvolvimento Psicomotor" />
+      
+                                     <Label text="Sustentou a cabeça?" />
+                              <HBox>
+                                 <children>
+                                    <CheckBox fx:id="sustentouCabecaSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="sustentouCabecaNao" mnemonicParsing="false" text="Não">
+                                       <HBox.margin>
+                                          <Insets left="20.0" />
+                                       </HBox.margin>
+                                    </CheckBox>
+                                 </children>
+                              </HBox>
+                              <Label fx:id="lblSustentouCabecaMeses" text="Com quantos meses?" />
+                                     <TextField fx:id="sustentouCabeca" promptText="Digite" />
+      
+                                     <Label text="Engatinhou?" />
+                              <HBox>
+                                 <children>
+                                    <CheckBox fx:id="engatinhouSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="engatinhouNao" mnemonicParsing="false" text="Não">
+                                        <HBox.margin>
+                                           <Insets left="20.0" />
+                                        </HBox.margin>
+                                     </CheckBox>
+                                 </children>
+                              </HBox>
+                              <Label fx:id="lblEngatinhouMeses" text="Com quantos meses?" />
+                                     <TextField fx:id="engatinhou" promptText="Digite" />
+      
+                                     <Label text="Sentou?" />
+                              <HBox>
+                                 <children>
+                                    <CheckBox fx:id="sentouSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="sentouNao" mnemonicParsing="false" text="Não">
+                                        <HBox.margin>
+                                           <Insets left="20.0" />
+                                        </HBox.margin>
+                                     </CheckBox>
+                                 </children>
+                              </HBox>
+                              <Label fx:id="lblSentouMeses" text="Com quantos meses?" />
+                                     <TextField fx:id="sentou" promptText="Digite" />
+      
+                                     <Label text="Andou? " />
+                              <HBox>
+                                 <children>
+                                    <CheckBox fx:id="andouSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="andouNao" mnemonicParsing="false" text="Não">
+                                        <HBox.margin>
+                                           <Insets left="20.0" />
+                                        </HBox.margin>
+                                     </CheckBox>
+                                 </children>
+                              </HBox>
+                              <Label fx:id="lblAndouMeses" text="Com quantos meses?" />
+                                     <TextField fx:id="andou" promptText="Digite" />
+      
+                                     <Label text="Precisou de terapia? " />
+                              <HBox>
+                                 <children>
+                                    <CheckBox fx:id="terapiaSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="terapiaNao" mnemonicParsing="false" text="Não">
+                                        <HBox.margin>
+                                           <Insets left="20.0" />
+                                        </HBox.margin>
+                                     </CheckBox>
+                                 </children>
+                              </HBox>
+                              <Label fx:id="lblTerapiaMotivo" text="Qual o motivo?" />
+                                     <TextField fx:id="terapia" promptText="Digite" />
+      
+                                     <Label text="Falou?" />
+                              <HBox prefHeight="0.0">
+                                 <children>
+                                    <CheckBox fx:id="falouSim" mnemonicParsing="false" text="Sim" />
+                                    <CheckBox fx:id="falouNao" mnemonicParsing="false" text="Não">
+                                        <HBox.margin>
+                                           <Insets left="20.0" />
+                                        </HBox.margin>
+                                     </CheckBox>
+                                 </children>
+                              </HBox>
+                              <Label fx:id="lblFalouMeses" text="Com quantos meses?" />
+                                     <TextField fx:id="falou" promptText="Digite" />
+                                 </children>
+      
+                             </VBox>
+            
+            
+                            <!-- BOTÕES -->
+                            <HBox alignment="CENTER_RIGHT" spacing="20">
+                                <children>
+                                    <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
+                                    <Button onAction="#handleGoToAnamnese1" prefWidth="200.0" text="Voltar" />
+                                    <Button onAction="#handleGoToAnamnese3" prefWidth="200.0" text="Seguinte" />
+                                </children>
+                            </HBox>
+                        </children>
+                     </VBox>
    </children>
 
-                </HBox>
-
-
-                <!-- BOTÕES -->
-                <HBox alignment="CENTER_RIGHT" spacing="20">
-                    <children>
-                        <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
-                        <Button onAction="#handleCancelAction" text="Cancelar" />
-                        <Button onAction="#handleGoToAnamnese1" text="Voltar" />
-                        <Button onAction="#handleGoToAnamnese3" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
-                    </children>
                 </HBox>
 
             </children>

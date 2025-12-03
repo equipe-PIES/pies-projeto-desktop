@@ -1,46 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox fx:id="cardTurma" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="350.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #CCCCCC; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 15;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CardTurmaController">
+<VBox fx:id="cardTurma" alignment="CENTER" prefWidth="400.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #c0c0c0; -fx-background-radius: 8; -fx-border-radius: 8;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CardTurmaController">
    <children>
-      <Label fx:id="nomeTurmaCard" prefHeight="21.0" prefWidth="400.0" text="Nome da Turma">
-         <VBox.margin>
-            <Insets left="5.0" right="5.0" />
-         </VBox.margin>
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-      </Label>
-      <Label fx:id="totalAlunoCard" prefWidth="400.0" text="Total de alunos:">
-         <VBox.margin>
-            <Insets left="5.0" right="5.0" />
-         </VBox.margin>
-      </Label>
-      <Label fx:id="faixaEtariaCard" prefWidth="400.0" text="Faixa Etária:">
-         <VBox.margin>
-            <Insets left="5.0" right="5.0" />
-         </VBox.margin>
-      </Label>
-      <Label fx:id="grauTurmaCard" prefWidth="400.0" text="Grau da turma:">
-         <VBox.margin>
-            <Insets left="5.0" right="5.0" />
-         </VBox.margin>
-      </Label>
-      <Label fx:id="turnoTurmaCard" prefWidth="400.0" text="Turno:">
-         <VBox.margin>
-            <Insets left="5.0" right="5.0" />
-         </VBox.margin>
-      </Label>
-      <Button fx:id="verificarTurmaButton" mnemonicParsing="false" onAction="#handleVerificarTurmaAction" prefWidth="400.0" text="Verificar turma">
-         <VBox.margin>
-            <Insets left="5.0" right="5.0" />
-         </VBox.margin>
-      </Button>
+      <VBox spacing="5.0" VBox.vgrow="ALWAYS">
+         <children>
+            <Label fx:id="nomeTurmaCard" text="Nome da Turma">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="totalAlunoCard" text="Total de alunos:">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Label>
+            <Label fx:id="faixaEtariaCard" text="Faixa etária:">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Label>
+            <Label fx:id="grauTurmaCard" text="Grau da turma:">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Label>
+            <Label fx:id="turnoTurmaCard" text="Turno:">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Label>
+         </children>
+      </VBox>
+      <HBox alignment="BOTTOM_RIGHT">
+         <children>
+            <Button fx:id="verificarTurmaButton" mnemonicParsing="false" onAction="#handleVerificarTurmaAction" prefWidth="220.0" text="Verificar turma" />
+         </children>
+      </HBox>
    </children>
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
 </VBox>
