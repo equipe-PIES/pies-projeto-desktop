@@ -15,6 +15,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import com.utils.Janelas;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -163,30 +164,34 @@ public class PAEEController implements Initializable {
 
     @FXML
     private void handleTurmasButtonAction() {
-        navegar("/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml", null);
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null),
+                    "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml",
+                    "Início - Professor(a)");
+        }
     }
 
     @FXML
     private void handleSairButtonAction() {
         authService.logout();
-        navegar("/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml", null);
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null),
+                    "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml",
+                    "Amparo Edu - Login");
+        }
     }
 
     @FXML
     private void handleCancelAction() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml"));
-            Parent root = loader.load();
-            ViewTurmaController controller = loader.getController();
-            if (educando != null && educando.turmaId() != null) {
-                controller.setTurmaId(educando.turmaId());
-            }
-            Stage currentStage = (Stage) anamnese.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-        } catch (Exception e) {
-            handleSairButtonAction();
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null),
+                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml",
+                    "Visualizar Turma",
+                    controller -> {
+                        if (controller instanceof ViewTurmaController c && educando != null && educando.turmaId() != null) {
+                            c.setTurmaId(educando.turmaId());
+                        }
+                    });
         }
     }
 
@@ -369,13 +374,8 @@ public class PAEEController implements Initializable {
     }
 
     private void navegar(String resource, String titulo) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(resource));
-            Stage currentStage = (Stage) anamnese.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            if (titulo != null) currentStage.setTitle(titulo);
-            currentStage.show();
-        } catch (Exception e) {
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, titulo);
         }
     }
 

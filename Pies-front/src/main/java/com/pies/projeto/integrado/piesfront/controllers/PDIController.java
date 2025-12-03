@@ -132,26 +132,15 @@ public class PDIController {
 
     @FXML
     private void handleCancelAction() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml"));
-            Parent root = loader.load();
-            ViewTurmaController controller = loader.getController();
-            if (educando != null && educando.turmaId() != null) {
-                controller.setTurmaId(educando.turmaId());
-            }
-            Stage currentStage = (Stage) anamnese.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.setTitle("Visualizar Turma");
-            
-            // Força a maximização
-            currentStage.setMaximized(false);
-            currentStage.setMaximized(true);
-            
-            currentStage.show();
-        } catch (Exception e) {
-            System.err.println("Erro ao voltar para View Turma: " + e.getMessage());
-            handleSairButtonAction();
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null),
+                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml",
+                    "Visualizar Turma",
+                    controller -> {
+                        if (controller instanceof ViewTurmaController c && educando != null && educando.turmaId() != null) {
+                            c.setTurmaId(educando.turmaId());
+                        }
+                    });
         }
     }
 

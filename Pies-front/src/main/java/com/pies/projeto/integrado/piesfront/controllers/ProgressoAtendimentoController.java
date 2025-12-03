@@ -15,6 +15,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
+import com.utils.Janelas;
+import javafx.event.ActionEvent;
 
 /**
  * Controller para a tela de progresso de atendimento
@@ -388,82 +390,40 @@ public class ProgressoAtendimentoController implements Initializable {
     }
 
     private void navegarNoStagePai(String resource, String titulo) {
-        try {
-            System.out.println("=== navegarNoStagePai ===");
-            System.out.println("Resource: " + resource);
-            System.out.println("Título: " + titulo);
-            
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-            Parent root = loader.load();
-            System.out.println("FXML carregado com sucesso");
-            
-            Object controller = loader.getController();
+        Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
+        Stage parentStage = (Stage) popupStage.getOwner();
+        if (parentStage == null) {
+            parentStage = popupStage;
+        }
+        var sourceNode = parentStage.getScene() != null ? parentStage.getScene().getRoot() : closeProgressoAtd;
+        Janelas.carregarTela(new ActionEvent(sourceNode, null), resource, titulo, controller -> {
             if (controller instanceof AnamneseController c) {
-                System.out.println("Controller é AnamneseController, setando educando...");
                 c.setEducando(educando);
             } else if (controller instanceof PDIController c) {
-                System.out.println("Controller é PDIController, setando educando...");
                 c.setEducando(educando);
             } else if (controller instanceof PAEEController c) {
-                System.out.println("Controller é PAEEController, setando educando...");
                 c.setEducando(educando);
             } else if (controller instanceof RelatorioIndividualController c) {
                 c.setEducando(educando);
             } else if (controller instanceof DIController c) {
                 c.setEducando(educando);
             }
-            // TODO: Descomentar quando DIController estiver implementado
-            // else if (controller instanceof DIController c) {
-            //     c.setEducando(educando);
-            // }
-            
-            Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
-            System.out.println("Popup stage: " + popupStage);
-            
-            Stage parentStage = (Stage) popupStage.getOwner();
-            System.out.println("Parent stage: " + parentStage);
-            
-            if (parentStage == null) {
-                System.out.println("Parent stage é null, usando popupStage como fallback");
-                parentStage = popupStage; // fallback
-            }
-            
-            parentStage.setTitle(titulo);
-            parentStage.setScene(new Scene(root));
-            
-            // Força a maximização
-            parentStage.setMaximized(false);
-            parentStage.setMaximized(true);
-            
-            parentStage.show();
-            System.out.println("Parent stage exibido");
-            
-            popupStage.close();
-            System.out.println("Popup fechado");
-            System.out.println("=== Navegação concluída ===");
-        } catch (Exception e) {
-            System.err.println("=== ERRO ao navegar ===");
-            System.err.println("Mensagem: " + e.getMessage());
-            e.printStackTrace();
-        }
+        });
+        popupStage.close();
     }
 
     private void navegarNoStagePaiComModo(String resource, String titulo, boolean carregarDadosExistentes) {
-        try {
-            System.out.println("=== navegarNoStagePaiComModo ===");
-            System.out.println("Resource: " + resource);
-            System.out.println("Título: " + titulo);
-            System.out.println("Carregar dados existentes: " + carregarDadosExistentes);
-            
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-            Parent root = loader.load();
-            System.out.println("FXML carregado com sucesso");
-            
-            Object controller = loader.getController();
+        Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
+        Stage parentStage = (Stage) popupStage.getOwner();
+        if (parentStage == null) {
+            parentStage = popupStage;
+        }
+        var sourceNode = parentStage.getScene() != null ? parentStage.getScene().getRoot() : closeProgressoAtd;
+        Janelas.carregarTela(new ActionEvent(sourceNode, null), resource, titulo, controller -> {
             if (controller instanceof AnamneseController c) {
                 System.out.println("Controller é AnamneseController, setando educando...");
                 if (!carregarDadosExistentes) {
-                    c.setModoNovo(); // Define que é um novo cadastro
+                    c.setModoNovo();
                 }
                 c.setEducando(educando);
             } else if (controller instanceof PDIController c) {
@@ -483,36 +443,8 @@ public class ProgressoAtendimentoController implements Initializable {
                 c.setNovoRegistro(!carregarDadosExistentes);
                 c.setEducando(educando);
             }
-            
-            Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
-            System.out.println("Popup stage: " + popupStage);
-            
-            Stage parentStage = (Stage) popupStage.getOwner();
-            System.out.println("Parent stage: " + parentStage);
-            
-            if (parentStage == null) {
-                System.out.println("Parent stage é null, usando popupStage como fallback");
-                parentStage = popupStage; // fallback
-            }
-            
-            parentStage.setTitle(titulo);
-            parentStage.setScene(new Scene(root));
-            
-            // Força a maximização
-            parentStage.setMaximized(false);
-            parentStage.setMaximized(true);
-            
-            parentStage.show();
-            System.out.println("Parent stage exibido");
-            
-            popupStage.close();
-            System.out.println("Popup fechado");
-            System.out.println("=== Navegação concluída ===");
-        } catch (Exception e) {
-            System.err.println("=== ERRO ao navegar ===");
-            System.err.println("Mensagem: " + e.getMessage());
-            e.printStackTrace();
-        }
+        });
+        popupStage.close();
     }
 
     private void atualizarVisibilidadePorExistencia() {
