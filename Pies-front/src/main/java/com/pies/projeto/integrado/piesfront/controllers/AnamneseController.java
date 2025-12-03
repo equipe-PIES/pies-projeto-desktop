@@ -34,13 +34,16 @@ public class AnamneseController {
     private Label validationMsg;
 
     private EducandoDTO educando;
+    private boolean temDadosExistentes = false;
     private AnamneseRequestDTO formData = new AnamneseRequestDTO();
     private final AuthService authService = AuthService.getInstance();
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
         carregarAnamneseExistente();
-        populateFromFormData();
+        if (!isFormDataVazio()) {
+            populateFromFormData();
+        }
     }
 
     public void setFormData(AnamneseRequestDTO data) {
@@ -102,6 +105,7 @@ public class AnamneseController {
             currentStage.setMaximized(true);
             
             currentStage.show();
+            NotificacaoController.exibirSePendente(currentStage.getScene());
         } catch (Exception e) {
             System.err.println("Erro ao voltar para View Turma: " + e.getMessage());
             handleSairButtonAction();
@@ -145,7 +149,7 @@ public class AnamneseController {
             var created = authService.criarAnamnese(educando.id(), dto);
             if (created != null) {
                 AtendimentoFlowService.getInstance().concluirAnamnese(educando.id());
-                showPopup("Anamnese registrada com sucesso!", true);
+                NotificacaoController.agendar("Anamnese registrada com sucesso!", true);
                 handleCancelAction();
             } else {
                 System.err.println("Falha ao enviar anamnese");
@@ -160,6 +164,7 @@ public class AnamneseController {
             Parent root = loader.load();
             AnamneseController controller = loader.getController();
             captureCurrentStepData();
+            formData.preenchimentoEmAndamento = true;
             controller.setEducando(educando);
             controller.setFormData(formData);
             Stage stage;
@@ -246,7 +251,6 @@ public class AnamneseController {
     @FXML
     private void initialize() {
         setupConditionalVisibility();
-        populateFromFormData();
         if (indicadorDeTela != null) {
             indicadorDeTela.setText("Anamnese");
         }
@@ -421,30 +425,17 @@ public class AnamneseController {
     }
 
     private void showPopup(String mensagem, boolean sucesso) {
-        Label msg = new Label(mensagem);
-        String style = sucesso ? "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;"
-                : "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;";
-        msg.setStyle(style);
-        javafx.scene.layout.StackPane overlay = new javafx.scene.layout.StackPane(msg);
-        overlay.setStyle("-fx-background-color: transparent;");
-        overlay.setMouseTransparent(true);
-        javafx.scene.layout.StackPane.setAlignment(msg, javafx.geometry.Pos.CENTER);
-        overlay.prefWidthProperty().bind(anamnese.widthProperty());
-        overlay.prefHeightProperty().bind(anamnese.heightProperty());
-        anamnese.getChildren().add(overlay);
-        PauseTransition pt = new PauseTransition(Duration.seconds(5));
-        pt.setOnFinished(e -> anamnese.getChildren().remove(overlay));
-        pt.play();
+        NotificacaoController.exibir(anamnese, mensagem, sucesso);
     }
 
     private void captureCurrentStepData() {
-        if (convulsaoSim != null) formData.convulsao = convulsaoSim.isSelected();
-        if (vacinacaoSim != null) formData.vacinacaoEmDia = vacinacaoSim.isSelected();
-        if (convenioSim != null) formData.possuiConvenio = convenioSim.isSelected();
+        if (convulsaoSim != null && convulsaoNao != null) formData.convulsao = convulsaoSim.isSelected() ? Boolean.TRUE : (convulsaoNao.isSelected() ? Boolean.FALSE : null);
+        if (vacinacaoSim != null && vacinacaoNao != null) formData.vacinacaoEmDia = vacinacaoSim.isSelected() ? Boolean.TRUE : (vacinacaoNao.isSelected() ? Boolean.FALSE : null);
+        if (convenioSim != null && convenioNao != null) formData.possuiConvenio = convenioSim.isSelected() ? Boolean.TRUE : (convenioNao.isSelected() ? Boolean.FALSE : null);
         if (convenio != null && convenio.isVisible()) formData.convenio = safeText(convenio);
-        if (doencaContagiosaSim != null) formData.teveDoencaContagiosa = doencaContagiosaSim.isSelected();
+        if (doencaContagiosaSim != null && doencaContagiosaNao != null) formData.teveDoencaContagiosa = doencaContagiosaSim.isSelected() ? Boolean.TRUE : (doencaContagiosaNao.isSelected() ? Boolean.FALSE : null);
         if (doencaContagiosa != null && doencaContagiosa.isVisible()) formData.doencaContagiosa = safeText(doencaContagiosa);
-        if (medicacaoSim != null) formData.fazUsoMedicacoes = medicacaoSim.isSelected();
+        if (medicacaoSim != null && medicacaoNao != null) formData.fazUsoMedicacoes = medicacaoSim.isSelected() ? Boolean.TRUE : (medicacaoNao.isSelected() ? Boolean.FALSE : null);
         if (medicacoes != null && medicacoes.isVisible()) formData.medicacoes = safeText(medicacoes);
 
         if (servicosFrequentados1 != null) formData.servicosFrequentados = safeText(servicosFrequentados1);
@@ -453,14 +444,15 @@ public class AnamneseController {
             if (s != null && !s.isEmpty()) formData.servicosFrequentados = s;
         }
         if (inicioEscolarizacao != null) formData.inicioEscolarizacao = safeText(inicioEscolarizacao);
-        if (dificuldadesSim != null) formData.apresentaDificuldades = dificuldadesSim.isSelected();
+        if (dificuldadesSim != null && dificuldadesNao != null) formData.apresentaDificuldades = dificuldadesSim.isSelected() ? Boolean.TRUE : (dificuldadesNao.isSelected() ? Boolean.FALSE : null);
         if (dificuldades != null && dificuldades.isVisible()) formData.dificuldades = safeText(dificuldades);
-        if (apoioPedagogicoSim != null) formData.apoioPedagogicoEmCasa = apoioPedagogicoSim.isSelected();
+        if (apoioPedagogicoSim != null && apoioPedagogicoNao != null) formData.apoioPedagogicoEmCasa = apoioPedagogicoSim.isSelected() ? Boolean.TRUE : (apoioPedagogicoNao.isSelected() ? Boolean.FALSE : null);
         if (apoioPedagogico != null && apoioPedagogico.isVisible()) formData.apoioPedagogico = safeText(apoioPedagogico);
         if (duracaoGestacao1 != null) formData.duracaoGestacao = safeText(duracaoGestacao1);
-        if (preNatalSim != null) formData.fezPreNatal = preNatalSim.isSelected();
-        if (prematuridadeSim != null) {
-            if (prematuridadeSim.isSelected() && prematuridade1 != null && prematuridade1.isVisible()) {
+        if (preNatalSim != null && preNatalNao != null) formData.fezPreNatal = preNatalSim.isSelected() ? Boolean.TRUE : (preNatalNao.isSelected() ? Boolean.FALSE : null);
+        if (prematuridadeSim != null && prematuridadeNao != null) {
+            formData.prematuridadeOcorrida = prematuridadeSim.isSelected() ? Boolean.TRUE : (prematuridadeNao.isSelected() ? Boolean.FALSE : null);
+            if (Boolean.TRUE.equals(formData.prematuridadeOcorrida) && prematuridade1 != null && prematuridade1.isVisible()) {
                 formData.prematuridade = safeText(prematuridade1);
             } else {
                 formData.prematuridade = null;
@@ -471,28 +463,31 @@ public class AnamneseController {
         if (maternidade != null) formData.maternidade = safeText(maternidade);
         if (tipoParto != null && tipoParto.getValue() != null) formData.tipoParto = tipoParto.getValue();
 
-        if (chorouSim != null) formData.chorouAoNascer = chorouSim.isSelected();
-        if (ficouRoxoSim != null) formData.ficouRoxo = ficouRoxoSim.isSelected();
-        if (incubadoraSim != null) formData.usoIncubadora = incubadoraSim.isSelected();
-        if (amamentadoSim != null) formData.foiAmamentado = amamentadoSim.isSelected();
+        if (chorouSim != null && chorouNao != null) formData.chorouAoNascer = chorouSim.isSelected() ? Boolean.TRUE : (chorouNao.isSelected() ? Boolean.FALSE : null);
+        if (ficouRoxoSim != null && ficouRoxoNao != null) formData.ficouRoxo = ficouRoxoSim.isSelected() ? Boolean.TRUE : (ficouRoxoNao.isSelected() ? Boolean.FALSE : null);
+        if (incubadoraSim != null && incubadoraNao != null) formData.usoIncubadora = incubadoraSim.isSelected() ? Boolean.TRUE : (incubadoraNao.isSelected() ? Boolean.FALSE : null);
+        if (amamentadoSim != null && amamentadoNao != null) formData.foiAmamentado = amamentadoSim.isSelected() ? Boolean.TRUE : (amamentadoNao.isSelected() ? Boolean.FALSE : null);
 
-        if (sustentouCabecaSim != null) formData.sustentouCabeca = sustentouCabecaSim.isSelected();
+        if (sustentouCabecaSim != null && sustentouCabecaNao != null) formData.sustentouCabeca = sustentouCabecaSim.isSelected() ? Boolean.TRUE : (sustentouCabecaNao.isSelected() ? Boolean.FALSE : null);
         if (sustentouCabeca != null && sustentouCabeca.isVisible()) formData.sustentouCabecaMeses = safeText(sustentouCabeca);
-        if (engatinhouSim != null) formData.engatinhou = engatinhouSim.isSelected();
+        if (engatinhouSim != null && engatinhouNao != null) formData.engatinhou = engatinhouSim.isSelected() ? Boolean.TRUE : (engatinhouNao.isSelected() ? Boolean.FALSE : null);
         if (engatinhou != null && engatinhou.isVisible()) formData.engatinhouMeses = safeText(engatinhou);
-        if (sentouSim != null) formData.sentou = sentouSim.isSelected();
+        if (sentouSim != null && sentouNao != null) formData.sentou = sentouSim.isSelected() ? Boolean.TRUE : (sentouNao.isSelected() ? Boolean.FALSE : null);
         if (sentou != null && sentou.isVisible()) formData.sentouMeses = safeText(sentou);
-        if (andouSim != null) formData.andou = andouSim.isSelected();
+        if (andouSim != null && andouNao != null) formData.andou = andouSim.isSelected() ? Boolean.TRUE : (andouNao.isSelected() ? Boolean.FALSE : null);
         if (andou != null && andou.isVisible()) formData.andouMeses = safeText(andou);
-        if (terapiaSim != null) formData.precisouTerapia = terapiaSim.isSelected();
+        if (terapiaSim != null && terapiaNao != null) formData.precisouTerapia = terapiaSim.isSelected() ? Boolean.TRUE : (terapiaNao.isSelected() ? Boolean.FALSE : null);
         if (terapia != null && terapia.isVisible()) formData.terapiaMotivo = safeText(terapia);
-        if (falouSim != null) formData.falou = falouSim.isSelected();
+        if (falouSim != null && falouNao != null) formData.falou = falouSim.isSelected() ? Boolean.TRUE : (falouNao.isSelected() ? Boolean.FALSE : null);
         if (falou != null && falou.isVisible()) formData.falouMeses = safeText(falou);
 
         if (balbucio != null && balbucio.getValue() != null) formData.primeiroBalbucioMeses = balbucio.getValue();
         if (primeiraPalavra != null) formData.primeiraPalavraQuando = safeText(primeiraPalavra);
         if (primeiraFrase != null) formData.primeiraFraseQuando = safeText(primeiraFrase);
         if (tipoFala != null && tipoFala.getValue() != null) formData.falaNaturalOuInibido = tipoFala.getValue();
+        if (disturbioSim != null && disturbioNao != null) {
+            formData.possuiDisturbio = disturbioSim.isSelected() ? Boolean.TRUE : (disturbioNao.isSelected() ? Boolean.FALSE : null);
+        }
         if (disturbioSim != null && disturbioSim.isSelected() && disturbio != null && disturbio.isVisible()) {
             formData.disturbioFala = safeText(disturbio);
         } else {
@@ -514,41 +509,46 @@ public class AnamneseController {
         return "Não".equalsIgnoreCase(s) ? "NAO" : ("Sim".equalsIgnoreCase(s) ? "SIM" : s);
     }
 
+    private String tri(Boolean b) {
+        if (b == null) return null;
+        return Boolean.TRUE.equals(b) ? "SIM" : "NAO";
+    }
+
     private AnamneseDTO toAnamneseDTO() {
-        String temConvulsao = formData.convulsao ? "SIM" : "NAO";
-        String convenioMedico = formData.possuiConvenio ? val(formData.convenio) : null;
-        String vacinacaoEmDia = formData.vacinacaoEmDia ? "SIM" : "NAO";
-        String doencaContagiosa = formData.teveDoencaContagiosa ? val(formData.doencaContagiosa) : null;
-        String usoMedicacoes = formData.fazUsoMedicacoes ? val(formData.medicacoes) : null;
+        String temConvulsao = tri(formData.convulsao);
+        String convenioMedico = Boolean.TRUE.equals(formData.possuiConvenio) ? val(formData.convenio) : null;
+        String vacinacaoEmDia = tri(formData.vacinacaoEmDia);
+        String doencaContagiosa = Boolean.TRUE.equals(formData.teveDoencaContagiosa) ? val(formData.doencaContagiosa) : null;
+        String usoMedicacoes = Boolean.TRUE.equals(formData.fazUsoMedicacoes) ? val(formData.medicacoes) : null;
         String servicosSaudeOuEducacao = val(formData.servicosFrequentados);
         String inicioEscolarizacao = val(formData.inicioEscolarizacao);
-        String dificuldadesEscolares = formData.apresentaDificuldades ? val(formData.dificuldades) : null;
-        String apoioPedagogicoEmCasa = formData.apoioPedagogicoEmCasa ? val(formData.apoioPedagogico) : null;
+        String dificuldadesEscolares = Boolean.TRUE.equals(formData.apresentaDificuldades) ? val(formData.dificuldades) : null;
+        String apoioPedagogicoEmCasa = Boolean.TRUE.equals(formData.apoioPedagogicoEmCasa) ? val(formData.apoioPedagogico) : null;
         String duracaoGestacao = val(formData.duracaoGestacao);
-        String fezPreNatal = formData.fezPreNatal ? "SIM" : "NAO";
-        String prematuridade = val(formData.prematuridade);
+        String fezPreNatal = tri(formData.fezPreNatal);
+        String prematuridade = Boolean.TRUE.equals(formData.prematuridadeOcorrida) ? val(formData.prematuridade) : null;
 
         String cidadeNascimento = val(formData.cidadeNascimento);
         String maternidadeNascimento = val(formData.maternidade);
         String tipoParto = formData.tipoParto;
 
-        String chorouAoNascer = formData.chorouAoNascer ? "SIM" : "NAO";
-        String ficouRoxo = formData.ficouRoxo ? "SIM" : "NAO";
-        String usoIncubadora = formData.usoIncubadora ? "SIM" : "NAO";
-        String foiAmamentado = formData.foiAmamentado ? "SIM" : "NAO";
+        String chorouAoNascer = tri(formData.chorouAoNascer);
+        String ficouRoxo = tri(formData.ficouRoxo);
+        String usoIncubadora = tri(formData.usoIncubadora);
+        String foiAmamentado = tri(formData.foiAmamentado);
 
-        String sustentouCabecaMeses = formData.sustentouCabeca ? val(formData.sustentouCabecaMeses) : null;
-        String engatinhouMeses = formData.engatinhou ? val(formData.engatinhouMeses) : null;
-        String sentouMeses = formData.sentou ? val(formData.sentouMeses) : null;
-        String andouMeses = formData.andou ? val(formData.andouMeses) : null;
-        String precisouTerapiaMotivo = formData.precisouTerapia ? val(formData.terapiaMotivo) : null;
-        String falouMeses = formData.falou ? val(formData.falouMeses) : null;
+        String sustentouCabecaMeses = Boolean.TRUE.equals(formData.sustentouCabeca) ? val(formData.sustentouCabecaMeses) : null;
+        String engatinhouMeses = Boolean.TRUE.equals(formData.engatinhou) ? val(formData.engatinhouMeses) : null;
+        String sentouMeses = Boolean.TRUE.equals(formData.sentou) ? val(formData.sentouMeses) : null;
+        String andouMeses = Boolean.TRUE.equals(formData.andou) ? val(formData.andouMeses) : null;
+        String precisouTerapiaMotivo = Boolean.TRUE.equals(formData.precisouTerapia) ? val(formData.terapiaMotivo) : null;
+        String falouMeses = Boolean.TRUE.equals(formData.falou) ? val(formData.falouMeses) : null;
 
         String primeiroBalbucioMeses = val(formData.primeiroBalbucioMeses);
         String primeiraPalavraQuando = val(formData.primeiraPalavraQuando);
         String primeiraFraseQuando = val(formData.primeiraFraseQuando);
         String falaNaturalOuInibido = val(formData.falaNaturalOuInibido);
-        String disturbioFala = val(formData.disturbioFala);
+        String disturbioFala = Boolean.TRUE.equals(formData.possuiDisturbio) ? val(formData.disturbioFala) : null;
 
         String dormeSozinho = convertSimNao(formData.dormeSozinho);
         String temQuartoProprio = convertSimNao(formData.temQuartoProprio);
@@ -604,29 +604,58 @@ public class AnamneseController {
         return tf.getText() != null ? tf.getText().trim() : null;
     }
 
+    private boolean isFormDataVazio() {
+        if (formData == null) return true;
+        boolean algumTrue = Boolean.TRUE.equals(formData.convulsao) || Boolean.TRUE.equals(formData.possuiConvenio) || Boolean.TRUE.equals(formData.vacinacaoEmDia)
+                || Boolean.TRUE.equals(formData.teveDoencaContagiosa) || Boolean.TRUE.equals(formData.fazUsoMedicacoes) || Boolean.TRUE.equals(formData.apresentaDificuldades)
+                || Boolean.TRUE.equals(formData.apoioPedagogicoEmCasa) || Boolean.TRUE.equals(formData.fezPreNatal) || Boolean.TRUE.equals(formData.chorouAoNascer)
+                || Boolean.TRUE.equals(formData.ficouRoxo) || Boolean.TRUE.equals(formData.usoIncubadora) || Boolean.TRUE.equals(formData.foiAmamentado)
+                || Boolean.TRUE.equals(formData.sustentouCabeca) || Boolean.TRUE.equals(formData.engatinhou) || Boolean.TRUE.equals(formData.sentou) || Boolean.TRUE.equals(formData.andou)
+                || Boolean.TRUE.equals(formData.precisouTerapia) || Boolean.TRUE.equals(formData.falou) || Boolean.TRUE.equals(formData.prematuridadeOcorrida) || Boolean.TRUE.equals(formData.possuiDisturbio);
+        boolean algumTexto = notEmpty(formData.convenio) || notEmpty(formData.doencaContagiosa)
+                || notEmpty(formData.medicacoes) || notEmpty(formData.servicosFrequentados)
+                || notEmpty(formData.inicioEscolarizacao) || notEmpty(formData.dificuldades)
+                || notEmpty(formData.apoioPedagogico) || notEmpty(formData.duracaoGestacao)
+                || notEmpty(formData.prematuridade) || notEmpty(formData.cidadeNascimento)
+                || notEmpty(formData.maternidade) || notEmpty(formData.tipoParto)
+                || notEmpty(formData.sustentouCabecaMeses) || notEmpty(formData.engatinhouMeses)
+                || notEmpty(formData.sentouMeses) || notEmpty(formData.andouMeses)
+                || notEmpty(formData.terapiaMotivo) || notEmpty(formData.falouMeses)
+                || notEmpty(formData.primeiroBalbucioMeses) || notEmpty(formData.primeiraPalavraQuando)
+                || notEmpty(formData.primeiraFraseQuando) || notEmpty(formData.falaNaturalOuInibido)
+                || notEmpty(formData.disturbioFala) || notEmpty(formData.dormeSozinho)
+                || notEmpty(formData.temQuartoProprio) || notEmpty(formData.sonoCalmoOuAgitado)
+                || notEmpty(formData.respeitaRegras) || notEmpty(formData.desmotivado)
+                || notEmpty(formData.agressivo) || notEmpty(formData.apresentaInquietacao);
+        return !algumTrue && !algumTexto;
+    }
+
+    private boolean notEmpty(String s) { return s != null && !s.isEmpty(); }
+
     private void populateFromFormData() {
         if (formData == null) return;
-        if (convulsaoSim != null && convulsaoNao != null) { convulsaoSim.setSelected(formData.convulsao); convulsaoNao.setSelected(!formData.convulsao); }
-        if (vacinacaoSim != null && vacinacaoNao != null) { vacinacaoSim.setSelected(formData.vacinacaoEmDia); vacinacaoNao.setSelected(!formData.vacinacaoEmDia); }
-        if (convenioSim != null && convenioNao != null) { convenioSim.setSelected(formData.possuiConvenio); convenioNao.setSelected(!formData.possuiConvenio); }
-        if (doencaContagiosaSim != null && doencaContagiosaNao != null) { doencaContagiosaSim.setSelected(formData.teveDoencaContagiosa); doencaContagiosaNao.setSelected(!formData.teveDoencaContagiosa); }
-        if (medicacaoSim != null && medicacaoNao != null) { medicacaoSim.setSelected(formData.fazUsoMedicacoes); medicacaoNao.setSelected(!formData.fazUsoMedicacoes); }
-        if (dificuldadesSim != null && dificuldadesNao != null) { dificuldadesSim.setSelected(formData.apresentaDificuldades); dificuldadesNao.setSelected(!formData.apresentaDificuldades); }
-        if (apoioPedagogicoSim != null && apoioPedagogicoNao != null) { apoioPedagogicoSim.setSelected(formData.apoioPedagogicoEmCasa); apoioPedagogicoNao.setSelected(!formData.apoioPedagogicoEmCasa); }
-        if (preNatalSim != null && preNatalNao != null) { preNatalSim.setSelected(formData.fezPreNatal); preNatalNao.setSelected(!formData.fezPreNatal); }
-        if (prematuridadeSim != null && prematuridadeNao != null) { boolean b = formData.prematuridade != null && !formData.prematuridade.isEmpty(); prematuridadeSim.setSelected(b); prematuridadeNao.setSelected(!b); }
+        boolean permiteSelecionarNao = temDadosExistentes || formData.preenchimentoEmAndamento;
+        if (convulsaoSim != null && convulsaoNao != null) { Boolean b = formData.convulsao; convulsaoSim.setSelected(Boolean.TRUE.equals(b)); convulsaoNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (vacinacaoSim != null && vacinacaoNao != null) { Boolean b = formData.vacinacaoEmDia; vacinacaoSim.setSelected(Boolean.TRUE.equals(b)); vacinacaoNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (convenioSim != null && convenioNao != null) { Boolean b = formData.possuiConvenio; convenioSim.setSelected(Boolean.TRUE.equals(b)); convenioNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (doencaContagiosaSim != null && doencaContagiosaNao != null) { Boolean b = formData.teveDoencaContagiosa; doencaContagiosaSim.setSelected(Boolean.TRUE.equals(b)); doencaContagiosaNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (medicacaoSim != null && medicacaoNao != null) { Boolean b = formData.fazUsoMedicacoes; medicacaoSim.setSelected(Boolean.TRUE.equals(b)); medicacaoNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (dificuldadesSim != null && dificuldadesNao != null) { Boolean b = formData.apresentaDificuldades; dificuldadesSim.setSelected(Boolean.TRUE.equals(b)); dificuldadesNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (apoioPedagogicoSim != null && apoioPedagogicoNao != null) { Boolean b = formData.apoioPedagogicoEmCasa; apoioPedagogicoSim.setSelected(Boolean.TRUE.equals(b)); apoioPedagogicoNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (preNatalSim != null && preNatalNao != null) { Boolean b = formData.fezPreNatal; preNatalSim.setSelected(Boolean.TRUE.equals(b)); preNatalNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (prematuridadeSim != null && prematuridadeNao != null) { Boolean b = formData.prematuridadeOcorrida; prematuridadeSim.setSelected(Boolean.TRUE.equals(b)); prematuridadeNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
 
-        if (chorouSim != null && chorouNao != null) { chorouSim.setSelected(formData.chorouAoNascer); chorouNao.setSelected(!formData.chorouAoNascer); }
-        if (ficouRoxoSim != null && ficouRoxoNao != null) { ficouRoxoSim.setSelected(formData.ficouRoxo); ficouRoxoNao.setSelected(!formData.ficouRoxo); }
-        if (incubadoraSim != null && incubadoraNao != null) { incubadoraSim.setSelected(formData.usoIncubadora); incubadoraNao.setSelected(!formData.usoIncubadora); }
-        if (amamentadoSim != null && amamentadoNao != null) { amamentadoSim.setSelected(formData.foiAmamentado); amamentadoNao.setSelected(!formData.foiAmamentado); }
+        if (chorouSim != null && chorouNao != null) { Boolean b = formData.chorouAoNascer; chorouSim.setSelected(Boolean.TRUE.equals(b)); chorouNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (ficouRoxoSim != null && ficouRoxoNao != null) { Boolean b = formData.ficouRoxo; ficouRoxoSim.setSelected(Boolean.TRUE.equals(b)); ficouRoxoNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (incubadoraSim != null && incubadoraNao != null) { Boolean b = formData.usoIncubadora; incubadoraSim.setSelected(Boolean.TRUE.equals(b)); incubadoraNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (amamentadoSim != null && amamentadoNao != null) { Boolean b = formData.foiAmamentado; amamentadoSim.setSelected(Boolean.TRUE.equals(b)); amamentadoNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
 
-        if (sustentouCabecaSim != null && sustentouCabecaNao != null) { sustentouCabecaSim.setSelected(formData.sustentouCabeca); sustentouCabecaNao.setSelected(!formData.sustentouCabeca); }
-        if (engatinhouSim != null && engatinhouNao != null) { engatinhouSim.setSelected(formData.engatinhou); engatinhouNao.setSelected(!formData.engatinhou); }
-        if (sentouSim != null && sentouNao != null) { sentouSim.setSelected(formData.sentou); sentouNao.setSelected(!formData.sentou); }
-        if (andouSim != null && andouNao != null) { andouSim.setSelected(formData.andou); andouNao.setSelected(!formData.andou); }
-        if (terapiaSim != null && terapiaNao != null) { terapiaSim.setSelected(formData.precisouTerapia); terapiaNao.setSelected(!formData.precisouTerapia); }
-        if (falouSim != null && falouNao != null) { falouSim.setSelected(formData.falou); falouNao.setSelected(!formData.falou); }
+        if (sustentouCabecaSim != null && sustentouCabecaNao != null) { Boolean b = formData.sustentouCabeca; sustentouCabecaSim.setSelected(Boolean.TRUE.equals(b)); sustentouCabecaNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (engatinhouSim != null && engatinhouNao != null) { Boolean b = formData.engatinhou; engatinhouSim.setSelected(Boolean.TRUE.equals(b)); engatinhouNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (sentouSim != null && sentouNao != null) { Boolean b = formData.sentou; sentouSim.setSelected(Boolean.TRUE.equals(b)); sentouNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (andouSim != null && andouNao != null) { Boolean b = formData.andou; andouSim.setSelected(Boolean.TRUE.equals(b)); andouNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (terapiaSim != null && terapiaNao != null) { Boolean b = formData.precisouTerapia; terapiaSim.setSelected(Boolean.TRUE.equals(b)); terapiaNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
+        if (falouSim != null && falouNao != null) { Boolean b = formData.falou; falouSim.setSelected(Boolean.TRUE.equals(b)); falouNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao); }
 
         if (convenio != null) convenio.setText(val(formData.convenio));
         if (doencaContagiosa != null) doencaContagiosa.setText(val(formData.doencaContagiosa));
@@ -653,10 +682,9 @@ public class AnamneseController {
         if (tipoFala != null && formData.falaNaturalOuInibido != null) tipoFala.setValue(formData.falaNaturalOuInibido);
         if (disturbio != null) disturbio.setText(val(formData.disturbioFala));
         if (disturbioSim != null && disturbioNao != null) {
-            String d = val(formData.disturbioFala);
-            boolean has = d != null && !d.isEmpty();
-            disturbioSim.setSelected(has);
-            disturbioNao.setSelected(!has);
+            Boolean b = formData.possuiDisturbio;
+            disturbioSim.setSelected(Boolean.TRUE.equals(b));
+            disturbioNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao);
         }
 
         if (dormeSozinho != null && formData.dormeSozinho != null) dormeSozinho.setValue(toDisplaySimNao(formData.dormeSozinho));
@@ -683,57 +711,62 @@ public class AnamneseController {
 
     private String val(String s) { return s == null ? "" : s; }
 
-    private boolean parseBool(String s) {
-        if (s == null) return false;
+    private Boolean parseTri(String s) {
+        if (s == null) return null;
         String t = s.trim();
-        return t.equalsIgnoreCase("true") || t.equalsIgnoreCase("sim") || t.equalsIgnoreCase("s") || t.equals("1");
+        if (t.equalsIgnoreCase("true") || t.equalsIgnoreCase("sim") || t.equalsIgnoreCase("s") || t.equals("1") || t.equalsIgnoreCase("SIM")) return Boolean.TRUE;
+        if (t.equalsIgnoreCase("false") || t.equalsIgnoreCase("nao") || t.equalsIgnoreCase("não") || t.equalsIgnoreCase("n") || t.equals("0") || t.equalsIgnoreCase("NAO")) return Boolean.FALSE;
+        return null;
     }
 
     private void carregarAnamneseExistente() {
         if (educando == null || educando.id() == null) return;
         AnamneseDTO dto = authService.getAnamnesePorEducando(educando.id());
+        temDadosExistentes = dto != null;
         if (dto == null) return;
-        formData.convulsao = parseBool(dto.temConvulsao());
-        formData.possuiConvenio = dto.convenioMedico() != null && !dto.convenioMedico().isEmpty();
+        formData.convulsao = parseTri(dto.temConvulsao());
+        formData.possuiConvenio = (dto.convenioMedico() != null && !dto.convenioMedico().isEmpty()) ? Boolean.TRUE : Boolean.FALSE;
         formData.convenio = dto.convenioMedico();
-        formData.vacinacaoEmDia = parseBool(dto.vacinacaoEmDia());
-        formData.teveDoencaContagiosa = dto.doencaContagiosa() != null && !dto.doencaContagiosa().isEmpty();
+        formData.vacinacaoEmDia = parseTri(dto.vacinacaoEmDia());
+        formData.teveDoencaContagiosa = (dto.doencaContagiosa() != null && !dto.doencaContagiosa().isEmpty()) ? Boolean.TRUE : Boolean.FALSE;
         formData.doencaContagiosa = dto.doencaContagiosa();
-        formData.fazUsoMedicacoes = dto.usoMedicacoes() != null && !dto.usoMedicacoes().isEmpty();
+        formData.fazUsoMedicacoes = (dto.usoMedicacoes() != null && !dto.usoMedicacoes().isEmpty()) ? Boolean.TRUE : Boolean.FALSE;
         formData.medicacoes = dto.usoMedicacoes();
         formData.servicosFrequentados = dto.servicosSaudeOuEducacao();
         formData.inicioEscolarizacao = dto.inicioEscolarizacao();
-        formData.apresentaDificuldades = dto.dificuldadesEscolares() != null && !dto.dificuldadesEscolares().isEmpty();
+        formData.apresentaDificuldades = (dto.dificuldadesEscolares() != null && !dto.dificuldadesEscolares().isEmpty()) ? Boolean.TRUE : Boolean.FALSE;
         formData.dificuldades = dto.dificuldadesEscolares();
-        formData.apoioPedagogicoEmCasa = parseBool(dto.apoioPedagogicoEmCasa());
+        formData.apoioPedagogicoEmCasa = parseTri(dto.apoioPedagogicoEmCasa());
         formData.apoioPedagogico = null;
         formData.duracaoGestacao = dto.duracaoGestacao();
-        formData.fezPreNatal = parseBool(dto.fezPreNatal());
+        formData.fezPreNatal = parseTri(dto.fezPreNatal());
         formData.prematuridade = dto.prematuridade();
+        formData.prematuridadeOcorrida = (dto.prematuridade() != null && !dto.prematuridade().isEmpty()) ? Boolean.TRUE : Boolean.FALSE;
         formData.cidadeNascimento = dto.cidadeNascimento();
         formData.maternidade = dto.maternidadeNascimento();
         formData.tipoParto = dto.tipoParto();
-        formData.chorouAoNascer = parseBool(dto.chorouAoNascer());
-        formData.ficouRoxo = parseBool(dto.ficouRoxo());
-        formData.usoIncubadora = parseBool(dto.usoIncubadora());
-        formData.foiAmamentado = parseBool(dto.foiAmamentado());
-        formData.sustentouCabeca = dto.sustentouCabecaMeses() != null && !dto.sustentouCabecaMeses().isEmpty();
+        formData.chorouAoNascer = parseTri(dto.chorouAoNascer());
+        formData.ficouRoxo = parseTri(dto.ficouRoxo());
+        formData.usoIncubadora = parseTri(dto.usoIncubadora());
+        formData.foiAmamentado = parseTri(dto.foiAmamentado());
+        formData.sustentouCabeca = (dto.sustentouCabecaMeses() != null && !dto.sustentouCabecaMeses().isEmpty()) ? Boolean.TRUE : Boolean.FALSE;
         formData.sustentouCabecaMeses = dto.sustentouCabecaMeses();
-        formData.engatinhou = dto.engatinhouMeses() != null && !dto.engatinhouMeses().isEmpty();
+        formData.engatinhou = (dto.engatinhouMeses() != null && !dto.engatinhouMeses().isEmpty()) ? Boolean.TRUE : Boolean.FALSE;
         formData.engatinhouMeses = dto.engatinhouMeses();
-        formData.sentou = dto.sentouMeses() != null && !dto.sentouMeses().isEmpty();
+        formData.sentou = (dto.sentouMeses() != null && !dto.sentouMeses().isEmpty()) ? Boolean.TRUE : Boolean.FALSE;
         formData.sentouMeses = dto.sentouMeses();
-        formData.andou = dto.andouMeses() != null && !dto.andouMeses().isEmpty();
+        formData.andou = (dto.andouMeses() != null && !dto.andouMeses().isEmpty()) ? Boolean.TRUE : Boolean.FALSE;
         formData.andouMeses = dto.andouMeses();
-        formData.precisouTerapia = dto.precisouTerapiaMotivo() != null && !dto.precisouTerapiaMotivo().isEmpty();
+        formData.precisouTerapia = (dto.precisouTerapiaMotivo() != null && !dto.precisouTerapiaMotivo().isEmpty()) ? Boolean.TRUE : Boolean.FALSE;
         formData.terapiaMotivo = dto.precisouTerapiaMotivo();
-        formData.falou = dto.falouMeses() != null && !dto.falouMeses().isEmpty();
+        formData.falou = (dto.falouMeses() != null && !dto.falouMeses().isEmpty()) ? Boolean.TRUE : Boolean.FALSE;
         formData.falouMeses = dto.falouMeses();
         formData.primeiroBalbucioMeses = dto.primeiroBalbucioMeses();
         formData.primeiraPalavraQuando = dto.primeiraPalavraQuando();
         formData.primeiraFraseQuando = dto.primeiraFraseQuando();
         formData.falaNaturalOuInibido = dto.falaNaturalOuInibido();
         formData.disturbioFala = dto.disturbioFala();
+        formData.possuiDisturbio = (dto.disturbioFala() != null && !dto.disturbioFala().isEmpty()) ? Boolean.TRUE : Boolean.FALSE;
         formData.dormeSozinho = dto.dormeSozinho();
         formData.temQuartoProprio = dto.temQuartoProprio();
         formData.sonoCalmoOuAgitado = dto.sonoCalmoOuAgitado();

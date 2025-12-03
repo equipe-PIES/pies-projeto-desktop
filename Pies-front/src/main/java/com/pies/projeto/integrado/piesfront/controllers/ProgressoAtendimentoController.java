@@ -76,6 +76,9 @@ public class ProgressoAtendimentoController implements Initializable {
     
     @FXML
     private Button closeProgressoAtd;
+
+    @FXML
+    private javafx.scene.layout.BorderPane progressoAtendimentoRoot;
     
     private EducandoDTO educando;
     private final AuthService authService = AuthService.getInstance();
@@ -305,6 +308,7 @@ public class ProgressoAtendimentoController implements Initializable {
                 if (educando.id() != null && authService.deletarAnamnesePorEducando(educando.id())) {
                     atualizarVisibilidadePorExistencia();
                     atualizarDados();
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "O documento foi excluído com sucesso!", true);
                 }
             });
         }
@@ -317,6 +321,7 @@ public class ProgressoAtendimentoController implements Initializable {
             if (id != null && authService.deletarDiagnosticoInicial(id)) {
                 atualizarVisibilidadePorExistencia();
                 atualizarDados();
+                NotificacaoController.exibirTexto(progressoAtendimentoRoot, "O documento foi excluído com sucesso!", true);
             }
         });
         if (editarPDI != null) editarPDI.setOnAction(e -> handleEditPDIAction());
@@ -329,6 +334,7 @@ public class ProgressoAtendimentoController implements Initializable {
                 if (id != null && authService.deletarPDI(id)) {
                     atualizarVisibilidadePorExistencia();
                     atualizarDados();
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "O documento foi excluído com sucesso!", true);
                 }
             }
         });
@@ -342,6 +348,7 @@ public class ProgressoAtendimentoController implements Initializable {
                 if (id != null && authService.deletarPAEE(id)) {
                     atualizarVisibilidadePorExistencia();
                     atualizarDados();
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "O documento foi excluído com sucesso!", true);
                 }
             }
         });
@@ -369,6 +376,7 @@ public class ProgressoAtendimentoController implements Initializable {
                 if (id != null && authService.deletarRelatorioIndividual(id)) {
                     atualizarVisibilidadePorExistencia();
                     atualizarDados();
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "O documento foi excluído com sucesso!", true);
                 }
             }
         });

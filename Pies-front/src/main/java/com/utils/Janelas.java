@@ -22,6 +22,7 @@ public class Janelas {
                 stage.setTitle(tituloJanela);
             }
             stage.setMaximized(true);
+            com.pies.projeto.integrado.piesfront.controllers.NotificacaoController.exibirSePendente(currentScene);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Erro ao navegar para: " + caminhoFXML);
@@ -44,6 +45,7 @@ public class Janelas {
                 stage.setTitle(tituloJanela);
             }
             stage.setMaximized(true);
+            com.pies.projeto.integrado.piesfront.controllers.NotificacaoController.exibirSePendente(currentScene);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Erro ao navegar para: " + caminhoFXML);

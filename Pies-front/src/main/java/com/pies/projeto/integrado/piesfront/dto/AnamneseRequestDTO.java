@@ -1,49 +1,51 @@
 package com.pies.projeto.integrado.piesfront.dto;
 
 public class AnamneseRequestDTO {
-    public boolean convulsao;
-    public boolean possuiConvenio;
+    public Boolean convulsao;
+    public Boolean possuiConvenio;
     public String convenio;
-    public boolean vacinacaoEmDia;
-    public boolean teveDoencaContagiosa;
+    public Boolean vacinacaoEmDia;
+    public Boolean teveDoencaContagiosa;
     public String doencaContagiosa;
-    public boolean fazUsoMedicacoes;
+    public Boolean fazUsoMedicacoes;
     public String medicacoes;
 
     public String servicosFrequentados;
 
     public String inicioEscolarizacao;
-    public boolean apresentaDificuldades;
+    public Boolean apresentaDificuldades;
     public String dificuldades;
-    public boolean apoioPedagogicoEmCasa;
+    public Boolean apoioPedagogicoEmCasa;
     public String apoioPedagogico;
     public String duracaoGestacao;
-    public boolean fezPreNatal;
+    public Boolean fezPreNatal;
     public String prematuridade;
+    public Boolean prematuridadeOcorrida;
 
     public String cidadeNascimento;
     public String maternidade;
     public String tipoParto;
 
-    public boolean chorouAoNascer;
-    public boolean ficouRoxo;
-    public boolean usoIncubadora;
-    public boolean foiAmamentado;
+    public Boolean chorouAoNascer;
+    public Boolean ficouRoxo;
+    public Boolean usoIncubadora;
+    public Boolean foiAmamentado;
 
-    public boolean sustentouCabeca;
+    public Boolean sustentouCabeca;
     public String sustentouCabecaMeses;
-    public boolean engatinhou;
+    public Boolean engatinhou;
     public String engatinhouMeses;
-    public boolean sentou;
+    public Boolean sentou;
     public String sentouMeses;
-    public boolean andou;
+    public Boolean andou;
     public String andouMeses;
-    public boolean precisouTerapia;
+    public Boolean precisouTerapia;
     public String terapiaMotivo;
-    public boolean falou;
+    public Boolean falou;
     public String falouMeses;
 
     // Etapa 3 - Comunicação e Linguagem
+    public Boolean possuiDisturbio;
     public String primeiroBalbucioMeses;
     public String primeiraPalavraQuando;
     public String primeiraFraseQuando;
@@ -60,4 +62,6 @@ public class AnamneseRequestDTO {
     public String desmotivado;
     public String agressivo;
     public String apresentaInquietacao;
+
+    public boolean preenchimentoEmAndamento;
 }

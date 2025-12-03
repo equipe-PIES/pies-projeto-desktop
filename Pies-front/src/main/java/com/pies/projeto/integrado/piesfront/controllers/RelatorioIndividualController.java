@@ -111,6 +111,7 @@ public class RelatorioIndividualController {
             Stage currentStage = (Stage) anamnese.getScene().getWindow();
             currentStage.setScene(new Scene(root));
             currentStage.show();
+            NotificacaoController.exibirSePendente(currentStage.getScene());
         } catch (Exception e) {
             System.err.println("Erro ao voltar para View Turma: " + e.getMessage());
         }
@@ -162,11 +163,11 @@ public class RelatorioIndividualController {
         );
         var created = authService.criarRelatorioIndividual(dto);
         if (created != null) {
-            com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService.getInstance().concluirDI(educando.id());
-            showPopup("Diagnóstico Inicial registrado com sucesso!", true);
+            com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService.getInstance().concluirRelatorioIndividual(educando.id());
+            NotificacaoController.agendar("Relatório Final registrado com sucesso!", true);
             handleCancelAction();
         } else {
-            showPopup("Falha ao enviar Diagnóstico Inicial.", false);
+            showPopup("Falha ao registrar Relatório Final.", false);
             showValidation();
         }
     }
@@ -196,20 +197,7 @@ public class RelatorioIndividualController {
     }
 
     private void showPopup(String mensagem, boolean sucesso) {
-        Label msg = new Label(mensagem);
-        String style = sucesso ? "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;"
-                : "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;";
-        msg.setStyle(style);
-        javafx.scene.layout.StackPane overlay = new javafx.scene.layout.StackPane(msg);
-        overlay.setStyle("-fx-background-color: transparent;");
-        overlay.setMouseTransparent(true);
-        javafx.scene.layout.StackPane.setAlignment(msg, javafx.geometry.Pos.CENTER);
-        overlay.prefWidthProperty().bind(anamnese.widthProperty());
-        overlay.prefHeightProperty().bind(anamnese.heightProperty());
-        anamnese.getChildren().add(overlay);
-        PauseTransition pt = new PauseTransition(Duration.seconds(5));
-        pt.setOnFinished(e -> anamnese.getChildren().remove(overlay));
-        pt.play();
+        NotificacaoController.exibir(anamnese, mensagem, sucesso);
     }
 
     private boolean validateStep1() {

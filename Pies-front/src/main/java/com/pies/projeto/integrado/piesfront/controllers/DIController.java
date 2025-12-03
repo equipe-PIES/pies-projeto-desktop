@@ -147,6 +147,7 @@ public class DIController implements Initializable {
             Stage currentStage = (Stage) anamnese.getScene().getWindow();
             currentStage.setScene(new Scene(root));
             currentStage.show();
+            NotificacaoController.exibirSePendente(currentStage.getScene());
         } catch (Exception e) {
             handleSairButtonAction();
         }
@@ -252,7 +253,7 @@ public class DIController implements Initializable {
         boolean ok = authService.criarDiagnosticoInicial(dto, educando.id());
         if (ok) {
             AtendimentoFlowService.getInstance().concluirDI(educando.id());
-            showPopup("Diagnóstico Inicial registrado com sucesso!", true);
+            NotificacaoController.agendar("Diagnóstico Inicial registrado com sucesso!", true);
             handleCancelAction();
         } else {
             showPopup("Falha ao enviar Diagnóstico Inicial.", false);
@@ -564,20 +565,7 @@ public class DIController implements Initializable {
     }
 
     private void showPopup(String mensagem, boolean sucesso) {
-        Label msg = new Label(mensagem);
-        String style = sucesso ? "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;"
-                : "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;";
-        msg.setStyle(style);
-        javafx.scene.layout.StackPane overlay = new javafx.scene.layout.StackPane(msg);
-        overlay.setStyle("-fx-background-color: transparent;");
-        overlay.setMouseTransparent(true);
-        javafx.scene.layout.StackPane.setAlignment(msg, javafx.geometry.Pos.CENTER);
-        overlay.prefWidthProperty().bind(anamnese.widthProperty());
-        overlay.prefHeightProperty().bind(anamnese.heightProperty());
-        anamnese.getChildren().add(overlay);
-        javafx.animation.PauseTransition pt = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(5));
-        pt.setOnFinished(e -> anamnese.getChildren().remove(overlay));
-        pt.play();
+        NotificacaoController.exibir(anamnese, mensagem, sucesso);
     }
 
     public static class CreateDiagnosticoInicialDTO {
