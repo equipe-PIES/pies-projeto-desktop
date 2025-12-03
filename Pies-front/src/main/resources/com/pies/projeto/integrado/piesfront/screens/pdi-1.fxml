@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PDIController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PDIController">
 
     <!-- TOPO -->
     <top>
@@ -42,8 +35,8 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
-                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
+                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" styleClass="botao-topo" text="Turmas" />
+                        <Button id="alunosButton" fx:id="alunosButton" styleClass="botao-topo" text="Alunos" />
                     </children>
                 </HBox>
             </children>
@@ -55,13 +48,13 @@
     <center>
         <VBox spacing="20" style="-fx-background-color: white;">
             <padding>
-                <Insets bottom="20" left="30" right="30" top="30" />
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
             </padding>
 
             <children>
             <Label text="Plano de Desenvolvimento Individual">
                <font>
-                  <Font name="System Bold" size="18.0" />
+                  <Font name="System Bold" size="24.0" />
                </font>
             </Label>
 
@@ -78,35 +71,35 @@
 
                         <HBox spacing="30">
    <children>
-   
+
                                <!-- COLUNA ESQUERDA -->
-                               <VBox prefHeight="206.0" prefWidth="380.0" spacing="10">
+                               <VBox spacing="10" HBox.hgrow="ALWAYS">
       <children>
-      
+
                                       <Label text="Período do Plano de AEE" />
-                                      <TextField fx:id="periodoPlano" promptText="Digite" />
-      
+                                      <TextField fx:id="periodoPlano" promptText="Digite" styleClass="campo-digite-selecione" />
+
                                       <Label text="Horário e tempo de atendimento" />
-                                      <TextField fx:id="horarioAtendimento" promptText="Digite" />
-      
+                                      <TextField fx:id="horarioAtendimento" promptText="Digite" styleClass="campo-digite-selecione" />
+
                                       <Label text="Frequência do atendimento na semana" />
-                                      <ChoiceBox fx:id="frequenciaSemana" prefWidth="300.0" />
+                                      <ChoiceBox fx:id="frequenciaSemana" prefWidth="200.0" styleClass="campo-digite-selecione" />
       </children>
-   
+
                                </VBox>
-   
-   
+
+
                                <!-- COLUNA DIREITA -->
-                               <VBox prefHeight="206.0" prefWidth="416.0" spacing="10">
+                               <VBox spacing="10" HBox.hgrow="ALWAYS">
       <children>
-      
+
                                       <Label text="Dias da semana" />
-                                      <ChoiceBox fx:id="diasSemana" prefHeight="31.0" prefWidth="300.0" />
-      
+                                      <ChoiceBox fx:id="diasSemana" prefWidth="200.0" styleClass="campo-digite-selecione" />
+
                                       <Label text="Composição do grupo" />
-                                      <ChoiceBox fx:id="composicaoGrupo" prefWidth="300.0" />
+                                      <ChoiceBox fx:id="composicaoGrupo" prefWidth="200.0" styleClass="campo-digite-selecione" />
       </children>
-   
+
                                </VBox>
    </children>
 
@@ -129,7 +122,7 @@
                         <Label style="-fx-font-weight: bold;" text="Objetivos do Plano" />
 
                         <Label text="O que é preciso atingir, meta." />
-                        <TextArea fx:id="objetivosPlano" prefHeight="120" promptText="Digite" wrapText="true" />
+                        <TextArea fx:id="objetivosPlano" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" />
 
                     </children>
 
@@ -137,12 +130,20 @@
 
 
                 <!-- BOTÕES -->
-                <HBox alignment="CENTER_RIGHT" spacing="20">
+                <HBox alignment="BOTTOM_RIGHT" VBox.vgrow="ALWAYS">
                     <children>
+                  <HBox alignment="BOTTOM_LEFT" HBox.hgrow="ALWAYS">
+                     <children>
+                              <Button alignment="CENTER" onAction="#handleCancelAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Cancelar" />
+                     </children>
+                  </HBox>
                         <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
-                        <Button onAction="#handleCancelAction" text="Cancelar" />
-                        <Button onAction="#handleBackAction" text="Voltar" />
-                        <Button onAction="#handleGoToPdi2" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
+                  <HBox alignment="BOTTOM_RIGHT" spacing="20.0" HBox.hgrow="ALWAYS">
+                     <children>
+                              <Button onAction="#handleBackAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Voltar" />
+                              <Button onAction="#handleGoToPdi2" prefWidth="220.0" styleClass="botao-seguinte" text="Seguinte" />
+                     </children>
+                  </HBox>
                     </children>
                 </HBox>
 

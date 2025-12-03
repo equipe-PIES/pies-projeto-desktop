@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PDIController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PDIController">
 
     <!-- TOPO -->
     <top>
@@ -41,8 +35,8 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
-                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
+                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" styleClass="botao-topo" text="Turmas" />
+                        <Button id="alunosButton" fx:id="alunosButton" styleClass="botao-topo" text="Alunos" />
                     </children>
                 </HBox>
             </children>
@@ -53,7 +47,7 @@
     <!-- CONTEÚDO CENTRAL -->
     <center>
         <!-- ScrollPane para garantir que o conteúdo seja rolável em telas menores -->
-        <ScrollPane fitToWidth="true" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+        <ScrollPane fitToWidth="true" style="-fx-background-color: white;">
             <content>
                 <VBox spacing="20" style="-fx-background-color: white;">
                     <padding>
@@ -63,7 +57,7 @@
                         <!-- Título do Formulário -->
                         <Label text="Plano de Desenvolvimento Individual">
                      <font>
-                        <Font name="System Bold" size="18.0" />
+                        <Font name="System Bold" size="24.0" />
                      </font></Label>
 
                         <!-- ATIVIDADES A SEREM DESENVOLVIDAS -->
@@ -77,7 +71,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font></Label>
                                 <Label text="O que será trabalhado no atendimento ao educando." />
-                                <TextArea fx:id="atividadesTextArea" prefHeight="120" promptText="Digite" wrapText="true" VBox.vgrow="ALWAYS" />
+                                <TextArea fx:id="atividadesTextArea" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 
@@ -92,7 +86,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font></Label>
                                 <Label text="O que será utilizado com o educando." />
-                                <TextArea fx:id="recursosMateriaisTextArea" prefHeight="120" promptText="Digite" wrapText="true" VBox.vgrow="ALWAYS" />
+                                <TextArea fx:id="recursosMateriaisTextArea" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 
@@ -107,17 +101,25 @@
                               <Font name="System Bold" size="15.0" />
                            </font></Label>
                                 <Label text="Exemplo: engrossadores de lápis, papel com pauta ampliada." />
-                                <TextArea fx:id="recursosAdequacaoTextArea" prefHeight="200" promptText="Digite" wrapText="true" VBox.vgrow="ALWAYS" />
+                                <TextArea fx:id="recursosAdequacaoTextArea" prefHeight="120.0" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 
 
                         <!-- BOTÕES -->
-                        <HBox alignment="CENTER_RIGHT" spacing="15">
+                        <HBox alignment="CENTER_RIGHT" spacing="20.0">
                             <children>
-                                <Button fx:id="cancelarButton" onAction="#handleCancelAction" style="-fx-background-color: transparent; -fx-border-color: #95a5a6; -fx-border-width: 1; -fx-border-radius: 3; -fx-padding: 8 15; -fx-text-fill: #95a5a6;" text="Cancelar" />
-                                <Button fx:id="voltarButton" onAction="#handleGoToPdi2" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-border-radius: 3; -fx-padding: 8 15;" text="Voltar" />
-                                <Button fx:id="seguinteButton" onAction="#handleGoToPdi4" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-border-radius: 3; -fx-padding: 8 15;" text="Seguinte" />
+                        <HBox HBox.hgrow="ALWAYS">
+                           <children>
+                                      <Button fx:id="cancelarButton" onAction="#handleCancelAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Cancelar" />
+                           </children>
+                        </HBox>
+                        <HBox spacing="20.0">
+                           <children>
+                                      <Button fx:id="voltarButton" onAction="#handleGoToPdi2" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Voltar" />
+                                      <Button fx:id="seguinteButton" onAction="#handleGoToPdi4" prefWidth="220.0" styleClass="botao-seguinte" text="Seguinte" />
+                           </children>
+                        </HBox>
                             </children>
                         </HBox>
 

@@ -1,0 +1,32 @@
+.botao-topo {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 8;
+}
+
+.campo-digite-selecione {
+    -fx-background-color: #fafafa;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5;
+}
+
+.botao-cancelar-voltar-sair {
+    -fx-border-color: #757575;
+    -fx-border-radius: 5;
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 5;
+}
+
+.botao-seguinte {
+    -fx-border-color: #757575;
+    -fx-border-radius: 5;
+    -fx-background-color: #cccccc;
+    -fx-background-radius: 5;
+}
+
+.botao-concluir {
+    -fx-border-color: #757575;
+    -fx-border-radius: 5;
+    -fx-background-color: #34BC74;
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 5;
+}
