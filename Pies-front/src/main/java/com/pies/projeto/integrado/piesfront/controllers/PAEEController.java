@@ -12,7 +12,6 @@ import javafx.util.Duration;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -98,14 +97,19 @@ public class PAEEController implements Initializable {
     private EducandoDTO educando;
     private final AuthService authService = AuthService.getInstance();
     private PaeeFormData formData = new PaeeFormData();
-    private boolean modoNovo = false;
+    // private boolean modoNovo = false;
+    private boolean novoRegistro = false;
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
         atualizarIndicadorDeTela();
         // Só carrega do backend se formData estiver vazio E não for modo novo
-        if (!modoNovo && formData.resumoCaso == null) {
+        // if (!modoNovo && formData.resumoCaso == null) {
+        //     carregarPaeeExistente();
+        if (!novoRegistro) {
             carregarPaeeExistente();
+        } else {
+            this.formData = new PaeeFormData();
         }
         preencherCamposComFormData();
     }
@@ -114,16 +118,20 @@ public class PAEEController implements Initializable {
      * Define que o controller está em modo de novo cadastro.
      * Neste modo, não carrega dados existentes.
      */
-    public void setModoNovo() {
-        this.modoNovo = true;
-        this.formData = new PaeeFormData(); // Limpa os dados
-    }
+    // public void setModoNovo() {
+    //     this.modoNovo = true;
+    //     this.formData = new PaeeFormData(); // Limpa os dados
+    // }
 
     public void setFormData(PaeeFormData data) {
         if (data != null) {
             this.formData = data;
             preencherCamposComFormData();
         }
+    }
+
+    public void setNovoRegistro(boolean novo) {
+        this.novoRegistro = novo;
     }
 
     @Override
@@ -194,25 +202,41 @@ public class PAEEController implements Initializable {
     @FXML
     private void handleGoToPaee3() {
         captureCurrentStepData();
-        abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-3.fxml", 3);
+        if (validateStep2()) {
+            abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-3.fxml", 3);
+        } else {
+            showValidation("Algum campo está em branco. Preencha para prosseguir.");
+        }
     }
 
     @FXML
     private void handleGoToPaee4() {
         captureCurrentStepData();
-        abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-4.fxml", 4);
+        if (validateStep3()) {
+            abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-4.fxml", 4);
+        } else {
+            showValidation("Algum campo está em branco. Preencha para prosseguir.");
+        }
     }
 
     @FXML
     private void handleGoToPaee5() {
         captureCurrentStepData();
-        abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-5.fxml", 5);
+        if (validateStep4()) {
+            abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-5.fxml", 5);
+        } else {
+            showValidation("Algum campo está em branco. Preencha para prosseguir.");
+        }
     }
 
     @FXML
     private void handleGoToPaee6() {
         captureCurrentStepData();
-        abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-6.fxml", 6);
+        if (validateStep5()) {
+            abrirPaee("/com/pies/projeto/integrado/piesfront/screens/paee-6.fxml", 6);
+        } else {
+            showValidation("Algum campo está em branco. Preencha para prosseguir.");
+        }
     }
 
     @FXML
@@ -299,13 +323,16 @@ public class PAEEController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
             Parent root = loader.load();
             PAEEController controller = loader.getController();
-            controller.currentStep = step;
-            if (modoNovo) {
-                controller.setModoNovo();
-            }
-            // IMPORTANTE: setFormData ANTES de setEducando para não sobrescrever os dados carregados
-            controller.setFormData(formData);
+            // controller.currentStep = step;
+            // if (modoNovo) {
+            //     controller.setModoNovo();
+            // }
+            // // IMPORTANTE: setFormData ANTES de setEducando para não sobrescrever os dados carregados
+            // controller.setFormData(formData);
+            // controller.setEducando(educando);
             controller.setEducando(educando);
+            controller.currentStep = step;
+            controller.setFormData(formData);
             Stage stage;
             if (anamnese != null && anamnese.getScene() != null) {
                 stage = (Stage) anamnese.getScene().getWindow();
@@ -461,6 +488,45 @@ public class PAEEController implements Initializable {
         if (resumoCaso == null) return true;
         String t = resumoCaso.getText() != null ? resumoCaso.getText().trim() : "";
         return !t.isEmpty();
+    }
+
+    private boolean isEmpty(TextArea ta) {
+        if (ta == null) return false;
+        if (!ta.isVisible()) return false;
+        String t = ta.getText() != null ? ta.getText().trim() : null;
+        return t == null || t.isEmpty();
+    }
+
+    private boolean validateStep2() {
+        boolean e = isEmpty(desenvolvimentoMotoresPsicomotoresDificuldadesTa)
+                || isEmpty(desenvolvimentoMotoresPsicomotoresIntervencoesTa)
+                || isEmpty(comunicacaoLinguagemDificuldadesTa)
+                || isEmpty(comunicacaoLinguagemIntervencoesTa);
+        return !e;
+    }
+
+    private boolean validateStep3() {
+        boolean e = isEmpty(dificuldadesRaciocinioTa)
+                || isEmpty(intervencoesRaciocinioTa)
+                || isEmpty(dificuldadesAtencaoTa)
+                || isEmpty(intervencoesAtencaoTa);
+        return !e;
+    }
+
+    private boolean validateStep4() {
+        boolean e = isEmpty(dificuldadesMemoriaTa)
+                || isEmpty(intervencoesMemoriaTa)
+                || isEmpty(dificuldadesPercepcaoTa)
+                || isEmpty(intervencoesPercepcaoTa);
+        return !e;
+    }
+
+    private boolean validateStep5() {
+        boolean e = isEmpty(dificuldadesSociabilidadeTa)
+                || isEmpty(intervencoesSociabilidadeTa)
+                || isEmpty(dificuldadesAVATa)
+                || isEmpty(intervencoesAVATa);
+        return !e;
     }
 
     private String getValue(ChoiceBox<String> cb, String fallback) {

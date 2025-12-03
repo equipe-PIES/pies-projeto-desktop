@@ -1,6 +1,7 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
+import com.pies.projeto.integrado.piesfront.dto.CreateRelatorioIndividualDTO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -21,6 +22,7 @@ import java.time.Period;
 import java.util.ResourceBundle;
 
 import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
+import com.pies.projeto.integrado.piesfront.services.AuthService;
 import com.utils.Janelas;
 import javafx.event.ActionEvent;
 
@@ -58,6 +60,7 @@ public class CardAlunoController implements Initializable {
     private Button infoButton;
     
     private EducandoDTO educando;
+    private final AuthService authService = AuthService.getInstance();
     
     /**
      * Define os dados do educando a serem exibidos no card
@@ -157,7 +160,7 @@ public class CardAlunoController implements Initializable {
         if (etapa == AtendimentoFlowService.Etapa.ANAMNESE) {
             abrirTelaAnamnese("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
         } else if (etapa == AtendimentoFlowService.Etapa.DI) {
-            abrirTelaRelatorio("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Diagnóstico Inicial");
+            abrirTelaDiagnosticoInicial("/com/pies/projeto/integrado/piesfront/screens/diagnostico-1.fxml", "Diagnóstico Inicial");
         } else if (etapa == AtendimentoFlowService.Etapa.PDI) {
             abrirTelaPdi("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
         } else if (etapa == AtendimentoFlowService.Etapa.PAEE) {
@@ -285,6 +288,21 @@ public class CardAlunoController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
             Parent root = loader.load();
             RelatorioIndividualController controller = loader.getController();
+            controller.setEducando(educando);
+            Stage stage = (Stage) statusAtendimentoButton.getScene().getWindow();
+            stage.setTitle(titulo);
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Erro ao abrir Diagnóstico Inicial: " + e.getMessage());
+        }
+    }
+
+    private void abrirTelaDiagnosticoInicial(String resource, String titulo) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+            Parent root = loader.load();
+            DIController controller = loader.getController();
             controller.setEducando(educando);
             Stage stage = (Stage) statusAtendimentoButton.getScene().getWindow();
             stage.setTitle(titulo);

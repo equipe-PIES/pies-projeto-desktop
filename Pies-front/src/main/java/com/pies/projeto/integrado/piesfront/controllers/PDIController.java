@@ -16,7 +16,6 @@ import javafx.util.Duration;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -56,24 +55,35 @@ public class PDIController {
     private int currentStep = 1;
     private final AuthService authService = AuthService.getInstance();
     private PDIFormData formData = new PDIFormData();
-    private boolean modoNovo = false;
+    // private boolean modoNovo = false;
+
+    // public void setEducando(EducandoDTO educando) {
+    //     this.educando = educando;
+    //     // Se já foi inicializado E formData está vazio, carrega agora
+    //     if (anamnese != null && formData.periodoPlanoAEE == null && !modoNovo) {
+    //         carregarPdiExistente();
+    //         preencherCamposComFormData();
+    //     }
+    // }
+
+    // /**
+    //  * Define que o controller está em modo de novo cadastro.
+    //  * Neste modo, não carrega dados existentes.
+    //  */
+    // public void setModoNovo() {
+    //     this.modoNovo = true;
+    //     this.formData = new PDIFormData(); // Limpa os dados
+    private boolean novoRegistro = false;
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
-        // Se já foi inicializado E formData está vazio, carrega agora
-        if (anamnese != null && formData.periodoPlanoAEE == null && !modoNovo) {
+        atualizarIndicadorDeTela();
+        if (!novoRegistro) {
             carregarPdiExistente();
-            preencherCamposComFormData();
+        } else {
+            this.formData = new PDIFormData();
         }
-    }
-
-    /**
-     * Define que o controller está em modo de novo cadastro.
-     * Neste modo, não carrega dados existentes.
-     */
-    public void setModoNovo() {
-        this.modoNovo = true;
-        this.formData = new PDIFormData(); // Limpa os dados
+        preencherCamposComFormData();
     }
 
     public void setFormData(PDIFormData data) {
@@ -81,6 +91,10 @@ public class PDIController {
             this.formData = data;
             preencherCamposComFormData();
         }
+    }
+
+    public void setNovoRegistro(boolean novo) {
+        this.novoRegistro = novo;
     }
 
     @FXML
@@ -160,10 +174,6 @@ public class PDIController {
 
     @FXML
     private void handleGoToPdi2() {
-        if (!canStartPDI()) {
-            showValidation("Só é possível fazer PDI após Anamnese concluída.");
-            return;
-        }
         captureCurrentStepData();
         if (validatePdi1()) {
             abrir("/com/pies/projeto/integrado/piesfront/screens/pdi-2.fxml", "PDI", 2);
@@ -175,13 +185,21 @@ public class PDIController {
     @FXML
     private void handleGoToPdi3() {
         captureCurrentStepData();
-        abrir("/com/pies/projeto/integrado/piesfront/screens/pdi-3.fxml", "PDI", 3);
+        if (validatePdi2()) {
+            abrir("/com/pies/projeto/integrado/piesfront/screens/pdi-3.fxml", "PDI", 3);
+        } else {
+            showValidation("Algum campo está em branco. Preencha para prosseguir.");
+        }
     }
 
     @FXML
     private void handleGoToPdi4() {
         captureCurrentStepData();
-        abrir("/com/pies/projeto/integrado/piesfront/screens/pdi-4.fxml", "PDI", 4);
+        if (validatePdi3()) {
+            abrir("/com/pies/projeto/integrado/piesfront/screens/pdi-4.fxml", "PDI", 4);
+        } else {
+            showValidation("Algum campo está em branco. Preencha para prosseguir.");
+        }
     }
 
     @FXML
@@ -237,13 +255,16 @@ public class PDIController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
             Parent root = loader.load();
             PDIController controller = loader.getController();
-            // IMPORTANTE: Define o formData ANTES do educando para não sobrescrever
-            controller.currentStep = step;
-            if (modoNovo) {
-                controller.setModoNovo();
-            }
-            controller.setFormData(formData);
+            // // IMPORTANTE: Define o formData ANTES do educando para não sobrescrever
+            // controller.currentStep = step;
+            // if (modoNovo) {
+            //     controller.setModoNovo();
+            // }
+            // controller.setFormData(formData);
+            // controller.setEducando(educando);
             controller.setEducando(educando);
+            controller.currentStep = step;
+            controller.setFormData(formData);
             Stage stage;
             if (anamnese != null && anamnese.getScene() != null) {
                 stage = (Stage) anamnese.getScene().getWindow();
@@ -312,10 +333,20 @@ public class PDIController {
         return !textEmpty && !choiceEmpty;
     }
 
+    private boolean validatePdi2() {
+        boolean p2Empty = isEmpty(potencialidadesTextArea) || isEmpty(necessidadesTextArea) || isEmpty(habilidadesTextArea);
+        return !p2Empty;
+    }
+
+    private boolean validatePdi3() {
+        boolean p3Empty = isEmpty(atividadesTextArea) || isEmpty(recursosMateriaisTextArea) || isEmpty(recursosAdequacaoTextArea);
+        return !p3Empty;
+    }
+
     private boolean validateAll() {
         if (!validatePdi1()) return false;
-        boolean p2Empty = isEmpty(potencialidadesTextArea) || isEmpty(necessidadesTextArea) || isEmpty(habilidadesTextArea);
-        boolean p3Empty = isEmpty(atividadesTextArea) || isEmpty(recursosMateriaisTextArea) || isEmpty(recursosAdequacaoTextArea);
+        boolean p2Empty = !validatePdi2();
+        boolean p3Empty = !validatePdi3();
         boolean p4Empty = isEmpty(recursosProduzidosTextArea) || isEmpty(parceriasTextArea);
         return !p2Empty && !p3Empty && !p4Empty;
     }
@@ -341,15 +372,18 @@ public class PDIController {
     }
 
     private boolean canStartPDI() {
-        if (educando == null) return false;
-        // Verifica no backend se existe anamnese cadastrada
-        try {
-            com.pies.projeto.integrado.piesfront.dto.AnamneseDTO anamnese = authService.getAnamnesePorEducando(educando.id());
-            return anamnese != null;
-        } catch (Exception e) {
-            System.err.println("Erro ao verificar anamnese: " + e.getMessage());
-            return false;
-        }
+        // if (educando == null) return false;
+        // // Verifica no backend se existe anamnese cadastrada
+        // try {
+        //     com.pies.projeto.integrado.piesfront.dto.AnamneseDTO anamnese = authService.getAnamnesePorEducando(educando.id());
+        //     return anamnese != null;
+        // } catch (Exception e) {
+        //     System.err.println("Erro ao verificar anamnese: " + e.getMessage());
+        //     return false;
+        // }
+        if (educando == null || educando.id() == null) return false;
+        var a = authService.getAnamnesePorEducando(educando.id());
+        return a != null;
     }
 
     private void inicializarChoiceBoxes() {

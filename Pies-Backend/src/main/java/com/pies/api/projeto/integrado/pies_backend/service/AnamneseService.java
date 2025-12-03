@@ -60,6 +60,13 @@ public class AnamneseService {
         return toDTO(anamneseRepository.save(anamnese));
     }
 
+    @Transactional
+    public void deletarPorEducando(String educandoId) {
+        Anamnese anamnese = anamneseRepository.findByEducandoId(educandoId)
+                .orElseThrow(() -> new AnamneseNotFoundException(educandoId));
+        anamneseRepository.delete(anamnese);
+    }
+
     private AnamneseDTO toDTO(Anamnese anamnese) {
         AnamneseDTO dto = new AnamneseDTO();
         dto.setId(anamnese.getId());

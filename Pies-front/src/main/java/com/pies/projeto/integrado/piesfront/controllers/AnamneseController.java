@@ -119,6 +119,7 @@ public class AnamneseController {
 
     @FXML
     private void handleGoToAnamnese1() {
+        captureCurrentStepData();
         abrir("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
         if (validationMsg != null) {
             validationMsg.setVisible(false);
@@ -127,6 +128,7 @@ public class AnamneseController {
 
     @FXML
     private void handleGoToAnamnese2() {
+        captureCurrentStepData();
         if (validateAnamnese1()) {
             abrir("/com/pies/projeto/integrado/piesfront/screens/anamnese-2.fxml", "Anamnese");
         } else {
@@ -136,6 +138,7 @@ public class AnamneseController {
 
     @FXML
     private void handleGoToAnamnese3() {
+        captureCurrentStepData();
         if (validateAnamnese2()) {
             abrir("/com/pies/projeto/integrado/piesfront/screens/anamnese-3.fxml", "Anamnese");
         } else {
@@ -634,8 +637,7 @@ public class AnamneseController {
     }
 
     private void populateFromFormData() {
-        if (formData == null) return;
-        
+        if (formData == null) return;  
         // Página 1 - CheckBoxes
         if (convulsaoSim != null && convulsaoNao != null) {
             convulsaoSim.setSelected(formData.convulsao);
@@ -718,6 +720,27 @@ public class AnamneseController {
         }
         
         // TextFields
+        if (convulsaoSim != null && convulsaoNao != null) { convulsaoSim.setSelected(formData.convulsao); convulsaoNao.setSelected(!formData.convulsao); }
+        if (vacinacaoSim != null && vacinacaoNao != null) { vacinacaoSim.setSelected(formData.vacinacaoEmDia); vacinacaoNao.setSelected(!formData.vacinacaoEmDia); }
+        if (convenioSim != null && convenioNao != null) { convenioSim.setSelected(formData.possuiConvenio); convenioNao.setSelected(!formData.possuiConvenio); }
+        if (doencaContagiosaSim != null && doencaContagiosaNao != null) { doencaContagiosaSim.setSelected(formData.teveDoencaContagiosa); doencaContagiosaNao.setSelected(!formData.teveDoencaContagiosa); }
+        if (medicacaoSim != null && medicacaoNao != null) { medicacaoSim.setSelected(formData.fazUsoMedicacoes); medicacaoNao.setSelected(!formData.fazUsoMedicacoes); }
+        if (dificuldadesSim != null && dificuldadesNao != null) { dificuldadesSim.setSelected(formData.apresentaDificuldades); dificuldadesNao.setSelected(!formData.apresentaDificuldades); }
+        if (apoioPedagogicoSim != null && apoioPedagogicoNao != null) { apoioPedagogicoSim.setSelected(formData.apoioPedagogicoEmCasa); apoioPedagogicoNao.setSelected(!formData.apoioPedagogicoEmCasa); }
+        if (preNatalSim != null && preNatalNao != null) { preNatalSim.setSelected(formData.fezPreNatal); preNatalNao.setSelected(!formData.fezPreNatal); }
+        if (prematuridadeSim != null && prematuridadeNao != null) { boolean b = formData.prematuridade != null && !formData.prematuridade.isEmpty(); prematuridadeSim.setSelected(b); prematuridadeNao.setSelected(!b); }
+
+        if (chorouSim != null && chorouNao != null) { chorouSim.setSelected(formData.chorouAoNascer); chorouNao.setSelected(!formData.chorouAoNascer); }
+        if (ficouRoxoSim != null && ficouRoxoNao != null) { ficouRoxoSim.setSelected(formData.ficouRoxo); ficouRoxoNao.setSelected(!formData.ficouRoxo); }
+        if (incubadoraSim != null && incubadoraNao != null) { incubadoraSim.setSelected(formData.usoIncubadora); incubadoraNao.setSelected(!formData.usoIncubadora); }
+        if (amamentadoSim != null && amamentadoNao != null) { amamentadoSim.setSelected(formData.foiAmamentado); amamentadoNao.setSelected(!formData.foiAmamentado); }
+
+        if (sustentouCabecaSim != null && sustentouCabecaNao != null) { sustentouCabecaSim.setSelected(formData.sustentouCabeca); sustentouCabecaNao.setSelected(!formData.sustentouCabeca); }
+        if (engatinhouSim != null && engatinhouNao != null) { engatinhouSim.setSelected(formData.engatinhou); engatinhouNao.setSelected(!formData.engatinhou); }
+        if (sentouSim != null && sentouNao != null) { sentouSim.setSelected(formData.sentou); sentouNao.setSelected(!formData.sentou); }
+        if (andouSim != null && andouNao != null) { andouSim.setSelected(formData.andou); andouNao.setSelected(!formData.andou); }
+        if (terapiaSim != null && terapiaNao != null) { terapiaSim.setSelected(formData.precisouTerapia); terapiaNao.setSelected(!formData.precisouTerapia); }
+        if (falouSim != null && falouNao != null) { falouSim.setSelected(formData.falou); falouNao.setSelected(!formData.falou); }
         if (convenio != null) convenio.setText(val(formData.convenio));
         if (doencaContagiosa != null) doencaContagiosa.setText(val(formData.doencaContagiosa));
         if (medicacoes != null) medicacoes.setText(val(formData.medicacoes));
@@ -767,6 +790,7 @@ public class AnamneseController {
 
     @FXML
     private void handleBackToAnamnese2() {
+        captureCurrentStepData();
         abrir("/com/pies/projeto/integrado/piesfront/screens/anamnese-2.fxml", "Anamnese");
     }
 

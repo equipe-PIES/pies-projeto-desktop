@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -48,6 +49,14 @@ public class AnamneseController {
     public ResponseEntity<AnamneseDTO> atualizar(@PathVariable String educandoId,
                                                  @RequestBody @Valid AnamneseDTO dto) {
         return handleRequest(() -> ResponseEntity.ok(anamneseService.atualizar(educandoId, dto)));
+    }
+
+    @DeleteMapping("/educando/{educandoId}")
+    public ResponseEntity<Void> deletarPorEducando(@PathVariable String educandoId) {
+        return handleRequest(() -> {
+            anamneseService.deletarPorEducando(educandoId);
+            return ResponseEntity.noContent().build();
+        });
     }
 
     private <T> ResponseEntity<T> handleRequest(Supplier<ResponseEntity<T>> supplier) {

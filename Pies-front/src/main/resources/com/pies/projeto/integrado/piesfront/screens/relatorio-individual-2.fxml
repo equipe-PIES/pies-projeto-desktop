@@ -77,7 +77,7 @@
 
                                 <Label style="-fx-font-weight: bold;" text="Adaptações Curriculares" />
 
-                                <Label prefHeight="47.0" text="Detalhe os ajustes realizados para atender àsnecessidades do aluno. Cite a metodologia utilizada para facilitar a aprendizagem eos resultados alcançados com essas adaptações." wrapText="true" VBox.vgrow="SOMETIMES" />
+                                <Label prefHeight="47.0" text="Detalhe os ajustes realizados para atender às necessidades do aluno. Cite a metodologia utilizada para facilitar a aprendizagem eos resultados alcançados com essas adaptações." wrapText="true" VBox.vgrow="SOMETIMES" />
                                 <TextArea fx:id="dificuldadesRaciocinio" prefHeight="120" promptText="Digite" wrapText="true" />
 
                             </children>
@@ -86,7 +86,7 @@
                         <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                             <children>
                                 <Label style="-fx-font-weight: bold;" text="Participação nas Atividades Propostas " />
-                                <Label prefHeight="47.0" text="Descreva como o alunoparticipa das atividades. Indique os momentos em que demonstra interesse oudesinteresse durante as aulas." wrapText="true" VBox.vgrow="SOMETIMES" />
+                                <Label prefHeight="47.0" text="Descreva como o alunoparticipa das atividades. Indique os momentos em que demonstra interesse ou desinteresse durante as aulas." wrapText="true" VBox.vgrow="SOMETIMES" />
                                 <TextArea fx:id="dificuldadesRaciocinio1" prefHeight="120" promptText="Digite" wrapText="true" />
                             </children>
                             <padding>
@@ -96,7 +96,7 @@
                         <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                             <children>
                                 <Label style="-fx-font-weight: bold;" text="Autonomia" />
-                                <Label prefHeight="47.0" text="Relate como e o que é trabalhado para promover a autonomia doaluno em diferentes contextos escolares. Isso inclui habilidades para fazer escolhas,tomar iniciativas, cumprir planejamentos, atender aos próprios interesses, realizar tarefas, resolver conflitos, defender-se, explicar-se e solicitar ajuda." wrapText="true" VBox.vgrow="SOMETIMES" />
+                                <Label prefHeight="47.0" text="Relate como e o que é trabalhado para promover a autonomia do aluno em diferentes contextos escolares. Isso inclui habilidades para fazer escolhas,tomar iniciativas, cumprir planejamentos, atender aos próprios interesses, realizar tarefas, resolver conflitos, defender-se, explicar-se e solicitar ajuda." wrapText="true" VBox.vgrow="SOMETIMES" />
                                 <TextArea fx:id="dificuldadesRaciocinio11" prefHeight="120" promptText="Digite" wrapText="true" />
                             </children>
                             <padding>

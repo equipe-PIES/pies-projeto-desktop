@@ -110,7 +110,6 @@
                           <children>
                               <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
                               <Button onAction="#handleCancelAction" text="Cancelar" />
-                              <Button onAction="#handleBackAction" text="Voltar" />
                               <Button onAction="#handleGoToPdi2" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
                           </children>
                       </HBox>
