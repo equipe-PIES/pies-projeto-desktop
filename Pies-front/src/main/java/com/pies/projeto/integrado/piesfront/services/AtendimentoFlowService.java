@@ -52,4 +52,11 @@ public class AtendimentoFlowService {
         }
         estado.put(educandoId, Etapa.COMPLETO);
     }
+
+    public void concluirRelatorioIndividual(String educandoId) {
+        if (educandoId == null || educandoId.isEmpty()) {
+            return;
+        }
+        estado.put(educandoId, Etapa.COMPLETO);
+    }
 }

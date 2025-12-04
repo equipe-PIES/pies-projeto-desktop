@@ -150,6 +150,27 @@ public class HomeCoordController implements Initializable {
     private void handleAddTurmaAction(javafx.event.ActionEvent event) {
         Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/cadastro-de-turma.fxml", "Cadastro de Turma");
     }
+
+    @FXML
+    private void handleProfessoresButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event, 
+                "/com/pies/projeto/integrado/piesfront/screens/view-profs-coord.fxml", 
+                "Professores");
+    }
+
+    @FXML
+    private void handleTurmasButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/view-turmas-coord.fxml",
+                "Turmas");
+    }
+
+    @FXML
+    private void handleAlunosButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/view-alunos-coord.fxml",
+                "Alunos");
+    }
     
     /**
      * Handler para o botão de sair.

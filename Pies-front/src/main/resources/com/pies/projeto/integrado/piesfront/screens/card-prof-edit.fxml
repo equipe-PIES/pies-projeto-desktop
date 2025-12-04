@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="cardProf" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="65.0" prefWidth="850.0" spacing="15.0" style="-fx-background-color: #ffffff; -fx-border-color: #c0c0c0; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 15;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CardProfEditController">
+    <children>
+        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="488.0">
+            <children>
+                  <Label fx:id="nomeLabel" prefHeight="27.0" prefWidth="567.0" text="Nome">
+                      <font>
+                          <Font name="System Bold" size="18.0" />
+                      </font>
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+                  </Label>
+                <Button fx:id="excluirProf" mnemonicParsing="false" prefWidth="250.0" style="-fx-background-color: ff0000;" text="Excluir" textFill="WHITE">
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin>
+            </Button>
+                <Button fx:id="editarProf" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" text="Editar">
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin></Button>
+                <Button fx:id="infoProfButton" mnemonicParsing="false" onAction="#handleInfoAction" prefHeight="31.0" prefWidth="47.0" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15; -fx-font-size: 14px;" text="i">
+                    <HBox.margin>
+                        <Insets right="5.0" />
+                    </HBox.margin>
+                </Button>
+            </children>
+        </HBox>
+    </children>
+</VBox>

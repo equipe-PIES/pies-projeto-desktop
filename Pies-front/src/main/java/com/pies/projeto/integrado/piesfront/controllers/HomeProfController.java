@@ -195,7 +195,10 @@ public class HomeProfController implements Initializable {
      */
     @FXML
     private void handleTurmasButtonAction() {
-        carregarDadosEmParalelo();
+        javafx.event.ActionEvent fakeEvent = new javafx.event.ActionEvent(turmasButton, null);
+        Janelas.carregarTela(fakeEvent,
+                "/com/pies/projeto/integrado/piesfront/screens/view-turmas-coord.fxml",
+                "Turmas");
     }
 
     private void atualizarNomeUsuarioUI(UserInfoDTO userInfo) {
@@ -232,5 +235,10 @@ public class HomeProfController implements Initializable {
 
         // Carrega a tela de login
         Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml", "Amparo Edu - Login");
+    }
+
+    @FXML
+    private void handleProfessoresButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/view-profs-coord.fxml", "Professores");
     }
 }

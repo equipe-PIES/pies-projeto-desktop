@@ -166,6 +166,42 @@ public class CadastroProfController implements Initializable {
         }
     }
 
+    @FXML
+    private void handleInicioButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml",
+                "Início - Coordenador(a)");
+    }
+
+    @FXML
+    private void handleSairButtonAction(javafx.event.ActionEvent event) {
+        authService.logout();
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml",
+                "Amparo Edu - Login");
+    }
+
+    @FXML
+    private void handleProfessoresButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/view-profs-coord.fxml",
+                "Professores");
+    }
+
+    @FXML
+    private void handleTurmasButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/view-turmas-coord.fxml",
+                "Turmas");
+    }
+
+    @FXML
+    private void handleAlunosButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/view-alunos-coord.fxml",
+                "Alunos");
+    }
+
     private boolean validarFormulario() {
         // Limpa mensagens anteriores
         if (erroEscolhaSenha != null) {
@@ -261,24 +297,8 @@ public class CadastroProfController implements Initializable {
     }
 
     private void showPopup(String mensagem, boolean sucesso) {
-        Stage currentStage = (Stage) (inicioButton != null ? inicioButton.getScene().getWindow() : cadastroProfBt.getScene().getWindow());
-        Label msg = new Label(mensagem);
-        String style = sucesso ? "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;"
-                : "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;";
-        msg.setStyle(style);
-        javafx.scene.layout.StackPane overlay = new javafx.scene.layout.StackPane(msg);
-        overlay.setStyle("-fx-background-color: transparent;");
-        overlay.setMouseTransparent(true);
-        javafx.scene.layout.StackPane.setAlignment(msg, javafx.geometry.Pos.CENTER);
-        javafx.scene.Parent root = currentStage.getScene().getRoot();
-        if (root instanceof javafx.scene.layout.Pane p) {
-            overlay.prefWidthProperty().bind(p.widthProperty());
-            overlay.prefHeightProperty().bind(p.heightProperty());
-            p.getChildren().add(overlay);
-            PauseTransition pt = new PauseTransition(Duration.seconds(5));
-            pt.setOnFinished(e -> p.getChildren().remove(overlay));
-            pt.play();
-        }
+        javafx.scene.Scene scene = (inicioButton != null ? inicioButton.getScene() : cadastroProfBt.getScene());
+        NotificacaoController.exibirCadastro(scene, sucesso);
     }
 
     private void enviarCadastroProfessor() {
@@ -326,7 +346,7 @@ public class CadastroProfController implements Initializable {
                 // Após criar o professor, registra o usuário (email/senha) com role professor
                 boolean registrado = registrarUsuarioProfessor(token);
                 if (registrado) {
-                    showPopup("Professor cadastrado com sucesso!", true);
+                    NotificacaoController.agendarCadastro(true);
                     Janelas.carregarTela(new javafx.event.ActionEvent(inicioButton, null), "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml", "Início - Coordenador(a)");
                 }
             } else if (response.statusCode() == 400) {
@@ -451,23 +471,6 @@ public class CadastroProfController implements Initializable {
         } catch (Exception e) {
             return "Requisição inválida.";
         }
-    }
-
-    /**
-     * Navega para a tela inicial do coordenador.
-     */
-    @FXML
-    private void handleInicioButtonAction(javafx.event.ActionEvent event) {
-        Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml", "Início - Coordenador(a)");
-    }
-
-    /**
-     * Faz logout e volta para a tela de login.
-     */
-    @FXML
-    private void handleSairButtonAction(javafx.event.ActionEvent event) {
-        authService.logout();
-        Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml", "Amparo Edu - Login");
     }
 
 }

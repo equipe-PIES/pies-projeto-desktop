@@ -185,6 +185,7 @@ public class PAEEController implements Initializable {
             Stage currentStage = (Stage) anamnese.getScene().getWindow();
             currentStage.setScene(new Scene(root));
             currentStage.show();
+            NotificacaoController.exibirSePendente(currentStage.getScene());
         } catch (Exception e) {
             handleSairButtonAction();
         }
@@ -319,7 +320,8 @@ public class PAEEController implements Initializable {
             boolean ok = authService.criarPAEE(dto);
             System.out.println("Resultado criarPAEE: " + ok);
             if (ok) {
-                showPopup("PAEE registrado com sucesso!", true);
+                com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService.getInstance().concluirPAEE(educando.id());
+                NotificacaoController.agendar("PAEE registrado com sucesso!", true);
                 handleCancelAction();
             } else {
                 showPopup("Falha ao enviar PAEE.", false);
@@ -375,6 +377,7 @@ public class PAEEController implements Initializable {
             currentStage.setScene(new Scene(root));
             if (titulo != null) currentStage.setTitle(titulo);
             currentStage.show();
+            NotificacaoController.exibirSePendente(currentStage.getScene());
         } catch (Exception e) {
         }
     }
@@ -694,20 +697,7 @@ public class PAEEController implements Initializable {
     }
 
     private void showPopup(String mensagem, boolean sucesso) {
-        Label msg = new Label(mensagem);
-        String style = sucesso ? "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;"
-                : "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;";
-        msg.setStyle(style);
-        javafx.scene.layout.StackPane overlay = new javafx.scene.layout.StackPane(msg);
-        overlay.setStyle("-fx-background-color: transparent;");
-        overlay.setMouseTransparent(true);
-        javafx.scene.layout.StackPane.setAlignment(msg, javafx.geometry.Pos.CENTER);
-        overlay.prefWidthProperty().bind(anamnese.widthProperty());
-        overlay.prefHeightProperty().bind(anamnese.heightProperty());
-        anamnese.getChildren().add(overlay);
-        PauseTransition pt = new PauseTransition(Duration.seconds(5));
-        pt.setOnFinished(e -> anamnese.getChildren().remove(overlay));
-        pt.play();
+        NotificacaoController.exibir(anamnese, mensagem, sucesso);
     }
 
     public static class CreatePAEEDTO {

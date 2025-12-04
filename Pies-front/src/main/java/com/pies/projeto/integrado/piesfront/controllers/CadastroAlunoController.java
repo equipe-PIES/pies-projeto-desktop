@@ -234,6 +234,27 @@ public class CadastroAlunoController implements Initializable {
         // Carrega a tela de login
         Janelas.carregarTela(event, "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml", "Amparo Edu - Login");
     }
+
+    @FXML
+    private void handleProfessoresButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event, 
+                "/com/pies/projeto/integrado/piesfront/screens/view-profs-coord.fxml", 
+                "Professores");
+    }
+
+    @FXML
+    private void handleTurmasButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/view-turmas-coord.fxml",
+                "Turmas");
+    }
+
+    @FXML
+    private void handleAlunosButtonAction(javafx.event.ActionEvent event) {
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/view-alunos-coord.fxml",
+                "Alunos");
+    }
     /// VALIDAÇÃO DE FORMULÁRIO
     private boolean validarFormulario(){
         if(ErrorForm != null) {
@@ -302,24 +323,8 @@ public class CadastroAlunoController implements Initializable {
     }
     
     private void showPopup(String mensagem, boolean sucesso) {
-        Stage currentStage = (Stage) (inicioButton != null ? inicioButton.getScene().getWindow() : cadastroAlunoBt.getScene().getWindow());
-        Label msg = new Label(mensagem);
-        String style = sucesso ? "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;"
-                : "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 16; -fx-background-radius: 8; -fx-font-weight: bold;";
-        msg.setStyle(style);
-        javafx.scene.layout.StackPane overlay = new javafx.scene.layout.StackPane(msg);
-        overlay.setStyle("-fx-background-color: transparent;");
-        overlay.setMouseTransparent(true);
-        javafx.scene.layout.StackPane.setAlignment(msg, javafx.geometry.Pos.CENTER);
-        javafx.scene.Parent root = currentStage.getScene().getRoot();
-        if (root instanceof javafx.scene.layout.Pane p) {
-            overlay.prefWidthProperty().bind(p.widthProperty());
-            overlay.prefHeightProperty().bind(p.heightProperty());
-            p.getChildren().add(overlay);
-            PauseTransition pt = new PauseTransition(Duration.seconds(5));
-            pt.setOnFinished(e -> p.getChildren().remove(overlay));
-            pt.play();
-        }
+        javafx.scene.Scene scene = (inicioButton != null ? inicioButton.getScene() : cadastroAlunoBt.getScene());
+        NotificacaoController.exibirCadastro(scene, sucesso);
     }
     
     /// LIMPAR FORMULÁRIO
@@ -411,20 +416,10 @@ public class CadastroAlunoController implements Initializable {
             if (response.statusCode() == 201) {
                 limparFormulario();
                 mostrarSucesso("Aluno cadastrado com sucesso!");
-                showPopup("Aluno cadastrado com sucesso!", true);
-                // Aguarda 2 segundos antes de voltar
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(2000);
-                        javafx.application.Platform.runLater(() -> 
-                            Janelas.carregarTela(new javafx.event.ActionEvent(inicioButton, null), 
-                                "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml", 
-                                "Início - Coordenador(a)")
-                        );
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
+                NotificacaoController.agendarCadastro(true);
+                Janelas.carregarTela(new javafx.event.ActionEvent(inicioButton, null), 
+                        "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml", 
+                        "Início - Coordenador(a)");
             } else if (response.statusCode() == 409) {
                 mostrarErro("CPF já cadastrado. Verifique os dados.");
                 showPopup("CPF já cadastrado. Verifique os dados.", false);

@@ -49,6 +49,8 @@ public class CardAlunoController implements Initializable {
     
     @FXML
     private Label grauEscolaridadeLabel;
+    @FXML
+    private Label turmaLabel;
     
     @FXML
     private Button statusAtendimentoButton;
@@ -104,6 +106,17 @@ public class CardAlunoController implements Initializable {
             String escolaridade = educando.escolaridade() != null ? 
                     formatarEscolaridade(educando.escolaridade()) : "Não informado";
             grauEscolaridadeLabel.setText("Grau de Escolaridade: " + escolaridade);
+        }
+
+        if (turmaLabel != null) {
+            String turmaNome = "Não informado";
+            if (educando.turmaId() != null) {
+                var turma = authService.getTurmaById(educando.turmaId());
+                if (turma != null && turma.nome() != null) {
+                    turmaNome = turma.nome();
+                }
+            }
+            turmaLabel.setText("Turma: " + turmaNome);
         }
 
         if (statusAtendimentoButton != null) {
@@ -197,7 +210,7 @@ public class CardAlunoController implements Initializable {
             popupStage.setResizable(false);
             
             // Centraliza a janela
-            Stage parentStage = (Stage) infoButton.getScene().getWindow();
+            Stage parentStage = (Stage) (cardAluno != null ? cardAluno.getScene().getWindow() : null);
             popupStage.initOwner(parentStage);
             popupStage.setX(parentStage.getX() + (parentStage.getWidth() - popupStage.getWidth()) / 2);
             popupStage.setY(parentStage.getY() + (parentStage.getHeight() - popupStage.getHeight()) / 2);
