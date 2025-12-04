@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.*?>
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.RelatorioIndividualController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.RelatorioIndividualController">
 
     <!-- TOPO -->
     <top>
@@ -67,7 +64,7 @@
 
 
                         <!-- OBJETIVOS DO PLANO -->
-                        <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                        <VBox style="-fx-border-color: #ddd; -fx-border-radius: 5;">
 
                             <padding>
                                 <Insets bottom="20" left="20" right="20" top="20" />
@@ -75,34 +72,51 @@
 
                             <children>
 
-                                <Label style="-fx-font-weight: bold;" text="Interação com a Professora" />
+                                <Label style="-fx-font-weight: bold;" text="Interação com a Professora">
+                           <VBox.margin>
+                              <Insets bottom="12.0" />
+                           </VBox.margin></Label>
 
-                                <Label prefHeight="47.0" text="Descrever como o aluno se relaciona equal a intervenção para que a interação ocorra de forma efetiva." wrapText="true" VBox.vgrow="SOMETIMES" />
-                                <TextArea fx:id="dificuldadesRaciocinio" prefHeight="120" promptText="Digite" wrapText="true" />
+                                <Label alignment="TOP_LEFT" text="Descrever como o aluno se relaciona e qual a intervenção para que a interação ocorra de forma efetiva." wrapText="true" />
+                                <TextArea fx:id="dificuldadesRaciocinio" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" />
 
                             </children>
 
                         </VBox>
-                        <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                        <VBox style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                             <children>
-                                <Label style="-fx-font-weight: bold;" text="Atividades de Vida Diária (AVDs)" />
-                                <Label prefHeight="47.0" text="Informar se o aluno possui habilidadesde autocuidado como: higiene pessoal, alimentação, vestuário, autonomia parautilizar o banheiro, faz uso de fraldas, qual dificuldade motora possui (caso afirmativo),necessidade de auxílio na locomoção." wrapText="true" VBox.vgrow="SOMETIMES" />
-                                <TextArea fx:id="dificuldadesRaciocinio1" prefHeight="120" promptText="Digite" wrapText="true" />
+                                <Label style="-fx-font-weight: bold;" text="Atividades de Vida Diária (AVDs)">
+                                    <VBox.margin>
+                                        <Insets bottom="12.0" />
+                                    </VBox.margin>
+                                </Label>
+
+                                <!-- Ajustes feitos aqui -->
+                                <Label prefHeight="35.0" text="Informar se o aluno possui habilidades de autocuidado como: higiene pessoal, alimentação, vestuário, autonomia para utilizar o banheiro, faz uso de fraldas, qual dificuldade motora possui (caso afirmativo), necessidade de auxílio na locomoção." wrapText="true" VBox.vgrow="ALWAYS" />
+
+                                <TextArea fx:id="dificuldadesRaciocinio1" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" />
                             </children>
                             <padding>
                                 <Insets bottom="20" left="20" right="20" top="20" />
                             </padding>
                         </VBox>
-                  <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
 
 
                         <!-- BOTÕES -->
-                        <HBox alignment="BOTTOM_RIGHT" spacing="20">
+                        <HBox alignment="BOTTOM_RIGHT" VBox.vgrow="ALWAYS">
                             <children>
-                                <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
-                                <Button onAction="#handleCancelAction" text="Cancelar" />
-                                <Button onAction="#handleBackAction" text="Voltar" />
-                                <Button onAction="#handleConcluirAction" style="-fx-background-color: #27ae60; -fx-text-fill: white;" text="Concluir" />
+                        <HBox alignment="BOTTOM_LEFT" HBox.hgrow="ALWAYS">
+                           <children>
+                                      <Button onAction="#handleCancelAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Cancelar" />
+                                      <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
+                           </children>
+                        </HBox>
+                        <HBox alignment="BOTTOM_RIGHT" spacing="20.0">
+                           <children>
+                                      <Button onAction="#handleBackAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Voltar" />
+                                      <Button onAction="#handleConcluirAction" prefWidth="220.0" styleClass="botao-concluir" text="Concluir" />
+                           </children>
+                        </HBox>
                             </children>
                         </HBox>
 

@@ -2,11 +2,9 @@ package com.pies.projeto.integrado.piesfront.controllers;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
+import com.utils.Janelas;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -148,20 +146,15 @@ public class DIController implements Initializable {
     }
 
     @FXML private void handleCancelAction() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml"));
-            Parent root = loader.load();
-            ViewTurmaController controller = loader.getController();
-            if (educando != null && educando.turmaId() != null) {
-                controller.setTurmaId(educando.turmaId());
-            }
-            Stage currentStage = (Stage) anamnese.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-            NotificacaoController.exibirSePendente(currentStage.getScene());
-        } catch (Exception e) {
-            handleSairButtonAction();
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null),
+                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml",
+                    "Visualizar Turma",
+                    controller -> {
+                        if (controller instanceof ViewTurmaController c && educando != null && educando.turmaId() != null) {
+                            c.setTurmaId(educando.turmaId());
+                        }
+                    });
         }
     }
 
@@ -301,40 +294,20 @@ public class DIController implements Initializable {
     }
 
     private void abrirDI(String resource, int step) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-            Parent root = loader.load();
-            DIController controller = loader.getController();
-            controller.setEducando(educando);
-            controller.currentStep = step;
-            controller.setFormData(formData);
-            Stage stage;
-            if (anamnese != null && anamnese.getScene() != null) {
-                stage = (Stage) anamnese.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.setTitle("Diagnóstico Inicial");
-            } else {
-                stage = new Stage();
-                stage.setTitle("Diagnóstico Inicial");
-                stage.setScene(new Scene(root));
-                stage.setResizable(false);
-                stage.show();
-            }
-        } catch (Exception e) {
-            if (validationMsg != null) {
-                validationMsg.setVisible(true);
-            }
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, "Diagnóstico Inicial", controller -> {
+                if (controller instanceof DIController c) {
+                    c.setEducando(educando);
+                    c.currentStep = step;
+                    c.setFormData(formData);
+                }
+            });
         }
     }
 
     private void navegar(String resource, String titulo) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(resource));
-            Stage currentStage = (Stage) anamnese.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            if (titulo != null) currentStage.setTitle(titulo);
-            currentStage.show();
-        } catch (Exception e) {
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, titulo);
         }
     }
 

@@ -2,10 +2,7 @@ package com.pies.projeto.integrado.piesfront.controllers;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.StageStyle;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
@@ -15,6 +12,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import com.utils.Janelas;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -163,31 +161,34 @@ public class PAEEController implements Initializable {
 
     @FXML
     private void handleTurmasButtonAction() {
-        navegar("/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml", null);
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null),
+                    "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml",
+                    "Início - Professor(a)");
+        }
     }
 
     @FXML
     private void handleSairButtonAction() {
         authService.logout();
-        navegar("/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml", null);
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null),
+                    "/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml",
+                    "Amparo Edu - Login");
+        }
     }
 
     @FXML
     private void handleCancelAction() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml"));
-            Parent root = loader.load();
-            ViewTurmaController controller = loader.getController();
-            if (educando != null && educando.turmaId() != null) {
-                controller.setTurmaId(educando.turmaId());
-            }
-            Stage currentStage = (Stage) anamnese.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            currentStage.show();
-            NotificacaoController.exibirSePendente(currentStage.getScene());
-        } catch (Exception e) {
-            handleSairButtonAction();
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null),
+                    "/com/pies/projeto/integrado/piesfront/screens/view-turma.fxml",
+                    "Visualizar Turma",
+                    controller -> {
+                        if (controller instanceof ViewTurmaController c && educando != null && educando.turmaId() != null) {
+                            c.setTurmaId(educando.turmaId());
+                        }
+                    });
         }
     }
 
@@ -336,49 +337,21 @@ public class PAEEController implements Initializable {
     }
 
     private void abrirPaee(String resource, int step) {
-        System.out.println("=== abrirPaee ===");
-        System.out.println("Resource: " + resource + ", Step: " + step);
-        System.out.println("formData.resumoCaso: " + (formData.resumoCaso != null ? "presente" : "null"));
-        System.out.println("formData.desenvolvimentoMotoresPsicomotoresDificuldades: " + (formData.desenvolvimentoMotoresPsicomotoresDificuldades != null ? "presente" : "null"));
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-            Parent root = loader.load();
-            PAEEController controller = loader.getController();
-            // IMPORTANTE: Ao navegar entre páginas, passar formData primeiro para preservar dados
-            controller.setNovoRegistro(true); // Evita recarregar do backend nas navegações
-            controller.currentStep = step; // Define step antes de carregar dados
-            System.out.println("Chamando setFormData no novo controller...");
-            controller.setFormData(formData); // Define formData ANTES de setEducando
-            System.out.println("Chamando setEducando no novo controller...");
-            controller.setEducando(educando); // Agora setEducando não vai sobrescrever formData
-            Stage stage;
-            if (anamnese != null && anamnese.getScene() != null) {
-                stage = (Stage) anamnese.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.setTitle("PAEE");
-            } else {
-                stage = new Stage();
-                stage.setTitle("PAEE");
-                stage.setScene(new Scene(root));
-                stage.setResizable(false);
-                stage.show();
-            }
-        } catch (Exception e) {
-            if (validationMsg != null) {
-                validationMsg.setVisible(true);
-            }
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, "PAEE", controller -> {
+                if (controller instanceof PAEEController c) {
+                    c.setNovoRegistro(true);
+                    c.currentStep = step;
+                    c.setFormData(formData);
+                    c.setEducando(educando);
+                }
+            });
         }
     }
 
     private void navegar(String resource, String titulo) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(resource));
-            Stage currentStage = (Stage) anamnese.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
-            if (titulo != null) currentStage.setTitle(titulo);
-            currentStage.show();
-            NotificacaoController.exibirSePendente(currentStage.getScene());
-        } catch (Exception e) {
+        if (anamnese != null) {
+            Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, titulo);
         }
     }
 

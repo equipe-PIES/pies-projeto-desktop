@@ -7,41 +7,41 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="cardAluno" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="520.0" spacing="15.0" style="-fx-background-color: #ffffff; -fx-border-color: #c0c0c0; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 15;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CardAlunoController">
+<VBox fx:id="cardAluno" prefWidth="400.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #c0c0c0; -fx-background-radius: 8; -fx-border-radius: 8;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CardAlunoController">
    <children>
-      <HBox alignment="TOP_CENTER" prefHeight="124.0" prefWidth="418.0">
+      <HBox>
          <children>
-            <VBox prefHeight="98.0" prefWidth="376.0" HBox.hgrow="ALWAYS">
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label fx:id="nomeLabel" prefHeight="27.0" prefWidth="453.0" text="Nome">
+                  <Label fx:id="nomeLabel" alignment="CENTER" text="Nome" VBox.vgrow="ALWAYS">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                      <font>
-                        <Font name="System Bold" size="18.0" />
+                        <Font name="System Bold" size="24.0" />
                      </font>
                   </Label>
                   <Label fx:id="idadeLabel" text="Idade:">
                   </Label>
                   <Label fx:id="cidLabel" text="CID:">
                   </Label>
-                  <Label fx:id="grauEscolaridadeLabel" text="Grau de Escolaridade:">
+                  <Label fx:id="grauEscolaridadeLabel" text="Grau de escolaridade:">
                   </Label>
                </children>
                <HBox.margin>
-                  <Insets bottom="15.0" left="15.0" top="15.0" />
+                  <Insets />
                </HBox.margin>
             </VBox>
-            <Button fx:id="infoButton" mnemonicParsing="false" onAction="#handleInfoAction" prefHeight="31.0" prefWidth="31.0" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15; -fx-font-size: 14px;" text="i">
+            <Button fx:id="infoButton" alignment="CENTER" mnemonicParsing="false" onAction="#handleInfoAction" prefWidth="30.0" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15; -fx-font-size: 14px;" text="i">
                <HBox.margin>
-                  <Insets right="5.0" top="5.0" />
+                  <Insets />
                </HBox.margin>
             </Button>
          </children>
       </HBox>
-      <HBox alignment="BOTTOM_CENTER" prefHeight="32.0" prefWidth="428.0" spacing="20.0">
+      <HBox alignment="BOTTOM_RIGHT">
          <children>
-            <Button fx:id="verProgressoButton" mnemonicParsing="false" onAction="#handleVerProgressoAction" prefHeight="50.0" prefWidth="240.0" text="Ver Progresso" HBox.hgrow="ALWAYS">
+            <Button fx:id="verProgressoButton" mnemonicParsing="false" onAction="#handleVerProgressoAction" prefWidth="220.0" style="-fx-background-color: #26568C;" text="Ver Progresso" textFill="WHITE">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
@@ -52,4 +52,7 @@
          </VBox.margin>
       </HBox>
    </children>
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
 </VBox>

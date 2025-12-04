@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -32,10 +33,10 @@
 
                <HBox alignment="CENTER_RIGHT" spacing="15.0">
       <children>
-                      <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" text="Início" />
-                      <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
-                      <Button id="professoresButton" fx:id="professoresButton" onAction="#handleProfessoresButtonAction" text="Professores" />
-                      <Button id="alunosButton" fx:id="alunosButton" onAction="#handleAlunosButtonAction" text="Alunos" />
+                      <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" style="-fx-background-color: #26568C;" text="Início" textFill="WHITE" />
+                      <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" style="-fx-background-color: #26568C;" text="Turmas" textFill="WHITE" />
+                      <Button id="professoresButton" fx:id="professoresButton" onAction="#handleProfessoresButtonAction" style="-fx-background-color: #26568C;" text="Professores" textFill="WHITE" />
+                      <Button id="alunosButton" fx:id="alunosButton" onAction="#handleAlunosButtonAction" style="-fx-background-color: #26568C;" text="Alunos" textFill="WHITE" />
       </children>
                </HBox>
            </children>
@@ -70,7 +71,7 @@
                   <Insets right="20.0" />
                </padding></Region>
 
-               <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair">
+               <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #FF0000; -fx-text-fill: white;" text="Sair">
                    <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
@@ -81,21 +82,27 @@
 
     <!-- CONTEÚDO CENTRAL -->
     <center>
-        <VBox spacing="20.0" style="-fx-background-color: #ffffff;">
+        <VBox spacing="15.0" style="-fx-background-color: #ffffff;">
             <padding>
-                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
             </padding>
            <children>
 
                <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Início" />
-               <!-- SEÇÃO DE DESTAQUE -->
-               <VBox prefHeight="250.0" style="-fx-background-color: #f0f0f0; -fx-alignment: center;">
-      <children>
-                      <Label alignment="CENTER" text="[Grande Placeholder para Gráfico/Informação]" VBox.vgrow="ALWAYS" />
-      </children>
-               </VBox>
+            <HBox alignment="CENTER">
+                <VBox.margin>
+                    <Insets top="10.0" />
+                </VBox.margin>
+                <children>
+                    <ImageView fitWidth="980.0" fitHeight="300.0" pickOnBounds="true">
+                        <image>
+                            <Image url="@../images/frente_apapeq.jpg" />
+                        </image>
+                    </ImageView>
+                </children>
+        </HBox>
                 <!-- CARDS -->
-                <HBox alignment="CENTER" prefHeight="114.0" prefWidth="1159.0" spacing="80.0">
+                <HBox alignment="CENTER" prefHeight="114.0" prefWidth="1159.0" spacing="40.0">
                     <children>
 
                         <!-- CARD 1 -->
@@ -110,7 +117,7 @@
                            </font>
                                 </Label>
                                 <Label alignment="CENTER" text="Adicione uma nova turma à lista de turmas no seu sistema." textAlignment="CENTER" wrapText="true" />
-                                <Button fx:id="addTurma" onAction="#handleAddTurmaAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
+                                <Button fx:id="addTurma" onAction="#handleAddTurmaAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #26568C; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
 
@@ -126,7 +133,7 @@
                            </font>
                                 </Label>
                                 <Label alignment="CENTER" text="Adicione um novo professor(a) ao seu sistema." textAlignment="CENTER" wrapText="true" />
-                                <Button fx:id="addProf" onAction="#handleAddProfAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS">
+                                <Button fx:id="addProf" onAction="#handleAddProfAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #26568C; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS">
                            <VBox.margin>
                               <Insets top="15.0" />
                            </VBox.margin></Button>
@@ -145,10 +152,13 @@
                            </font>
                                 </Label>
                                 <Label alignment="CENTER" text="Adicione um novo aluno(a) à lista de alunos no seu sistema." textAlignment="CENTER" wrapText="true" />
-                                <Button fx:id="addAluno" onAction="#handleAddAlunoAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #5cb85c; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
+                                <Button fx:id="addAluno" onAction="#handleAddAlunoAction" prefHeight="30.0" prefWidth="280.0" style="-fx-background-color: #26568C; -fx-text-fill: white;" text="Adicionar" VBox.vgrow="ALWAYS" />
                             </children>
                         </VBox>
                     </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
                 </HBox>
            </children>
         </VBox>

@@ -53,11 +53,16 @@ public class HomeProfController implements Initializable {
         if (turmasScrollPane != null && containerCards != null) {
             turmasScrollPane.setFitToWidth(true);
             turmasScrollPane.viewportBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-                double cardWidth = 350.0;
-                double hgap = containerCards.getHgap();
-                double threeColsWidth = cardWidth * 3 + hgap * 2;
-                double wrap = Math.min(newBounds.getWidth(), threeColsWidth);
-                containerCards.setPrefWrapLength(wrap);
+                // Largura do card agora é 340px (ajustado para caber 3 colunas)
+                double cardWidth = 340.0;
+                double hgap = 30.0;
+                double totalPadding = 40.0; // padding do FlowPane (20 * 2)
+                
+                // Largura necessária para 3 colunas: 340*3 + 30*2 + 40 = 1120px
+                double threeColsNeeded = (cardWidth * 3) + (hgap * 2) + totalPadding;
+                
+                // Define o wrap para mostrar 3 colunas quando possível
+                containerCards.setPrefWrapLength(threeColsNeeded);
             });
         }
         javafx.application.Platform.runLater(() -> {

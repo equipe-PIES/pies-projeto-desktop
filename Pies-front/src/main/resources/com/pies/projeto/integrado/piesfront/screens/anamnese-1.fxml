@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.AnamneseController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.AnamneseController">
 
     <!-- TOPO -->
     <top>
@@ -22,16 +22,16 @@
             </padding>
             <children>
 
-                            <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair" />
-                  <VBox prefHeight="50.0" prefWidth="187.0">
-                      <children>
-                          <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário" />
-                          <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Professora" />
-                      </children>
-               <HBox.margin>
-                  <Insets left="10.0" top="10.0" />
-               </HBox.margin>
-                  </VBox>
+                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair" />
+                <VBox prefHeight="50.0" prefWidth="187.0">
+                    <children>
+                        <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário" />
+                        <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Professora" />
+                    </children>
+                    <HBox.margin>
+                        <Insets left="10.0" top="10.0" />
+                    </HBox.margin>
+                </VBox>
 
                 <Region prefHeight="60.0" prefWidth="738.0" HBox.hgrow="ALWAYS" />
 
@@ -49,219 +49,270 @@
     <!-- CONTEÚDO CENTRAL -->
     <center>
         <ScrollPane fitToWidth="true" style="-fx-background-color: white;">
-            <VBox spacing="20" style="-fx-background-color: white;">
+            <VBox spacing="20" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
                 <padding>
                     <Insets bottom="20" left="30" right="30" top="30" />
                 </padding>
 
                 <children>
 
-                <HBox spacing="20" VBox.vgrow="ALWAYS">
-   <children>
-                  <VBox>
-                     <children>
-         
-                                         <!-- COLUNA ESQUERDA -->
-                             <VBox prefWidth="500.0" spacing="15" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
-                                 <padding>
-                                     <Insets bottom="20" left="20" right="20" top="20" />
-                                 </padding>
-         
-                                             <children>
-         
-                                                 <Label style="-fx-font-weight: bold;" text="Informações Médicas" />
-         
-                                                 <Label text="Tem convulsão?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
-                                 <children>
-                                    <CheckBox fx:id="convulsaoSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="convulsaoNao" mnemonicParsing="false" text="Não">
-                                       <HBox.margin>
-                                          <Insets left="20.0" />
-                                       </HBox.margin>
-                                    </CheckBox>
-                                 </children>
-                              </HBox>
-         
-                                                 <Label text="Possui convênio médico?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
-                                 <children>
-                                    <CheckBox fx:id="convenioSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="convenioNao" mnemonicParsing="false" text="Não">
-                                       <HBox.margin>
-                                          <Insets left="20.0" />
-                                       </HBox.margin>
-                                    </CheckBox>
-                                 </children>
-                              </HBox>
-                              <Label fx:id="questConvenio" text="Qual?" />
-                                     <TextField fx:id="convenio" />
-         
-                                                 <Label text="Vacinação em dias?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
-                                 <children>
-                                    <CheckBox fx:id="vacinacaoSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="vacinacaoNao" mnemonicParsing="false" text="Não">
-                                       <HBox.margin>
-                                          <Insets left="20.0" />
-                                       </HBox.margin>
-                                    </CheckBox>
-                                 </children>
-                              </HBox>
-         
-                                                 <Label text="Teve doença contagiosa?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
-                                 <children>
-                                    <CheckBox fx:id="doencaContagiosaSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="doencaContagiosaNao" mnemonicParsing="false" text="Não">
-                                       <HBox.margin>
-                                          <Insets left="20.0" />
-                                       </HBox.margin>
-                                    </CheckBox>
-                                 </children>
-                              </HBox>
-                              <Label fx:id="questDoencaContagiosa" text="Qual?" />
-                                     <TextField fx:id="doencaContagiosa" />
-         
-                                                 <Label text="Faz uso de medicações? Quais?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
-                                 <children>
-                                    <CheckBox fx:id="medicacaoSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="medicacaoNao" mnemonicParsing="false" text="Não">
-                                       <HBox.margin>
-                                          <Insets left="20.0" />
-                                       </HBox.margin>
-                                    </CheckBox>
-                                 </children>
-                              </HBox>
-                              <Label fx:id="questMedicacao" text="Quais?" />
-                                     <TextField fx:id="medicacoes" />
-         
-                                             </children>
-                           <VBox.margin>
-                              <Insets left="110.0" />
-                           </VBox.margin>
-                             </VBox>
-                        <VBox prefWidth="500" spacing="15" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
-                           <children>
-                              <Label text="Serviços de saúde ou educação que já frequentou">
-                                 <font>
-                                    <Font name="System Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="servicosFrequentados1" />
-                           </children>
-                           <padding>
-                              <Insets bottom="20" left="20" right="20" top="20" />
-                           </padding>
-                           <VBox.margin>
-                              <Insets left="110.0" />
-                           </VBox.margin>
-                        </VBox>
-                     </children>
-                  </VBox>
-                  <VBox>
-                     <children>
-         
-         
-                             <!-- COLUNA DIREITA -->
-                             <VBox spacing="15" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
-                                 <padding>
-                                     <Insets bottom="20" left="20" right="20" top="20" />
-                                 </padding>
-         
-                                 <children>
-         
-                                     <Label style="-fx-font-weight: bold;" text="Histórico de Escolaridade" />
-         
-                                     <Label text="Início da escolarização" />
-                                     <TextField fx:id="inicioEscolarizacao" />
-         
-                                     <Label text="Apresenta dificuldades?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
-                                 <children>
-                                    <CheckBox fx:id="dificuldadesSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="dificuldadesNao" mnemonicParsing="false" text="Não">
-                                       <HBox.margin>
-                                          <Insets left="20.0" />
-                                       </HBox.margin>
-                                    </CheckBox>
-                                 </children>
-                              </HBox>
-                              <Label fx:id="questDificuldade" text="Quais?" />
-                                     <TextField fx:id="dificuldades" />
-         
-                                     <Label text="Recebe apoio pedagógico em casa?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
-                                 <children>
-                                    <CheckBox fx:id="apoioPedagogicoSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="apoioPedagogicoNao" mnemonicParsing="false" text="Não">
-                                       <HBox.margin>
-                                          <Insets left="20.0" />
-                                       </HBox.margin>
-                                    </CheckBox>
-                                 </children>
-                              </HBox>
-                              <Label fx:id="questApioPedagogico" text="De quem?" />
-                                     <TextField fx:id="apoioPedagogico" />
-         
-                                 </children>
-                             </VBox>
-                        <VBox spacing="15" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
-                           <children>
-                              <Label style="-fx-font-weight: bold;" text="Condições da Gravidez e do Nascimento" />
-                              <Label text="Duração da gestação" />
-                              <TextField fx:id="duracaoGestacao1" />
-                              <Label text="Fez o pré-natal?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
-                                 <children>
-                                    <CheckBox fx:id="preNatalSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="preNatalNao" mnemonicParsing="false" text="Não">
-                                       <HBox.margin>
-                                          <Insets left="20.0" />
-                                       </HBox.margin>
-                                    </CheckBox>
-                                 </children>
-                              </HBox>
-                              <Label text="Houve prematuridade?" />
-                              <HBox prefHeight="0.0" prefWidth="388.0">
-                                 <children>
-                                    <CheckBox fx:id="prematuridadeSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="prematuridadeNao" mnemonicParsing="false" text="Não">
-                                       <HBox.margin>
-                                          <Insets left="20.0" />
-                                       </HBox.margin>
-                                    </CheckBox>
-                                 </children>
-                              </HBox>
-                              <Label fx:id="questCausaPrematuridade1" text="O que ocasionou?" />
-                              <TextField fx:id="prematuridade1" />
-                           </children>
-                           <padding>
-                              <Insets bottom="20" left="20" right="20" top="20" />
-                           </padding>
-                           <VBox.margin>
-                              <Insets top="20.0" />
-                           </VBox.margin>
-                        </VBox>
-                     </children>
-                  </VBox>
-   </children>
+                    <HBox alignment="CENTER" spacing="20" VBox.vgrow="ALWAYS">
+                        <children>
+                            <VBox spacing="20.0" HBox.hgrow="ALWAYS">
+                                <children>
 
-                </HBox>
+                                    <!-- COLUNA ESQUERDA -->
+                                    <VBox spacing="10.0" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                                        <padding>
+                                            <Insets bottom="20" left="20" right="20" top="20" />
+                                        </padding>
 
-                  
-                                  <!-- BOTÕES -->
-                <HBox alignment="CENTER_RIGHT" spacing="20">
-                    <children>
-                        <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
-                        <Button onAction="#handleCancelAction" text="Cancelar" />
-                        <Button onAction="#handleGoToAnamnese2" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
-                    </children>
-                </HBox>
+                                        <children>
 
-            </children>
-        </VBox>
+                                            <Label style="-fx-font-weight: bold;" text="Informações Médicas" />
+
+                                            <Label text="Tem convulsão?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <HBox>
+                                                <children>
+                                                    <CheckBox fx:id="convulsaoSim" mnemonicParsing="false" text="Sim" />
+                                                    <CheckBox fx:id="convulsaoNao" mnemonicParsing="false" text="Não">
+                                                        <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                        </HBox.margin>
+                                                    </CheckBox>
+                                                </children>
+                                            </HBox>
+
+                                            <Label text="Possui convênio médico?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <HBox>
+                                                <children>
+                                                    <CheckBox fx:id="convenioSim" mnemonicParsing="false" text="Sim" />
+                                                    <CheckBox fx:id="convenioNao" mnemonicParsing="false" text="Não">
+                                                        <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                        </HBox.margin>
+                                                    </CheckBox>
+                                                </children>
+                                            </HBox>
+                                            <Label fx:id="questConvenio" text="Qual?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <TextField fx:id="convenio" promptText="Digite"/>
+
+                                            <Label text="Vacinação em dias?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <HBox>
+                                                <children>
+                                                    <CheckBox fx:id="vacinacaoSim" mnemonicParsing="false" text="Sim" />
+                                                    <CheckBox fx:id="vacinacaoNao" mnemonicParsing="false" text="Não">
+                                                        <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                        </HBox.margin>
+                                                    </CheckBox>
+                                                </children>
+                                            </HBox>
+
+                                            <Label text="Teve doença contagiosa?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <HBox>
+                                                <children>
+                                                    <CheckBox fx:id="doencaContagiosaSim" mnemonicParsing="false" text="Sim" />
+                                                    <CheckBox fx:id="doencaContagiosaNao" mnemonicParsing="false" text="Não">
+                                                        <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                        </HBox.margin>
+                                                    </CheckBox>
+                                                </children>
+                                            </HBox>
+                                            <Label fx:id="questDoencaContagiosa" text="Qual?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <TextField fx:id="doencaContagiosa" promptText="Digite"/>
+
+                                            <Label text="Faz uso de medicações? Quais?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <HBox>
+                                                <children>
+                                                    <CheckBox fx:id="medicacaoSim" mnemonicParsing="false" text="Sim" />
+                                                    <CheckBox fx:id="medicacaoNao" mnemonicParsing="false" text="Não">
+                                                        <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                        </HBox.margin>
+                                                    </CheckBox>
+                                                </children>
+                                            </HBox>
+                                            <Label fx:id="questMedicacao" text="Quais?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <TextField fx:id="medicacoes" promptText="Digite"/>
+
+                                        </children>
+                                        <VBox.margin>
+                                            <Insets />
+                                        </VBox.margin>
+                                    </VBox>
+                                    <VBox spacing="15.0" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                                        <children>
+                                            <Label text="Serviços de saúde ou educação que já frequentou">
+                                                <font>
+                                                    <Font name="System Bold" size="15.0" />
+                                                </font>
+                                            </Label>
+                                            <TextField fx:id="servicosFrequentados1" promptText="Digite"/>
+                                        </children>
+                                        <padding>
+                                            <Insets bottom="20" left="20" right="20" top="20" />
+                                        </padding>
+                                        <VBox.margin>
+                                            <Insets />
+                                        </VBox.margin>
+                                    </VBox>
+                                </children>
+                            </VBox>
+                            <VBox spacing="20.0" HBox.hgrow="ALWAYS">
+                                <children>
+
+
+                                    <!-- COLUNA DIREITA -->
+                                    <VBox spacing="10.0" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                                        <padding>
+                                            <Insets bottom="20" left="20" right="20" top="20" />
+                                        </padding>
+
+                                        <children>
+
+                                            <Label style="-fx-font-weight: bold;" text="Histórico de Escolaridade" />
+
+                                            <Label text="Início da escolarização">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <TextField fx:id="inicioEscolarizacao" promptText="Digite"/>
+
+                                            <Label text="Apresenta dificuldades?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <HBox>
+                                                <children>
+                                                    <CheckBox fx:id="dificuldadesSim" mnemonicParsing="false" text="Sim" />
+                                                    <CheckBox fx:id="dificuldadesNao" mnemonicParsing="false" text="Não">
+                                                        <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                        </HBox.margin>
+                                                    </CheckBox>
+                                                </children>
+                                            </HBox>
+                                            <Label fx:id="questDificuldade" text="Quais?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <TextField fx:id="dificuldades" promptText="Digite"/>
+
+                                            <Label text="Recebe apoio pedagógico em casa?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <HBox>
+                                                <children>
+                                                    <CheckBox fx:id="apoioPedagogicoSim" mnemonicParsing="false" text="Sim" />
+                                                    <CheckBox fx:id="apoioPedagogicoNao" mnemonicParsing="false" text="Não">
+                                                        <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                        </HBox.margin>
+                                                    </CheckBox>
+                                                </children>
+                                            </HBox>
+                                            <Label fx:id="questApioPedagogico" text="De quem?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <TextField fx:id="apoioPedagogico" promptText="Digite"/>
+
+                                        </children>
+                                    </VBox>
+                                    <VBox spacing="10.0" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                                        <children>
+                                            <Label style="-fx-font-weight: bold;" text="Condições da Gravidez e do Nascimento" />
+                                            <Label text="Duração da gestação">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <TextField fx:id="duracaoGestacao1" promptText="Digite"/>
+                                            <Label text="Fez o pré-natal?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <HBox>
+                                                <children>
+                                                    <CheckBox fx:id="preNatalSim" mnemonicParsing="false" text="Sim" />
+                                                    <CheckBox fx:id="preNatalNao" mnemonicParsing="false" text="Não">
+                                                        <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                        </HBox.margin>
+                                                    </CheckBox>
+                                                </children>
+                                            </HBox>
+                                            <Label text="Houve prematuridade?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <HBox>
+                                                <children>
+                                                    <CheckBox fx:id="prematuridadeSim" mnemonicParsing="false" text="Sim" />
+                                                    <CheckBox fx:id="prematuridadeNao" mnemonicParsing="false" text="Não">
+                                                        <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                        </HBox.margin>
+                                                    </CheckBox>
+                                                </children>
+                                            </HBox>
+                                            <Label fx:id="questCausaPrematuridade1" text="O que ocasionou?">
+                                                <VBox.margin>
+                                                    <Insets />
+                                                </VBox.margin></Label>
+                                            <TextField fx:id="prematuridade1" promptText="Digite"/>
+                                        </children>
+                                        <padding>
+                                            <Insets bottom="20" left="20" right="20" top="20" />
+                                        </padding>
+                                        <VBox.margin>
+                                            <Insets />
+                                        </VBox.margin>
+                                    </VBox>
+                                    <HBox alignment="BOTTOM_CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
+                                        <children>
+                                            <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
+                                            <Button mnemonicParsing="false" onAction="#handleCancelAction" prefWidth="220.0" text="Cancelar" />
+                                            <Button mnemonicParsing="false" onAction="#handleGoToAnamnese2" prefWidth="220.0" text="Seguinte" />
+                                        </children>
+                                        <VBox.margin>
+                                            <Insets />
+                                        </VBox.margin>
+                                    </HBox>
+                                </children>
+                            </VBox>
+                        </children>
+
+                    </HBox>
+
+                </children>
+            </VBox>
         </ScrollPane>
     </center>
 

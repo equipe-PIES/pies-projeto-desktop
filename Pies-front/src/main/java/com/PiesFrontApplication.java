@@ -16,10 +16,12 @@ public class PiesFrontApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(PiesFrontApplication.class
                 .getResource("/com/pies/projeto/integrado/piesfront/screens/tela-de-login.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
+        scene.getStylesheets().add(getClass().getResource("/com/pies/projeto/integrado/piesfront/styles/style.css").toExternalForm());
         stage.setTitle("Amparo Edu");
         stage.setScene(scene);
-        stage.setMaximized(true);
+        
         stage.show();
+        stage.setMaximized(true);
     }
 
     public static void main(String[] args) {

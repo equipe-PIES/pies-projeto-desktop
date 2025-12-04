@@ -22,29 +22,29 @@
             <children>
                 <Region prefHeight="60.0" prefWidth="15.0" />
 
-                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Sair" />
+                <Button id="sairButton" fx:id="sairButton" onAction="#handleSairButtonAction" prefWidth="100.0" style="-fx-background-color: FF0000; -fx-text-fill: white;" text="Sair" />
                 <VBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="140.0">
-               <children>
+                    <children>
                         <VBox prefHeight="200.0" prefWidth="100.0">
                             <children>
                                 <Label id="nameUser" fx:id="nameUser" style="-fx-font-weight: bold;" text="Nome de Usuário" />
                                 <Label id="cargoUser" fx:id="cargoUser" style="-fx-text-fill: #666;" text="Coordenadora" />
                             </children>
-                     <VBox.margin>
-                        <Insets left="10.0" top="10.0" />
-                     </VBox.margin>
+                            <VBox.margin>
+                                <Insets left="10.0" top="10.0" />
+                            </VBox.margin>
                         </VBox>
-               </children>
+                    </children>
                 </VBox>
 
                 <Region HBox.hgrow="ALWAYS" />
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" text="Início" />
-                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
-                        <Button id="professoresButton" fx:id="professoresButton" onAction="#handleProfessoresButtonAction" text="Professores" />
-                        <Button id="alunosButton" fx:id="alunosButton" onAction="#handleAlunosButtonAction" text="Alunos" />
+                        <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" style="-fx-background-color: #26568C;" text="Início" textFill="WHITE" />
+                        <Button id="turmasButton" fx:id="turmasButton" style="-fx-background-color: #26568C;" text="Turmas" textFill="WHITE" />
+                        <Button id="professoresButton" fx:id="professoresButton" style="-fx-background-color: #26568C;" text="Professores" textFill="WHITE" />
+                        <Button id="alunosButton" fx:id="alunosButton" style="-fx-background-color: #26568C;" text="Alunos" textFill="WHITE" />
                     </children>
                 </HBox>
             </children>
@@ -54,13 +54,10 @@
     <!-- CONTEÚDO CENTRAL -->
     <center>
         <VBox spacing="20.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
-            <padding>
-                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-            </padding>
             <children>
-                <HBox alignment="CENTER" prefHeight="717.0" prefWidth="880.0" VBox.vgrow="ALWAYS">
+                <HBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
                     <children>
-                        <VBox prefHeight="1024.0" prefWidth="455.0" style="-fx-border-color: #ddd;">
+                        <VBox spacing="10.0" style="-fx-border-color: #ddd;" HBox.hgrow="ALWAYS">
                             <children>
                                 <Label text="Dados da Turma">
                                     <VBox.margin>
@@ -69,7 +66,7 @@
                                 </Label>
                                 <Label text="Nome da Turma:">
                                     <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                                        <Insets left="20.0" right="20.0" />
                                     </VBox.margin>
                                 </Label>
                                 <TextField fx:id="nomeTurmaField" promptText="Ex: Turma A - Infantil">
@@ -79,114 +76,111 @@
                                 </TextField>
                                 <Label text="Qual o grau de escolaridade da turma?">
                                     <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                                        <Insets left="20.0" right="20.0" />
                                     </VBox.margin>
                                 </Label>
-                        <ChoiceBox fx:id="grauTurma" prefHeight="31.0" prefWidth="350.0">
-                           <VBox.margin>
-                              <Insets bottom="10.0" left="20.0" right="20.0" />
-                           </VBox.margin>
-                        </ChoiceBox>
+                                <ChoiceBox fx:id="grauTurma" prefWidth="200.0">
+                                    <VBox.margin>
+                                        <Insets left="20.0" right="20.0" />
+                                    </VBox.margin>
+                                </ChoiceBox>
                                 <Label text="Faixa etária dos alunos">
                                     <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" />
+                                        <Insets left="20.0" right="20.0" />
                                     </VBox.margin>
                                 </Label>
-                        <ChoiceBox fx:id="idadeAlunos" prefHeight="31.0" prefWidth="200.0">
-                           <VBox.margin>
-                              <Insets bottom="10.0" left="20.0" right="20.0" />
-                           </VBox.margin>
-                        </ChoiceBox>
+                                <ChoiceBox fx:id="idadeAlunos" prefWidth="200.0">
+                                    <VBox.margin>
+                                        <Insets left="20.0" right="20.0" />
+                                    </VBox.margin>
+                                </ChoiceBox>
                                 <Label text="Professor(a) Responsável:">
                                     <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" />
+                                        <Insets left="20.0" right="20.0" />
                                     </VBox.margin>
                                 </Label>
-                                <ChoiceBox fx:id="profRespon" prefHeight="31.0" prefWidth="455.0">
+                                <ChoiceBox fx:id="profRespon" prefWidth="200.0">
                                     <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                                        <Insets left="20.0" right="20.0" />
                                     </VBox.margin>
                                 </ChoiceBox>
                                 <Label text="Turno:">
                                     <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                                        <Insets left="20.0" right="20.0" />
                                     </VBox.margin>
                                 </Label>
                                 <ChoiceBox fx:id="turnoTurma" prefWidth="200.0">
                                     <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" right="20.0" />
+                                        <Insets left="20.0" right="20.0" />
                                     </VBox.margin>
                                 </ChoiceBox>
                             </children>
                         </VBox>
-                        <Region prefHeight="710.0" prefWidth="30.0" />
-                        <VBox prefHeight="1024.0" prefWidth="455.0" HBox.hgrow="ALWAYS">
+                        <VBox spacing="20.0" HBox.hgrow="ALWAYS">
                             <children>
-                                <VBox prefHeight="733.0" prefWidth="674.0" style="-fx-border-color: #ddd;" VBox.vgrow="ALWAYS">
+                                <VBox spacing="10.0" style="-fx-border-color: #ddd;" VBox.vgrow="ALWAYS">
                                     <children>
-                                <Label text="Adicionar alunos(as)">
+                                        <Label text="Adicionar alunos(as)">
                                             <VBox.margin>
                                                 <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
                                             </VBox.margin>
                                         </Label>
-                              <Label text="Filtrar por escolaridade">
-                                <VBox.margin>
-                                   <Insets left="20.0" right="20.0" />
-                                </VBox.margin>
-                              </Label>
-                              <ChoiceBox fx:id="filtroEscolaridade" prefHeight="31.0" prefWidth="300.0">
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="20.0" right="20.0" />
-                                 </VBox.margin>
-                              </ChoiceBox>
-                              <Label text="Busque o aluno(a) pelo nome.">
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="20.0" right="20.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <HBox prefHeight="34.0" prefWidth="433.0">
-                                 <children>
-                                    <TextField fx:id="buscarAlunoNome" prefHeight="31.0" prefWidth="300.0" promptText="Digite o nome do aluno(a)">
-                                       <HBox.margin>
-                                          <Insets left="20.0" />
-                                       </HBox.margin>
-                                    </TextField>
-                                    <Region prefHeight="34.0" prefWidth="8.0" />
-                                    <Button fx:id="adicionarAlunoButton" mnemonicParsing="false" prefHeight="31.0" prefWidth="148.0" text="Adicionar selecionado">
-                                       <HBox.margin>
-                                          <Insets right="20.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                 </children>
-                              </HBox>
-                              <ListView fx:id="SugestoesAlunosList" prefHeight="300.0" prefWidth="632.0">
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="20.0" right="20.0" />
-                                 </VBox.margin>
-                              </ListView>
-                              <Label text="Alunos adicionados à turma:">
-                                 <VBox.margin>
-                                    <Insets bottom="4.0" left="20.0" right="20.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <ListView fx:id="ListAlunosTurma" prefHeight="200.0" prefWidth="632.0">
-                                 <VBox.margin>
-                                    <Insets left="20.0" right="20.0" />
-                                 </VBox.margin>
-                              </ListView>
+                                        <Label text="Filtrar por escolaridade">
+                                            <VBox.margin>
+                                                <Insets left="20.0" right="20.0" />
+                                            </VBox.margin>
+                                        </Label>
+                                        <ChoiceBox fx:id="filtroEscolaridade" prefWidth="200.0">
+                                            <VBox.margin>
+                                                <Insets left="20.0" right="20.0" />
+                                            </VBox.margin>
+                                        </ChoiceBox>
+                                        <Label text="Busque o aluno(a) pelo nome.">
+                                            <VBox.margin>
+                                                <Insets left="20.0" right="20.0" />
+                                            </VBox.margin>
+                                        </Label>
+                                        <HBox prefHeight="34.0" prefWidth="433.0">
+                                            <children>
+                                                <TextField fx:id="buscarAlunoNome" prefWidth="300.0" promptText="Digite o nome do aluno(a)">
+                                                    <HBox.margin>
+                                                        <Insets left="20.0" />
+                                                    </HBox.margin>
+                                                </TextField>
+                                                <Region prefHeight="34.0" prefWidth="8.0" />
+                                                <Button fx:id="adicionarAlunoButton" mnemonicParsing="false" prefWidth="220.0" style="-fx-background-color: #26568C;" text="Adicionar selecionado" textFill="WHITE">
+                                                    <HBox.margin>
+                                                        <Insets right="20.0" />
+                                                    </HBox.margin>
+                                                </Button>
+                                            </children>
+                                        </HBox>
+                                        <ListView fx:id="SugestoesAlunosList">
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="20.0" right="20.0" />
+                                            </VBox.margin>
+                                        </ListView>
+                                        <Label text="Alunos adicionados à turma:">
+                                            <VBox.margin>
+                                                <Insets left="20.0" right="20.0" />
+                                            </VBox.margin>
+                                        </Label>
+                                        <ListView fx:id="ListAlunosTurma">
+                                            <VBox.margin>
+                                                <Insets bottom="20.0" left="20.0" right="20.0" />
+                                            </VBox.margin>
+                                        </ListView>
                                     </children>
                                 </VBox>
-                                <Region prefHeight="10.0" prefWidth="200.0" />
                                 <Label fx:id="erroMensagem" text="" textFill="red" wrapText="true">
                                     <VBox.margin>
                                         <Insets bottom="10.0" left="10.0" right="10.0" />
                                     </VBox.margin>
                                 </Label>
-                                <HBox alignment="CENTER" prefHeight="9.0" prefWidth="435.0">
+                                <HBox alignment="BOTTOM_RIGHT" spacing="20.0">
                                     <children>
                                         <Button fx:id="cancelCadastroBt" mnemonicParsing="false" prefHeight="30.0" prefWidth="220.0" text="Cancelar" />
-                                        <Region prefHeight="31.0" prefWidth="13.0" />
-                                        <Button fx:id="cadastroTurmaButton" mnemonicParsing="false" prefWidth="220.0" text="Cadastrar Turma" />
+                                        <Button fx:id="cadastroTurmaButton" mnemonicParsing="false" prefWidth="220.0" style="-fx-background-color: #26568C;" text="Cadastrar Turma" textFill="WHITE" />
                                     </children>
                                 </HBox>
                             </children>
@@ -194,6 +188,9 @@
                     </children>
                 </HBox>
             </children>
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
         </VBox>
     </center>
 
