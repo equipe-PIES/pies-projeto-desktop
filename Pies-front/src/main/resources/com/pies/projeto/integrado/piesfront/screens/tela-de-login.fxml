@@ -59,24 +59,18 @@
                   <Label fx:id="legendaPassword" text="Senha:" />
                   <PasswordField fx:id="passwordField" prefHeight="38.0" promptText="Senha" />
                   
-                  <Button fx:id="loginButton" mnemonicParsing="false" onAction="#handleLoginButtonAction" prefHeight="38.0" prefWidth="290.0" style="-fx-background-color: #3f9bd2;" text="Entrar" textFill="WHITE">
+                  <Button fx:id="loginButton" mnemonicParsing="false" onAction="#handleLoginButtonAction" prefHeight="38.0" prefWidth="290.0" style="-fx-background-color: #f3aa45;" text="Entrar" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
-                     <effect>
-                        <Blend>
-                           <topInput>
-                              <SepiaTone />
-                           </topInput>
-                        </Blend>
-                     </effect></Button>
+                  </Button>
                   
                   <Hyperlink fx:id="forgotPasswordLink" onAction="#handleForgotPasswordAction" text="Esqueci minha senha." textFill="#8a8686" />
                   
-                  <Label fx:id="errorMessageLabel" textFill="#ee7d7d" wrapText="true" />
+                  <Label fx:id="errorMessageLabel" textFill="#e44c3c" wrapText="true" />
                   
                   <ProgressBar fx:id="loginProgressBar" prefWidth="290.0" progress="0.0" visible="true" />
                </children>

@@ -103,19 +103,39 @@ public class ViewTurmasCoordController implements Initializable {
             containerCards.getChildren().add(vazio);
             return;
         }
-        for (TurmaDTO t : lista) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                        "/com/pies/projeto/integrado/piesfront/screens/card-turma-edit.fxml"));
-                VBox node = loader.load();
-                CardTurmaController controller = loader.getController();
-                controller.setTurma(t);
-                containerCards.getChildren().add(node);
-            } catch (IOException e) {
-                System.err.println("Erro ao carregar card de turma: " + e.getMessage());
-                e.printStackTrace();
+        
+        // Carregar cards em lotes para evitar travamento da UI
+        final int BATCH_SIZE = 10;
+        carregarCardsEmLotes(lista, 0, BATCH_SIZE);
+    }
+    
+    private void carregarCardsEmLotes(List<TurmaDTO> lista, int start, int batchSize) {
+        if (start >= lista.size()) return;
+        
+        int end = Math.min(start + batchSize, lista.size());
+        List<TurmaDTO> lote = lista.subList(start, end);
+        
+        // Carregar FXML em background thread
+        java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+            List<VBox> cards = new java.util.ArrayList<>();
+            for (TurmaDTO t : lote) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                            "/com/pies/projeto/integrado/piesfront/screens/card-turma-edit.fxml"));
+                    VBox node = loader.load();
+                    CardTurmaController controller = loader.getController();
+                    controller.setTurma(t);
+                    cards.add(node);
+                } catch (IOException e) {
+                    System.err.println("Erro ao carregar card de turma: " + e.getMessage());
+                }
             }
-        }
+            return cards;
+        }).thenAccept(cards -> javafx.application.Platform.runLater(() -> {
+            containerCards.getChildren().addAll(cards);
+            // Carregar próximo lote
+            carregarCardsEmLotes(lista, end, batchSize);
+        }));
     }
 
     private void filtrarPorNome() {
