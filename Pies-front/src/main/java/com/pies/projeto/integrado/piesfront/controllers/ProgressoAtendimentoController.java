@@ -454,50 +454,50 @@ public class ProgressoAtendimentoController implements Initializable {
             var ris = authService.getRelatoriosIndividuaisPorEducando(educando.id());
             hasRI = ris != null && !ris.isEmpty();
         }
-        if (editarAnamnese != null) { editarAnamnese.setVisible(hasAnamnese); editarAnamnese.setManaged(hasAnamnese); }
-        if (verAnamnese != null) { verAnamnese.setVisible(hasAnamnese); verAnamnese.setManaged(hasAnamnese); }
-        if (excluirAnamnese != null) { excluirAnamnese.setVisible(hasAnamnese); excluirAnamnese.setManaged(hasAnamnese); }
+        if (editarAnamnese != null) { editarAnamnese.setVisible(true); editarAnamnese.setManaged(true); editarAnamnese.setDisable(!hasAnamnese); }
+        if (verAnamnese != null) { verAnamnese.setVisible(true); verAnamnese.setManaged(true); verAnamnese.setDisable(!hasAnamnese); }
+        if (excluirAnamnese != null) { excluirAnamnese.setVisible(true); excluirAnamnese.setManaged(true); excluirAnamnese.setDisable(!hasAnamnese); }
 
-        if (editarDiagnosticoInicial != null) { editarDiagnosticoInicial.setVisible(hasDI); editarDiagnosticoInicial.setManaged(hasDI); }
-        if (verDiagnosticoInicial != null) { verDiagnosticoInicial.setVisible(hasDI); verDiagnosticoInicial.setManaged(hasDI); }
-        if (excluirDiagnosticoInicial != null) { excluirDiagnosticoInicial.setVisible(hasDI); excluirDiagnosticoInicial.setManaged(hasDI); }
+        if (editarDiagnosticoInicial != null) { editarDiagnosticoInicial.setVisible(true); editarDiagnosticoInicial.setManaged(true); editarDiagnosticoInicial.setDisable(!hasDI); }
+        if (verDiagnosticoInicial != null) { verDiagnosticoInicial.setVisible(true); verDiagnosticoInicial.setManaged(true); verDiagnosticoInicial.setDisable(!hasDI); }
+        if (excluirDiagnosticoInicial != null) { excluirDiagnosticoInicial.setVisible(true); excluirDiagnosticoInicial.setManaged(true); excluirDiagnosticoInicial.setDisable(!hasDI); }
 
-        if (editarPDI != null) { editarPDI.setVisible(hasPDI); editarPDI.setManaged(hasPDI); }
-        if (verPDI != null) { verPDI.setVisible(hasPDI); verPDI.setManaged(hasPDI); }
-        if (excluirPDI != null) { excluirPDI.setVisible(hasPDI); excluirPDI.setManaged(hasPDI); }
+        if (editarPDI != null) { editarPDI.setVisible(true); editarPDI.setManaged(true); editarPDI.setDisable(!hasPDI); }
+        if (verPDI != null) { verPDI.setVisible(true); verPDI.setManaged(true); verPDI.setDisable(!hasPDI); }
+        if (excluirPDI != null) { excluirPDI.setVisible(true); excluirPDI.setManaged(true); excluirPDI.setDisable(!hasPDI); }
 
-        if (editarPAEE != null) { editarPAEE.setVisible(hasPAEE); editarPAEE.setManaged(hasPAEE); }
-        if (verPAEE != null) { verPAEE.setVisible(hasPAEE); verPAEE.setManaged(hasPAEE); }
-        if (excluirPAEE != null) { excluirPAEE.setVisible(hasPAEE); excluirPAEE.setManaged(hasPAEE); }
+        if (editarPAEE != null) { editarPAEE.setVisible(true); editarPAEE.setManaged(true); editarPAEE.setDisable(!hasPAEE); }
+        if (verPAEE != null) { verPAEE.setVisible(true); verPAEE.setManaged(true); verPAEE.setDisable(!hasPAEE); }
+        if (excluirPAEE != null) { excluirPAEE.setVisible(true); excluirPAEE.setManaged(true); excluirPAEE.setDisable(!hasPAEE); }
 
-        if (editarRelatorioIndividual != null) { editarRelatorioIndividual.setVisible(hasRI); editarRelatorioIndividual.setManaged(hasRI); }
-        if (verRelatorioIndividual != null) { verRelatorioIndividual.setVisible(hasRI); verRelatorioIndividual.setManaged(hasRI); }
-        if (excluirRelatorioIndividual != null) { excluirRelatorioIndividual.setVisible(hasRI); excluirRelatorioIndividual.setManaged(hasRI); }
-        if (editarRelatorioIndividual1 != null) { editarRelatorioIndividual1.setVisible(hasRI); editarRelatorioIndividual1.setManaged(hasRI); }
-        if (baixarRelatorioIndividual != null) { baixarRelatorioIndividual.setVisible(hasRI); baixarRelatorioIndividual.setManaged(hasRI); }
+        if (editarRelatorioIndividual != null) { editarRelatorioIndividual.setVisible(true); editarRelatorioIndividual.setManaged(true); editarRelatorioIndividual.setDisable(!hasRI); }
+        if (verRelatorioIndividual != null) { verRelatorioIndividual.setVisible(true); verRelatorioIndividual.setManaged(true); verRelatorioIndividual.setDisable(!hasRI); }
+        if (excluirRelatorioIndividual != null) { excluirRelatorioIndividual.setVisible(true); excluirRelatorioIndividual.setManaged(true); excluirRelatorioIndividual.setDisable(!hasRI); }
+        if (editarRelatorioIndividual1 != null) { editarRelatorioIndividual1.setVisible(true); editarRelatorioIndividual1.setManaged(true); editarRelatorioIndividual1.setDisable(!hasRI); }
+        if (baixarRelatorioIndividual != null) { baixarRelatorioIndividual.setVisible(true); baixarRelatorioIndividual.setManaged(true); baixarRelatorioIndividual.setDisable(!hasRI); }
     }
 
     private void atualizarVisibilidadePorExistenciaFromCache() {
-        if (editarAnamnese != null) { editarAnamnese.setVisible(hasAnamneseCached); editarAnamnese.setManaged(hasAnamneseCached); }
-        if (verAnamnese != null) { verAnamnese.setVisible(hasAnamneseCached); verAnamnese.setManaged(hasAnamneseCached); }
-        if (excluirAnamnese != null) { excluirAnamnese.setVisible(hasAnamneseCached); excluirAnamnese.setManaged(hasAnamneseCached); }
+        if (editarAnamnese != null) { editarAnamnese.setVisible(true); editarAnamnese.setManaged(true); editarAnamnese.setDisable(!hasAnamneseCached); }
+        if (verAnamnese != null) { verAnamnese.setVisible(true); verAnamnese.setManaged(true); verAnamnese.setDisable(!hasAnamneseCached); }
+        if (excluirAnamnese != null) { excluirAnamnese.setVisible(true); excluirAnamnese.setManaged(true); excluirAnamnese.setDisable(!hasAnamneseCached); }
 
-        if (editarDiagnosticoInicial != null) { editarDiagnosticoInicial.setVisible(hasDICached); editarDiagnosticoInicial.setManaged(hasDICached); }
-        if (verDiagnosticoInicial != null) { verDiagnosticoInicial.setVisible(hasDICached); verDiagnosticoInicial.setManaged(hasDICached); }
-        if (excluirDiagnosticoInicial != null) { excluirDiagnosticoInicial.setVisible(hasDICached); excluirDiagnosticoInicial.setManaged(hasDICached); }
+        if (editarDiagnosticoInicial != null) { editarDiagnosticoInicial.setVisible(true); editarDiagnosticoInicial.setManaged(true); editarDiagnosticoInicial.setDisable(!hasDICached); }
+        if (verDiagnosticoInicial != null) { verDiagnosticoInicial.setVisible(true); verDiagnosticoInicial.setManaged(true); verDiagnosticoInicial.setDisable(!hasDICached); }
+        if (excluirDiagnosticoInicial != null) { excluirDiagnosticoInicial.setVisible(true); excluirDiagnosticoInicial.setManaged(true); excluirDiagnosticoInicial.setDisable(!hasDICached); }
 
-        if (editarPDI != null) { editarPDI.setVisible(hasPDICached); editarPDI.setManaged(hasPDICached); }
-        if (verPDI != null) { verPDI.setVisible(hasPDICached); verPDI.setManaged(hasPDICached); }
-        if (excluirPDI != null) { excluirPDI.setVisible(hasPDICached); excluirPDI.setManaged(hasPDICached); }
+        if (editarPDI != null) { editarPDI.setVisible(true); editarPDI.setManaged(true); editarPDI.setDisable(!hasPDICached); }
+        if (verPDI != null) { verPDI.setVisible(true); verPDI.setManaged(true); verPDI.setDisable(!hasPDICached); }
+        if (excluirPDI != null) { excluirPDI.setVisible(true); excluirPDI.setManaged(true); excluirPDI.setDisable(!hasPDICached); }
 
-        if (editarPAEE != null) { editarPAEE.setVisible(hasPAEECached); editarPAEE.setManaged(hasPAEECached); }
-        if (verPAEE != null) { verPAEE.setVisible(hasPAEECached); verPAEE.setManaged(hasPAEECached); }
+        if (editarPAEE != null) { editarPAEE.setVisible(true); editarPAEE.setManaged(true); editarPAEE.setDisable(!hasPAEECached); }
+        if (verPAEE != null) { verPAEE.setVisible(true); verPAEE.setManaged(true); verPAEE.setDisable(!hasPAEECached); }
 
-        if (editarRelatorioIndividual != null) { editarRelatorioIndividual.setVisible(hasRICached); editarRelatorioIndividual.setManaged(hasRICached); }
-        if (verRelatorioIndividual != null) { verRelatorioIndividual.setVisible(hasRICached); verRelatorioIndividual.setManaged(hasRICached); }
-        if (excluirRelatorioIndividual != null) { excluirRelatorioIndividual.setVisible(hasRICached); excluirRelatorioIndividual.setManaged(hasRICached); }
-        if (editarRelatorioIndividual1 != null) { editarRelatorioIndividual1.setVisible(hasRICached); editarRelatorioIndividual1.setManaged(hasRICached); }
-        if (baixarRelatorioIndividual != null) { baixarRelatorioIndividual.setVisible(hasRICached); baixarRelatorioIndividual.setManaged(hasRICached); }
+        if (editarRelatorioIndividual != null) { editarRelatorioIndividual.setVisible(true); editarRelatorioIndividual.setManaged(true); editarRelatorioIndividual.setDisable(!hasRICached); }
+        if (verRelatorioIndividual != null) { verRelatorioIndividual.setVisible(true); verRelatorioIndividual.setManaged(true); verRelatorioIndividual.setDisable(!hasRICached); }
+        if (excluirRelatorioIndividual != null) { excluirRelatorioIndividual.setVisible(true); excluirRelatorioIndividual.setManaged(true); excluirRelatorioIndividual.setDisable(!hasRICached); }
+        if (editarRelatorioIndividual1 != null) { editarRelatorioIndividual1.setVisible(true); editarRelatorioIndividual1.setManaged(true); editarRelatorioIndividual1.setDisable(!hasRICached); }
+        if (baixarRelatorioIndividual != null) { baixarRelatorioIndividual.setVisible(true); baixarRelatorioIndividual.setManaged(true); baixarRelatorioIndividual.setDisable(!hasRICached); }
     }
 
     @FXML

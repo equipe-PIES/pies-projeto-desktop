@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.*?>
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PAEEController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.PAEEController">
 
     <!-- TOPO -->
     <top>
@@ -39,9 +36,9 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
-                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
-                        <Button id="relatoriosButton" fx:id="relatoriosButton" text="Relatórios" />
+                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" styleClass="botao-topo" text="Turmas" />
+                        <Button id="alunosButton" fx:id="alunosButton" styleClass="botao-topo" text="Alunos" />
+                        <Button id="relatoriosButton" fx:id="relatoriosButton" styleClass="botao-topo" text="Relatórios" />
                     </children>
                 </HBox>
             </children>
@@ -53,7 +50,7 @@
     <center>
         <VBox spacing="20" style="-fx-background-color: white;">
             <padding>
-                <Insets bottom="20" left="30" right="30" top="30" />
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
             </padding>
 
             <children>
@@ -76,7 +73,7 @@
                         <Label style="-fx-font-weight: bold;" text="Resumo" />
 
                         <Label prefHeight="21.0" prefWidth="444.0" text="Apresente o resumo de caso do educando." />
-                        <TextArea fx:id="resumoCaso" prefHeight="120" promptText="Digite" wrapText="true" />
+                        <TextArea fx:id="resumoCaso" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" />
 
                     </children>
 
@@ -93,40 +90,40 @@
 
                         <Label style="-fx-font-weight: bold;" text="Dificuldades apresentadas" />
 
-                        <HBox spacing="30">
+                        <HBox spacing="100.0">
                             <children>
 
                                 <!-- COLUNA ESQUERDA -->
-                                <VBox prefHeight="206.0" prefWidth="380.0" spacing="10">
+                                <VBox spacing="5.0">
                                     <children>
 
                                         <Label text="Motores/Psicomotores" />
-                              <ChoiceBox fx:id="dificuldadesMotoresPsicomotoresCb" prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesMotoresPsicomotoresCb" prefWidth="200.0" styleClass="campo-digite-selecione" />
                               <Label text="Cognitivo" />
-                              <ChoiceBox fx:id="dificuldadesCognitivoCb" prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesCognitivoCb" prefWidth="200.0" styleClass="campo-digite-selecione" />
                               <Label text="Sensorial" />
-                              <ChoiceBox fx:id="dificuldadesSensorialCb" prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesSensorialCb" prefWidth="200.0" styleClass="campo-digite-selecione" />
 
                                         <Label text="Linguagem oral/Comunicação" />
-                              <ChoiceBox fx:id="dificuldadesLinguagemComunicacaoCb" prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesLinguagemComunicacaoCb" prefWidth="200.0" styleClass="campo-digite-selecione" />
                                     </children>
 
                                 </VBox>
 
 
                                 <!-- COLUNA DIREITA -->
-                                <VBox prefHeight="206.0" prefWidth="416.0" spacing="10">
+                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                     <children>
 
                                         <Label text="Familiar" />
-                              <ChoiceBox fx:id="dificuldadesFamiliarCb" prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesFamiliarCb" prefWidth="200.0" styleClass="campo-digite-selecione" />
 
                                         <Label text="Afetivo/Interpessoais" />
-                              <ChoiceBox fx:id="dificuldadesAfetivoInterpessoaisCb" prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesAfetivoInterpessoaisCb" prefWidth="200.0" styleClass="campo-digite-selecione" />
                               <Label text="Raciocínio Lógico/Matemático" />
-                              <ChoiceBox fx:id="dificuldadesRaciocinioLogicoMatematicoCb" prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesRaciocinioLogicoMatematicoCb" prefWidth="200.0" styleClass="campo-digite-selecione" />
                               <Label text="AVAs" />
-                              <ChoiceBox fx:id="dificuldadesAVAsCb" prefWidth="300.0" />
+                              <ChoiceBox fx:id="dificuldadesAVAsCb" prefWidth="200.0" styleClass="campo-digite-selecione" />
                                     </children>
 
                                 </VBox>
@@ -140,11 +137,20 @@
 
 
                 <!-- BOTÕES -->
-                <HBox alignment="CENTER_RIGHT" spacing="20">
+                <HBox alignment="CENTER_RIGHT" spacing="20" VBox.vgrow="ALWAYS">
                     <children>
+                  <HBox alignment="BOTTOM_LEFT" HBox.hgrow="ALWAYS">
+                     <children>
+                              <Button onAction="#handleCancelAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Cancelar" />
+                     </children>
+                  </HBox>
                         <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
-                        <Button onAction="#handleCancelAction" text="Cancelar" />
-                        <Button onAction="#handleGoToPaee2" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
+                  <HBox alignment="BOTTOM_RIGHT" spacing="20.0">
+                     <children>
+                              <Button onAction="#handleBackAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Voltar" />
+                              <Button onAction="#handleGoToPaee2" prefWidth="220.0" styleClass="botao-seguinte" text="Seguinte" />
+                     </children>
+                  </HBox>
                     </children>
                 </HBox>
 

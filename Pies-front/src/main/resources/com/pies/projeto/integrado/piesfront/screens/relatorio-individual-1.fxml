@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.*?>
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.RelatorioIndividualController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.RelatorioIndividualController">
 
     <!-- TOPO -->
     <top>
@@ -39,9 +36,9 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
-                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
-                        <Button id="relatoriosButton" fx:id="relatoriosButton" text="Relatórios" />
+                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" styleClass="botao-topo" text="Turmas" />
+                        <Button id="alunosButton" fx:id="alunosButton" styleClass="botao-topo" text="Alunos" />
+                        <Button id="relatoriosButton" fx:id="relatoriosButton" styleClass="botao-topo" text="Relatórios" />
                     </children>
                 </HBox>
             </children>
@@ -67,7 +64,7 @@
       
       
                       <!-- OBJETIVOS DO PLANO -->
-                      <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                      <VBox style="-fx-border-color: #ddd; -fx-border-radius: 5;">
       
                           <padding>
                               <Insets bottom="20" left="20" right="20" top="20" />
@@ -75,42 +72,63 @@
       
                           <children>
       
-                              <Label style="-fx-font-weight: bold;" text="Dados Funcionais" />
+                              <Label style="-fx-font-weight: bold;" text="Dados Funcionais">
+                           <VBox.margin>
+                              <Insets bottom="12.0" />
+                           </VBox.margin></Label>
       
-                              <Label prefHeight="47.0" text="Introduza aqui um texto inicial, informando com que frequência semanal o educando participados atendimentos, o tempo de duração de cada atendimento e o objetivo geral dessas atividades." wrapText="true" VBox.vgrow="SOMETIMES" />
-                              <TextArea fx:id="dificuldadesRaciocinio" prefHeight="120" promptText="Digite" wrapText="true" />
+                              <Label text="Introduza aqui um texto inicial, informando com que frequência semanal o educando participados atendimentos, o tempo de duração de cada atendimento e o objetivo geral dessas atividades." wrapText="true" />
+                              <TextArea fx:id="dificuldadesRaciocinio" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" />
       
                           </children>
       
                       </VBox>
-                  <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                  <VBox style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                      <children>
-                        <Label style="-fx-font-weight: bold;" text="Funcionalidade Cognitiva" />
-                        <Label prefHeight="47.0" text="Refere-se às habilidades cognitivasrelacionadas à aprendizagem dos conteúdos curriculares propostos, por meio deatividades escritas, leituras, jogos e raciocínio lógico." wrapText="true" VBox.vgrow="SOMETIMES" />
-                        <TextArea fx:id="dificuldadesRaciocinio1" prefHeight="120" promptText="Digite" wrapText="true" />
+                        <Label style="-fx-font-weight: bold;" text="Funcionalidade Cognitiva">
+                           <VBox.margin>
+                              <Insets bottom="12.0" />
+                           </VBox.margin></Label>
+                        <Label text="Refere-se às habilidades cognitivasrelacionadas à aprendizagem dos conteúdos curriculares propostos, por meio deatividades escritas, leituras, jogos e raciocínio lógico." wrapText="true" />
+                        <TextArea fx:id="dificuldadesRaciocinio1" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" />
                      </children>
                      <padding>
                         <Insets bottom="20" left="20" right="20" top="20" />
                      </padding>
                   </VBox>
-                  <VBox spacing="12" style="-fx-border-color: #ddd; -fx-border-radius: 5;">
+                  <VBox style="-fx-border-color: #ddd; -fx-border-radius: 5;">
                      <children>
-                        <Label style="-fx-font-weight: bold;" text="Alfabetização e Letramento" />
-                        <Label prefHeight="47.0" text="Descreva detalhadamente como o alunofaz uso da leitura e da escrita e como se expressa em relação a essas atividades.Inclua também qual é o apoio oferecido para auxiliar o aluno nessas práticas." wrapText="true" VBox.vgrow="SOMETIMES" />
-                        <TextArea fx:id="dificuldadesRaciocinio11" prefHeight="120" promptText="Digite" wrapText="true" />
+                        <Label style="-fx-font-weight: bold;" text="Alfabetização e Letramento">
+                           <VBox.margin>
+                              <Insets bottom="12.0" />
+                           </VBox.margin></Label>
+                        <Label text="Descreva detalhadamente como o alunofaz uso da leitura e da escrita e como se expressa em relação a essas atividades.Inclua também qual é o apoio oferecido para auxiliar o aluno nessas práticas." wrapText="true" VBox.vgrow="SOMETIMES" />
+                        <TextArea fx:id="dificuldadesRaciocinio11" prefHeight="120" promptText="Digite" styleClass="campo-digite-selecione" wrapText="true" />
                      </children>
                      <padding>
                         <Insets bottom="20" left="20" right="20" top="20" />
                      </padding>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
                   </VBox>
       
       
                       <!-- BOTÕES -->
-                      <HBox alignment="CENTER_RIGHT" spacing="20">
+                      <HBox alignment="CENTER_RIGHT">
                           <children>
+                        <HBox HBox.hgrow="ALWAYS">
+                           <children>
+                                    <Button onAction="#handleCancelAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Cancelar" />
+                           </children>
+                        </HBox>
                               <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
-                              <Button onAction="#handleCancelAction" text="Cancelar" />
-                              <Button onAction="#handleGoToPdi2" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
+                        <HBox spacing="20.0">
+                           <children>
+                                    <Button onAction="#handleBackAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Voltar" />
+                                    <Button onAction="#handleGoToPdi2" prefWidth="220.0" styleClass="botao-seguinte" text="Seguinte" />
+                           </children>
+                        </HBox>
                           </children>
                       </HBox>
       
