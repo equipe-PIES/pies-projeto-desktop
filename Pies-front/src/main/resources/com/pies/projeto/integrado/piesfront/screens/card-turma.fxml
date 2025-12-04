@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="cardTurma" alignment="CENTER" prefWidth="340.0" prefHeight="200" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #c0c0c0; -fx-background-radius: 8; -fx-border-radius: 8;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CardTurmaController">
+<VBox fx:id="cardTurma" prefWidth="340.0" prefHeight="200" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #c0c0c0; -fx-background-radius: 8; -fx-border-radius: 8;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CardTurmaController">
    <children>
       <VBox spacing="5.0" VBox.vgrow="ALWAYS">
          <children>
@@ -38,7 +38,7 @@
             </Label>
          </children>
       </VBox>
-      <HBox alignment="BOTTOM_RIGHT">
+      <HBox alignment="CENTER">
          <children>
             <Button fx:id="verificarTurmaButton" mnemonicParsing="false" onAction="#handleVerificarTurmaAction" prefWidth="220.0" style="-fx-background-color: #26568C;" text="Verificar turma" textFill="WHITE" />
          </children>

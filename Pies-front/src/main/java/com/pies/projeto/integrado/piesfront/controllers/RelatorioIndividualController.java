@@ -38,10 +38,16 @@ public class RelatorioIndividualController {
     private boolean novoRegistro = false;
 
     public void setEducando(EducandoDTO educando) {
+        System.out.println("=== RelatorioIndividualController.setEducando ===");
+        System.out.println("Educando: " + (educando != null ? educando.nome() + " (ID: " + educando.id() + ")" : "null"));
+        System.out.println("novoRegistro: " + novoRegistro);
         this.educando = educando;
         atualizarIndicador();
         if (!novoRegistro) {
+            System.out.println("Chamando carregarRelatorioExistente...");
             carregarRelatorioExistente();
+        } else {
+            System.out.println("Modo novo registro - não carregando dados existentes");
         }
         populateFromFormData();
     }
@@ -222,15 +228,23 @@ public class RelatorioIndividualController {
     }
 
     private void populateFromFormData() {
+        System.out.println("=== populateFromFormData (Step " + currentStep + ") ===");
         if (currentStep == 1) {
+            System.out.println("Populando step 1:");
+            System.out.println("  dadosFuncionais: " + (formData.dadosFuncionais != null ? formData.dadosFuncionais.substring(0, Math.min(50, formData.dadosFuncionais.length())) + "..." : "null"));
+            System.out.println("  funcionalidadeCognitiva: " + (formData.funcionalidadeCognitiva != null ? formData.funcionalidadeCognitiva.substring(0, Math.min(50, formData.funcionalidadeCognitiva.length())) + "..." : "null"));
             if (dificuldadesRaciocinio != null) dificuldadesRaciocinio.setText(val(formData.dadosFuncionais));
             if (dificuldadesRaciocinio1 != null) dificuldadesRaciocinio1.setText(val(formData.funcionalidadeCognitiva));
             if (dificuldadesRaciocinio11 != null) dificuldadesRaciocinio11.setText(val(formData.alfabetizacaoLetramento));
         } else if (currentStep == 2) {
+            System.out.println("Populando step 2:");
+            System.out.println("  adaptacoesCurriculares: " + (formData.adaptacoesCurriculares != null ? formData.adaptacoesCurriculares.substring(0, Math.min(50, formData.adaptacoesCurriculares.length())) + "..." : "null"));
             if (dificuldadesRaciocinio != null) dificuldadesRaciocinio.setText(val(formData.adaptacoesCurriculares));
             if (dificuldadesRaciocinio1 != null) dificuldadesRaciocinio1.setText(val(formData.participacaoAtividades));
             if (dificuldadesRaciocinio11 != null) dificuldadesRaciocinio11.setText(val(formData.autonomia));
         } else if (currentStep == 3) {
+            System.out.println("Populando step 3:");
+            System.out.println("  interacaoProfessora: " + (formData.interacaoProfessora != null ? formData.interacaoProfessora.substring(0, Math.min(50, formData.interacaoProfessora.length())) + "..." : "null"));
             if (dificuldadesRaciocinio != null) dificuldadesRaciocinio.setText(val(formData.interacaoProfessora));
             if (dificuldadesRaciocinio1 != null) dificuldadesRaciocinio1.setText(val(formData.atividadesVidaDiaria));
         }
@@ -245,10 +259,21 @@ public class RelatorioIndividualController {
     }
 
     private void carregarRelatorioExistente() {
-        if (educando == null || educando.id() == null) return;
+        System.out.println("=== carregarRelatorioExistente ===");
+        if (educando == null || educando.id() == null) {
+            System.out.println("Educando ou ID é null, retornando");
+            return;
+        }
+        System.out.println("Buscando relatórios para educando ID: " + educando.id());
         var lista = authService.getRelatoriosIndividuaisPorEducando(educando.id());
-        if (lista == null || lista.isEmpty()) return;
+        System.out.println("Relatórios encontrados: " + (lista != null ? lista.size() : "null"));
+        if (lista == null || lista.isEmpty()) {
+            System.out.println("Nenhum relatório encontrado");
+            return;
+        }
         var dto = lista.get(lista.size() - 1);
+        System.out.println("Carregando último relatório (ID: " + dto.id() + ")");
+        System.out.println("Dados funcionais: " + (dto.dadosFuncionais() != null ? dto.dadosFuncionais().substring(0, Math.min(50, dto.dadosFuncionais().length())) + "..." : "null"));
         formData.dadosFuncionais = dto.dadosFuncionais();
         formData.funcionalidadeCognitiva = dto.funcionalidadeCognitiva();
         formData.alfabetizacaoLetramento = dto.alfabetizacaoLetramento();
@@ -257,5 +282,6 @@ public class RelatorioIndividualController {
         formData.autonomia = dto.autonomia();
         formData.interacaoProfessora = dto.interacaoProfessora();
         formData.atividadesVidaDiaria = dto.atividadesVidaDiaria();
+        System.out.println("Dados carregados no formData");
     }
 }

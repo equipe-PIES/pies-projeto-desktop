@@ -405,6 +405,12 @@ public class ProgressoAtendimentoController implements Initializable {
     }
 
     private void navegarNoStagePaiComModo(String resource, String titulo, boolean carregarDadosExistentes) {
+        System.out.println("=== navegarNoStagePaiComModo ===");
+        System.out.println("Resource: " + resource);
+        System.out.println("Titulo: " + titulo);
+        System.out.println("carregarDadosExistentes: " + carregarDadosExistentes);
+        System.out.println("Educando: " + (educando != null ? educando.nome() + " (ID: " + educando.id() + ")" : "null"));
+        
         Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
         Stage parentStage = (Stage) popupStage.getOwner();
         if (parentStage == null) {
@@ -432,6 +438,7 @@ public class ProgressoAtendimentoController implements Initializable {
                 c.setEducando(educando);
             } else if (controller instanceof RelatorioIndividualController c) {
                 System.out.println("Controller é RelatorioIndividualController, setando educando...");
+                System.out.println("Setando novoRegistro = " + !carregarDadosExistentes);
                 c.setNovoRegistro(!carregarDadosExistentes);
                 c.setEducando(educando);
             }
@@ -508,12 +515,8 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
-        var dto = new CreateRelatorioIndividualDTO(
-                educando.id(),
-                null, null, null, null, null, null, null, null
-        );
-        authService.criarRelatorioIndividual(dto);
-        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual");
+        // Não cria relatório vazio - apenas abre a tela em modo novo
+        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual", false);
     }
 }
 

@@ -39,7 +39,7 @@
             </Button>
          </children>
       </HBox>
-      <HBox alignment="BOTTOM_RIGHT">
+      <HBox alignment="CENTER">
          <children>
             <Button fx:id="verProgressoButton" mnemonicParsing="false" onAction="#handleVerProgressoAction" prefWidth="220.0" style="-fx-background-color: #26568C;" text="Ver Progresso" textFill="WHITE">
                <HBox.margin>

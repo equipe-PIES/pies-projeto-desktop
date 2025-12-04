@@ -212,6 +212,12 @@ public class RelatorioIndividualService {
      * @return RelatorioIndividualDTO com os dados convertidos
      */
     private RelatorioIndividualDTO toDTO(RelatorioIndividual r) {
+        System.out.println("=== toDTO RelatorioIndividual ===");
+        System.out.println("ID do relatório: " + r.getId());
+        System.out.println("DadosFuncionais: " + r.getDadosFuncionais());
+        System.out.println("FuncionalidadeCognitiva: " + r.getFuncionalidadeCognitiva());
+        System.out.println("AlfabetizacaoLetramento: " + r.getAlfabetizacaoLetramento());
+        
         String educandoId = r.getEducando() != null ? r.getEducando().getId() : null;
         String educandoNome = r.getEducando() != null ? r.getEducando().getNome() : null;
 
