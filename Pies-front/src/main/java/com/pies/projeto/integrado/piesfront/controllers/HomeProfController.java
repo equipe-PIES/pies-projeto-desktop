@@ -1,6 +1,7 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.TurmaDTO;
+import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
 import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import com.utils.Janelas;
@@ -146,12 +147,19 @@ public class HomeProfController implements Initializable {
 
         java.util.concurrent.CompletableFuture<UserInfoDTO> userFuture =
                 java.util.concurrent.CompletableFuture.supplyAsync(authService::getUserInfo);
+        java.util.concurrent.CompletableFuture<ProfessorDTO> professorFuture =
+                java.util.concurrent.CompletableFuture.supplyAsync(authService::getProfessorLogado);
         java.util.concurrent.CompletableFuture<String> profIdFuture =
                 java.util.concurrent.CompletableFuture.supplyAsync(authService::getProfessorId);
         java.util.concurrent.CompletableFuture<java.util.List<TurmaDTO>> turmasFuture =
                 java.util.concurrent.CompletableFuture.supplyAsync(authService::getTurmas);
 
         userFuture.thenAccept(userInfo -> javafx.application.Platform.runLater(() -> atualizarNomeUsuarioUI(userInfo)));
+        professorFuture.thenAccept(prof -> javafx.application.Platform.runLater(() -> {
+            if (prof != null && prof.getNome() != null && !prof.getNome().isEmpty()) {
+                if (nameUser != null) nameUser.setText(prof.getNome());
+            }
+        }));
 
         profIdFuture.thenCombine(turmasFuture, (profId, todasTurmas) -> {
             if (profId == null || todasTurmas == null) return java.util.List.<TurmaDTO>of();
@@ -202,15 +210,12 @@ public class HomeProfController implements Initializable {
     private void handleTurmasButtonAction() {
         javafx.event.ActionEvent fakeEvent = new javafx.event.ActionEvent(turmasButton, null);
         Janelas.carregarTela(fakeEvent,
-                "/com/pies/projeto/integrado/piesfront/screens/view-turmas-coord.fxml",
+                "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-prof.fxml",
                 "Turmas");
     }
 
     private void atualizarNomeUsuarioUI(UserInfoDTO userInfo) {
         if (userInfo != null) {
-            if (nameUser != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
-                nameUser.setText(userInfo.name());
-            }
             if (cargoUser != null && userInfo.role() != null) {
                 String cargo = switch (userInfo.role().toUpperCase()) {
                     case "PROFESSOR" -> "Professor(a)";
@@ -221,9 +226,6 @@ public class HomeProfController implements Initializable {
                 cargoUser.setText(cargo);
             }
         } else {
-            if (nameUser != null) {
-                nameUser.setText("Usuário");
-            }
             System.err.println("Não foi possível carregar o nome do usuário.");
         }
     }

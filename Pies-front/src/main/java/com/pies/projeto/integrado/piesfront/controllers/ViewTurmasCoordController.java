@@ -13,9 +13,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ChoiceBox;
+import javafx.collections.FXCollections;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,9 +39,13 @@ public class ViewTurmasCoordController implements Initializable {
     @FXML private ScrollPane turmasScrollPane;
     @FXML private TextField buscarTurma;
     @FXML private Button buscarTurmaButton;
+    @FXML private ChoiceBox<String> filterTipo;
+    @FXML private ChoiceBox<String> filterOpcoes;
 
     private final AuthService authService = AuthService.getInstance();
     private List<TurmaDTO> todasTurmas;
+    private java.util.List<com.pies.projeto.integrado.piesfront.dto.ProfessorDTO> todosProfessores;
+    private PauseTransition searchDebounce;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -55,7 +63,37 @@ public class ViewTurmasCoordController implements Initializable {
         }
 
         if (buscarTurmaButton != null) {
-            buscarTurmaButton.setOnAction(e -> filtrarPorNome());
+            buscarTurmaButton.setOnAction(e -> atualizarFiltro());
+        }
+
+        if (filterTipo != null) {
+            filterTipo.setItems(FXCollections.observableArrayList("Professor", "Grau de Escolaridade"));
+            filterTipo.setValue("Professor");
+            filterTipo.valueProperty().addListener((obs, ov, nv) -> {
+                if (filterOpcoes != null) {
+                    if ("Professor".equalsIgnoreCase(nv)) {
+                        popularProfessoresOpcoes();
+                    } else if ("Grau de Escolaridade".equalsIgnoreCase(nv)) {
+                        popularEscolaridadePadrao();
+                    }
+                }
+                atualizarFiltro();
+            });
+        }
+
+        if (filterOpcoes != null) {
+            filterOpcoes.valueProperty().addListener((obs, ov, nv) -> atualizarFiltro());
+        }
+
+        if (buscarTurma != null) {
+            searchDebounce = new PauseTransition(Duration.millis(300));
+            searchDebounce.setOnFinished(e -> atualizarFiltro());
+            buscarTurma.textProperty().addListener((obs, ov, nv) -> {
+                if (searchDebounce != null) {
+                    searchDebounce.stop();
+                    searchDebounce.playFromStart();
+                }
+            });
         }
 
         javafx.application.Platform.runLater(() -> {
@@ -88,11 +126,21 @@ public class ViewTurmasCoordController implements Initializable {
 
         java.util.concurrent.CompletableFuture<java.util.List<TurmaDTO>> turmasFuture =
                 java.util.concurrent.CompletableFuture.supplyAsync(authService::getTurmas);
+        java.util.concurrent.CompletableFuture<java.util.List<com.pies.projeto.integrado.piesfront.dto.ProfessorDTO>> profsFuture =
+                java.util.concurrent.CompletableFuture.supplyAsync(authService::getProfessores);
 
-        turmasFuture.thenAccept(lista -> javafx.application.Platform.runLater(() -> {
-            todasTurmas = lista != null ? lista : java.util.List.of();
-            exibirLista(todasTurmas);
-        }));
+        turmasFuture.thenAcceptBoth(profsFuture, (listaTurmas, listaProfs) -> {
+            todasTurmas = listaTurmas != null ? listaTurmas : java.util.List.of();
+            todosProfessores = listaProfs != null ? listaProfs : java.util.List.of();
+            javafx.application.Platform.runLater(() -> {
+                if (filterTipo != null && "Professor".equalsIgnoreCase(filterTipo.getValue())) {
+                    popularProfessoresOpcoes();
+                } else if (filterTipo != null && "Grau de Escolaridade".equalsIgnoreCase(filterTipo.getValue())) {
+                    popularEscolaridadePadrao();
+                }
+                exibirLista(todasTurmas);
+            });
+        });
     }
 
     private void exibirLista(List<TurmaDTO> lista) {
@@ -138,16 +186,73 @@ public class ViewTurmasCoordController implements Initializable {
         }));
     }
 
-    private void filtrarPorNome() {
+    private void atualizarFiltro() {
         String termo = buscarTurma != null && buscarTurma.getText() != null ? buscarTurma.getText().trim() : "";
-        if (termo.isEmpty()) {
-            exibirLista(todasTurmas);
+        String tipo = filterTipo != null ? filterTipo.getValue() : null;
+        String opcao = filterOpcoes != null ? filterOpcoes.getValue() : null;
+
+        if (todasTurmas == null) {
+            exibirLista(java.util.List.of());
             return;
         }
-        List<TurmaDTO> filtradas = todasTurmas.stream()
-                .filter(t -> t.nome() != null && t.nome().toLowerCase().contains(termo.toLowerCase()))
-                .toList();
-        exibirLista(filtradas);
+
+        if ("Professor".equalsIgnoreCase(tipo)) {
+            String professorNome = opcao;
+            List<TurmaDTO> filtradas = todasTurmas.stream()
+                    .filter(t -> professorNome == null || (t.professorNome() != null && t.professorNome().equalsIgnoreCase(professorNome)))
+                    .filter(t -> termo.isEmpty() || (t.nome() != null && t.nome().toLowerCase().contains(termo.toLowerCase())))
+                    .toList();
+            exibirLista(filtradas);
+        } else if ("Grau de Escolaridade".equalsIgnoreCase(tipo)) {
+            String codigo = opcao != null ? mapEscolaridadeLabelToBackend(opcao) : null;
+            List<TurmaDTO> filtradas = todasTurmas.stream()
+                    .filter(t -> codigo == null || (t.grauEscolar() != null && t.grauEscolar().equalsIgnoreCase(codigo)))
+                    .filter(t -> termo.isEmpty() || (t.nome() != null && t.nome().toLowerCase().contains(termo.toLowerCase())))
+                    .toList();
+            exibirLista(filtradas);
+        } else {
+            List<TurmaDTO> filtradas = todasTurmas.stream()
+                    .filter(t -> termo.isEmpty() || (t.nome() != null && t.nome().toLowerCase().contains(termo.toLowerCase())))
+                    .toList();
+            exibirLista(filtradas);
+        }
+    }
+
+    private void popularProfessoresOpcoes() {
+        if (filterOpcoes == null) return;
+        java.util.List<String> nomes = todosProfessores != null ? todosProfessores.stream()
+                .map(com.pies.projeto.integrado.piesfront.dto.ProfessorDTO::getNome)
+                .filter(n -> n != null && !n.isBlank())
+                .distinct()
+                .sorted(String::compareToIgnoreCase)
+                .toList() : java.util.List.of();
+        filterOpcoes.setItems(FXCollections.observableArrayList(nomes));
+    }
+
+    private void popularEscolaridadePadrao() {
+        if (filterOpcoes == null) return;
+        filterOpcoes.setItems(FXCollections.observableArrayList(
+                "Educação Infantil",
+                "Estimulação Precoce",
+                "Fundamental I",
+                "Fundamental II",
+                "Ensino Médio",
+                "Outro",
+                "Prefiro não informar"
+        ));
+    }
+
+    private String mapEscolaridadeLabelToBackend(String label) {
+        if (label == null) return null;
+        String v = label.trim();
+        if (v.equalsIgnoreCase("Educação Infantil") || v.equalsIgnoreCase("Educacao Infantil")) return "EDUCACAO_INFANTIL";
+        if (v.equalsIgnoreCase("Estimulação Precoce") || v.equalsIgnoreCase("Estimulacao Precoce")) return "ESTIMULACAO_PRECOCE";
+        if (v.equalsIgnoreCase("Fundamental I")) return "FUNDAMENTAL_I";
+        if (v.equalsIgnoreCase("Fundamental II")) return "FUNDAMENTAL_II";
+        if (v.equalsIgnoreCase("Ensino Médio") || v.equalsIgnoreCase("Ensino Medio")) return "MEDIO";
+        if (v.equalsIgnoreCase("Outro")) return "OUTRO";
+        if (v.equalsIgnoreCase("Prefiro não informar") || v.equalsIgnoreCase("Prefiro nao informar")) return "PREFIRO_NAO_INFORMAR";
+        return v;
     }
 
     @FXML

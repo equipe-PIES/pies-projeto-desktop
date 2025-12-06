@@ -23,6 +23,7 @@ import java.util.ResourceBundle;
 
 import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
+import com.pies.projeto.integrado.piesfront.dto.TurmaDTO;
 import com.utils.Janelas;
 import javafx.event.ActionEvent;
 
@@ -63,6 +64,7 @@ public class CardAlunoController implements Initializable {
     
     private EducandoDTO educando;
     private final AuthService authService = AuthService.getInstance();
+    private TurmaDTO turmaInfo;
     
     /**
      * Define os dados do educando a serem exibidos no card
@@ -70,6 +72,11 @@ public class CardAlunoController implements Initializable {
      */
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
+        atualizarDados();
+    }
+    
+    public void setTurmaInfo(TurmaDTO turma) {
+        this.turmaInfo = turma;
         atualizarDados();
     }
     
@@ -110,11 +117,8 @@ public class CardAlunoController implements Initializable {
 
         if (turmaLabel != null) {
             String turmaNome = "Não informado";
-            if (educando.turmaId() != null) {
-                var turma = authService.getTurmaById(educando.turmaId());
-                if (turma != null && turma.nome() != null) {
-                    turmaNome = turma.nome();
-                }
+            if (turmaInfo != null && turmaInfo.nome() != null) {
+                turmaNome = turmaInfo.nome();
             }
             turmaLabel.setText("Turma: " + turmaNome);
         }

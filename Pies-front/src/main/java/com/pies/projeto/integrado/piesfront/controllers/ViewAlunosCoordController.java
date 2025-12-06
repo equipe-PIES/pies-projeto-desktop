@@ -13,6 +13,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ChoiceBox;
+import javafx.collections.FXCollections;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -20,7 +24,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class ViewAlunosCoordController implements Initializable {
     @FXML private Label indicadorDeTela;
@@ -32,9 +38,14 @@ public class ViewAlunosCoordController implements Initializable {
     @FXML private ScrollPane turmasScrollPane;
     @FXML private TextField buscarAluno;
     @FXML private Button buscarAlunoButton;
+    @FXML private ChoiceBox<String> filterTipo;
+    @FXML private ChoiceBox<String> filterOpcoes;
 
     private final AuthService authService = AuthService.getInstance();
     private List<EducandoDTO> todosAlunos;
+    private PauseTransition searchDebounce;
+    private String currentQuery = "";
+    private Map<String, com.pies.projeto.integrado.piesfront.dto.TurmaDTO> turmasPorId;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -51,7 +62,42 @@ public class ViewAlunosCoordController implements Initializable {
         }
 
         if (buscarAlunoButton != null) {
-            buscarAlunoButton.setOnAction(e -> filtrarPorNome());
+            buscarAlunoButton.setOnAction(e -> atualizarFiltro());
+        }
+
+        if (filterTipo != null) {
+            filterTipo.setItems(FXCollections.observableArrayList("Nome", "Grau de Escolaridade"));
+            filterTipo.setValue("Nome");
+            filterTipo.valueProperty().addListener((obs, ov, nv) -> {
+                boolean porEscolaridade = "Grau de Escolaridade".equalsIgnoreCase(nv);
+                if (filterOpcoes != null) {
+                    filterOpcoes.setDisable(!porEscolaridade);
+                    if (!porEscolaridade) {
+                        filterOpcoes.getItems().clear();
+                        filterOpcoes.setValue(null);
+                    } else {
+                        popularEscolaridadePadrao();
+                    }
+                }
+                atualizarFiltro();
+            });
+        }
+
+        if (filterOpcoes != null) {
+            filterOpcoes.setDisable(true);
+            filterOpcoes.valueProperty().addListener((obs, ov, nv) -> atualizarFiltro());
+        }
+
+        if (buscarAluno != null) {
+            searchDebounce = new PauseTransition(Duration.millis(300));
+            searchDebounce.setOnFinished(e -> atualizarFiltro());
+            buscarAluno.textProperty().addListener((obs, oldVal, newVal) -> {
+                currentQuery = newVal != null ? newVal : "";
+                if (searchDebounce != null) {
+                    searchDebounce.stop();
+                    searchDebounce.playFromStart();
+                }
+            });
         }
 
         javafx.application.Platform.runLater(() -> {
@@ -82,13 +128,22 @@ public class ViewAlunosCoordController implements Initializable {
         loading.setStyle("-fx-font-size: 16px; -fx-text-fill: #666;");
         containerCards.getChildren().setAll(loading);
 
-        java.util.concurrent.CompletableFuture<java.util.List<EducandoDTO>> alunosFuture =
-                java.util.concurrent.CompletableFuture.supplyAsync(authService::getEducandos);
+        java.util.concurrent.CompletableFuture<java.util.List<com.pies.projeto.integrado.piesfront.dto.EducandoDTO>> alunosFuture =
+                java.util.concurrent.CompletableFuture.supplyAsync(this::buscarEducandos);
+        java.util.concurrent.CompletableFuture<java.util.List<com.pies.projeto.integrado.piesfront.dto.TurmaDTO>> turmasFuture =
+                java.util.concurrent.CompletableFuture.supplyAsync(authService::getTurmas);
 
-        alunosFuture.thenAccept(lista -> javafx.application.Platform.runLater(() -> {
-            todosAlunos = lista != null ? lista : java.util.List.of();
-            exibirLista(todosAlunos);
-        }));
+        alunosFuture.thenAcceptBoth(turmasFuture, (alunos, turmas) -> {
+            this.todosAlunos = alunos != null ? alunos : java.util.List.of();
+            java.util.List<com.pies.projeto.integrado.piesfront.dto.TurmaDTO> listaTurmas = turmas != null ? turmas : java.util.List.of();
+            this.turmasPorId = listaTurmas.stream()
+                    .filter(t -> t.id() != null)
+                    .collect(Collectors.toMap(t -> t.id(), t -> t, (a, b) -> a));
+            javafx.application.Platform.runLater(() -> {
+                popularEscolaridadePadrao();
+                exibirLista(todosAlunos);
+            });
+        });
     }
 
     private void exibirLista(List<EducandoDTO> lista) {
@@ -121,6 +176,10 @@ public class ViewAlunosCoordController implements Initializable {
                     VBox node = loader.load();
                     CardAlunoController controller = loader.getController();
                     controller.setEducando(aluno);
+                    if (turmasPorId != null && aluno.turmaId() != null) {
+                        var turma = turmasPorId.get(aluno.turmaId());
+                        controller.setTurmaInfo(turma);
+                    }
                     cards.add(node);
                 } catch (IOException e) {
                     System.err.println("Erro ao carregar card de aluno: " + e.getMessage());
@@ -144,6 +203,77 @@ public class ViewAlunosCoordController implements Initializable {
                 .filter(a -> a.nome() != null && a.nome().toLowerCase().contains(termo.toLowerCase()))
                 .toList();
         exibirLista(filtrados);
+    }
+
+    private void atualizarFiltro() {
+        String termo = buscarAluno != null && buscarAluno.getText() != null ? buscarAluno.getText().trim() : "";
+        String tipo = filterTipo != null ? filterTipo.getValue() : "Nome";
+        String opcao = filterOpcoes != null ? filterOpcoes.getValue() : null;
+
+        if (todosAlunos == null) {
+            exibirLista(java.util.List.of());
+            return;
+        }
+
+        if ("Grau de Escolaridade".equalsIgnoreCase(tipo)) {
+            String codigoEscolaridade = opcao != null ? mapEscolaridadeLabelToBackend(opcao) : null;
+            List<EducandoDTO> filtrados = todosAlunos.stream()
+                    .filter(a -> codigoEscolaridade == null || (a.escolaridade() != null && a.escolaridade().equalsIgnoreCase(codigoEscolaridade)))
+                    .filter(a -> termo.isEmpty() || (a.nome() != null && a.nome().toLowerCase().contains(termo.toLowerCase())))
+                    .toList();
+            exibirLista(filtrados);
+        } else {
+            filtrarPorNome();
+        }
+    }
+
+    private void popularEscolaridadePadrao() {
+        if (filterOpcoes == null || filterTipo == null) return;
+        if (!"Grau de Escolaridade".equalsIgnoreCase(filterTipo.getValue())) return;
+        filterOpcoes.setItems(FXCollections.observableArrayList(
+                "Educação Infantil",
+                "Estimulação Precoce",
+                "Fundamental I",
+                "Fundamental II",
+                "Ensino Médio",
+                "Outro",
+                "Prefiro não informar"
+        ));
+    }
+
+    private String formatarEscolaridade(String escolaridade) {
+        if (escolaridade == null) return "Não informado";
+        return switch (escolaridade) {
+            case "EDUCACAO_INFANTIL" -> "Educação Infantil";
+            case "ESTIMULACAO_PRECOCE" -> "Estimulação Precoce";
+            case "FUNDAMENTAL_I" -> "Fundamental I";
+            case "FUNDAMENTAL_II" -> "Fundamental II";
+            case "MEDIO" -> "Ensino Médio";
+            case "OUTRO" -> "Outro";
+            case "PREFIRO_NAO_INFORMAR" -> "Prefiro não informar";
+            default -> escolaridade;
+        };
+    }
+
+    private String mapEscolaridadeLabelToBackend(String label) {
+        if (label == null) return null;
+        String v = label.trim();
+        if (v.equalsIgnoreCase("Educação Infantil") || v.equalsIgnoreCase("Educacao Infantil")) return "EDUCACAO_INFANTIL";
+        if (v.equalsIgnoreCase("Estimulação Precoce") || v.equalsIgnoreCase("Estimulacao Precoce")) return "ESTIMULACAO_PRECOCE";
+        if (v.equalsIgnoreCase("Fundamental I")) return "FUNDAMENTAL_I";
+        if (v.equalsIgnoreCase("Fundamental II")) return "FUNDAMENTAL_II";
+        if (v.equalsIgnoreCase("Ensino Médio") || v.equalsIgnoreCase("Ensino Medio")) return "MEDIO";
+        if (v.equalsIgnoreCase("Outro")) return "OUTRO";
+        if (v.equalsIgnoreCase("Prefiro não informar") || v.equalsIgnoreCase("Prefiro nao informar")) return "PREFIRO_NAO_INFORMAR";
+        return v;
+    }
+
+    private java.util.List<EducandoDTO> buscarEducandos() {
+        java.util.List<EducandoDTO> lista = authService.getEducandosSimplificados();
+        if (lista == null || lista.isEmpty()) {
+            lista = authService.getEducandos();
+        }
+        return lista != null ? lista : java.util.List.of();
     }
 
     @FXML

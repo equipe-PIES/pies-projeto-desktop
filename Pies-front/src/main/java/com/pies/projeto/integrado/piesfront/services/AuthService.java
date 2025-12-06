@@ -531,6 +531,29 @@ public class AuthService {
             return null;
         }
     }
+
+    public com.pies.projeto.integrado.piesfront.dto.ProfessorDTO getProfessorLogado() {
+        if (currentToken == null) {
+            return null;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/professores/me"))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                return objectMapper.readValue(response.body(), com.pies.projeto.integrado.piesfront.dto.ProfessorDTO.class);
+            } else {
+                return null;
+            }
+        } catch (IOException | InterruptedException e) {
+            return null;
+        }
+    }
     
     /**
      * Cria uma anamnese para um educando

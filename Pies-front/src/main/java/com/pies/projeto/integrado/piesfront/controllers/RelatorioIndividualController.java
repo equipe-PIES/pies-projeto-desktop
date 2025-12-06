@@ -3,6 +3,8 @@ package com.pies.projeto.integrado.piesfront.controllers;
 import com.pies.projeto.integrado.piesfront.dto.CreateRelatorioIndividualDTO;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualRequestDTO;
+import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
+import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import javafx.fxml.FXML;
 import javafx.stage.StageStyle;
@@ -24,6 +26,10 @@ public class RelatorioIndividualController {
     private Label indicadorDeTela;
     @FXML
     private Label validationMsg;
+    @FXML
+    private Label nameUser;
+    @FXML
+    private Label cargoUser;
     @FXML
     private TextArea dificuldadesRaciocinio;
     @FXML
@@ -76,6 +82,9 @@ public class RelatorioIndividualController {
         }
         atualizarIndicador();
         populateFromFormData();
+        javafx.application.Platform.runLater(() -> {
+            atualizarNomeUsuarioAsync();
+        });
     }
 
     private void atualizarIndicador() {
@@ -283,5 +292,32 @@ public class RelatorioIndividualController {
         formData.interacaoProfessora = dto.interacaoProfessora();
         formData.atividadesVidaDiaria = dto.atividadesVidaDiaria();
         System.out.println("Dados carregados no formData");
+    }
+
+    private void atualizarNomeUsuarioAsync() {
+        Thread t = new Thread(() -> {
+            ProfessorDTO prof = authService.getProfessorLogado();
+            UserInfoDTO userInfo = authService.getUserInfo();
+            javafx.application.Platform.runLater(() -> {
+                if (prof != null && prof.getNome() != null && !prof.getNome().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(prof.getNome());
+                } else if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(userInfo.name());
+                } else if (nameUser != null) {
+                    nameUser.setText("Usuário");
+                }
+                if (cargoUser != null && userInfo != null && userInfo.role() != null) {
+                    String cargo = switch (userInfo.role().toUpperCase()) {
+                        case "PROFESSOR" -> "Professor(a)";
+                        case "COORDENADOR" -> "Coordenador(a)";
+                        case "ADMIN" -> "Administrador(a)";
+                        default -> "Usuário";
+                    };
+                    cargoUser.setText(cargo);
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
     }
 }
