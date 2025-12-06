@@ -344,6 +344,7 @@ public class CadastroProfController implements Initializable {
 
             if (response.statusCode() == 201) {
                 // Após criar o professor, registra o usuário (email/senha) com role professor
+                // O backend associará automaticamente o usuário ao professor
                 boolean registrado = registrarUsuarioProfessor(token);
                 if (registrado) {
                     NotificacaoController.agendarCadastro(true);

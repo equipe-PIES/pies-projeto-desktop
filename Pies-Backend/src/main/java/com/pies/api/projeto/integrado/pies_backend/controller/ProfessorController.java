@@ -395,4 +395,49 @@ public class ProfessorController {
         
         return ResponseEntity.ok(dto);
     }
+    
+    /**
+     * Associa um usuário a um professor
+     * 
+     * Endpoint: PUT /professores/{id}/associar-usuario/{userId}
+     * Permissões: ADMIN, COORDENADOR
+     * 
+     * Funcionalidade:
+     * - Busca o professor pelo ID
+     * - Associa o usuário (userId) ao professor
+     * - Retorna o professor atualizado
+     * 
+     * @param id ID do professor
+     * @param userId ID do usuário a associar
+     * @return ResponseEntity com professor atualizado ou erro
+     */
+    @PutMapping("/{id}/associar-usuario/{userId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COORDENADOR')")
+    public ResponseEntity<?> associarUsuario(@PathVariable String id, @PathVariable String userId) {
+        try {
+            // Busca o professor
+            Optional<Professor> professorOpt = professorRepository.findById(id);
+            if (!professorOpt.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            // Verifica se o usuário existe
+            if (!userRepository.existsById(userId)) {
+                return ResponseEntity.badRequest()
+                        .body("Usuário com ID " + userId + " não encontrado");
+            }
+            
+            // Associa o usuário ao professor
+            Professor professor = professorOpt.get();
+            professor.setUserId(userId);
+            
+            // Salva e retorna
+            Professor professorAtualizado = professorRepository.save(professor);
+            return ResponseEntity.ok(new ProfessorDTO(professorAtualizado));
+            
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body("Erro ao associar usuário: " + e.getMessage());
+        }
+    }
 }
