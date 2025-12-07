@@ -224,6 +224,7 @@ public class PDIController {
                     formData.recursosQueNecessitamAdequacao,
                     formData.recursosMateriaisASeremProduzidos,
                     formData.parceriasNecessarias,
+                    authService.getProfessorId(),
                     educando.id()
             );
             boolean ok = authService.criarPDI(dto);

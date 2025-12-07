@@ -397,7 +397,7 @@ public class CadastroAlunoController implements Initializable {
             escolaAluno.getText().trim(),
             mapEscolaridadeToBackend(grauEscAluno.getValue().toString()),
             (obsAluno != null && obsAluno.getText() != null) ? obsAluno.getText().trim() : null,
-            java.util.List.of(responsavel)
+            responsavel
         );
         // Montar JSON e fazer a requisição
         try {

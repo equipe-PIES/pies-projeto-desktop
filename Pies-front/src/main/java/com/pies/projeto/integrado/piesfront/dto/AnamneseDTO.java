@@ -5,6 +5,8 @@ package com.pies.projeto.integrado.piesfront.dto;
  */
 public record AnamneseDTO(
     String id,
+    String professorId,
+    String professorNome,
     String temConvulsao,
     String convenioMedico,
     String vacinacaoEmDia,

@@ -91,15 +91,9 @@ public class CardTurmaController implements Initializable {
         }
         
         // Busca o total de alunos da turma
-        if (totalAlunoCard != null && turma.id() != null) {
-            try {
-                List<EducandoDTO> alunos = authService.getEducandosPorTurma(turma.id());
-                int total = alunos != null ? alunos.size() : 0;
-                totalAlunoCard.setText("Total de alunos: " + total);
-            } catch (Exception e) {
-                System.err.println("Erro ao buscar alunos da turma: " + e.getMessage());
-                totalAlunoCard.setText("Total de alunos: 0");
-            }
+       if (totalAlunoCard != null) {
+            int total = turma.educandos() != null ? turma.educandos().size() : 0;
+            totalAlunoCard.setText("Total de alunos: " + total);
         }
     }
     

@@ -513,6 +513,9 @@ public class AnamneseController {
     }
 
     private AnamneseDTO toAnamneseDTO() {
+        // Busca o professorId do usuário logado
+        String professorId = authService.getProfessorId();
+        
         String temConvulsao = tri(formData.convulsao);
         String convenioMedico = Boolean.TRUE.equals(formData.possuiConvenio) ? val(formData.convenio) : null;
         String vacinacaoEmDia = tri(formData.vacinacaoEmDia);
@@ -558,6 +561,8 @@ public class AnamneseController {
 
         return new AnamneseDTO(
                 null,
+                professorId,
+                null, // professorNome será preenchido pelo backend
                 temConvulsao,
                 convenioMedico,
                 vacinacaoEmDia,

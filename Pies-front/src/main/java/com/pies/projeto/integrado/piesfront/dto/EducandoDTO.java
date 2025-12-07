@@ -1,11 +1,15 @@
 package com.pies.projeto.integrado.piesfront.dto;
 
 import java.time.LocalDate;
-import java.util.List;
 
 /**
  * DTO para informações de educando (aluno)
  * Representa a resposta do endpoint /api/educandos
+ * 
+ * Mudanças:
+ * - Removido List<ResponsavelDTO> - responsavelDTO é agora um objeto único
+ * - Responsável agora é acessado através de ResponsavelDTO singular
+ * - Anamnese continua como um objeto único associado ao educando
  */
 public record EducandoDTO(
     String id,
@@ -19,7 +23,7 @@ public record EducandoDTO(
     String escolaridade,  // Enum serializado como String
     String observacao,  // Observações adicionais
     String turmaId,  // ID da turma vinculada
-    List<ResponsavelDTO> responsaveis,  // Lista de responsáveis
-    AnamneseDTO anamnese  // Dados da anamnese do educando
+    ResponsavelDTO responsavel,  // Responsável único (OneToOne)
+    AnamneseDTO anamnese  // Dados da anamnese do educando (OneToOne)
 ) {}
 

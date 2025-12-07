@@ -313,6 +313,7 @@ public class PAEEController implements Initializable {
                     formData.envTO,
                     formData.envEducacaoFisica,
                     formData.envEstimulacaoPrecoce,
+                    authService.getProfessorId(),
                     educando.id()
             );
             System.out.println("DTO criado. Resumo: " + dto.resumoCaso);
@@ -707,6 +708,7 @@ public class PAEEController implements Initializable {
         public String envTO;
         public String envEducacaoFisica;
         public String envEstimulacaoPrecoce;
+        public String professorId;
         public String educandoId;
         public CreatePAEEDTO(String resumoCaso,
                              String dificuldadesMotoresPsicomotores,
@@ -741,6 +743,7 @@ public class PAEEController implements Initializable {
                              String envTO,
                              String envEducacaoFisica,
                              String envEstimulacaoPrecoce,
+                             String professorId,
                              String educandoId) {
             this.resumoCaso = resumoCaso;
             this.dificuldadesMotoresPsicomotores = dificuldadesMotoresPsicomotores;
@@ -775,6 +778,7 @@ public class PAEEController implements Initializable {
             this.envTO = envTO;
             this.envEducacaoFisica = envEducacaoFisica;
             this.envEstimulacaoPrecoce = envEstimulacaoPrecoce;
+            this.professorId = professorId;
             this.educandoId = educandoId;
         }
     }
