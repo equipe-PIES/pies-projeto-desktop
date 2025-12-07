@@ -4,6 +4,7 @@ package com.pies.api.projeto.integrado.pies_backend.controller.dto;
 import java.time.LocalDate;
 
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.Genero;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -83,4 +84,10 @@ public class CreateProfessorDTO {
      * Sem validação = campo opcional
      */
     private String observacoes;
+     
+    /**
+     * ID do usuário a ser vinculado ao professor
+     * Campo opcional - usado para vincular o professor a uma conta de usuário existente
+     */
+    private String userId;
 }

@@ -2,7 +2,11 @@ package com.pies.api.projeto.integrado.pies_backend.controller;
 
 import java.util.List;
 
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +23,7 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.CreateRelatori
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.RelatorioIndividualDTO;
 import com.pies.api.projeto.integrado.pies_backend.model.User;
 import com.pies.api.projeto.integrado.pies_backend.service.RelatorioIndividualService;
+import com.pies.api.projeto.integrado.pies_backend.service.RelatorioPDFService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +47,7 @@ import lombok.RequiredArgsConstructor;
 public class RelatorioIndividualController {
 
     private final RelatorioIndividualService relatorioService;
+    private final RelatorioPDFService pdfService;
 
     /**
      * Cria um novo relatório individual.
@@ -165,5 +171,59 @@ public class RelatorioIndividualController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(relatorios);
+    }
+
+    /**
+     * Gera e retorna o PDF do relatório individual.
+     * 
+     * GET /api/relatorios-individuais/{id}/pdf
+     * 
+     * Este endpoint gera um PDF profissional e formatado com todas as informações
+     * do relatório individual do educando. O PDF é retornado como download.
+     * 
+     * @param id ID do relatório individual
+     * @return 200 OK com o PDF em formato application/pdf ou 404 Not Found se não encontrado
+     */
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<Resource> gerarPDF(@PathVariable String id) {
+        try {
+            // Busca o relatório pelo ID
+            RelatorioIndividualDTO relatorio = relatorioService.buscarPorId(id);
+            
+            // Gera o PDF usando o serviço
+            byte[] pdfBytes = pdfService.gerarPDF(relatorio);
+            
+            // Valida se o PDF foi gerado corretamente
+            if (pdfBytes == null || pdfBytes.length == 0) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ByteArrayResource("Erro ao gerar PDF".getBytes()));
+            }
+            
+            // Cria o recurso a partir dos bytes do PDF
+            ByteArrayResource resource = new ByteArrayResource(pdfBytes);
+            
+            // Gera nome do arquivo baseado no nome do educando e ID do relatório
+            String nomeArquivo = "Relatorio_Final_" + 
+                    (relatorio.educandoNome() != null ? 
+                     relatorio.educandoNome().replaceAll("\\s+", "_").replaceAll("[^a-zA-Z0-9_]", "") : 
+                     "Educando") + 
+                    "_" + relatorio.id().substring(0, Math.min(8, relatorio.id().length())) + ".pdf";
+            
+            // Retorna o PDF com headers apropriados para download
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + nomeArquivo + "\"; filename*=UTF-8''" + nomeArquivo)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+                    .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+                    .header(HttpHeaders.PRAGMA, "no-cache")
+                    .header(HttpHeaders.EXPIRES, "0")
+                    .contentLength(pdfBytes.length)
+                    .body(resource);
+                    
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ByteArrayResource(("Erro ao gerar PDF: " + e.getMessage()).getBytes()));
+        }
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,8 +31,6 @@ import com.pies.api.projeto.integrado.pies_backend.repository.TurmaRepository;
 import com.pies.api.projeto.integrado.pies_backend.repository.UserRepository;
 
 import jakarta.validation.Valid;
-
-import org.springframework.security.core.Authentication;
 
 /**
  * CONTROLLER LAYER - CAMADA DE APRESENTAÇÃO
@@ -247,6 +246,18 @@ public class ProfessorController {
                 createProfessorDTO.getObservacoes()     // Observações (pode ser null)
         );
 
+        // ATRIBUIÇÃO DE USER ID: Se userId foi fornecido, valida e atribui
+        if (createProfessorDTO.getUserId() != null && !createProfessorDTO.getUserId().trim().isEmpty()) {
+            // Valida se o usuário existe
+            var user = userRepository.findById(createProfessorDTO.getUserId());
+            if (user.isPresent()) {
+                professor.setUserId(createProfessorDTO.getUserId());
+            } else {
+                return ResponseEntity.badRequest()
+                        .body("Usuário com ID " + createProfessorDTO.getUserId() + " não encontrado.");
+            }
+        }
+
         // PERSISTÊNCIA: Salva professor no banco de dados
         Professor professorSalvo = professorRepository.save(professor);
         
@@ -394,5 +405,30 @@ public class ProfessorController {
         dto.setTurmasIds(turmasIds);
         
         return ResponseEntity.ok(dto);
+    }
+
+    /**
+     * Atualiza o userId de um professor existente.
+     * 
+     * Endpoint: PUT /professores/{id}/userId
+     * Permissões: ADMIN, COORDENADOR
+     * 
+     * @param id ID do professor a ser atualizado
+     * @param userId ID do usuário a ser vinculado
+     * @return ResponseEntity confirmando a atualização ou 404 se não encontrado
+     */
+    @PutMapping("/{id}/userId")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COORDENADOR')")
+    public ResponseEntity<?> atualizarUserId(@PathVariable String id, @RequestBody String userId) {
+        Optional<Professor> professorExistente = professorRepository.findById(id);
+        if (!professorExistente.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Professor professor = professorExistente.get();
+        professor.setUserId(userId);
+        professorRepository.save(professor);
+        
+        return ResponseEntity.ok("UserId atualizado com sucesso");
     }
 }

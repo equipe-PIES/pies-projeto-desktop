@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.AuthenticationDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.LoginResponseDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.RegisterDTO;
+import com.pies.api.projeto.integrado.pies_backend.controller.dto.RegisterResponseDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.UserInfoDTO;
 import com.pies.api.projeto.integrado.pies_backend.infra.security.TokenService;
-import com.pies.api.projeto.integrado.pies_backend.model.User;
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.UserRole;
+import com.pies.api.projeto.integrado.pies_backend.model.User;
 import com.pies.api.projeto.integrado.pies_backend.repository.UserRepository;
 
 import jakarta.validation.Valid;
@@ -57,7 +58,7 @@ public class AuthenticationController { // Controller responsável pela autentic
 
     // Endpoint para registrar novos usuários
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody @Valid RegisterDTO data){
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterDTO data){
         
         try {
             System.out.println("=== DEBUG REGISTER ===");
@@ -89,11 +90,11 @@ public class AuthenticationController { // Controller responsável pela autentic
             System.out.println("Usuario criado: " + newUser.getEmail() + " | Name: " + newUser.getName() + " | Role: " + userRole.getRole());
 
             // Salva o novo usuário no banco de dados
-            this.repository.save(newUser);
-            System.out.println("Usuario salvo com sucesso!");
+            User savedUser = this.repository.save(newUser);
+            System.out.println("Usuario salvo com sucesso! ID: " + savedUser.getId());
 
-            // Retorna sucesso (status 200) se o registro foi bem-sucedido
-            return ResponseEntity.ok().build();
+            // Retorna sucesso (status 200) com o ID do usuário criado
+            return ResponseEntity.ok(new RegisterResponseDTO(savedUser.getId()));
             
         } catch(Exception e) {
             System.err.println("ERRO NO REGISTRO: " + e.getMessage());
