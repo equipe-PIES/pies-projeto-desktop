@@ -109,6 +109,16 @@ public class PDIDTO {
     private String parceriasNecessarias;
 
     /**
+     * ID do professor responsável.
+     */
+    private String professorId;
+
+    /**
+     * Nome do professor responsável.
+     */
+    private String professorNome;
+
+    /**
      * ID do educando ao qual este PDI pertence.
      */
     private String educandoId;

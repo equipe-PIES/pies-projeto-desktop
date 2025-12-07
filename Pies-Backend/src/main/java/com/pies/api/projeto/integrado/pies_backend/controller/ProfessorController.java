@@ -2,8 +2,6 @@ package com.pies.api.projeto.integrado.pies_backend.controller;
 
 // Imports para manipulação de coleções
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,11 +21,7 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.CreateProfesso
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.ProfessorDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.UpdateProfessorDTO;
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.Genero;
-import com.pies.api.projeto.integrado.pies_backend.model.Professor;
-import com.pies.api.projeto.integrado.pies_backend.model.Turma;
-import com.pies.api.projeto.integrado.pies_backend.repository.ProfessorRepository;
-import com.pies.api.projeto.integrado.pies_backend.repository.TurmaRepository;
-import com.pies.api.projeto.integrado.pies_backend.repository.UserRepository;
+import com.pies.api.projeto.integrado.pies_backend.service.ProfessorService;
 
 import jakarta.validation.Valid;
 
@@ -68,17 +62,11 @@ public class ProfessorController {
     // ========== INJEÇÃO DE DEPENDÊNCIA ==========
     
     /**
-     * Repository para operações de banco de dados
+     * Serviço responsável pela lógica de negócio dos professores.
      * Injetado automaticamente pelo Spring (Dependency Injection)
      */
-    @Autowired // Spring injeta automaticamente a implementação do ProfessorRepository
-    private ProfessorRepository professorRepository;
-    
     @Autowired
-    private TurmaRepository turmaRepository;
-    
-    @Autowired
-    private UserRepository userRepository;
+    private ProfessorService professorService;
 
     // ========== ENDPOINTS DE CONSULTA (GET) ==========
     
@@ -98,26 +86,7 @@ public class ProfessorController {
     @GetMapping // Mapeia requisições GET para /professores
     @PreAuthorize("hasRole('ADMIN') or hasRole('COORDENADOR')") // Apenas ADMIN e COORDENADOR podem listar
     public ResponseEntity<List<ProfessorDTO>> listarProfessores() {
-        // Busca todos os professores ordenados por nome
-        List<Professor> professores = professorRepository.findAllByOrderByNomeAsc();
-        
-        // Converte lista de entidades Professor em lista de DTOs
-        // Usa Stream API para transformação funcional
-        List<ProfessorDTO> professoresDTO = professores.stream()
-                .map(professor -> {
-                    ProfessorDTO dto = new ProfessorDTO(professor);
-                    // Busca e adiciona turmas vinculadas
-                    List<Turma> turmas = turmaRepository.findByProfessor(professor);
-                    List<String> turmasIds = turmas.stream()
-                            .map(Turma::getId)
-                            .collect(Collectors.toList());
-                    dto.setTurmasIds(turmasIds);
-                    return dto;
-                })
-                .collect(Collectors.toList()); // Coleta em uma nova lista
-        
-        // Retorna resposta HTTP 200 (OK) com a lista de professores
-        return ResponseEntity.ok(professoresDTO);
+        return ResponseEntity.ok(professorService.listarTodos());
     }
 
     /**
@@ -138,27 +107,11 @@ public class ProfessorController {
     @GetMapping("/{id}") // Mapeia GET /professores/{id} - {id} é um path variable
     @PreAuthorize("hasRole('ADMIN') or hasRole('COORDENADOR') or hasRole('PROFESSOR')") // Todas as roles podem visualizar
     public ResponseEntity<ProfessorDTO> buscarProfessorPorId(@PathVariable String id) {
-        // Busca professor pelo ID - retorna Optional para tratamento seguro de valores nulos
-        Optional<Professor> professor = professorRepository.findById(id);
-        
-        // Verifica se professor foi encontrado
-        if (professor.isPresent()) {
-            // Professor encontrado - converte para DTO
-            ProfessorDTO dto = new ProfessorDTO(professor.get());
-            
-            // Busca turmas vinculadas ao professor e adiciona os IDs ao DTO
-            List<Turma> turmas = turmaRepository.findByProfessor(professor.get());
-            List<String> turmasIds = turmas.stream()
-                    .map(Turma::getId)
-                    .collect(Collectors.toList());
-            dto.setTurmasIds(turmasIds);
-            
-            // Retorna 200 (OK) com o DTO completo incluindo turmas
-            return ResponseEntity.ok(dto);
+        try {
+            return ResponseEntity.ok(professorService.buscarPorId(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
         }
-        
-        // Professor não encontrado - retorna 404 (Not Found)
-        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -170,11 +123,7 @@ public class ProfessorController {
     @GetMapping("/buscar")
     @PreAuthorize("hasRole('ADMIN') or hasRole('COORDENADOR')")
     public ResponseEntity<List<ProfessorDTO>> buscarProfessoresPorNome(@RequestParam String nome) {
-        List<Professor> professores = professorRepository.findByNomeContainingIgnoreCase(nome);
-        List<ProfessorDTO> professoresDTO = professores.stream()
-                .map(ProfessorDTO::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(professoresDTO);
+        return ResponseEntity.ok(professorService.buscarPorNome(nome));
     }
 
     /**
@@ -186,11 +135,7 @@ public class ProfessorController {
     @GetMapping("/genero/{genero}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('COORDENADOR')")
     public ResponseEntity<List<ProfessorDTO>> buscarProfessoresPorGenero(@PathVariable Genero genero) {
-        List<Professor> professores = professorRepository.findByGenero(genero);
-        List<ProfessorDTO> professoresDTO = professores.stream()
-                .map(ProfessorDTO::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(professoresDTO);
+        return ResponseEntity.ok(professorService.buscarPorGenero(genero));
     }
 
     /**
@@ -202,11 +147,7 @@ public class ProfessorController {
     @GetMapping("/formacao/{formacao}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('COORDENADOR')")
     public ResponseEntity<List<ProfessorDTO>> buscarProfessoresPorFormacao(@PathVariable String formacao) {
-        List<Professor> professores = professorRepository.findByFormacao(formacao);
-        List<ProfessorDTO> professoresDTO = professores.stream()
-                .map(ProfessorDTO::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(professoresDTO);
+        return ResponseEntity.ok(professorService.buscarPorFormacao(formacao));
     }
 
     // ========== ENDPOINTS DE CRIAÇÃO (POST) ==========
@@ -230,28 +171,12 @@ public class ProfessorController {
     @PostMapping // Mapeia requisições POST para /professores
     @PreAuthorize("hasRole('ADMIN') or hasRole('COORDENADOR')") // Apenas ADMIN e COORDENADOR podem criar
     public ResponseEntity<?> criarProfessor(@Valid @RequestBody CreateProfessorDTO createProfessorDTO) {
-        // VALIDAÇÃO DE NEGÓCIO: Verifica se CPF já existe
-        if (professorRepository.existsByCpf(createProfessorDTO.getCpf())) {
-            // CPF duplicado - retorna erro 400 (Bad Request)
-            return ResponseEntity.badRequest()
-                    .body("Já existe um professor cadastrado com o CPF: " + createProfessorDTO.getCpf());
+        try {
+            ProfessorDTO professorDTO = professorService.criar(createProfessorDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(professorDTO);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        // CRIAÇÃO DA ENTIDADE: Constrói objeto Professor com dados do DTO
-        Professor professor = new Professor(
-                createProfessorDTO.getNome(),           // Nome do professor
-                createProfessorDTO.getCpf(),            // CPF validado
-                createProfessorDTO.getDataNascimento(), // Data de nascimento
-                createProfessorDTO.getGenero(),         // Gênero
-                createProfessorDTO.getFormacao(),       // Formação
-                createProfessorDTO.getObservacoes()     // Observações (pode ser null)
-        );
-
-        // PERSISTÊNCIA: Salva professor no banco de dados
-        Professor professorSalvo = professorRepository.save(professor);
-        
-        // RESPOSTA: Retorna professor criado com status 201 (Created)
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ProfessorDTO(professorSalvo));
     }
 
     /**
@@ -265,30 +190,14 @@ public class ProfessorController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('COORDENADOR')")
     public ResponseEntity<?> atualizarProfessor(@PathVariable String id, 
                                                @Valid @RequestBody UpdateProfessorDTO updateProfessorDTO) {
-        Optional<Professor> professorExistente = professorRepository.findById(id);
-        if (!professorExistente.isPresent()) {
+        try {
+            ProfessorDTO professorDTO = professorService.atualizar(id, updateProfessorDTO);
+            return ResponseEntity.ok(professorDTO);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
-
-        Professor professor = professorExistente.get();
-        
-        // Verifica se o CPF está sendo alterado e se já existe outro professor com esse CPF
-        if (!professor.getCpf().equals(updateProfessorDTO.getCpf()) && 
-            professorRepository.existsByCpf(updateProfessorDTO.getCpf())) {
-            return ResponseEntity.badRequest()
-                    .body("Já existe um professor cadastrado com o CPF: " + updateProfessorDTO.getCpf());
-        }
-
-        // Atualiza os dados do professor
-        professor.setNome(updateProfessorDTO.getNome());
-        professor.setCpf(updateProfessorDTO.getCpf());
-        professor.setDataNascimento(updateProfessorDTO.getDataNascimento());
-        professor.setGenero(updateProfessorDTO.getGenero());
-        professor.setFormacao(updateProfessorDTO.getFormacao());
-        professor.setObservacoes(updateProfessorDTO.getObservacoes());
-
-        Professor professorAtualizado = professorRepository.save(professor);
-        return ResponseEntity.ok(new ProfessorDTO(professorAtualizado));
     }
 
     /**
@@ -300,13 +209,12 @@ public class ProfessorController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> removerProfessor(@PathVariable String id) {
-        Optional<Professor> professor = professorRepository.findById(id);
-        if (!professor.isPresent()) {
+        try {
+            professorService.deletar(id);
+            return ResponseEntity.ok("Professor removido com sucesso");
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
-
-        professorRepository.deleteById(id);
-        return ResponseEntity.ok("Professor removido com sucesso");
     }
 
     /**
@@ -370,30 +278,13 @@ public class ProfessorController {
     @GetMapping("/me")
     @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<ProfessorDTO> getMeuPerfil(Authentication authentication) {
-        String emailUsuario = authentication.getName();
-        
-        // Busca o usuário pelo email
-        var user = userRepository.findByEmail(emailUsuario);
-        if (user == null) {
+        try {
+            String emailUsuario = authentication.getName();
+            ProfessorDTO professorDTO = professorService.buscarPerfilUsuario(emailUsuario);
+            return ResponseEntity.ok(professorDTO);
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
-        
-        // Busca o professor pelo user_id
-        Professor professor = professorRepository.findByUserId(user.getId());
-        
-        if (professor == null) {
-            return ResponseEntity.notFound().build();
-        }
-        
-        // Converte para DTO e adiciona turmas
-        ProfessorDTO dto = new ProfessorDTO(professor);
-        List<Turma> turmas = turmaRepository.findByProfessor(professor);
-        List<String> turmasIds = turmas.stream()
-                .map(Turma::getId)
-                .collect(Collectors.toList());
-        dto.setTurmasIds(turmasIds);
-        
-        return ResponseEntity.ok(dto);
     }
     
     /**
@@ -415,29 +306,12 @@ public class ProfessorController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('COORDENADOR')")
     public ResponseEntity<?> associarUsuario(@PathVariable String id, @PathVariable String userId) {
         try {
-            // Busca o professor
-            Optional<Professor> professorOpt = professorRepository.findById(id);
-            if (!professorOpt.isPresent()) {
-                return ResponseEntity.notFound().build();
-            }
-            
-            // Verifica se o usuário existe
-            if (!userRepository.existsById(userId)) {
-                return ResponseEntity.badRequest()
-                        .body("Usuário com ID " + userId + " não encontrado");
-            }
-            
-            // Associa o usuário ao professor
-            Professor professor = professorOpt.get();
-            professor.setUserId(userId);
-            
-            // Salva e retorna
-            Professor professorAtualizado = professorRepository.save(professor);
-            return ResponseEntity.ok(new ProfessorDTO(professorAtualizado));
-            
+            ProfessorDTO professorDTO = professorService.associarUsuario(id, userId);
+            return ResponseEntity.ok(professorDTO);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body("Erro ao associar usuário: " + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 }

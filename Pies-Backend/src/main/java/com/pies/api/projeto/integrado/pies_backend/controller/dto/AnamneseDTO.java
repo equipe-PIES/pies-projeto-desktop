@@ -1,5 +1,6 @@
 package com.pies.api.projeto.integrado.pies_backend.controller.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -7,6 +8,11 @@ import lombok.Data;
 public class AnamneseDTO {
 
     private String id;
+
+    @NotBlank(message = "ID do professor é obrigatório")
+    private String professorId;
+
+    private String professorNome;
 
     private String temConvulsao;
 

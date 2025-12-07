@@ -1,16 +1,18 @@
 package com.pies.api.projeto.integrado.pies_backend.service;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.AnamneseDTO;
 import com.pies.api.projeto.integrado.pies_backend.exception.AnamneseAlreadyExistsException;
 import com.pies.api.projeto.integrado.pies_backend.exception.AnamneseNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.exception.EducandoNotFoundException;
+import com.pies.api.projeto.integrado.pies_backend.exception.ProfessorNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.model.Anamnese;
 import com.pies.api.projeto.integrado.pies_backend.model.Educando;
+import com.pies.api.projeto.integrado.pies_backend.model.Professor;
 import com.pies.api.projeto.integrado.pies_backend.repository.AnamneseRepository;
 import com.pies.api.projeto.integrado.pies_backend.repository.EducandoRepository;
+import com.pies.api.projeto.integrado.pies_backend.repository.ProfessorRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -19,6 +21,7 @@ public class AnamneseService {
 
     private final AnamneseRepository anamneseRepository;
     private final EducandoRepository educandoRepository;
+    private final ProfessorRepository professorRepository;
 
     @Transactional(readOnly = true)
     public AnamneseDTO buscarPorId(String id) {
@@ -39,12 +42,16 @@ public class AnamneseService {
         Educando educando = educandoRepository.findById(educandoId)
                 .orElseThrow(() -> new EducandoNotFoundException(educandoId));
 
+        Professor professor = professorRepository.findById(dto.getProfessorId())
+            .orElseThrow(() -> new ProfessorNotFoundException(dto.getProfessorId()));
+
         if (educando.getAnamnese() != null || anamneseRepository.existsByEducandoId(educandoId)) {
             throw new AnamneseAlreadyExistsException(educandoId);
         }
 
-        Anamnese anamnese = toEntity(dto);
+        Anamnese anamnese = toEntity(dto, professor);
         anamnese.setEducando(educando);
+        anamnese.setProfessor(professor);
         educando.setAnamnese(anamnese);
 
         return toDTO(anamneseRepository.save(anamnese));
@@ -55,7 +62,11 @@ public class AnamneseService {
         Anamnese anamnese = anamneseRepository.findByEducandoId(educandoId)
                 .orElseThrow(() -> new AnamneseNotFoundException(educandoId));
 
+        Professor professor = professorRepository.findById(dto.getProfessorId())
+            .orElseThrow(() -> new ProfessorNotFoundException(dto.getProfessorId()));
+
         updateEntityFromDTO(anamnese, dto);
+        anamnese.setProfessor(professor);
 
         return toDTO(anamneseRepository.save(anamnese));
     }
@@ -107,12 +118,17 @@ public class AnamneseService {
         dto.setDesmotivado(toString(anamnese.getDesmotivado()));
         dto.setAgressivo(toString(anamnese.getAgressivo()));
         dto.setApresentaInquietacao(toString(anamnese.getApresentaInquietacao()));
+        if (anamnese.getProfessor() != null) {
+            dto.setProfessorId(anamnese.getProfessor().getId());
+            dto.setProfessorNome(anamnese.getProfessor().getNome());
+        }
         return dto;
     }
 
-    private Anamnese toEntity(AnamneseDTO dto) {
+    private Anamnese toEntity(AnamneseDTO dto, Professor professor) {
         Anamnese anamnese = new Anamnese();
         updateEntityFromDTO(anamnese, dto);
+        anamnese.setProfessor(professor);
         return anamnese;
     }
 

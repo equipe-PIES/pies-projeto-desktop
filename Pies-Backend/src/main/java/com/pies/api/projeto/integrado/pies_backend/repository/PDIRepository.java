@@ -24,7 +24,7 @@ public interface PDIRepository extends JpaRepository<PDI, String> {
      * @param id Identificador único do PDI
      * @return Optional contendo o PDI se encontrado
      */
-    @EntityGraph(attributePaths = {"educando"})
+    @EntityGraph(attributePaths = {"educando", "professor"})
     @Query("SELECT p FROM PDI p WHERE p.id = :id")
     Optional<PDI> findByIdWithEducando(@Param("id") String id);
     
@@ -33,7 +33,7 @@ public interface PDIRepository extends JpaRepository<PDI, String> {
      * 
      * @return Lista de todos os PDIs com seus educandos
      */
-    @EntityGraph(attributePaths = {"educando"})
+    @EntityGraph(attributePaths = {"educando", "professor"})
     @Query("SELECT p FROM PDI p")
     List<PDI> findAllWithEducando();
     
@@ -43,7 +43,7 @@ public interface PDIRepository extends JpaRepository<PDI, String> {
      * @param educandoId ID do educando
      * @return Lista de PDIs do educando
      */
-    @EntityGraph(attributePaths = {"educando"})
+    @EntityGraph(attributePaths = {"educando", "professor"})
     List<PDI> findByEducandoId(String educandoId);
 }
 

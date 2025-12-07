@@ -24,7 +24,7 @@ public interface PAEERepository extends JpaRepository<PAEE, String> {
      * @param id Identificador único do PAEE
      * @return Optional contendo o PAEE se encontrado
      */
-    @EntityGraph(attributePaths = {"educando"})
+    @EntityGraph(attributePaths = {"educando", "professor"})
     @Query("SELECT p FROM PAEE p WHERE p.id = :id")
     Optional<PAEE> findByIdWithEducando(@Param("id") String id);
     
@@ -33,7 +33,7 @@ public interface PAEERepository extends JpaRepository<PAEE, String> {
      * 
      * @return Lista de todos os PAEEs com seus educandos
      */
-    @EntityGraph(attributePaths = {"educando"})
+    @EntityGraph(attributePaths = {"educando", "professor"})
     @Query("SELECT p FROM PAEE p")
     List<PAEE> findAllWithEducando();
     
@@ -43,7 +43,7 @@ public interface PAEERepository extends JpaRepository<PAEE, String> {
      * @param educandoId ID do educando
      * @return Lista de PAEEs do educando
      */
-    @EntityGraph(attributePaths = {"educando"})
+    @EntityGraph(attributePaths = {"educando", "professor"})
     List<PAEE> findByEducandoId(String educandoId);
 }
 

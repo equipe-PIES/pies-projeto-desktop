@@ -1,174 +1,99 @@
-
 package com.pies.api.projeto.integrado.pies_backend.controller;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Supplier;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.CreateTurmaDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.TurmaDTO;
-import com.pies.api.projeto.integrado.pies_backend.model.Professor;
-import com.pies.api.projeto.integrado.pies_backend.model.Turma;
-import com.pies.api.projeto.integrado.pies_backend.model.Educando;
-import com.pies.api.projeto.integrado.pies_backend.repository.ProfessorRepository;
-import com.pies.api.projeto.integrado.pies_backend.repository.TurmaRepository;
-import com.pies.api.projeto.integrado.pies_backend.repository.EducandoRepository;
+import com.pies.api.projeto.integrado.pies_backend.service.TurmaService;
 
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
+/**
+ * Controller REST para gerenciamento de Turmas.
+ */
 @RestController
 @RequestMapping("/turmas")
+@RequiredArgsConstructor
 public class TurmaController {
 
-    private final TurmaRepository turmaRepository;
-    private final ProfessorRepository professorRepository;
-    private final EducandoRepository educandoRepository;
+    /**
+     * Injetamos APENAS o Service. 
+     */
+    private final TurmaService turmaService;
 
-    public TurmaController(TurmaRepository turmaRepository, ProfessorRepository professorRepository, 
-                          EducandoRepository educandoRepository) {
-        this.turmaRepository = turmaRepository;
-        this.professorRepository = professorRepository;
-        this.educandoRepository = educandoRepository;
-    }
-
+    /**
+     * Cria uma nova turma.
+     */
     @PostMapping
     @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN')")
-    @Transactional
     public ResponseEntity<TurmaDTO> criar(@RequestBody @Valid CreateTurmaDTO payload) {
-        // Debug de autenticação
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("=== DEBUG AUTORIZAÇÃO NO CONTROLLER ===");
-        System.out.println("Authentication: " + auth);
-        System.out.println("Principal: " + (auth != null ? auth.getPrincipal() : "null"));
-        System.out.println("Authorities: " + (auth != null ? auth.getAuthorities() : "null"));
-        System.out.println("========================================");
-        
-        // Este log só aparece se passar pela autorização
-        System.out.println("=== CRIANDO TURMA (AUTORIZAÇÃO OK) ===");
-        System.out.println("Professor ID recebido: " + payload.professorId());
-        
-        Optional<Professor> professorOpt = professorRepository.findById(payload.professorId());
-        
-        if (professorOpt.isEmpty()) {
-            System.err.println("ERRO: Professor não encontrado na tabela professores! ID: " + payload.professorId());
-            return ResponseEntity.badRequest().build();
-        }
-        
-        Professor professor = professorOpt.get();
-        System.out.println("Professor encontrado: " + professor.getNome() + " (ID: " + professor.getId() + ")");
-
-        Turma turma = new Turma();
-        turma.setNome(payload.nome());
-        turma.setGrauEscolar(payload.grauEscolar());
-        turma.setFaixaEtaria(payload.faixaEtaria());
-        turma.setTurno(payload.turno());
-        turma.setProfessor(professor);
-
-        Turma salva = turmaRepository.save(turma);
-        System.out.println("✓ Turma criada: " + salva.getNome());
-        
-        // Vincula os alunos à turma se houver CPFs informados
-        if (payload.cpfsAlunos() != null && !payload.cpfsAlunos().isEmpty()) {
-            System.out.println("Vinculando " + payload.cpfsAlunos().size() + " alunos à turma...");
-            int alunosVinculados = 0;
-            
-            for (String cpf : payload.cpfsAlunos()) {
-                Optional<Educando> educandoOpt = educandoRepository.findByCpf(cpf);
-                if (educandoOpt.isPresent()) {
-                    Educando educando = educandoOpt.get();
-                    educando.setTurmaId(salva.getId());
-                    educandoRepository.save(educando);
-                    alunosVinculados++;
-                    System.out.println("  ✓ Aluno vinculado: " + educando.getNome() + " (CPF: " + cpf + ")");
-                } else {
-                    System.err.println("  ✗ Aluno não encontrado com CPF: " + cpf);
-                }
-            }
-            
-            System.out.println("Total de alunos vinculados: " + alunosVinculados);
-        }
-        
-        return ResponseEntity.ok(mapToDTO(salva));
+        return handleRequest(() -> {
+            TurmaDTO novaTurma = turmaService.salvar(payload);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novaTurma);
+        });
     }
 
+    /**
+     * Lista todas as turmas.
+     * Usa o método otimizado do Service (1 consulta SQL apenas).
+     */
     @GetMapping
     @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN','PROFESSOR')")
     public ResponseEntity<List<TurmaDTO>> listar() {
-        List<TurmaDTO> lista = turmaRepository.findAll().stream().map(this::mapToDTO).toList();
-        return ResponseEntity.ok(lista);
+        return ResponseEntity.ok(turmaService.listarTodas());
     }
 
+    /**
+     * Busca turma por ID.
+     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN','PROFESSOR')")
     public ResponseEntity<TurmaDTO> obter(@PathVariable String id) {
-        return turmaRepository.findById(id)
-                .map(t -> ResponseEntity.ok(mapToDTO(t)))
-                .orElse(ResponseEntity.notFound().build());
+        return handleRequest(() -> ResponseEntity.ok(turmaService.buscarPorId(id)));
     }
 
+    /**
+     * Atualiza uma turma.
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN')")
-    @Transactional
     public ResponseEntity<TurmaDTO> atualizar(@PathVariable String id, @RequestBody @Valid CreateTurmaDTO payload) {
-        Optional<Turma> opt = turmaRepository.findById(id);
-        if (opt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        Turma turma = opt.get();
-
-        Optional<Professor> professorOpt = professorRepository.findById(payload.professorId());
-        if (professorOpt.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-        Professor professor = professorOpt.get();
-
-        turma.setNome(payload.nome());
-        turma.setGrauEscolar(payload.grauEscolar());
-        turma.setFaixaEtaria(payload.faixaEtaria());
-        turma.setTurno(payload.turno());
-        turma.setProfessor(professor);
-
-        Turma salva = turmaRepository.save(turma);
-        return ResponseEntity.ok(mapToDTO(salva));
+        return handleRequest(() -> ResponseEntity.ok(turmaService.atualizar(id, payload)));
     }
 
+    /**
+     * Exclui uma turma.
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN')")
-    @Transactional
     public ResponseEntity<Void> excluir(@PathVariable String id) {
-        if (!turmaRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        turmaRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return handleRequest(() -> {
+            turmaService.deletar(id);
+            return ResponseEntity.noContent().<Void>build();
+        });
     }
 
-    private TurmaDTO mapToDTO(Turma turma) {
-        String professorId = turma.getProfessor() != null ? turma.getProfessor().getId() : null;
-        String professorNome = turma.getProfessor() != null ? turma.getProfessor().getNome() : null;
-        String professorCpf = turma.getProfessor() != null ? turma.getProfessor().getCpf() : null;
-        return new TurmaDTO(
-            turma.getId(),
-            turma.getNome(),
-            turma.getGrauEscolar(),
-            turma.getFaixaEtaria(),
-            turma.getTurno(),
-            professorId,
-            professorNome,
-            professorCpf
-        );
+    /**
+     * Tratamento centralizado de exceções.
+     */
+    private <T> ResponseEntity<T> handleRequest(Supplier<ResponseEntity<T>> supplier) {
+        try {
+            return supplier.get();
+        } catch (RuntimeException e) {
+            // Log simples para debug
+            System.err.println("Erro na requisição: " + e.getMessage());
+            
+            if (e.getMessage().contains("não encontrada") || e.getMessage().contains("não encontrado")) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

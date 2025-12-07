@@ -302,5 +302,10 @@ public class PAEE {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "educando_id", nullable = false)
     private Educando educando;
+
+    @NotNull(message = "Professor é obrigatório")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "professor_id", nullable = false)
+    private Professor professor;
 }
 

@@ -18,6 +18,7 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.CreatePDIDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.PDIDTO;
 import com.pies.api.projeto.integrado.pies_backend.exception.EducandoNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.exception.PDINotFoundException;
+import com.pies.api.projeto.integrado.pies_backend.exception.ProfessorNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.service.PDIService;
 
 import jakarta.validation.Valid;
@@ -199,7 +200,7 @@ public class PDIController {
     private <T> ResponseEntity<T> handleRequest(Supplier<ResponseEntity<T>> supplier) {
         try {
             return supplier.get();
-        } catch (PDINotFoundException | EducandoNotFoundException e) {
+        } catch (PDINotFoundException | EducandoNotFoundException | ProfessorNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
