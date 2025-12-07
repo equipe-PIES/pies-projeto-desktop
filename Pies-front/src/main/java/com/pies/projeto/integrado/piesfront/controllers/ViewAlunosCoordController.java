@@ -66,8 +66,8 @@ public class ViewAlunosCoordController implements Initializable {
         }
 
         if (filterTipo != null) {
-            filterTipo.setItems(FXCollections.observableArrayList("Nome", "Grau de Escolaridade"));
-            filterTipo.setValue("Nome");
+            filterTipo.setItems(FXCollections.observableArrayList("Nenhum", "Nome", "Grau de Escolaridade"));
+            filterTipo.setValue("Nenhum");
             filterTipo.valueProperty().addListener((obs, ov, nv) -> {
                 boolean porEscolaridade = "Grau de Escolaridade".equalsIgnoreCase(nv);
                 if (filterOpcoes != null) {
@@ -216,7 +216,7 @@ public class ViewAlunosCoordController implements Initializable {
         }
 
         if ("Grau de Escolaridade".equalsIgnoreCase(tipo)) {
-            String codigoEscolaridade = opcao != null ? mapEscolaridadeLabelToBackend(opcao) : null;
+            String codigoEscolaridade = (opcao != null && !"Nenhuma opção".equalsIgnoreCase(opcao)) ? mapEscolaridadeLabelToBackend(opcao) : null;
             List<EducandoDTO> filtrados = todosAlunos.stream()
                     .filter(a -> codigoEscolaridade == null || (a.escolaridade() != null && a.escolaridade().equalsIgnoreCase(codigoEscolaridade)))
                     .filter(a -> termo.isEmpty() || (a.nome() != null && a.nome().toLowerCase().contains(termo.toLowerCase())))
@@ -231,6 +231,7 @@ public class ViewAlunosCoordController implements Initializable {
         if (filterOpcoes == null || filterTipo == null) return;
         if (!"Grau de Escolaridade".equalsIgnoreCase(filterTipo.getValue())) return;
         filterOpcoes.setItems(FXCollections.observableArrayList(
+                "Nenhuma opção",
                 "Educação Infantil",
                 "Estimulação Precoce",
                 "Fundamental I",
@@ -239,6 +240,7 @@ public class ViewAlunosCoordController implements Initializable {
                 "Outro",
                 "Prefiro não informar"
         ));
+        filterOpcoes.setValue("Nenhuma opção");
     }
 
     private String formatarEscolaridade(String escolaridade) {
@@ -257,6 +259,7 @@ public class ViewAlunosCoordController implements Initializable {
 
     private String mapEscolaridadeLabelToBackend(String label) {
         if (label == null) return null;
+        if ("Nenhuma opção".equalsIgnoreCase(label)) return null;
         String v = label.trim();
         if (v.equalsIgnoreCase("Educação Infantil") || v.equalsIgnoreCase("Educacao Infantil")) return "EDUCACAO_INFANTIL";
         if (v.equalsIgnoreCase("Estimulação Precoce") || v.equalsIgnoreCase("Estimulacao Precoce")) return "ESTIMULACAO_PRECOCE";

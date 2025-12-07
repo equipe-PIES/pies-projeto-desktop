@@ -3,6 +3,7 @@ package com.pies.projeto.integrado.piesfront.controllers;
 import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import com.utils.Janelas;
+import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -461,6 +462,42 @@ public class CadastroProfController implements Initializable {
         return "PREFIRO_NAO_INFORMAR";
     }
 
+    private String mapGeneroToFrontend(String valor) {
+        if (valor == null) return null;
+        String v = valor.trim().toUpperCase();
+        if (v.equals("MASCULINO")) return "Masculino";
+        if (v.equals("FEMININO")) return "Feminino";
+        if (v.equals("OUTRO")) return "Outro";
+        return "Prefiro não informar";
+    }
+
+    public void setProfessor(ProfessorDTO professor) {
+        if (professor == null) return;
+        if (nomeProf != null) nomeProf.setText(professor.getNome());
+        if (cpfProf != null) cpfProf.setText(professor.getCpf());
+        if (dtNascProf != null && professor.getDataNascimento() != null) dtNascProf.setValue(java.time.LocalDate.parse(professor.getDataNascimento()));
+        if (generoProf != null && professor.getGenero() != null) generoProf.setValue(mapGeneroToFrontend(professor.getGenero()));
+        if (obsProf != null) obsProf.setText(professor.getObservacoes());
+
+        UserInfoDTO userInfo = authService.getUserInfo();
+        if (emailProf != null && userInfo != null && userInfo.email() != null) {
+            emailProf.setText(userInfo.email());
+            emailProf.setDisable(true);
+        }
+        if (passwordProf != null) {
+            passwordProf.setText("********");
+            passwordProf.setDisable(true);
+        }
+        if (confirmPasswordProf != null) {
+            confirmPasswordProf.setText("********");
+            confirmPasswordProf.setDisable(true);
+        }
+        if (cadastroProfBt != null) {
+            cadastroProfBt.setText("Salvar alterações");
+            cadastroProfBt.setOnAction(e -> enviarAtualizacaoProfessor(professor.getId()));
+        }
+    }
+
     private String extrairMensagemErro(String responseBody) {
         try {
             // Pode ser uma string simples ou um JSON; tentamos mapear como texto simples primeiro
@@ -471,6 +508,69 @@ public class CadastroProfController implements Initializable {
         } catch (Exception e) {
             return "Requisição inválida.";
         }
+    }
+
+    private void enviarAtualizacaoProfessor(String id) {
+        if (id == null) {
+            return;
+        }
+        limparErro();
+        String token = authService.getCurrentToken();
+        if (token == null || token.isEmpty()) {
+            mostrarErro("Sessão expirada. Faça login novamente.");
+            return;
+        }
+        UpdateProfessorRequest body = new UpdateProfessorRequest();
+        body.nome = nomeProf.getText().trim();
+        body.cpf = cpfProf.getText().trim();
+        body.dataNascimento = dtNascProf.getValue().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+        body.genero = mapGeneroToBackend(generoProf.getValue().toString());
+        body.formacao = "Graduação";
+        body.observacoes = (obsProf != null && obsProf.getText() != null) ? obsProf.getText().trim() : null;
+        try {
+            String json = objectMapper.writeValueAsString(body);
+            java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                    .uri(java.net.URI.create("http://localhost:8080/professores/" + id))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + token)
+                    .PUT(java.net.http.HttpRequest.BodyPublishers.ofString(json))
+                    .timeout(java.time.Duration.ofSeconds(10))
+                    .build();
+            java.net.http.HttpResponse<String> response = httpClient.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                NotificacaoController.agendar("Alterações de cadastro realizadas e salvas com sucesso!", true);
+                authService.invalidateProfessoresCache();
+                Janelas.carregarTela(new javafx.event.ActionEvent(inicioButton, null), 
+                        "/com/pies/projeto/integrado/piesfront/screens/view-profs-coord.fxml", 
+                        "Professores");
+            } else if (response.statusCode() == 400) {
+                String msg = extrairMensagemErro(response.body());
+                mostrarErro(msg);
+                showPopup(msg, false);
+            } else {
+                String msg = "Falha ao atualizar professor. Código: " + response.statusCode();
+                mostrarErro(msg);
+                showPopup(msg, false);
+            }
+        } catch (Exception e) {
+            mostrarErro("Erro ao comunicar com o servidor: " + e.getMessage());
+            showPopup("Erro ao comunicar com o servidor: " + e.getMessage(), false);
+        }
+    }
+
+    public static class UpdateProfessorRequest {
+        @JsonProperty("nome")
+        public String nome;
+        @JsonProperty("cpf")
+        public String cpf;
+        @JsonProperty("dataNascimento")
+        public String dataNascimento;
+        @JsonProperty("genero")
+        public String genero;
+        @JsonProperty("formacao")
+        public String formacao;
+        @JsonProperty("observacoes")
+        public String observacoes;
     }
 
 }

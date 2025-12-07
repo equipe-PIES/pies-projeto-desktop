@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TitledPane animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="430.0" text="Aviso!" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="com.pies.projeto.integrado.piesfront.controllers.ExcluirConfirmController">
+  <content>
+    <AnchorPane cacheShape="false" centerShape="false" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" scaleShape="false">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="533.0" spacing="10.0">
+               <children>
+                  <Label fx:id="fraseAviso" prefHeight="53.0" prefWidth="402.0" text="Tem certeza que deseja realizar a exclusão desse cadastro?" wrapText="true">
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" top="5.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                     <children>
+                        <Button fx:id="cancelarButton" mnemonicParsing="false" prefWidth="200.0" text="Cancelar" />
+                        <Button fx:id="excluirButton" mnemonicParsing="false" prefWidth="200.0" style="-fx-background-color: d00303;" text="Excluir" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+         </children></AnchorPane>
+  </content>
+   <font>
+      <Font name="System Bold" size="17.0" />
+   </font>
+</TitledPane>

@@ -67,14 +67,20 @@ public class ViewTurmasCoordController implements Initializable {
         }
 
         if (filterTipo != null) {
-            filterTipo.setItems(FXCollections.observableArrayList("Professor", "Grau de Escolaridade"));
-            filterTipo.setValue("Professor");
+            filterTipo.setItems(FXCollections.observableArrayList("Nenhum", "Professor", "Grau de Escolaridade"));
+            filterTipo.setValue("Nenhum");
             filterTipo.valueProperty().addListener((obs, ov, nv) -> {
                 if (filterOpcoes != null) {
                     if ("Professor".equalsIgnoreCase(nv)) {
+                        filterOpcoes.setDisable(false);
                         popularProfessoresOpcoes();
                     } else if ("Grau de Escolaridade".equalsIgnoreCase(nv)) {
+                        filterOpcoes.setDisable(false);
                         popularEscolaridadePadrao();
+                    } else {
+                        filterOpcoes.getItems().clear();
+                        filterOpcoes.setValue(null);
+                        filterOpcoes.setDisable(true);
                     }
                 }
                 atualizarFiltro();
@@ -171,7 +177,7 @@ public class ViewTurmasCoordController implements Initializable {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource(
                             "/com/pies/projeto/integrado/piesfront/screens/card-turma-edit.fxml"));
                     VBox node = loader.load();
-                    CardTurmaController controller = loader.getController();
+                    CardTurmaEditController controller = loader.getController();
                     controller.setTurma(t);
                     cards.add(node);
                 } catch (IOException e) {
@@ -197,14 +203,14 @@ public class ViewTurmasCoordController implements Initializable {
         }
 
         if ("Professor".equalsIgnoreCase(tipo)) {
-            String professorNome = opcao;
+            String professorNome = (opcao != null && !"Nenhuma opção".equalsIgnoreCase(opcao)) ? opcao : null;
             List<TurmaDTO> filtradas = todasTurmas.stream()
                     .filter(t -> professorNome == null || (t.professorNome() != null && t.professorNome().equalsIgnoreCase(professorNome)))
                     .filter(t -> termo.isEmpty() || (t.nome() != null && t.nome().toLowerCase().contains(termo.toLowerCase())))
                     .toList();
             exibirLista(filtradas);
         } else if ("Grau de Escolaridade".equalsIgnoreCase(tipo)) {
-            String codigo = opcao != null ? mapEscolaridadeLabelToBackend(opcao) : null;
+            String codigo = (opcao != null && !"Nenhuma opção".equalsIgnoreCase(opcao)) ? mapEscolaridadeLabelToBackend(opcao) : null;
             List<TurmaDTO> filtradas = todasTurmas.stream()
                     .filter(t -> codigo == null || (t.grauEscolar() != null && t.grauEscolar().equalsIgnoreCase(codigo)))
                     .filter(t -> termo.isEmpty() || (t.nome() != null && t.nome().toLowerCase().contains(termo.toLowerCase())))
@@ -226,12 +232,17 @@ public class ViewTurmasCoordController implements Initializable {
                 .distinct()
                 .sorted(String::compareToIgnoreCase)
                 .toList() : java.util.List.of();
-        filterOpcoes.setItems(FXCollections.observableArrayList(nomes));
+        java.util.List<String> itens = new java.util.ArrayList<>();
+        itens.add("Nenhuma opção");
+        itens.addAll(nomes);
+        filterOpcoes.setItems(FXCollections.observableArrayList(itens));
+        filterOpcoes.setValue("Nenhuma opção");
     }
 
     private void popularEscolaridadePadrao() {
         if (filterOpcoes == null) return;
         filterOpcoes.setItems(FXCollections.observableArrayList(
+                "Nenhuma opção",
                 "Educação Infantil",
                 "Estimulação Precoce",
                 "Fundamental I",
@@ -240,6 +251,7 @@ public class ViewTurmasCoordController implements Initializable {
                 "Outro",
                 "Prefiro não informar"
         ));
+        filterOpcoes.setValue("Nenhuma opção");
     }
 
     private String mapEscolaridadeLabelToBackend(String label) {
