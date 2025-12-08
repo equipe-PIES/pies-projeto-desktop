@@ -10,6 +10,11 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.ResponsavelDTO
 import com.pies.api.projeto.integrado.pies_backend.exception.CpfJaCadastradoException;
 import com.pies.api.projeto.integrado.pies_backend.exception.EducandoNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.service.EducandoService;
+import com.pies.api.projeto.integrado.pies_backend.service.AnamneseService;
+import com.pies.api.projeto.integrado.pies_backend.service.DiagnosticoInicialService;
+import com.pies.api.projeto.integrado.pies_backend.service.PDIService;
+import com.pies.api.projeto.integrado.pies_backend.service.PAEEService;
+import com.pies.api.projeto.integrado.pies_backend.service.RelatorioIndividualService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +29,11 @@ import lombok.RequiredArgsConstructor;
 public class EducandoController {
 
     private final EducandoService educandoService;
+    private final AnamneseService anamneseService;
+    private final DiagnosticoInicialService diagnosticoInicialService;
+    private final PDIService pdiService;
+    private final PAEEService paeeService;
+    private final RelatorioIndividualService relatorioIndividualService;
 
     /**
      * Lista todos os educandos.
@@ -86,6 +96,30 @@ public class EducandoController {
             educandoService.deletar(id);
             return ResponseEntity.noContent().<Void>build();
         });
+    }
+
+    @GetMapping("/{id}/progresso")
+    public ResponseEntity<java.util.Map<String, Object>> progresso(@PathVariable String id) {
+        java.util.Map<String, Object> m = new java.util.HashMap<>();
+        try {
+            var a = anamneseService.buscarPorEducando(id);
+            m.put("anamnese", a != null);
+        } catch (RuntimeException e) {
+            m.put("anamnese", false);
+        }
+        try {
+            var di = diagnosticoInicialService.buscarPorEducando(id);
+            m.put("diagnosticoInicial", di != null);
+        } catch (RuntimeException e) {
+            m.put("diagnosticoInicial", false);
+        }
+        var pdis = pdiService.buscarPorEducandoId(id);
+        m.put("pdiCount", pdis != null ? pdis.size() : 0);
+        var paees = paeeService.buscarPorEducandoId(id);
+        m.put("paeeCount", paees != null ? paees.size() : 0);
+        var ris = relatorioIndividualService.buscarPorEducando(id);
+        m.put("relatorioCount", ris != null ? ris.size() : 0);
+        return ResponseEntity.ok(m);
     }
 
     /**

@@ -119,16 +119,17 @@ public class ProgressoAtendimentoController implements Initializable {
             boolean paee = false;
             boolean ri = false;
             try {
-                var an = authService.getAnamnesePorEducando(educando.id());
-                a = an != null;
-                var diMap = authService.getDiagnosticoInicialPorEducandoRaw(educando.id());
-                di = diMap != null;
-                var pdiList = authService.getPdisPorEducandoRaw(educando.id());
-                pdi = pdiList != null && !pdiList.isEmpty();
-                var paeeList = authService.getPaeesPorEducandoRaw(educando.id());
-                paee = paeeList != null && !paeeList.isEmpty();
-                var riList = authService.getRelatoriosIndividuaisPorEducando(educando.id());
-                ri = riList != null && !riList.isEmpty();
+                java.util.Map<String, Object> m = authService.getProgressoPorEducando(educando.id());
+                Object oa = m.get("anamnese");
+                a = oa instanceof Boolean ? (Boolean) oa : false;
+                Object odi = m.get("diagnosticoInicial");
+                di = odi instanceof Boolean ? (Boolean) odi : false;
+                Object opdi = m.get("pdiCount");
+                pdi = opdi instanceof Number ? ((Number) opdi).intValue() > 0 : false;
+                Object opaee = m.get("paeeCount");
+                paee = opaee instanceof Number ? ((Number) opaee).intValue() > 0 : false;
+                Object ori = m.get("relatorioCount");
+                ri = ori instanceof Number ? ((Number) ori).intValue() > 0 : false;
             } catch (Exception ignored) {}
             final boolean fa = a, fdi = di, fpdi = pdi, fpaee = paee, fri = ri;
             javafx.application.Platform.runLater(() -> atualizarUIComResultados(fa, fdi, fpdi, fpaee, fri));
@@ -453,16 +454,17 @@ public class ProgressoAtendimentoController implements Initializable {
         boolean hasPAEE = false;
         boolean hasRI = false;
         if (educando != null && educando.id() != null) {
-            var a = authService.getAnamnesePorEducando(educando.id());
-            hasAnamnese = a != null;
-            var di = authService.getDiagnosticoInicialPorEducandoRaw(educando.id());
-            hasDI = di != null;
-            var pdis = authService.getPdisPorEducandoRaw(educando.id());
-            hasPDI = pdis != null && !pdis.isEmpty();
-            var paees = authService.getPaeesPorEducandoRaw(educando.id());
-            hasPAEE = paees != null && !paees.isEmpty();
-            var ris = authService.getRelatoriosIndividuaisPorEducando(educando.id());
-            hasRI = ris != null && !ris.isEmpty();
+            java.util.Map<String, Object> m = authService.getProgressoPorEducando(educando.id());
+            Object oa = m.get("anamnese");
+            hasAnamnese = oa instanceof Boolean ? (Boolean) oa : false;
+            Object odi = m.get("diagnosticoInicial");
+            hasDI = odi instanceof Boolean ? (Boolean) odi : false;
+            Object opdi = m.get("pdiCount");
+            hasPDI = opdi instanceof Number ? ((Number) opdi).intValue() > 0 : false;
+            Object opaee = m.get("paeeCount");
+            hasPAEE = opaee instanceof Number ? ((Number) opaee).intValue() > 0 : false;
+            Object ori = m.get("relatorioCount");
+            hasRI = ori instanceof Number ? ((Number) ori).intValue() > 0 : false;
         }
         if (editarAnamnese != null) { editarAnamnese.setVisible(true); editarAnamnese.setManaged(true); editarAnamnese.setDisable(!hasAnamnese); }
         if (verAnamnese != null) { verAnamnese.setVisible(true); verAnamnese.setManaged(true); verAnamnese.setDisable(!hasAnamnese); }
