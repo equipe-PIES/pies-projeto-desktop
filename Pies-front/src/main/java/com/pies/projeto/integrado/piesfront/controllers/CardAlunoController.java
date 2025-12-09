@@ -11,6 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -23,8 +25,10 @@ import java.util.ResourceBundle;
 
 import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
+import com.pies.projeto.integrado.piesfront.dto.TurmaDTO;
 import com.utils.Janelas;
 import javafx.event.ActionEvent;
+import com.pies.projeto.integrado.piesfront.controllers.CadastroAlunoController;
 
 /**
  * Controller para o card de aluno (educando)
@@ -60,9 +64,14 @@ public class CardAlunoController implements Initializable {
     
     @FXML
     private Button infoButton;
+    @FXML
+    private Button excluirAluno;
+    @FXML
+    private Button editarAluno;
     
     private EducandoDTO educando;
     private final AuthService authService = AuthService.getInstance();
+    private TurmaDTO turmaInfo;
     
     /**
      * Define os dados do educando a serem exibidos no card
@@ -70,6 +79,75 @@ public class CardAlunoController implements Initializable {
      */
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
+        atualizarDados();
+    }
+
+    @FXML
+    private void handleEditarAlunoAction(javafx.event.ActionEvent event) {
+        if (educando == null || educando.id() == null || editarAluno == null) return;
+        com.pies.projeto.integrado.piesfront.dto.EducandoDTO completo = authService.getEducandoById(educando.id());
+        Janelas.carregarTela(event,
+                "/com/pies/projeto/integrado/piesfront/screens/cadastro-de-aluno.fxml",
+                "Cadastro de Aluno(a)",
+                ctrl -> {
+                    if (ctrl instanceof CadastroAlunoController c) {
+                        c.setIndicadorDeTela("Cadastro de Aluno(a)");
+                        c.setEducando(completo != null ? completo : educando);
+                    }
+                });
+    }
+
+    @FXML
+    private void handleExcluirAlunoAction() {
+        if (cardAluno == null || cardAluno.getScene() == null || educando == null || educando.id() == null) return;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/pies/projeto/integrado/piesfront/screens/excluir-confirm-card.fxml"));
+            Parent conteudo = loader.load();
+            ExcluirConfirmController ctrl = loader.getController();
+
+            Pane root = cardAluno.getScene().getRoot() instanceof Pane p ? p : null;
+            if (root == null) return;
+            Pane overlay = new Pane(conteudo);
+            overlay.setMouseTransparent(false);
+            overlay.setManaged(false);
+            overlay.prefWidthProperty().bind(root.widthProperty());
+            overlay.prefHeightProperty().bind(root.heightProperty());
+            root.getChildren().add(overlay);
+
+            Runnable center = () -> {
+                if (conteudo instanceof Region r) {
+                    r.applyCss();
+                    r.autosize();
+                    double w = r.prefWidth(-1);
+                    double h = r.prefHeight(-1);
+                    double cw = root.getWidth();
+                    double ch = root.getHeight();
+                    r.setLayoutX((cw - w) / 2);
+                    r.setLayoutY((ch - h) / 2);
+                }
+            };
+            center.run();
+            root.widthProperty().addListener((obs, o, n) -> center.run());
+            root.heightProperty().addListener((obs, o, n) -> center.run());
+
+            ctrl.setOnCancel(() -> root.getChildren().remove(overlay));
+            ctrl.setOnConfirm(() -> {
+                boolean ok = authService.deletarEducando(educando.id());
+                root.getChildren().remove(overlay);
+                String nome = educando.nome() != null ? educando.nome() : "";
+                String msg = ok ? ("Aluno(a) " + nome + " foi excluído(a) com sucesso!") : "Falha ao excluir cadastro de aluno(a)!";
+                NotificacaoController.exibirTexto(root, msg, ok);
+                if (ok && cardAluno.getParent() instanceof Pane parent) {
+                    parent.getChildren().remove(cardAluno);
+                }
+            });
+        } catch (IOException e) {
+        }
+    }
+    
+    public void setTurmaInfo(TurmaDTO turma) {
+        this.turmaInfo = turma;
         atualizarDados();
     }
     
@@ -110,11 +188,8 @@ public class CardAlunoController implements Initializable {
 
         if (turmaLabel != null) {
             String turmaNome = "Não informado";
-            if (educando.turmaId() != null) {
-                var turma = authService.getTurmaById(educando.turmaId());
-                if (turma != null && turma.nome() != null) {
-                    turmaNome = turma.nome();
-                }
+            if (turmaInfo != null && turmaInfo.nome() != null) {
+                turmaNome = turmaInfo.nome();
             }
             turmaLabel.setText("Turma: " + turmaNome);
         }
@@ -199,7 +274,8 @@ public class CardAlunoController implements Initializable {
             
             // Obtém o controller e define o educando
             InfosAlunoController controller = loader.getController();
-            controller.setEducando(educando);
+            com.pies.projeto.integrado.piesfront.dto.EducandoDTO completo = authService.getEducandoById(educando.id());
+            controller.setEducando(completo != null ? completo : educando);
             
             // Cria a janela popup
             Stage popupStage = new Stage();
@@ -311,6 +387,8 @@ public class CardAlunoController implements Initializable {
         if (educando != null) {
             atualizarDados();
         }
+        if (excluirAluno != null) excluirAluno.setOnAction(e -> handleExcluirAlunoAction());
+        if (editarAluno != null) editarAluno.setOnAction(this::handleEditarAlunoAction);
     }
     
     /**

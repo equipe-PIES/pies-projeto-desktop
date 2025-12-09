@@ -2,6 +2,8 @@ package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.CreatePDIDTO;
+import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
+import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
 import com.utils.Janelas;
@@ -29,6 +31,10 @@ public class PDIController {
     private Label indicadorDeTela;
     @FXML
     private Label validationMsg;
+    @FXML
+    private Label nameUser;
+    @FXML
+    private Label cargoUser;
     @FXML
     private TextField periodoPlano, horarioAtendimento;
     @FXML
@@ -75,6 +81,8 @@ public class PDIController {
     //     this.modoNovo = true;
     //     this.formData = new PDIFormData(); // Limpa os dados
     private boolean novoRegistro = false;
+
+    
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
@@ -273,6 +281,9 @@ public class PDIController {
         }
         // Sempre preenche os campos com o formData (seja recém carregado ou de navegação entre telas)
         preencherCamposComFormData();
+        javafx.application.Platform.runLater(() -> {
+            atualizarNomeUsuarioAsync();
+        });
     }
 
     private void showValidation(String msg) {
@@ -552,5 +563,31 @@ public class PDIController {
         public String recursosQueNecessitamAdequacao;
         public String recursosMateriaisASeremProduzidos;
         public String parceriasNecessarias;
+    }
+    private void atualizarNomeUsuarioAsync() {
+        Thread t = new Thread(() -> {
+            ProfessorDTO prof = authService.getProfessorLogado();
+            UserInfoDTO userInfo = authService.getUserInfo();
+            javafx.application.Platform.runLater(() -> {
+                if (prof != null && prof.getNome() != null && !prof.getNome().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(prof.getNome());
+                } else if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(userInfo.name());
+                } else if (nameUser != null) {
+                    nameUser.setText("Usuário");
+                }
+                if (cargoUser != null && userInfo != null && userInfo.role() != null) {
+                    String cargo = switch (userInfo.role().toUpperCase()) {
+                        case "PROFESSOR" -> "Professor(a)";
+                        case "COORDENADOR" -> "Coordenador(a)";
+                        case "ADMIN" -> "Administrador(a)";
+                        default -> "Usuário";
+                    };
+                    cargoUser.setText(cargo);
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
     }
 }

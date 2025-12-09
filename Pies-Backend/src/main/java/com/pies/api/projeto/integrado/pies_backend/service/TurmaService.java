@@ -155,6 +155,37 @@ public class TurmaService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Busca turmas por nome ou termo (busca parcial, case insensitive).
+     * 
+     * @param termo Termo de busca (nome ou parte do nome da turma)
+     * @return Lista de TurmaDTO contendo as turmas encontradas
+     */
+    @Transactional(readOnly = true)
+    public List<TurmaDTO> buscarPorTermo(String termo) {
+        return turmaRepository.findByNomeContainingIgnoreCase(termo).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Filtra turmas por nome, professor e grau de escolaridade (filtro combinado).
+     * 
+     * @param nome Nome ou parte do nome da turma (pode ser null ou vazio para ignorar)
+     * @param professorId ID do professor (pode ser null para ignorar)
+     * @param grauEscolar Grau de escolaridade (pode ser null para ignorar)
+     * @return Lista de TurmaDTO contendo as turmas encontradas
+     */
+    @Transactional(readOnly = true)
+    public List<TurmaDTO> filtrarPorNomeProfessorEGrauEscolar(String nome, String professorId, com.pies.api.projeto.integrado.pies_backend.model.Enums.GrauEscolar grauEscolar) {
+        // Normaliza nome vazio para null
+        String nomeFiltro = (nome != null && !nome.trim().isEmpty()) ? nome.trim() : null;
+        
+        return turmaRepository.findByNomeAndProfessorAndGrauEscolar(nomeFiltro, professorId, grauEscolar).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
     // =================================================================================
     // MÉTODOS DE CONVERSÃO (DTO <-> ENTITY)
     // =================================================================================

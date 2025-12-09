@@ -1,8 +1,11 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 
 import com.pies.projeto.integrado.piesfront.dto.EducandoRequest;
+import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.EnderecoRequest;
 import com.pies.projeto.integrado.piesfront.dto.ResponsavelRequest;
+import com.pies.projeto.integrado.piesfront.dto.EnderecoDTO;
+import com.pies.projeto.integrado.piesfront.dto.ResponsavelDTO;
 import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import com.utils.Janelas;
@@ -213,6 +216,48 @@ public class CadastroAlunoController implements Initializable {
         }
     }
 
+    public void setEducando(EducandoDTO educando) {
+        if (educando == null) return;
+        if (nomeAluno != null) nomeAluno.setText(educando.nome());
+        if (cpfAluno != null) cpfAluno.setText(educando.cpf());
+        if (dtNascAluno != null) dtNascAluno.setValue(educando.dataNascimento());
+        if (generoAluno != null && educando.genero() != null) generoAluno.setValue(mapGeneroToFrontend(educando.genero()));
+        if (grauEscAluno != null && educando.escolaridade() != null) grauEscAluno.setValue(mapEscolaridadeToFrontend(educando.escolaridade()));
+        if (escolaAluno != null) escolaAluno.setText(educando.escola());
+        if (cidAluno != null) cidAluno.setText(educando.cid());
+        if (nisAluno != null) nisAluno.setText(educando.nis());
+        if (obsAluno != null) obsAluno.setText(educando.observacao());
+
+        ResponsavelDTO resp = (educando.responsaveis() != null && !educando.responsaveis().isEmpty()) ? educando.responsaveis().get(0) : null;
+        if (resp != null) {
+            if (nomeRespon != null) nomeRespon.setText(resp.nome());
+            if (cpfRespon != null) cpfRespon.setText(resp.cpf());
+            if (contatoRespon != null) contatoRespon.setText(resp.contato());
+            if (parentescoRespon != null) {
+                String p = resp.parentesco();
+                if (p != null) {
+                    String mapped = mapParentescoToFrontend(p);
+                    parentescoRespon.setValue(mapped);
+                }
+            }
+            EnderecoDTO end = resp.endereco();
+            if (end != null) {
+                if (endUF != null && end.uf() != null) endUF.setValue(mapUFToFrontend(end.uf()));
+                if (endCidade != null) endCidade.setText(end.cidade());
+                if (endCEP != null) endCEP.setText(end.cep());
+                if (endRua != null) endRua.setText(end.rua());
+                if (endNum != null) endNum.setText(end.numero());
+                if (endBairro != null) endBairro.setText(end.bairro());
+                if (endComplemento != null) endComplemento.setText(end.complemento());
+            }
+        }
+
+        if (cadastroAlunoBt != null) {
+            cadastroAlunoBt.setText("Salvar alterações");
+            cadastroAlunoBt.setOnAction(e -> enviarAtualizacaoAluno(educando.id()));
+        }
+    }
+
     /**
      * Handler para o botão de início.
      * Navega para a tela inicial do coordenador.
@@ -363,7 +408,7 @@ public class CadastroAlunoController implements Initializable {
 
     // Implementação do envio de cadastro do aluno
     private final java.net.http.HttpClient httpClient = java.net.http.HttpClient.newBuilder().connectTimeout(java.time.Duration.ofSeconds(10)).build();
-    private final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+    private final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper().registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
     private void enviarCadastroAluno() {
         if (!validarFormularioCompleto()) {
             return;
@@ -479,6 +524,107 @@ public class CadastroAlunoController implements Initializable {
             default: return "";
         }
     }
+
+    private String mapUFToFrontend(String sigla) {
+        if (sigla == null) return null;
+        switch (sigla.toUpperCase()) {
+            case "AC": return "Acre";
+            case "AL": return "Alagoas";
+            case "AP": return "Amapá";
+            case "AM": return "Amazonas";
+            case "BA": return "Bahia";
+            case "CE": return "Ceará";
+            case "DF": return "Distrito Federal";
+            case "ES": return "Espírito Santo";
+            case "GO": return "Goiás";
+            case "MA": return "Maranhão";
+            case "MT": return "Mato Grosso";
+            case "MS": return "Mato Grosso do Sul";
+            case "MG": return "Minas Gerais";
+            case "PA": return "Pará";
+            case "PB": return "Paraíba";
+            case "PR": return "Paraná";
+            case "PE": return "Pernambuco";
+            case "PI": return "Piauí";
+            case "RJ": return "Rio de Janeiro";
+            case "RN": return "Rio Grande do Norte";
+            case "RS": return "Rio Grande do Sul";
+            case "RO": return "Rondônia";
+            case "RR": return "Roraima";
+            case "SC": return "Santa Catarina";
+            case "SP": return "São Paulo";
+            case "SE": return "Sergipe";
+            case "TO": return "Tocantins";
+            default: return sigla;
+        }
+    }
+
+    private void enviarAtualizacaoAluno(String id) {
+        if (id == null || !validarFormularioCompleto()) {
+            return;
+        }
+        limparErro();
+        EnderecoDTO endereco = new EnderecoDTO(
+                null,
+                endCEP.getText().trim(),
+                endUF.getValue() != null ? extrairSiglaUF(endUF.getValue().toString()) : "",
+                endCidade.getText().trim(),
+                endBairro.getText().trim(),
+                endRua.getText().trim(),
+                endNum.getText().trim(),
+                endComplemento.getText().trim()
+        );
+        String parentesco = parentescoRespon.getValue();
+        ResponsavelDTO responsavel = new ResponsavelDTO(
+                null,
+                nomeRespon.getText().trim(),
+                cpfRespon.getText().trim(),
+                contatoRespon.getText().trim(),
+                parentesco != null ? parentesco : null,
+                (parentesco != null && parentesco.equalsIgnoreCase("OUTRO")) ? "Outro" : null,
+                endereco
+        );
+        EducandoDTO dto = new EducandoDTO(
+                id,
+                nomeAluno.getText().trim(),
+                cpfAluno.getText().trim(),
+                dtNascAluno.getValue(),
+                mapGeneroToBackend(generoAluno.getValue().toString()),
+                cidAluno.getText().trim(),
+                nisAluno.getText().trim(),
+                escolaAluno.getText().trim(),
+                mapEscolaridadeToBackend(grauEscAluno.getValue().toString()),
+                (obsAluno != null && obsAluno.getText() != null) ? obsAluno.getText().trim() : null,
+                null,
+                java.util.List.of(responsavel),
+                null
+        );
+        try {
+            String json = objectMapper.writeValueAsString(dto);
+            java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                    .uri(java.net.URI.create("http://localhost:8080/api/educandos/" + id))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + authService.getCurrentToken())
+                    .PUT(java.net.http.HttpRequest.BodyPublishers.ofString(json))
+                    .timeout(java.time.Duration.ofSeconds(10))
+                    .build();
+            java.net.http.HttpResponse<String> response = httpClient.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                mostrarSucesso("Alterações salvas com sucesso!");
+                NotificacaoController.agendar("Alterações de cadastro realizadas e salvas com sucesso!", true);
+                authService.invalidateEducandosCache();
+                Janelas.carregarTela(new javafx.event.ActionEvent(inicioButton, null),
+                        "/com/pies/projeto/integrado/piesfront/screens/view-alunos-coord.fxml",
+                        "Alunos");
+            } else {
+                mostrarErro("Erro ao enviar os dados");
+                showPopup("Erro ao enviar os dados", false);
+            }
+        } catch (Exception e) {
+            mostrarErro("Erro ao enviar os dados");
+            showPopup("Erro ao enviar os dados", false);
+        }
+    }
     
     private String mapGeneroToBackend(String valor) {
         String v = valor.trim();
@@ -497,6 +643,36 @@ public class CadastroAlunoController implements Initializable {
         if (v.equalsIgnoreCase("Ensino Médio") || v.equalsIgnoreCase("Ensino Medio")) return "MEDIO";
         if (v.equalsIgnoreCase("Outro")) return "OUTRO";
         return "PREFIRO_NAO_INFORMAR";
+    }
+
+    private String mapGeneroToFrontend(String valor) {
+        if (valor == null) return null;
+        String v = valor.trim().toUpperCase();
+        if (v.equals("MASCULINO")) return "Masculino";
+        if (v.equals("FEMININO")) return "Feminino";
+        if (v.equals("OUTRO")) return "Outro";
+        return "Prefiro não informar";
+    }
+
+    private String mapEscolaridadeToFrontend(String valor) {
+        if (valor == null) return null;
+        String v = valor.trim().toUpperCase();
+        if (v.equals("EDUCACAO_INFANTIL")) return "Educação Infantil";
+        if (v.equals("ESTIMULACAO_PRECOCE")) return "Estimulação Precoce";
+        if (v.equals("FUNDAMENTAL_I")) return "Fundamental I";
+        if (v.equals("FUNDAMENTAL_II")) return "Fundamental II";
+        if (v.equals("MEDIO")) return "Ensino Médio";
+        if (v.equals("OUTRO")) return "Outro";
+        return "Prefiro não informar";
+    }
+
+    private String mapParentescoToFrontend(String valor) {
+        if (valor == null) return null;
+        String v = valor.trim().toUpperCase();
+        if (v.equals("PAI")) return "PAI";
+        if (v.equals("MAE") || v.equals("MÃE")) return "MÃE";
+        if (v.equals("AVO") || v.equals("AVÔ") || v.equals("AVÓ")) return "AVÔ";
+        return "OUTRO";
     }
     // VALIDAÇÃO DE FORMULÁRIO COMPLETO
     private boolean validarFormularioCompleto() {

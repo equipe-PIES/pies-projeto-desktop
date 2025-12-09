@@ -1,5 +1,7 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
+import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
+import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,6 +26,10 @@ public class PAEEController implements Initializable {
     private Label indicadorDeTela;
     @FXML
     private Label validationMsg;
+    @FXML
+    private Label nameUser;
+    @FXML
+    private Label cargoUser;
     @FXML
     private TextArea objetivosPlano;
     @FXML
@@ -157,6 +163,9 @@ public class PAEEController implements Initializable {
         detectarEtapa(url);
         atualizarIndicadorDeTela();
         preencherCamposComFormData();
+        javafx.application.Platform.runLater(() -> {
+            atualizarNomeUsuarioAsync();
+        });
     }
 
     @FXML
@@ -480,6 +489,33 @@ public class PAEEController implements Initializable {
             setChoice(cbEducacaoFisica, formData.envEducacaoFisica);
             setChoice(cbEstimulacaoPrecoce, formData.envEstimulacaoPrecoce);
         }
+    }
+
+    private void atualizarNomeUsuarioAsync() {
+        Thread t = new Thread(() -> {
+            ProfessorDTO prof = authService.getProfessorLogado();
+            UserInfoDTO userInfo = authService.getUserInfo();
+            javafx.application.Platform.runLater(() -> {
+                if (prof != null && prof.getNome() != null && !prof.getNome().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(prof.getNome());
+                } else if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(userInfo.name());
+                } else if (nameUser != null) {
+                    nameUser.setText("Usuário");
+                }
+                if (cargoUser != null && userInfo != null && userInfo.role() != null) {
+                    String cargo = switch (userInfo.role().toUpperCase()) {
+                        case "PROFESSOR" -> "Professor(a)";
+                        case "COORDENADOR" -> "Coordenador(a)";
+                        case "ADMIN" -> "Administrador(a)";
+                        default -> "Usuário";
+                    };
+                    cargoUser.setText(cargo);
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     private boolean validateResumo() {

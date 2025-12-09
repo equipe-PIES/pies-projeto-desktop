@@ -41,7 +41,6 @@
                     <children>
                         <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
                         <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
-                        <Button id="relatoriosButton" fx:id="relatoriosButton" text="Relatórios" />
                     </children>
                 </HBox>
             </children>

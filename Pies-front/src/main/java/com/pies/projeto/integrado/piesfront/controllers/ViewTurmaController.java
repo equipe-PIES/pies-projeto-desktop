@@ -3,6 +3,7 @@ package com.pies.projeto.integrado.piesfront.controllers;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.TurmaDTO;
 import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
+import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import com.utils.Janelas;
 import javafx.fxml.FXML;
@@ -143,26 +144,24 @@ public class ViewTurmaController implements Initializable {
      */
     private void atualizarNomeUsuarioAsync() {
         Thread t = new Thread(() -> {
+            ProfessorDTO prof = authService.getProfessorLogado();
             UserInfoDTO userInfo = authService.getUserInfo();
             javafx.application.Platform.runLater(() -> {
-                if (userInfo != null) {
-                    if (nameUser != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
-                        nameUser.setText(userInfo.name());
-                    }
-                    if (cargoUser != null && userInfo.role() != null) {
-                        String cargo = switch (userInfo.role().toUpperCase()) {
-                            case "PROFESSOR" -> "Professor(a)";
-                            case "COORDENADOR" -> "Coordenador(a)";
-                            case "ADMIN" -> "Administrador(a)";
-                            default -> "Usuário";
-                        };
-                        cargoUser.setText(cargo);
-                    }
-                } else {
-                    if (nameUser != null) {
-                        nameUser.setText("Usuário");
-                    }
-                    System.err.println("Não foi possível carregar o nome do usuário.");
+                if (prof != null && prof.getNome() != null && !prof.getNome().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(prof.getNome());
+                } else if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(userInfo.name());
+                } else if (nameUser != null) {
+                    nameUser.setText("Usuário");
+                }
+                if (cargoUser != null && userInfo != null && userInfo.role() != null) {
+                    String cargo = switch (userInfo.role().toUpperCase()) {
+                        case "PROFESSOR" -> "Professor(a)";
+                        case "COORDENADOR" -> "Coordenador(a)";
+                        case "ADMIN" -> "Administrador(a)";
+                        default -> "Usuário";
+                    };
+                    cargoUser.setText(cargo);
                 }
             });
         });

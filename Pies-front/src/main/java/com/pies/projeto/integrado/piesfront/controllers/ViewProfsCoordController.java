@@ -16,6 +16,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,6 +38,7 @@ public class ViewProfsCoordController implements Initializable {
 
     private final AuthService authService = AuthService.getInstance();
     private List<ProfessorDTO> todosProfessores;
+    private PauseTransition searchDebounce;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -54,6 +57,17 @@ public class ViewProfsCoordController implements Initializable {
 
         if (buscarProfButton != null) {
             buscarProfButton.setOnAction(e -> filtrarPorNome());
+        }
+
+        if (buscarProf != null) {
+            searchDebounce = new PauseTransition(Duration.millis(300));
+            searchDebounce.setOnFinished(e -> filtrarPorNome());
+            buscarProf.textProperty().addListener((obs, ov, nv) -> {
+                if (searchDebounce != null) {
+                    searchDebounce.stop();
+                    searchDebounce.playFromStart();
+                }
+            });
         }
 
         javafx.application.Platform.runLater(() -> {

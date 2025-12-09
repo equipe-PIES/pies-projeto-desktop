@@ -259,6 +259,22 @@ public class AuthService {
         this.cachedEducandosPorTurma.clear();
         this.educandosPorTurmaCacheTs.clear();
     }
+
+    public void invalidateEducandosCache() {
+        this.cachedEducandos = null;
+        this.cachedEducandosPorTurma.clear();
+        this.educandosPorTurmaCacheTs.clear();
+    }
+
+    public void invalidateProfessoresCache() {
+        this.cachedProfessores = null;
+        this.professoresCacheTs = 0L;
+    }
+
+    public void invalidateTurmasCache() {
+        this.cachedTurmas = null;
+        this.turmasCacheTs = 0L;
+    }
     
     /**
      * Busca todas as turmas do backend
@@ -446,6 +462,100 @@ public class AuthService {
             System.err.println("Erro ao buscar turma: " + e.getMessage());
             e.printStackTrace();
             return localCache.readObject(keyTurma, TurmaDTO.class);
+        }
+    }
+
+    public com.pies.projeto.integrado.piesfront.dto.EducandoDTO getEducandoById(String id) {
+        if (currentToken == null || id == null) {
+            System.err.println("getEducandoById: Token ou ID é NULL!");
+            return null;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + EDUCANDOS_ENDPOINT + "/" + id))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                return objectMapper.readValue(response.body(), com.pies.projeto.integrado.piesfront.dto.EducandoDTO.class);
+            } else {
+                System.err.println("Erro ao buscar educando por ID. Status: " + response.statusCode());
+                return null;
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Erro ao buscar educando por ID: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean deletarProfessor(String id) {
+        if (currentToken == null || id == null) {
+            return false;
+        }
+        try {
+            java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                    .uri(java.net.URI.create(BASE_URL + "/professores/" + id))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .DELETE()
+                    .timeout(java.time.Duration.ofSeconds(10))
+                    .build();
+            java.net.http.HttpResponse<String> response = httpClient.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+            boolean ok = response.statusCode() == 204 || response.statusCode() == 200;
+            if (ok) {
+                cachedProfessores = null;
+            }
+            return ok;
+        } catch (java.io.IOException | java.lang.InterruptedException e) {
+            return false;
+        }
+    }
+
+    public boolean deletarTurma(String id) {
+        if (currentToken == null || id == null) {
+            return false;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + TURMAS_ENDPOINT + "/" + id))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .DELETE()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            boolean ok = response.statusCode() == 204 || response.statusCode() == 200;
+            if (ok) {
+                cachedTurmas = null;
+            }
+            return ok;
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+    }
+
+    public boolean deletarEducando(String id) {
+        if (currentToken == null || id == null) {
+            return false;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + EDUCANDOS_ENDPOINT + "/" + id))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .DELETE()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            boolean ok = response.statusCode() == 204 || response.statusCode() == 200;
+            if (ok) {
+                cachedEducandos = null;
+                cachedEducandosPorTurma.clear();
+                educandosPorTurmaCacheTs.clear();
+            }
+            return ok;
+        } catch (IOException | InterruptedException e) {
+            return false;
         }
     }
     
@@ -841,6 +951,60 @@ public class AuthService {
         }).start();
     }
     
+    public boolean atualizarEducandoTurma(String educandoId, String turmaId) {
+        if (currentToken == null || educandoId == null) {
+            return false;
+        }
+        try {
+            List<EducandoDTO> lista = cachedEducandos != null ? cachedEducandos : getEducandos();
+            EducandoDTO encontrado = null;
+            if (lista != null) {
+                for (EducandoDTO e : lista) {
+                    if (educandoId.equals(e.id())) {
+                        encontrado = e;
+                        break;
+                    }
+                }
+            }
+            if (encontrado == null) {
+                return false;
+            }
+            EducandoDTO atualizado = new EducandoDTO(
+                    encontrado.id(),
+                    encontrado.nome(),
+                    encontrado.cpf(),
+                    encontrado.dataNascimento(),
+                    encontrado.genero(),
+                    encontrado.cid(),
+                    encontrado.nis(),
+                    encontrado.escola(),
+                    encontrado.escolaridade(),
+                    encontrado.observacao(),
+                    turmaId,
+                    encontrado.responsaveis(),
+                    encontrado.anamnese()
+            );
+            String body = objectMapper.writeValueAsString(atualizado);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + EDUCANDOS_ENDPOINT + "/" + educandoId))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(body))
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            boolean ok = response.statusCode() == 200;
+            if (ok) {
+                cachedEducandos = null;
+                cachedEducandosPorTurma.clear();
+                educandosPorTurmaCacheTs.clear();
+            }
+            return ok;
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+    }
+    
     /**
      * Busca o ID do professor pelo nome do usuário logado
      * @param nomeUsuario Nome do usuário logado
@@ -945,6 +1109,29 @@ public class AuthService {
         } catch (Exception e) {
             int end = Math.min(16, currentToken.length());
             return currentToken.substring(0, end);
+        }
+    }
+
+    public com.pies.projeto.integrado.piesfront.dto.ProfessorDTO getProfessorLogado() {
+        if (currentToken == null) {
+            return null;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/professores/me"))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                return objectMapper.readValue(response.body(), com.pies.projeto.integrado.piesfront.dto.ProfessorDTO.class);
+            } else {
+                return null;
+            }
+        } catch (IOException | InterruptedException e) {
+            return null;
         }
     }
     

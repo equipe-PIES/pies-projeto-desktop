@@ -157,6 +157,36 @@ public class EducandoService {
     }
 
     /**
+     * Busca educandos por nome ou termo (busca parcial, case insensitive).
+     * 
+     * @param termo Termo de busca (nome ou parte do nome)
+     * @return Lista de EducandoDTO contendo os educandos encontrados
+     */
+    @Transactional(readOnly = true)
+    public List<EducandoDTO> buscarPorTermo(String termo) {
+        return educandoRepository.findByNomeContainingIgnoreCase(termo).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Filtra educandos por nome e grau de escolaridade (filtro combinado).
+     * 
+     * @param nome Nome ou parte do nome (pode ser null ou vazio para ignorar)
+     * @param escolaridade Grau de escolaridade (pode ser null para ignorar)
+     * @return Lista de EducandoDTO contendo os educandos encontrados
+     */
+    @Transactional(readOnly = true)
+    public List<EducandoDTO> filtrarPorNomeEEscolaridade(String nome, com.pies.api.projeto.integrado.pies_backend.model.Enums.GrauEscolar escolaridade) {
+        // Normaliza nome vazio para null
+        String nomeFiltro = (nome != null && !nome.trim().isEmpty()) ? nome.trim() : null;
+        
+        return educandoRepository.findByNomeAndEscolaridade(nomeFiltro, escolaridade).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Converte DTO -> Entidade.
      * Constrói o grafo de objetos e configura os relacionamentos bidirecionais.
      */

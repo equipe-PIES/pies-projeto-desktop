@@ -2,9 +2,19 @@ package com.pies.api.projeto.integrado.pies_backend.controller;
 
 import java.util.List;
 import java.util.function.Supplier;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.EducandoDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.ResponsavelDTO;
 import com.pies.api.projeto.integrado.pies_backend.exception.CpfJaCadastradoException;
@@ -64,6 +74,7 @@ public class EducandoController {
      * Cria um novo educando.
      */
     @PostMapping
+    @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN')")
     public ResponseEntity<EducandoDTO> criar(@RequestBody @Valid EducandoDTO dto) {
         return handleRequest(() -> {
             EducandoDTO salvo = educandoService.salvar(dto);
@@ -83,6 +94,7 @@ public class EducandoController {
      * Atualiza dados básicos do educando.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN')")
     public ResponseEntity<EducandoDTO> atualizar(@PathVariable String id, @RequestBody @Valid EducandoDTO dto) {
         return handleRequest(() -> ResponseEntity.ok(educandoService.atualizar(id, dto)));
     }
@@ -91,6 +103,7 @@ public class EducandoController {
      * Remove um educando.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENADOR','ADMIN')")
     public ResponseEntity<Void> deletar(@PathVariable String id) {
         return handleRequest(() -> {
             educandoService.deletar(id);
