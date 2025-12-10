@@ -2,6 +2,7 @@ package com.pies.projeto.integrado.piesfront.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pies.projeto.integrado.piesfront.dto.AnamneseDTO;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
@@ -68,6 +69,7 @@ public class AuthService {
                 .build();
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.localCache = new LocalCache();
     }
     
@@ -950,6 +952,22 @@ public class AuthService {
             } catch (Exception ignored) {}
         }).start();
     }
+
+    private int toInt(Object o) {
+        if (o instanceof Number n) return n.intValue();
+        try { return o != null ? Integer.parseInt(String.valueOf(o)) : 0; } catch (Exception e) { return 0; }
+    }
+
+    private void updateProgressLocal(String educandoId, java.util.function.Consumer<java.util.Map<String, Object>> mutator) {
+        String key = "progresso_" + educandoId;
+        var typeRef = new com.fasterxml.jackson.core.type.TypeReference<java.util.Map<String, Object>>() {};
+        java.util.Map<String, Object> map = localCache.readMap(key, typeRef);
+        java.util.Map<String, Object> working = (map == null || map.isEmpty()) ? new java.util.HashMap<>() : new java.util.HashMap<>(map);
+        try { mutator.accept(working); } catch (Exception ignored) {}
+        cachedProgresso.put(educandoId, working);
+        progressoCacheTs.put(educandoId, System.currentTimeMillis());
+        localCache.write(key, working);
+    }
     
     public boolean atualizarEducandoTurma(String educandoId, String turmaId) {
         if (currentToken == null || educandoId == null) {
@@ -1170,6 +1188,8 @@ public class AuthService {
             if (response.statusCode() == 201 || response.statusCode() == 200) {
                 AnamneseDTO dto = objectMapper.readValue(response.body(), AnamneseDTO.class);
                 localCache.write("anamnese_" + educandoId, dto);
+                updateProgressLocal(educandoId, m -> m.put("anamnese", Boolean.TRUE));
+                refreshProgressoAsync(educandoId);
                 return dto;
             } else {
                 System.err.println("Erro ao criar anamnese. Status: " + response.statusCode());
@@ -1261,6 +1281,8 @@ public class AuthService {
             if (response.statusCode() == 200) {
                 AnamneseDTO dto = objectMapper.readValue(response.body(), AnamneseDTO.class);
                 localCache.write("anamnese_" + educandoId, dto);
+                updateProgressLocal(educandoId, m -> m.put("anamnese", Boolean.TRUE));
+                refreshProgressoAsync(educandoId);
                 return dto;
             } else {
                 System.err.println("Erro ao atualizar anamnese. Status: " + response.statusCode());
@@ -1287,7 +1309,11 @@ public class AuthService {
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             boolean ok = response.statusCode() == 204 || response.statusCode() == 200;
-            if (ok) localCache.delete("anamnese_" + educandoId);
+            if (ok) {
+                localCache.delete("anamnese_" + educandoId);
+                updateProgressLocal(educandoId, m -> m.put("anamnese", Boolean.FALSE));
+                refreshProgressoAsync(educandoId);
+            }
             return ok;
         } catch (IOException | InterruptedException e) {
             return false;
@@ -1315,6 +1341,8 @@ public class AuthService {
                         com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO.class);
                 if (dto.educandoId() != null) {
                     localCache.delete("relatorios_individuais_" + dto.educandoId());
+                    updateProgressLocal(dto.educandoId(), m -> m.put("relatorioCount", toInt(m.get("relatorioCount")) + 1));
+                    refreshProgressoAsync(dto.educandoId());
                 }
                 return r;
             } else {
@@ -1426,6 +1454,8 @@ public class AuthService {
                 System.out.println("PAEE criado com sucesso!");
                 if (dto.educandoId != null) {
                     localCache.delete("paees_" + dto.educandoId);
+                    updateProgressLocal(dto.educandoId, m -> m.put("paeeCount", toInt(m.get("paeeCount")) + 1));
+                    refreshProgressoAsync(dto.educandoId);
                 }
                 return true;
             } else {
@@ -1541,6 +1571,8 @@ public class AuthService {
             if (response.statusCode() == 201 || response.statusCode() == 200) {
                 if (dto.educandoId() != null) {
                     localCache.delete("pdis_" + dto.educandoId());
+                    updateProgressLocal(dto.educandoId(), m -> m.put("pdiCount", toInt(m.get("pdiCount")) + 1));
+                    refreshProgressoAsync(dto.educandoId());
                 }
                 return true;
             } else {
@@ -1589,6 +1621,8 @@ public class AuthService {
                     java.util.Map<String, Object> map = objectMapper.readValue(response.body(), new com.fasterxml.jackson.core.type.TypeReference<java.util.Map<String, Object>>() {});
                     localCache.write("diagnostico_inicial_" + educandoId, map);
                 } catch (Exception ignored) {}
+                updateProgressLocal(educandoId, m -> m.put("diagnosticoInicial", Boolean.TRUE));
+                refreshProgressoAsync(educandoId);
             }
             return success;
         } catch (IOException | InterruptedException e) {
@@ -1649,6 +1683,16 @@ public class AuthService {
         }
     }
 
+    public boolean deletarDiagnosticoInicial(String educandoId, String id) {
+        boolean ok = deletarDiagnosticoInicial(id);
+        if (ok && educandoId != null) {
+            localCache.delete("diagnostico_inicial_" + educandoId);
+            updateProgressLocal(educandoId, m -> m.put("diagnosticoInicial", Boolean.FALSE));
+            refreshProgressoAsync(educandoId);
+        }
+        return ok;
+    }
+
     public boolean deletarPDI(String id) {
         if (currentToken == null || id == null) {
             return false;
@@ -1665,6 +1709,16 @@ public class AuthService {
         } catch (IOException | InterruptedException e) {
             return false;
         }
+    }
+
+    public boolean deletarPDI(String educandoId, String id) {
+        boolean ok = deletarPDI(id);
+        if (ok && educandoId != null) {
+            localCache.delete("pdis_" + educandoId);
+            updateProgressLocal(educandoId, m -> m.put("pdiCount", Math.max(0, toInt(m.get("pdiCount")) - 1)));
+            refreshProgressoAsync(educandoId);
+        }
+        return ok;
     }
 
     public boolean deletarPAEE(String id) {
@@ -1685,6 +1739,16 @@ public class AuthService {
         }
     }
 
+    public boolean deletarPAEE(String educandoId, String id) {
+        boolean ok = deletarPAEE(id);
+        if (ok && educandoId != null) {
+            localCache.delete("paees_" + educandoId);
+            updateProgressLocal(educandoId, m -> m.put("paeeCount", Math.max(0, toInt(m.get("paeeCount")) - 1)));
+            refreshProgressoAsync(educandoId);
+        }
+        return ok;
+    }
+
     public boolean deletarRelatorioIndividual(String id) {
         if (currentToken == null || id == null) {
             return false;
@@ -1701,6 +1765,16 @@ public class AuthService {
         } catch (IOException | InterruptedException e) {
             return false;
         }
+    }
+
+    public boolean deletarRelatorioIndividual(String educandoId, String id) {
+        boolean ok = deletarRelatorioIndividual(id);
+        if (ok && educandoId != null) {
+            localCache.delete("relatorios_individuais_" + educandoId);
+            updateProgressLocal(educandoId, m -> m.put("relatorioCount", Math.max(0, toInt(m.get("relatorioCount")) - 1)));
+            refreshProgressoAsync(educandoId);
+        }
+        return ok;
     }
 
     public boolean atualizarDiagnosticoInicial(String id, String educandoId, com.pies.projeto.integrado.piesfront.controllers.DIController.CreateDiagnosticoInicialDTO dto) {
@@ -1723,6 +1797,8 @@ public class AuthService {
                     java.util.Map<String, Object> map = objectMapper.readValue(response.body(), new com.fasterxml.jackson.core.type.TypeReference<java.util.Map<String, Object>>() {});
                     localCache.write("diagnostico_inicial_" + educandoId, map);
                 } catch (Exception ignored) {}
+                updateProgressLocal(educandoId, m -> m.put("diagnosticoInicial", Boolean.TRUE));
+                refreshProgressoAsync(educandoId);
             }
             return ok;
         } catch (IOException | InterruptedException e) {
@@ -1747,6 +1823,7 @@ public class AuthService {
             boolean ok = response.statusCode() == 200;
             if (ok && dto.educandoId() != null) {
                 localCache.delete("pdis_" + dto.educandoId());
+                refreshProgressoAsync(dto.educandoId());
             }
             return ok;
         } catch (IOException | InterruptedException e) {
@@ -1771,6 +1848,7 @@ public class AuthService {
             boolean ok = response.statusCode() == 200;
             if (ok && dto.educandoId != null) {
                 localCache.delete("paees_" + dto.educandoId);
+                refreshProgressoAsync(dto.educandoId);
             }
             return ok;
         } catch (IOException | InterruptedException e) {
@@ -1796,6 +1874,7 @@ public class AuthService {
                 com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO r = objectMapper.readValue(response.body(), com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO.class);
                 if (dto.educandoId() != null) {
                     localCache.delete("relatorios_individuais_" + dto.educandoId());
+                    refreshProgressoAsync(dto.educandoId());
                 }
                 return r;
             } else {

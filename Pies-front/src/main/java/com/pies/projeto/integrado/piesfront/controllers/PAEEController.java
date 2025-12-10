@@ -103,6 +103,7 @@ public class PAEEController implements Initializable {
     private PaeeFormData formData = new PaeeFormData();
     // private boolean modoNovo = false;
     private boolean novoRegistro = false;
+    private boolean somenteLeitura = false;
 
     public void setEducando(EducandoDTO educando) {
         System.out.println("=== PAEEController.setEducando ===");
@@ -269,6 +270,10 @@ public class PAEEController implements Initializable {
     private void handleConcluirAction() {
         System.out.println("=== handleConcluirAction PAEE ===");
         captureCurrentStepData();
+        if (somenteLeitura) {
+            showValidation("Modo de visualização");
+            return;
+        }
         if (educando == null || educando.id() == null) {
             System.err.println("Educando inválido!");
             showValidation("Educando inválido.");
@@ -708,6 +713,33 @@ public class PAEEController implements Initializable {
 
     private void showPopup(String mensagem, boolean sucesso) {
         NotificacaoController.exibir(anamnese, mensagem, sucesso);
+    }
+
+    public void setSomenteLeitura(boolean sl) {
+        this.somenteLeitura = sl;
+        aplicarSomenteLeitura();
+    }
+
+    private void aplicarSomenteLeitura() {
+        if (!somenteLeitura) return;
+        javafx.application.Platform.runLater(() -> {
+            disableInputs(anamnese);
+        });
+    }
+
+    private void disableInputs(javafx.scene.Parent root) {
+        if (root == null) return;
+        for (javafx.scene.Node node : root.getChildrenUnmodifiable()) {
+            if (node instanceof javafx.scene.control.TextInputControl tic) {
+                tic.setEditable(false);
+            } else if (node instanceof javafx.scene.control.CheckBox cb) {
+                cb.setDisable(true);
+            } else if (node instanceof javafx.scene.control.ChoiceBox<?> ch) {
+                ch.setDisable(true);
+            } else if (node instanceof javafx.scene.Parent p) {
+                disableInputs(p);
+            }
+        }
     }
 
     public static class CreatePAEEDTO {

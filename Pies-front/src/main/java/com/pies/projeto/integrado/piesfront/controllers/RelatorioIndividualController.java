@@ -42,6 +42,8 @@ public class RelatorioIndividualController {
     private final AuthService authService = AuthService.getInstance();
     private int currentStep = 1;
     private boolean novoRegistro = false;
+    private boolean somenteLeitura = false;
+    private String relatorioIdAtual;
 
     public void setEducando(EducandoDTO educando) {
         System.out.println("=== RelatorioIndividualController.setEducando ===");
@@ -56,10 +58,19 @@ public class RelatorioIndividualController {
             System.out.println("Modo novo registro - não carregando dados existentes");
         }
         populateFromFormData();
+        if (somenteLeitura) {
+            if (dificuldadesRaciocinio != null) dificuldadesRaciocinio.setEditable(false);
+            if (dificuldadesRaciocinio1 != null) dificuldadesRaciocinio1.setEditable(false);
+            if (dificuldadesRaciocinio11 != null) dificuldadesRaciocinio11.setEditable(false);
+        }
     }
 
     public void setNovoRegistro(boolean novo) {
         this.novoRegistro = novo;
+    }
+
+    public void setSomenteLeitura(boolean sl) {
+        this.somenteLeitura = sl;
     }
 
     public void setFormData(RelatorioIndividualRequestDTO data) {
@@ -156,6 +167,10 @@ public class RelatorioIndividualController {
     @FXML
     private void handleConcluirAction() {
         captureCurrentStepData();
+        if (somenteLeitura) {
+            showValidation();
+            return;
+        }
         if (educando == null || educando.id() == null) {
             showValidation();
             return;
@@ -171,8 +186,15 @@ public class RelatorioIndividualController {
                 formData.interacaoProfessora,
                 formData.atividadesVidaDiaria
         );
-        var created = authService.criarRelatorioIndividual(dto);
-        if (created != null) {
+        boolean sucesso;
+        if (novoRegistro) {
+            var created = authService.criarRelatorioIndividual(dto);
+            sucesso = created != null;
+        } else {
+            var updated = relatorioIdAtual != null ? authService.atualizarRelatorioIndividual(relatorioIdAtual, dto) : null;
+            sucesso = updated != null;
+        }
+        if (sucesso) {
             com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService.getInstance().concluirRelatorioIndividual(educando.id());
             NotificacaoController.agendar("Relatório Final registrado com sucesso!", true);
             handleCancelAction();
@@ -283,6 +305,7 @@ public class RelatorioIndividualController {
         var dto = lista.get(lista.size() - 1);
         System.out.println("Carregando último relatório (ID: " + dto.id() + ")");
         System.out.println("Dados funcionais: " + (dto.dadosFuncionais() != null ? dto.dadosFuncionais().substring(0, Math.min(50, dto.dadosFuncionais().length())) + "..." : "null"));
+        relatorioIdAtual = dto.id();
         formData.dadosFuncionais = dto.dadosFuncionais();
         formData.funcionalidadeCognitiva = dto.funcionalidadeCognitiva();
         formData.alfabetizacaoLetramento = dto.alfabetizacaoLetramento();

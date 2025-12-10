@@ -81,6 +81,7 @@ public class PDIController {
     //     this.modoNovo = true;
     //     this.formData = new PDIFormData(); // Limpa os dados
     private boolean novoRegistro = false;
+    private boolean somenteLeitura = false;
 
     
 
@@ -203,6 +204,10 @@ public class PDIController {
     @FXML
     private void handleConcluirAction() {
         captureCurrentStepData();
+        if (somenteLeitura) {
+            showValidation("Modo de visualização");
+            return;
+        }
         if (educando == null || educando.id() == null) {
             showValidation("Educando inválido.");
             return;
@@ -295,6 +300,33 @@ public class PDIController {
 
     private void showPopup(String mensagem, boolean sucesso) {
         NotificacaoController.exibir(anamnese, mensagem, sucesso);
+    }
+
+    public void setSomenteLeitura(boolean sl) {
+        this.somenteLeitura = sl;
+        aplicarSomenteLeitura();
+    }
+
+    private void aplicarSomenteLeitura() {
+        if (!somenteLeitura) return;
+        javafx.application.Platform.runLater(() -> {
+            disableInputs(anamnese);
+        });
+    }
+
+    private void disableInputs(javafx.scene.Parent root) {
+        if (root == null) return;
+        for (javafx.scene.Node node : root.getChildrenUnmodifiable()) {
+            if (node instanceof javafx.scene.control.TextInputControl tic) {
+                tic.setEditable(false);
+            } else if (node instanceof javafx.scene.control.CheckBox cb) {
+                cb.setDisable(true);
+            } else if (node instanceof javafx.scene.control.ChoiceBox<?> ch) {
+                ch.setDisable(true);
+            } else if (node instanceof javafx.scene.Parent p) {
+                disableInputs(p);
+            }
+        }
     }
 
     private boolean validatePdi1() {

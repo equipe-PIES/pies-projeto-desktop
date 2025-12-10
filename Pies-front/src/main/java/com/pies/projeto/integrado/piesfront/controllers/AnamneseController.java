@@ -44,6 +44,7 @@ public class AnamneseController {
     private AnamneseRequestDTO formData = new AnamneseRequestDTO();
     private final AuthService authService = AuthService.getInstance();
     private boolean carregarDadosExistentes = true; // Por padrão carrega dados existentes
+    private boolean somenteLeitura = false;
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
@@ -56,6 +57,11 @@ public class AnamneseController {
     public void setModoNovo() {
         this.carregarDadosExistentes = false;
         this.formData = new AnamneseRequestDTO(); // Limpa os dados
+    }
+
+    public void setSomenteLeitura(boolean sl) {
+        this.somenteLeitura = sl;
+        aplicarSomenteLeitura();
     }
 
     public void setFormData(AnamneseRequestDTO data) {
@@ -144,6 +150,10 @@ public class AnamneseController {
     @FXML
     private void handleConcluirAction() {
         captureCurrentStepData();
+        if (somenteLeitura) {
+            showPopup("Modo de visualização", false);
+            return;
+        }
         if (educando != null) {
             AnamneseDTO dto = toAnamneseDTO();
             
@@ -174,6 +184,28 @@ public class AnamneseController {
             } else {
                 System.err.println("Falha ao salvar anamnese");
                 showPopup("Falha ao salvar anamnese.", false);
+            }
+        }
+    }
+
+    private void aplicarSomenteLeitura() {
+        if (!somenteLeitura) return;
+        javafx.application.Platform.runLater(() -> {
+            disableInputs(anamnese);
+        });
+    }
+
+    private void disableInputs(javafx.scene.Parent root) {
+        if (root == null) return;
+        for (javafx.scene.Node node : root.getChildrenUnmodifiable()) {
+            if (node instanceof javafx.scene.control.TextInputControl tic) {
+                tic.setEditable(false);
+            } else if (node instanceof javafx.scene.control.CheckBox cb) {
+                cb.setDisable(true);
+            } else if (node instanceof javafx.scene.control.ChoiceBox<?> ch) {
+                ch.setDisable(true);
+            } else if (node instanceof javafx.scene.Parent p) {
+                disableInputs(p);
             }
         }
     }

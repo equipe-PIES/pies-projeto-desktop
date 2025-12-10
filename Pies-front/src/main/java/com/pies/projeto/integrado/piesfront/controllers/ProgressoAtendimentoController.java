@@ -83,11 +83,7 @@ public class ProgressoAtendimentoController implements Initializable {
     
     private EducandoDTO educando;
     private final AuthService authService = AuthService.getInstance();
-    private boolean hasAnamneseCached;
-    private boolean hasDICached;
-    private boolean hasPDICached;
-    private boolean hasPAEECached;
-    private boolean hasRICached;
+    
     
     /**
      * Define os dados do educando
@@ -139,16 +135,31 @@ public class ProgressoAtendimentoController implements Initializable {
     }
 
     private void atualizarUIComResultados(boolean a, boolean di, boolean pdi, boolean paee, boolean ri) {
-        hasAnamneseCached = a;
-        hasDICached = di;
-        hasPDICached = pdi;
-        hasPAEECached = paee;
-        hasRICached = ri;
         if (statusAnamnese != null) { statusAnamnese.setText(a ? "Novo" : "Iniciar"); statusAnamnese.setDisable(false); }
-        if (statusDI != null) { statusDI.setText(di ? "Novo" : "Iniciar"); statusDI.setDisable(false); }
-        if (statusPDI != null) { statusPDI.setText(pdi ? "Novo" : "Iniciar"); statusPDI.setDisable(false); }
-        if (statusPAEE != null) { statusPAEE.setText(paee ? "Novo" : "Iniciar"); statusPAEE.setDisable(false); }
-        atualizarVisibilidadePorExistenciaFromCache();
+        if (statusDI != null) { statusDI.setText(di ? "Novo" : "Iniciar"); statusDI.setDisable(!a); }
+        if (statusPDI != null) { statusPDI.setText(pdi ? "Novo" : "Iniciar"); statusPDI.setDisable(!a); }
+        if (statusPAEE != null) { statusPAEE.setText(paee ? "Novo" : "Iniciar"); statusPAEE.setDisable(!a); }
+        if (editarAnamnese != null) { editarAnamnese.setVisible(true); editarAnamnese.setManaged(true); editarAnamnese.setDisable(!a); }
+        if (verAnamnese != null) { verAnamnese.setVisible(true); verAnamnese.setManaged(true); verAnamnese.setDisable(!a); }
+        if (excluirAnamnese != null) { excluirAnamnese.setVisible(true); excluirAnamnese.setManaged(true); excluirAnamnese.setDisable(!a); }
+
+        if (editarDiagnosticoInicial != null) { editarDiagnosticoInicial.setVisible(true); editarDiagnosticoInicial.setManaged(true); editarDiagnosticoInicial.setDisable(!di); }
+        if (verDiagnosticoInicial != null) { verDiagnosticoInicial.setVisible(true); verDiagnosticoInicial.setManaged(true); verDiagnosticoInicial.setDisable(!di); }
+        if (excluirDiagnosticoInicial != null) { excluirDiagnosticoInicial.setVisible(true); excluirDiagnosticoInicial.setManaged(true); excluirDiagnosticoInicial.setDisable(!di); }
+
+        if (editarPDI != null) { editarPDI.setVisible(true); editarPDI.setManaged(true); editarPDI.setDisable(!pdi); }
+        if (verPDI != null) { verPDI.setVisible(true); verPDI.setManaged(true); verPDI.setDisable(!pdi); }
+        if (excluirPDI != null) { excluirPDI.setVisible(true); excluirPDI.setManaged(true); excluirPDI.setDisable(!pdi); }
+
+        if (editarPAEE != null) { editarPAEE.setVisible(true); editarPAEE.setManaged(true); editarPAEE.setDisable(!paee); }
+        if (verPAEE != null) { verPAEE.setVisible(true); verPAEE.setManaged(true); verPAEE.setDisable(!paee); }
+        if (excluirPAEE != null) { excluirPAEE.setVisible(true); excluirPAEE.setManaged(true); excluirPAEE.setDisable(!paee); }
+
+        if (editarRelatorioIndividual != null) { editarRelatorioIndividual.setVisible(true); editarRelatorioIndividual.setManaged(true); editarRelatorioIndividual.setDisable(!ri); }
+        if (verRelatorioIndividual != null) { verRelatorioIndividual.setVisible(true); verRelatorioIndividual.setManaged(true); verRelatorioIndividual.setDisable(!ri); }
+        if (excluirRelatorioIndividual != null) { excluirRelatorioIndividual.setVisible(true); excluirRelatorioIndividual.setManaged(true); excluirRelatorioIndividual.setDisable(!ri); }
+        if (editarRelatorioIndividual1 != null) { editarRelatorioIndividual1.setVisible(true); editarRelatorioIndividual1.setManaged(true); editarRelatorioIndividual1.setDisable(!ri); }
+        if (baixarRelatorioIndividual != null) { baixarRelatorioIndividual.setVisible(true); baixarRelatorioIndividual.setManaged(true); baixarRelatorioIndividual.setDisable(!ri); }
     }
     
     /**
@@ -203,7 +214,13 @@ public class ProgressoAtendimentoController implements Initializable {
     private String getIdFromMap(java.util.Map<String, Object> m) {
         if (m == null) return null;
         Object id = m.get("id");
-        return id instanceof String s ? s : null;
+        if (id == null) id = m.get("_id");
+        if (id == null) id = m.get("paeeId");
+        if (id == null) id = m.get("pdiId");
+        if (id == null) id = m.get("diagnosticoId");
+        if (id instanceof String s) return s;
+        if (id instanceof Number n) return String.valueOf(n);
+        return null;
     }
 
     @FXML
@@ -226,6 +243,13 @@ public class ProgressoAtendimentoController implements Initializable {
         // Verifica se já existe DI - se não existir, abre em modo novo
         var di = authService.getDiagnosticoInicialPorEducandoRaw(educando.id());
         boolean carregar = di != null;
+        if (!carregar) {
+            var anamnese = authService.getAnamnesePorEducando(educando.id());
+            if (anamnese == null) {
+                NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Para iniciar o Diagnóstico Inicial, faça a Anamnese antes.", false);
+                return;
+            }
+        }
         navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/diagnostico-1.fxml", "Diagnóstico Inicial", carregar);
     }
 
@@ -263,6 +287,11 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
+        var anamnese = authService.getAnamnesePorEducando(educando.id());
+        if (anamnese == null) {
+            NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Para iniciar o PDI, faça a Anamnese antes.", false);
+            return;
+        }
         navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI", false);
     }
     
@@ -280,6 +309,13 @@ public class ProgressoAtendimentoController implements Initializable {
         // Verifica se já existe PAEE - se não existir, abre em modo novo
         var paees = authService.getPaeesPorEducandoRaw(educando.id());
         boolean carregar = paees != null && !paees.isEmpty();
+        if (!carregar) {
+            var anamnese = authService.getAnamnesePorEducando(educando.id());
+            if (anamnese == null) {
+                NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Para iniciar o PAEE, faça a Anamnese antes.", false);
+                return;
+            }
+        }
         navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE", carregar);
     }
     
@@ -299,72 +335,106 @@ public class ProgressoAtendimentoController implements Initializable {
             javafx.application.Platform.runLater(() -> carregarDadosAsync());
         }
         if (editarAnamnese != null) editarAnamnese.setOnAction(e -> handleEditAnamneseAction());
-        if (verAnamnese != null) verAnamnese.setOnAction(e -> handleEditAnamneseAction());
+        if (verAnamnese != null) verAnamnese.setOnAction(e -> {
+            if (educando == null) return;
+            navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese", true, true);
+        });
         if (excluirAnamnese != null) {
             excluirAnamnese.setOnAction(e -> {
                 if (educando == null) return;
-                if (educando.id() != null && authService.deletarAnamnesePorEducando(educando.id())) {
-                    atualizarVisibilidadePorExistencia();
-                    prepararUIParaCarregamento();
-                    carregarDadosAsync();
-                }
+                java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+                    if (educando.id() == null) return false;
+                    return authService.deletarAnamnesePorEducando(educando.id());
+                }).thenAccept(ok -> javafx.application.Platform.runLater(() -> {
+                    if (ok) {
+                        NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Anamnese excluída com sucesso.", true);
+                        atualizarVisibilidadePorExistenciaAsync();
+                        carregarDadosAsync();
+                    } else {
+                        NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Falha ao excluir Anamnese.", false);
+                    }
+                }));
             });
         }
         if (editarDiagnosticoInicial != null) editarDiagnosticoInicial.setOnAction(e -> handleEditDIAction());
-        if (verDiagnosticoInicial != null) verDiagnosticoInicial.setOnAction(e -> handleEditDIAction());
+        if (verDiagnosticoInicial != null) verDiagnosticoInicial.setOnAction(e -> {
+            if (educando == null) return;
+            navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/diagnostico-1.fxml", "Diagnóstico Inicial", true, true);
+        });
         if (excluirDiagnosticoInicial != null) excluirDiagnosticoInicial.setOnAction(e -> {
             if (educando == null) return;
-            java.util.Map<String, Object> di = authService.getDiagnosticoInicialPorEducandoRaw(educando.id());
-            String id = getIdFromMap(di);
-            if (id != null && authService.deletarDiagnosticoInicial(id)) {
-                atualizarVisibilidadePorExistencia();
-                prepararUIParaCarregamento();
-                carregarDadosAsync();
-            }
+            java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+                java.util.Map<String, Object> di = authService.getDiagnosticoInicialPorEducandoRaw(educando.id());
+                String id = getIdFromMap(di);
+                return id != null && authService.deletarDiagnosticoInicial(educando.id(), id);
+            }).thenAccept(ok -> javafx.application.Platform.runLater(() -> {
+                if (ok) {
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Diagnóstico Inicial excluído com sucesso.", true);
+                    atualizarVisibilidadePorExistenciaAsync();
+                    carregarDadosAsync();
+                } else {
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Falha ao excluir Diagnóstico Inicial.", false);
+                }
+            }));
         });
         if (editarPDI != null) editarPDI.setOnAction(e -> handleEditPDIAction());
-        if (verPDI != null) verPDI.setOnAction(e -> handleEditPDIAction());
+        if (verPDI != null) verPDI.setOnAction(e -> {
+            if (educando == null) return;
+            navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI", true, true);
+        });
         if (excluirPDI != null) excluirPDI.setOnAction(e -> {
             if (educando == null) return;
-            java.util.List<java.util.Map<String, Object>> pdis = authService.getPdisPorEducandoRaw(educando.id());
-            if (pdis != null && !pdis.isEmpty()) {
+            java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+                java.util.List<java.util.Map<String, Object>> pdis = authService.getPdisPorEducandoRaw(educando.id());
+                if (pdis == null || pdis.isEmpty()) return false;
                 String id = getIdFromMap(pdis.get(pdis.size() - 1));
-                if (id != null && authService.deletarPDI(id)) {
-                    atualizarVisibilidadePorExistencia();
-                    prepararUIParaCarregamento();
+                return id != null && authService.deletarPDI(educando.id(), id);
+            }).thenAccept(ok -> javafx.application.Platform.runLater(() -> {
+                if (ok) {
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "PDI excluído com sucesso.", true);
+                    atualizarVisibilidadePorExistenciaAsync();
                     carregarDadosAsync();
+                } else {
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Falha ao excluir PDI.", false);
                 }
-            }
+            }));
         });
         if (editarPAEE != null) editarPAEE.setOnAction(e -> handleEditPAEEAction());
-        if (verPAEE != null) verPAEE.setOnAction(e -> handleEditPAEEAction());
-        if (excluirPAEE != null) excluirPAEE.setOnAction(e -> {
-
+        if (verPAEE != null) verPAEE.setOnAction(e -> {
             if (educando == null) return;
-            java.util.List<java.util.Map<String, Object>> paees = authService.getPaeesPorEducandoRaw(educando.id());
-            if (paees != null && !paees.isEmpty()) {
+            navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE", true, true);
+        });
+        if (excluirPAEE != null) excluirPAEE.setOnAction(e -> {
+            if (educando == null) return;
+            java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+                java.util.List<java.util.Map<String, Object>> paees = authService.getPaeesPorEducandoRaw(educando.id());
+                if (paees == null || paees.isEmpty()) return null;
                 String id = getIdFromMap(paees.get(paees.size() - 1));
-                if (id != null && authService.deletarPAEE(id)) {
-                    atualizarVisibilidadePorExistencia();
-                    prepararUIParaCarregamento();
+                boolean ok = id != null && authService.deletarPAEE(educando.id(), id);
+                return ok ? Boolean.TRUE : Boolean.FALSE;
+            }).thenAccept(result -> javafx.application.Platform.runLater(() -> {
+                if (result == null) {
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Nenhum PAEE encontrado para excluir.", false);
+                } else if (Boolean.TRUE.equals(result)) {
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "PAEE excluído com sucesso.", true);
+                    atualizarVisibilidadePorExistenciaAsync();
                     carregarDadosAsync();
+                } else {
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Falha ao excluir PAEE.", false);
                 }
-            }
+            }));
         });
         if (editarRelatorioIndividual != null) editarRelatorioIndividual.setOnAction(e -> {
             if (educando == null) return;
-            // Botão Editar sempre carrega dados existentes
-            navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual", true);
+            navegarRelatorioIndividual(true, false);
         });
         if (editarRelatorioIndividual1 != null) editarRelatorioIndividual1.setOnAction(e -> {
             if (educando == null) return;
-            // Botão Editar sempre carrega dados existentes
-            navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual", true);
+            navegarRelatorioIndividual(true, false);
         });
         if (verRelatorioIndividual != null) verRelatorioIndividual.setOnAction(e -> {
             if (educando == null) return;
-            // Botão Ver sempre carrega dados existentes
-            navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual", true);
+            navegarRelatorioIndividual(true, false);
         });
         if (baixarRelatorioIndividual != null) baixarRelatorioIndividual.setOnAction(e -> {
             if (educando == null || educando.id() == null) return;
@@ -400,16 +470,25 @@ public class ProgressoAtendimentoController implements Initializable {
         });
         if (excluirRelatorioIndividual != null) excluirRelatorioIndividual.setOnAction(e -> {
             if (educando == null) return;
-            java.util.List<RelatorioIndividualDTO> ris = authService.getRelatoriosIndividuaisPorEducando(educando.id());
-            if (ris != null && !ris.isEmpty()) {
+            java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+                java.util.List<RelatorioIndividualDTO> ris = authService.getRelatoriosIndividuaisPorEducando(educando.id());
+                if (ris == null || ris.isEmpty()) return null;
                 String id = ris.get(ris.size() - 1).id();
-                if (id != null && authService.deletarRelatorioIndividual(id)) {
-                    atualizarVisibilidadePorExistencia();
-                    prepararUIParaCarregamento();
+                boolean ok = id != null && authService.deletarRelatorioIndividual(educando.id(), id);
+                return ok ? Boolean.TRUE : Boolean.FALSE;
+            }).thenAccept(result -> javafx.application.Platform.runLater(() -> {
+                if (result == null) {
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Nenhum Relatório Individual encontrado para excluir.", false);
+                } else if (Boolean.TRUE.equals(result)) {
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Relatório Individual excluído com sucesso.", true);
+                    atualizarVisibilidadePorExistenciaAsync();
                     carregarDadosAsync();
+                } else {
+                    NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Falha ao excluir Relatório Individual.", false);
                 }
-            }
+            }));
         });
+        atualizarVisibilidadePorExistenciaAsync();
     }
 
     private void navegarNoStagePai(String resource, String titulo) {
@@ -436,6 +515,10 @@ public class ProgressoAtendimentoController implements Initializable {
     }
 
     private void navegarNoStagePaiComModo(String resource, String titulo, boolean carregarDadosExistentes) {
+        navegarNoStagePaiComModo(resource, titulo, carregarDadosExistentes, false);
+    }
+
+    private void navegarNoStagePaiComModo(String resource, String titulo, boolean carregarDadosExistentes, boolean somenteLeitura) {
         System.out.println("=== navegarNoStagePaiComModo ===");
         System.out.println("Resource: " + resource);
         System.out.println("Titulo: " + titulo);
@@ -454,23 +537,47 @@ public class ProgressoAtendimentoController implements Initializable {
                 if (!carregarDadosExistentes) {
                     c.setModoNovo();
                 }
+                c.setSomenteLeitura(somenteLeitura);
                 c.setEducando(educando);
             } else if (controller instanceof PDIController c) {
                 System.out.println("Controller é PDIController, setando educando...");
                 c.setNovoRegistro(!carregarDadosExistentes);
+                c.setSomenteLeitura(somenteLeitura);
                 c.setEducando(educando);
             } else if (controller instanceof PAEEController c) {
                 System.out.println("Controller é PAEEController, setando educando...");
                 c.setNovoRegistro(!carregarDadosExistentes);
+                c.setSomenteLeitura(somenteLeitura);
                 c.setEducando(educando);
             } else if (controller instanceof DIController c) {
                 System.out.println("Controller é DIController, setando educando...");
                 c.setNovoRegistro(!carregarDadosExistentes);
+                c.setSomenteLeitura(somenteLeitura);
                 c.setEducando(educando);
             } else if (controller instanceof RelatorioIndividualController c) {
                 System.out.println("Controller é RelatorioIndividualController, setando educando...");
                 System.out.println("Setando novoRegistro = " + !carregarDadosExistentes);
                 c.setNovoRegistro(!carregarDadosExistentes);
+                c.setEducando(educando);
+            }
+        });
+        popupStage.close();
+        atualizarVisibilidadePorExistenciaAsync();
+    }
+
+    private void navegarRelatorioIndividual(boolean carregarDadosExistentes, boolean somenteLeitura) {
+        Stage popupStage = (Stage) closeProgressoAtd.getScene().getWindow();
+        Stage parentStage = (Stage) popupStage.getOwner();
+        if (parentStage == null) {
+            parentStage = popupStage;
+        }
+        var sourceNode = parentStage.getScene() != null ? parentStage.getScene().getRoot() : closeProgressoAtd;
+        Janelas.carregarTela(new ActionEvent(sourceNode, null), 
+                "/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", 
+                "Relatório Individual", controller -> {
+            if (controller instanceof RelatorioIndividualController c) {
+                c.setNovoRegistro(!carregarDadosExistentes);
+                c.setSomenteLeitura(somenteLeitura);
                 c.setEducando(educando);
             }
         });
@@ -484,17 +591,16 @@ public class ProgressoAtendimentoController implements Initializable {
         boolean hasPAEE = false;
         boolean hasRI = false;
         if (educando != null && educando.id() != null) {
-            java.util.Map<String, Object> m = authService.getProgressoPorEducando(educando.id());
-            Object oa = m.get("anamnese");
-            hasAnamnese = oa instanceof Boolean ? (Boolean) oa : false;
-            Object odi = m.get("diagnosticoInicial");
-            hasDI = odi instanceof Boolean ? (Boolean) odi : false;
-            Object opdi = m.get("pdiCount");
-            hasPDI = opdi instanceof Number ? ((Number) opdi).intValue() > 0 : false;
-            Object opaee = m.get("paeeCount");
-            hasPAEE = opaee instanceof Number ? ((Number) opaee).intValue() > 0 : false;
-            Object ori = m.get("relatorioCount");
-            hasRI = ori instanceof Number ? ((Number) ori).intValue() > 0 : false;
+            var a = authService.getAnamnesePorEducando(educando.id());
+            hasAnamnese = a != null;
+            var di = authService.getDiagnosticoInicialPorEducandoRaw(educando.id());
+            hasDI = di != null && !di.isEmpty();
+            var pdis = authService.getPdisPorEducandoRaw(educando.id());
+            hasPDI = pdis != null && !pdis.isEmpty();
+            var paees = authService.getPaeesPorEducandoRaw(educando.id());
+            hasPAEE = paees != null && !paees.isEmpty();
+            var ris = authService.getRelatoriosIndividuaisPorEducando(educando.id());
+            hasRI = ris != null && !ris.isEmpty();
         }
         if (editarAnamnese != null) { editarAnamnese.setVisible(true); editarAnamnese.setManaged(true); editarAnamnese.setDisable(!hasAnamnese); }
         if (verAnamnese != null) { verAnamnese.setVisible(true); verAnamnese.setManaged(true); verAnamnese.setDisable(!hasAnamnese); }
@@ -519,36 +625,64 @@ public class ProgressoAtendimentoController implements Initializable {
         if (baixarRelatorioIndividual != null) { baixarRelatorioIndividual.setVisible(true); baixarRelatorioIndividual.setManaged(true); baixarRelatorioIndividual.setDisable(!hasRI); }
     }
 
-    private void atualizarVisibilidadePorExistenciaFromCache() {
-        if (editarAnamnese != null) { editarAnamnese.setVisible(true); editarAnamnese.setManaged(true); editarAnamnese.setDisable(!hasAnamneseCached); }
-        if (verAnamnese != null) { verAnamnese.setVisible(true); verAnamnese.setManaged(true); verAnamnese.setDisable(!hasAnamneseCached); }
-        if (excluirAnamnese != null) { excluirAnamnese.setVisible(true); excluirAnamnese.setManaged(true); excluirAnamnese.setDisable(!hasAnamneseCached); }
+    private void atualizarVisibilidadePorExistenciaAsync() {
+        if (educando == null || educando.id() == null) return;
+        java.util.concurrent.CompletableFuture.supplyAsync(() -> authService.getProgressoPorEducando(educando.id()))
+        .thenAccept(map -> javafx.application.Platform.runLater(() -> {
+            boolean hasAnamnese = false;
+            boolean hasDI = false;
+            boolean hasPDI = false;
+            boolean hasPAEE = false;
+            boolean hasRI = false;
+            if (map != null) {
+                Object oa = map.get("anamnese");
+                hasAnamnese = oa instanceof Boolean ? (Boolean) oa : false;
+                Object odi = map.get("diagnosticoInicial");
+                hasDI = odi instanceof Boolean ? (Boolean) odi : false;
+                Object opdi = map.get("pdiCount");
+                hasPDI = opdi instanceof Number ? ((Number) opdi).intValue() > 0 : false;
+                Object opaee = map.get("paeeCount");
+                hasPAEE = opaee instanceof Number ? ((Number) opaee).intValue() > 0 : false;
+                Object ori = map.get("relatorioCount");
+                hasRI = ori instanceof Number ? ((Number) ori).intValue() > 0 : false;
+            }
+            if (editarAnamnese != null) { editarAnamnese.setDisable(!hasAnamnese); }
+            if (verAnamnese != null) { verAnamnese.setDisable(!hasAnamnese); }
+            if (excluirAnamnese != null) { excluirAnamnese.setDisable(!hasAnamnese); }
 
-        if (editarDiagnosticoInicial != null) { editarDiagnosticoInicial.setVisible(true); editarDiagnosticoInicial.setManaged(true); editarDiagnosticoInicial.setDisable(!hasDICached); }
-        if (verDiagnosticoInicial != null) { verDiagnosticoInicial.setVisible(true); verDiagnosticoInicial.setManaged(true); verDiagnosticoInicial.setDisable(!hasDICached); }
-        if (excluirDiagnosticoInicial != null) { excluirDiagnosticoInicial.setVisible(true); excluirDiagnosticoInicial.setManaged(true); excluirDiagnosticoInicial.setDisable(!hasDICached); }
+            if (editarDiagnosticoInicial != null) { editarDiagnosticoInicial.setDisable(!hasDI); }
+            if (verDiagnosticoInicial != null) { verDiagnosticoInicial.setDisable(!hasDI); }
+            if (excluirDiagnosticoInicial != null) { excluirDiagnosticoInicial.setDisable(!hasDI); }
 
-        if (editarPDI != null) { editarPDI.setVisible(true); editarPDI.setManaged(true); editarPDI.setDisable(!hasPDICached); }
-        if (verPDI != null) { verPDI.setVisible(true); verPDI.setManaged(true); verPDI.setDisable(!hasPDICached); }
-        if (excluirPDI != null) { excluirPDI.setVisible(true); excluirPDI.setManaged(true); excluirPDI.setDisable(!hasPDICached); }
+            if (editarPDI != null) { editarPDI.setDisable(!hasPDI); }
+            if (verPDI != null) { verPDI.setDisable(!hasPDI); }
+            if (excluirPDI != null) { excluirPDI.setDisable(!hasPDI); }
 
-        if (editarPAEE != null) { editarPAEE.setVisible(true); editarPAEE.setManaged(true); editarPAEE.setDisable(!hasPAEECached); }
-        if (verPAEE != null) { verPAEE.setVisible(true); verPAEE.setManaged(true); verPAEE.setDisable(!hasPAEECached); }
+            if (editarPAEE != null) { editarPAEE.setDisable(!hasPAEE); }
+            if (verPAEE != null) { verPAEE.setDisable(!hasPAEE); }
+            if (excluirPAEE != null) { excluirPAEE.setDisable(!hasPAEE); }
 
-        if (editarRelatorioIndividual != null) { editarRelatorioIndividual.setVisible(true); editarRelatorioIndividual.setManaged(true); editarRelatorioIndividual.setDisable(!hasRICached); }
-        if (verRelatorioIndividual != null) { verRelatorioIndividual.setVisible(true); verRelatorioIndividual.setManaged(true); verRelatorioIndividual.setDisable(!hasRICached); }
-        if (excluirRelatorioIndividual != null) { excluirRelatorioIndividual.setVisible(true); excluirRelatorioIndividual.setManaged(true); excluirRelatorioIndividual.setDisable(!hasRICached); }
-        if (editarRelatorioIndividual1 != null) { editarRelatorioIndividual1.setVisible(true); editarRelatorioIndividual1.setManaged(true); editarRelatorioIndividual1.setDisable(!hasRICached); }
-        if (baixarRelatorioIndividual != null) { baixarRelatorioIndividual.setVisible(true); baixarRelatorioIndividual.setManaged(true); baixarRelatorioIndividual.setDisable(!hasRICached); }
+            if (editarRelatorioIndividual != null) { editarRelatorioIndividual.setDisable(!hasRI); }
+            if (verRelatorioIndividual != null) { verRelatorioIndividual.setDisable(!hasRI); }
+            if (excluirRelatorioIndividual != null) { excluirRelatorioIndividual.setDisable(!hasRI); }
+            if (editarRelatorioIndividual1 != null) { editarRelatorioIndividual1.setDisable(!hasRI); }
+            if (baixarRelatorioIndividual != null) { baixarRelatorioIndividual.setDisable(!hasRI); }
+        }));
     }
+
+    
 
     @FXML
     private void handleIniciarRelatorioIndividualAction() {
         if (educando == null) {
             return;
         }
-        // Não cria relatório vazio - apenas abre a tela em modo novo
-        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual", false);
+        var anamnese = authService.getAnamnesePorEducando(educando.id());
+        if (anamnese == null) {
+            NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Para iniciar o Relatório Individual, faça a Anamnese antes.", false);
+            return;
+        }
+        navegarRelatorioIndividual(false, false);
     }
 }
 
