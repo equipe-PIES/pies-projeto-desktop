@@ -1369,6 +1369,28 @@ public class AuthService {
         }
     }
 
+    public byte[] baixarRelatorioIndividualPDF(String id) {
+        if (currentToken == null || id == null) {
+            return null;
+        }
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + RELATORIOS_INDIVIDUAIS_ENDPOINT + "/" + id + "/pdf"))
+                    .header("Authorization", "Bearer " + currentToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(20))
+                    .build();
+            HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            if (response.statusCode() == 200) {
+                return response.body();
+            } else {
+                return null;
+            }
+        } catch (IOException | InterruptedException e) {
+            return null;
+        }
+    }
+
     public boolean criarPAEE(
             com.pies.projeto.integrado.piesfront.controllers.PAEEController.CreatePAEEDTO dto) {
         System.out.println("=== AuthService.criarPAEE ===");

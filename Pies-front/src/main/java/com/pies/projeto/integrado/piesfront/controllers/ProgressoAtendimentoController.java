@@ -14,6 +14,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
+import com.pies.projeto.integrado.piesfront.controllers.NotificacaoController;
 
 /**
  * Controller para a tela de progresso de atendimento
@@ -365,8 +367,36 @@ public class ProgressoAtendimentoController implements Initializable {
             navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/relatorio-individual-1.fxml", "Relatório Individual", true);
         });
         if (baixarRelatorioIndividual != null) baixarRelatorioIndividual.setOnAction(e -> {
-            if (educando == null) return;
-            System.out.println("Baixar Relatório Individual ainda não implementado");
+            if (educando == null || educando.id() == null) return;
+            java.util.List<RelatorioIndividualDTO> ris = authService.getRelatoriosIndividuaisPorEducando(educando.id());
+            if (ris == null || ris.isEmpty()) {
+                NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Nenhum Relatório Individual encontrado para este educando.", false);
+                return;
+            }
+            RelatorioIndividualDTO ri = ris.get(ris.size() - 1);
+            String id = ri.id();
+            byte[] pdfBytes = authService.baixarRelatorioIndividualPDF(id);
+            if (pdfBytes == null || pdfBytes.length == 0) {
+                NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Falha ao baixar PDF do Relatório Individual.", false);
+                return;
+            }
+            String nomeBase = educando.nome() != null ? educando.nome().replaceAll("\\s+", "_").replaceAll("[^a-zA-Z0-9_]", "") : "Educando";
+            String shortId = id != null ? id.substring(0, Math.min(8, id.length())) : "RI";
+            String nomeArquivo = "Relatorio_Final_" + nomeBase + "_" + shortId + ".pdf";
+            FileChooser chooser = new FileChooser();
+            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF (*.pdf)", "*.pdf"));
+            chooser.setInitialFileName(nomeArquivo);
+            Stage stage = (Stage) closeProgressoAtd.getScene().getWindow();
+            java.io.File destino = chooser.showSaveDialog(stage);
+            if (destino == null) {
+                return;
+            }
+            try {
+                java.nio.file.Files.write(destino.toPath(), pdfBytes);
+                NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Relatório Individual baixado com sucesso!", true);
+            } catch (Exception ex) {
+                NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Erro ao salvar o arquivo PDF.", false);
+            }
         });
         if (excluirRelatorioIndividual != null) excluirRelatorioIndividual.setOnAction(e -> {
             if (educando == null) return;

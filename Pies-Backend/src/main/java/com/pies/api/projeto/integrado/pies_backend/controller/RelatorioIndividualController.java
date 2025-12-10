@@ -1,8 +1,10 @@
 package com.pies.api.projeto.integrado.pies_backend.controller;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,16 +32,9 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Controller REST responsável pelos endpoints de Relatório Individual.
- * 
- * Base URL: /api/relatorios-individuais
- * 
- * Endpoints disponíveis:
- * - POST   /api/relatorios-individuais           - Criar novo relatório
- * - GET    /api/relatorios-individuais           - Listar todos os relatórios
- * - GET    /api/relatorios-individuais/{id}      - Buscar relatório por ID
- * - PUT    /api/relatorios-individuais/{id}      - Atualizar relatório existente
- * - DELETE /api/relatorios-individuais/{id}      - Deletar relatório
- * - GET    /api/relatorios-individuais/educando/{educandoId} - Buscar relatórios por educando
+ * * Gerencia todas as operações relacionadas aos relatórios dos educandos,
+ * incluindo criação, listagem, atualização, remoção e geração de arquivos PDF.
+ * * Base URL: /api/relatorios-individuais
  */
 @RestController
 @RequestMapping("/api/relatorios-individuais")
@@ -51,20 +46,17 @@ public class RelatorioIndividualController {
 
     /**
      * Cria um novo relatório individual.
-     * 
-     * O professor logado é automaticamente associado ao relatório através
-     * do contexto de segurança do Spring Security. O userId do User é usado
-     * para buscar o Professor correspondente.
-     * 
-     * POST /api/relatorios-individuais
-     * 
-     * @param dto Dados do relatório a ser criado
+     * * O professor logado é automaticamente associado ao relatório através
+     * do contexto de segurança do Spring Security.
+     * * Método: POST
+     * URL: /api/relatorios-individuais
+     * * @param dto Dados do relatório a ser criado (validado via @Valid)
      * @return 201 Created com o relatório criado ou 400 Bad Request em caso de erro
      */
     @PostMapping
     public ResponseEntity<?> criar(@Valid @RequestBody CreateRelatorioIndividualDTO dto) {
         try {
-            // Obtém o ID do usuário logado do contexto de segurança
+            // Obtém o usuário logado do contexto de segurança para vincular ao relatório
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User user = (User) authentication.getPrincipal();
             String userId = user.getId();
@@ -72,23 +64,21 @@ public class RelatorioIndividualController {
             RelatorioIndividualDTO relatorio = relatorioService.salvar(dto, userId);
             return ResponseEntity.status(HttpStatus.CREATED).body(relatorio);
         } catch (RuntimeException e) {
-            // Retorna mensagem de erro detalhada
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
     }
 
     /**
-     * Classe auxiliar para retornar mensagens de erro
+     * Record auxiliar para padronizar o retorno de mensagens de erro JSON.
+     * @param message A mensagem de erro explicativa.
      */
     private record ErrorResponse(String message) {}
 
-
     /**
-     * Lista todos os relatórios individuais cadastrados.
-     * 
-     * GET /api/relatorios-individuais
-     * 
-     * @return 200 OK com a lista de relatórios ou 204 No Content se não houver relatórios
+     * Lista todos os relatórios individuais cadastrados no sistema.
+     * * Método: GET
+     * URL: /api/relatorios-individuais
+     * * @return 200 OK com a lista de relatórios ou 204 No Content se a lista estiver vazia
      */
     @GetMapping
     public ResponseEntity<List<RelatorioIndividualDTO>> listarTodos() {
@@ -100,12 +90,11 @@ public class RelatorioIndividualController {
     }
 
     /**
-     * Busca um relatório específico pelo ID.
-     * 
-     * GET /api/relatorios-individuais/{id}
-     * 
-     * @param id ID do relatório
-     * @return 200 OK com o relatório ou 404 Not Found se não encontrado
+     * Busca um relatório específico pelo seu identificador único.
+     * * Método: GET
+     * URL: /api/relatorios-individuais/{id}
+     * * @param id ID do relatório a ser buscado
+     * @return 200 OK com o relatório encontrado ou 404 Not Found se não existir
      */
     @GetMapping("/{id}")
     public ResponseEntity<RelatorioIndividualDTO> buscarPorId(@PathVariable String id) {
@@ -118,12 +107,11 @@ public class RelatorioIndividualController {
     }
 
     /**
-     * Atualiza um relatório existente.
-     * 
-     * PUT /api/relatorios-individuais/{id}
-     * 
-     * @param id ID do relatório a ser atualizado
-     * @param dto Novos dados do relatório
+     * Atualiza os dados de um relatório existente.
+     * * Método: PUT
+     * URL: /api/relatorios-individuais/{id}
+     * * @param id ID do relatório a ser atualizado
+     * @param dto Novos dados para atualização
      * @return 200 OK com o relatório atualizado ou 404 Not Found se não encontrado
      */
     @PutMapping("/{id}")
@@ -139,12 +127,11 @@ public class RelatorioIndividualController {
     }
 
     /**
-     * Deleta um relatório pelo ID.
-     * 
-     * DELETE /api/relatorios-individuais/{id}
-     * 
-     * @param id ID do relatório a ser deletado
-     * @return 204 No Content em sucesso ou 404 Not Found se não encontrado
+     * Remove um relatório do sistema permanentemente.
+     * * Método: DELETE
+     * URL: /api/relatorios-individuais/{id}
+     * * @param id ID do relatório a ser removido
+     * @return 204 No Content se removido com sucesso ou 404 Not Found se não existir
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable String id) {
@@ -157,12 +144,12 @@ public class RelatorioIndividualController {
     }
 
     /**
-     * Busca todos os relatórios de um educando específico.
-     * 
-     * GET /api/relatorios-individuais/educando/{educandoId}
-     * 
-     * @param educandoId ID do educando
-     * @return 200 OK com a lista de relatórios ou 204 No Content se não houver relatórios
+     * Busca todos os relatórios vinculados a um educando específico.
+     * Útil para ver o histórico de avaliações de um aluno.
+     * * Método: GET
+     * URL: /api/relatorios-individuais/educando/{educandoId}
+     * * @param educandoId ID do educando
+     * @return 200 OK com a lista de relatórios ou 204 No Content se vazio
      */
     @GetMapping("/educando/{educandoId}")
     public ResponseEntity<List<RelatorioIndividualDTO>> buscarPorEducando(@PathVariable String educandoId) {
@@ -174,45 +161,67 @@ public class RelatorioIndividualController {
     }
 
     /**
-     * Gera e retorna o PDF do relatório individual.
-     * 
-     * GET /api/relatorios-individuais/{id}/pdf
-     * 
-     * Este endpoint gera um PDF profissional e formatado com todas as informações
-     * do relatório individual do educando. O PDF é retornado como download.
-     * 
-     * @param id ID do relatório individual
-     * @return 200 OK com o PDF em formato application/pdf ou 404 Not Found se não encontrado
+     * Gera e retorna o arquivo PDF do relatório individual.
+     * * Este endpoint recupera os dados do relatório e tenta carregar o logo institucional
+     * da pasta 'src/main/resources/img'. Caso o logo exista, ele é inserido no PDF.
+     * O arquivo é retornado pronto para download no navegador.
+     * * Método: GET
+     * URL: /api/relatorios-individuais/{id}/pdf
+     * * @param id ID do relatório individual para geração do documento
+     * @return 200 OK com o recurso (PDF) ou erro adequado (404/500)
      */
     @GetMapping("/{id}/pdf")
     public ResponseEntity<Resource> gerarPDF(@PathVariable String id) {
         try {
-            // Busca o relatório pelo ID
+            // 1. Busca os dados do relatório no banco
             RelatorioIndividualDTO relatorio = relatorioService.buscarPorId(id);
             
-            // Gera o PDF usando o serviço
-            byte[] pdfBytes = pdfService.gerarPDF(relatorio);
+            // 2. Carrega a imagem do logo institucional
+            // O arquivo deve estar em: src/main/resources/img/logo_apapeq.png
+            byte[] imagemBytes = null;
+            try {
+                ClassPathResource imageResource = new ClassPathResource("img/logo_apapeq.png");
+                
+                // Verifica se o arquivo existe antes de tentar ler
+                if (imageResource.exists()) {
+                    try (InputStream inputStream = imageResource.getInputStream()) {
+                        imagemBytes = inputStream.readAllBytes();
+                    }
+                } else {
+                    // Log silencioso ou aviso no console do servidor
+                    System.out.println("AVISO: Logo 'img/logo_apapeq.png' não encontrado em resources. O PDF será gerado sem logo.");
+                }
+            } catch (Exception e) {
+                // Captura erros de IO, permissão, etc., para não impedir a geração do PDF
+                System.err.println("ERRO ao carregar imagem do logo: " + e.getMessage());
+            }
+
+            // 3. Chama o serviço de PDF passando os dados E a imagem (que pode ser null)
+            byte[] pdfBytes = pdfService.gerarPDF(relatorio, imagemBytes);
             
-            // Valida se o PDF foi gerado corretamente
+            // Valida se o PDF foi gerado corretamente (não está vazio)
             if (pdfBytes == null || pdfBytes.length == 0) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new ByteArrayResource("Erro ao gerar PDF".getBytes()));
+                        .body(new ByteArrayResource("Erro crítico: O arquivo PDF gerado está vazio.".getBytes()));
             }
             
-            // Cria o recurso a partir dos bytes do PDF
+            // Cria o recurso para resposta HTTP
             ByteArrayResource resource = new ByteArrayResource(pdfBytes);
             
-            // Gera nome do arquivo baseado no nome do educando e ID do relatório
-            String nomeArquivo = "Relatorio_Final_" + 
-                    (relatorio.educandoNome() != null ? 
-                     relatorio.educandoNome().replaceAll("\\s+", "_").replaceAll("[^a-zA-Z0-9_]", "") : 
-                     "Educando") + 
-                    "_" + relatorio.id().substring(0, Math.min(8, relatorio.id().length())) + ".pdf";
+            // 4. Formata o nome do arquivo para download (Sanitização básica de nome)
+            String nomeEducando = relatorio.educandoNome() != null ? 
+                    relatorio.educandoNome().replaceAll("\\s+", "_").replaceAll("[^a-zA-Z0-9_]", "") : 
+                    "Educando";
             
-            // Retorna o PDF com headers apropriados para download
+            // Nome final: Relatorio_Final_NomeDoAluno_IDcurto.pdf
+            String nomeArquivo = "Relatorio_Final_" + nomeEducando + "_" + 
+                               relatorio.id().substring(0, Math.min(8, relatorio.id().length())) + ".pdf";
+            
+            // 5. Configura os headers de resposta para forçar o download ou visualização correta
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + nomeArquivo + "\"; filename*=UTF-8''" + nomeArquivo)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+                    // Headers para evitar cache do navegador em downloads dinâmicos
                     .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
                     .header(HttpHeaders.PRAGMA, "no-cache")
                     .header(HttpHeaders.EXPIRES, "0")
@@ -220,10 +229,12 @@ public class RelatorioIndividualController {
                     .body(resource);
                     
         } catch (RuntimeException e) {
+            // Relatório não encontrado no banco
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            // Erro genérico de servidor
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ByteArrayResource(("Erro ao gerar PDF: " + e.getMessage()).getBytes()));
+                    .body(new ByteArrayResource(("Erro interno ao gerar PDF: " + e.getMessage()).getBytes()));
         }
     }
 }
