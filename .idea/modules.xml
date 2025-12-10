@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Pies-Backend/Pies-Backend.iml" filepath="$PROJECT_DIR$/Pies-Backend/Pies-Backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/pies-repositorio-projeto.iml" filepath="$PROJECT_DIR$/.idea/pies-repositorio-projeto.iml" />
     </modules>
   </component>

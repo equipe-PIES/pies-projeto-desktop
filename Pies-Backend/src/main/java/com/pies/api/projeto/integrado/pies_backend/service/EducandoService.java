@@ -14,202 +14,141 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Serviço responsável pela lógica de negócio relacionada aos Educandos.
- * 
- * Esta classe implementa as operações CRUD (Create, Read, Update, Delete)
- * e realiza a conversão entre entidades (Educando) e DTOs (EducandoDTO).
- * 
- * Utiliza injeção de dependência via constructor (@RequiredArgsConstructor)
- * e transações gerenciadas pelo Spring (@Transactional).
+ * * Implementa operações CRUD e conversão de DTOs.
+ * Foca em performance utilizando consultas otimizadas no repositório.
  */
 @Service
 @RequiredArgsConstructor
 public class EducandoService {
 
     /**
-     * Repositório para acesso aos dados dos educandos no banco de dados.
-     * Injetado automaticamente pelo Spring através do construtor gerado pelo Lombok.
+     * Injeção do repositório via construtor (Lombok).
      */
     private final EducandoRepository educandoRepository;
 
     /**
-     * Lista todos os educandos cadastrados no sistema.
-     * 
-     * @Transactional(readOnly = true): Mantém a transação aberta durante toda a execução,
-     * permitindo que o lazy loading dos responsáveis funcione corretamente. O readOnly = true
-     * otimiza a consulta indicando que não haverá alterações no banco.
-     * 
-     * @return Lista de EducandoDTO contendo todos os educandos convertidos da entidade para DTO
+     * Lista todos os educandos cadastrados.
+     * * <p><b>OTIMIZAÇÃO:</b> Utiliza o método {@code findAllCompleto()} que executa um 
+     * {@code JOIN FETCH} no banco. Isso traz o Aluno, suas Turmas e o Responsável 
+     * em uma única consulta SQL, evitando o problema de "N+1 selects" e lentidão de rede.</p>
+     * * @return Lista de EducandoDTO com todos os dados preenchidos.
      */
     @Transactional(readOnly = true)
     public List<EducandoDTO> listarTodos() {
-        // Busca todos os educandos do banco de dados
-        // findAll() retorna List<Educando> (entidades JPA)
-        return educandoRepository.findAll().stream()
-            // Converte cada entidade Educando para EducandoDTO
-            // map() aplica a função toDTO() em cada elemento da lista
+        return educandoRepository.findAllCompleto().stream()
             .map(this::toDTO)
-            // Coleta os resultados em uma nova List<EducandoDTO>
             .collect(Collectors.toList());
     }
 
     /**
-     * Busca um educando específico pelo seu ID.
-     * 
-     * @Transactional(readOnly = true): Mantém a transação aberta durante toda a execução,
-     * permitindo que o lazy loading dos responsáveis funcione corretamente quando acessado
-     * no método toDTO(). O readOnly = true otimiza a consulta.
-     * 
-     * @param id Identificador único (UUID) do educando
-     * @return EducandoDTO do educando encontrado
-     * @throws EducandoNotFoundException se o educando não for encontrado com o ID fornecido
+     * Busca um educando por ID com todos os detalhes.
+     * * <p>Utiliza {@code findByIdCompleto} para garantir que turmas e responsável 
+     * venham carregados, mesmo sendo LAZY na entidade.</p>
+     * * @param id Identificador do educando.
+     * @return DTO do educando.
+     * @throws EducandoNotFoundException se não encontrar.
      */
     @Transactional(readOnly = true)
     public EducandoDTO buscarPorId(String id) {
-        // Busca o educando no banco de dados
-        // findById() retorna Optional<Educando> (pode estar vazio)
-        return educandoRepository.findById(id)
-            // Se o educando existir, converte para DTO
-            // map() só executa se o Optional não estiver vazio
+        return educandoRepository.findByIdCompleto(id)
             .map(this::toDTO)
-            // Se o educando não existir, lança exceção customizada
-            // orElseThrow() lança exceção se o Optional estiver vazio
             .orElseThrow(() -> new EducandoNotFoundException(id));
     }
 
     /**
-     * Salva um novo educando no banco de dados.
-     * 
-     * @Transactional: Garante que a operação seja executada completamente ou revertida
-     * em caso de erro (ACID - Atomicidade). Todas as operações dentro deste método
-     * fazem parte de uma única transação.
-     * 
-     * @param dto DTO contendo os dados do educando a ser criado
-     * @return EducandoDTO do educando salvo (com ID gerado pelo JPA)
-     * @throws CpfJaCadastradoException se o CPF já estiver cadastrado no sistema
+     * Salva um novo educando.
+     * * @param dto Dados de entrada.
+     * @return DTO com o ID gerado.
+     * @throws CpfJaCadastradoException se o CPF já existir.
      */
     @Transactional
     public EducandoDTO salvar(EducandoDTO dto) {
-        // Validação de CPF único: verifica se já existe um educando com este CPF
-        // Isso previne duplicação de CPF no banco de dados
+        // Validação de Regra de Negócio: CPF Único
         if (educandoRepository.existsByCpf(dto.getCpf())) {
-            // Lança exceção customizada se o CPF já existir
             throw new CpfJaCadastradoException(dto.getCpf());
         }
         
-        // Converte o DTO (camada de apresentação) para entidade (camada de persistência)
-        // O ID não é setado aqui, será gerado automaticamente pelo JPA
         Educando entity = toEntity(dto);
-        
-        // Salva a entidade no banco de dados
-        // save() persiste a entidade e retorna a entidade com o ID gerado
         Educando salvo = educandoRepository.save(entity);
         
-        // Converte a entidade salva de volta para DTO para retornar ao controller
-        // Isso garante que o ID gerado seja incluído na resposta
         return toDTO(salvo);
     }
 
     /**
-     * Atualiza os dados de um educando existente.
-     * 
-     * @Transactional: Garante consistência dos dados durante a atualização.
-     * Se qualquer erro ocorrer, todas as alterações são revertidas.
-     * 
-     * IMPORTANTE: Este método atualiza apenas os campos básicos do educando.
-     * A lista de responsáveis não é atualizada aqui - isso deve ser feito
-     * através de um serviço específico de responsáveis.
-     * 
-     * @param id Identificador único (UUID) do educando a ser atualizado
-     * @param dto DTO contendo os novos dados do educando
-     * @return EducandoDTO do educando atualizado
-     * @throws EducandoNotFoundException se o educando não for encontrado com o ID fornecido
-     * @throws CpfJaCadastradoException se o novo CPF já estiver cadastrado (e for diferente do atual)
+     * Atualiza dados cadastrais de um educando.
+     * * <p>Nota: Este método atualiza dados simples. Para alterar o responsável,
+     * o ideal é usar o método específico {@code definirResponsavel} ou garantir 
+     * que o DTO venha completo.</p>
+     * * @param id ID do educando a atualizar.
+     * @param dto Novos dados.
+     * @return DTO atualizado.
      */
     @Transactional
     public EducandoDTO atualizar(String id, EducandoDTO dto) {
-        // Busca o educando existente no banco de dados
-        // Se não encontrar, lança exceção customizada
         Educando entity = educandoRepository.findById(id)
             .orElseThrow(() -> new EducandoNotFoundException(id));
         
-        // Validação de CPF único: só valida se o CPF foi alterado
-        // Compara o CPF atual da entidade com o CPF do DTO
-        // Se forem diferentes E o novo CPF já existir, lança exceção
+        // Verifica se o CPF mudou e se o novo já existe
         if (!entity.getCpf().equals(dto.getCpf()) && educandoRepository.existsByCpf(dto.getCpf())) {
             throw new CpfJaCadastradoException(dto.getCpf());
         }
         
-        // Usa BeanUtils para copiar propriedades do DTO para a entidade
-        // BeanUtils.copyProperties() copia automaticamente campos com o mesmo nome
-        // O terceiro parâmetro são os campos que devem ser IGNORADOS na cópia:
-        // - "id": não copia o ID (mantém o ID original da entidade)
-        // - "responsaveis": não copia a lista de responsáveis (gerenciada separadamente)
-        BeanUtils.copyProperties(dto, entity, "id", "responsaveis");
+        // Atualiza campos simples, ignorando ID e relacionamentos complexos que
+        // devem ser tratados com cuidado ou em métodos específicos se necessário.
+        BeanUtils.copyProperties(dto, entity, "id", "responsavel", "anamnese");
         
-        // Salva a entidade atualizada e converte para DTO antes de retornar
+        // Se o DTO trouxer um responsável novo, poderíamos atualizar aqui também,
+        // mas mantive a lógica simplificada focada nos dados do aluno.
+        
         return toDTO(educandoRepository.save(entity));
     }
 
     /**
-     * Remove um educando do banco de dados.
-     * 
-     * @Transactional: Garante que a remoção seja executada completamente.
-     * Se qualquer erro ocorrer, a operação é revertida.
-     * 
-     * IMPORTANTE: Com orphanRemoval = true na entidade Educando,
-     * todos os responsáveis vinculados serão automaticamente removidos
-     * quando o educando for deletado (cascata).
-     * 
-     * @param id Identificador único (UUID) do educando a ser removido
-     * @throws EducandoNotFoundException se o educando não for encontrado com o ID fornecido
+     * Remove um educando e seus dados em cascata (Responsável, Anamnese).
      */
     @Transactional
     public void deletar(String id) {
-        // Busca o educando no banco de dados
-        // Se não encontrar, lança exceção customizada
         Educando educando = educandoRepository.findById(id)
             .orElseThrow(() -> new EducandoNotFoundException(id));
-        
-        // Remove o educando do banco de dados
-        // delete() remove a entidade e, devido ao cascade, remove os responsáveis também
         educandoRepository.delete(educando);
     }
 
     /**
-     * Converte uma entidade Educando para um DTO EducandoDTO.
-     * Inclui a conversão da lista de responsáveis se presente.
-     * 
-     * Este método realiza o mapeamento de dados da camada de persistência
-     * para a camada de apresentação, expondo apenas os dados necessários
-     * para a API REST.
-     * 
-     * @param e Entidade Educando a ser convertida
-     * @return EducandoDTO com os dados convertidos
+     * Lista educandos de uma turma específica de forma otimizada.
+     * * @param turmaId ID da turma.
+     * @return Lista de alunos daquela turma.
+     */
+    @Transactional(readOnly = true)
+    public List<EducandoDTO> listarPorTurma(String turmaId) {
+        // Busca otimizada para não travar a tela de Turmas
+        List<Educando> lista = educandoRepository.findAllByTurmaIdCompleto(turmaId);
+        return lista.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    // ========================================================================
+    // CONVERSORES (DTO <-> ENTITY)
+    // ========================================================================
+
+    /**
+     * Converte Entidade -> DTO.
+     * Trata manualmente os objetos aninhados (Responsável, Anamnese).
      */
     private EducandoDTO toDTO(Educando e) {
-        // Cria uma nova instância do DTO
         EducandoDTO dto = new EducandoDTO();
+        // Ignora campos complexos na cópia automática
+        BeanUtils.copyProperties(e, dto, "responsavel", "anamnese");
         
-        // Usa BeanUtils para copiar propriedades básicas da entidade para o DTO
-        // BeanUtils.copyProperties() copia automaticamente campos com o mesmo nome
-        // O terceiro parâmetro "responsaveis" indica que este campo deve ser IGNORADO
-        // (será convertido manualmente abaixo)
-        BeanUtils.copyProperties(e, dto, "responsaveis", "anamnese");
-        
-        // Converte a lista de responsáveis se existir e não estiver vazia
-        // O relacionamento @OneToMany é lazy, mas como estamos dentro de uma transação
-        // (@Transactional), o Hibernate carrega os dados automaticamente quando acessamos
-        if (e.getResponsaveis() != null && !e.getResponsaveis().isEmpty()) {
-            // Usa Stream API para converter cada Responsavel para ResponsavelDTO
-            List<ResponsavelDTO> responsaveisDTO = e.getResponsaveis().stream()
-                // map() aplica a função toResponsavelDTO() em cada responsável
-                .map(this::toResponsavelDTO)
-                // collect() agrupa os resultados em uma List<ResponsavelDTO>
-                .collect(Collectors.toList());
-            // Define a lista convertida no DTO
-            dto.setResponsaveis(responsaveisDTO);
+        // Configura o ID da Turma, se houver
+        if (e.getTurmas() != null && !e.getTurmas().isEmpty()) {
+        dto.setTurmaId(e.getTurmas().get(0).getId());
+        }
+
+        // Conversão Manual: Responsável (Objeto Único)
+        if (e.getResponsavel() != null) {
+            dto.setResponsavel(toResponsavelDTO(e.getResponsavel()));
         }
         
+        // Conversão Manual: Anamnese
         if (e.getAnamnese() != null) {
             dto.setAnamnese(toAnamneseDTO(e.getAnamnese()));
         }
@@ -217,65 +156,60 @@ public class EducandoService {
         return dto;
     }
 
-    private EducandoDTO toDTOBasico(Educando e) {
-        EducandoDTO dto = new EducandoDTO();
-        org.springframework.beans.BeanUtils.copyProperties(e, dto, "responsaveis", "anamnese");
-        return dto;
-    }
-
+    /**
+     * Busca educandos por nome ou termo (busca parcial, case insensitive).
+     * 
+     * @param termo Termo de busca (nome ou parte do nome)
+     * @return Lista de EducandoDTO contendo os educandos encontrados
+     */
     @Transactional(readOnly = true)
-    public java.util.List<EducandoDTO> listarSimplificados() {
-        return educandoRepository.findAll().stream()
-                .map(this::toDTOBasico)
-                .collect(java.util.stream.Collectors.toList());
-    }
-
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public java.util.List<com.pies.api.projeto.integrado.pies_backend.controller.dto.EducandoDTO> listarPorTurma(String turmaId) {
-        java.util.List<Educando> lista = educandoRepository.findAllByTurmaId(turmaId);
-        return lista.stream().map(this::toDTO).collect(java.util.stream.Collectors.toList());
+    public List<EducandoDTO> buscarPorTermo(String termo) {
+        return educandoRepository.findByNomeContainingIgnoreCase(termo).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     /**
-     * Converte um DTO EducandoDTO para uma entidade Educando.
+     * Filtra educandos por nome e grau de escolaridade (filtro combinado).
      * 
-     * Este método realiza o mapeamento de dados da camada de apresentação
-     * para a camada de persistência, preparando os dados para serem salvos
-     * no banco de dados.
-     * 
-     * NOTA: O ID não é copiado aqui, pois é gerado automaticamente pelo JPA
-     * ao persistir uma nova entidade. Para atualizações, o ID deve ser
-     * definido antes de chamar este método (ou usar o método atualizar()).
-     * 
-     * NOTA: A lista de responsáveis não está sendo convertida aqui. Se necessário,
-     * a conversão deve ser feita através de um ResponsavelService ou método auxiliar.
-     * 
-     * @param dto EducandoDTO a ser convertido
-     * @return Entidade Educando com os dados convertidos
+     * @param nome Nome ou parte do nome (pode ser null ou vazio para ignorar)
+     * @param escolaridade Grau de escolaridade (pode ser null para ignorar)
+     * @return Lista de EducandoDTO contendo os educandos encontrados
+     */
+    @Transactional(readOnly = true)
+    public List<EducandoDTO> filtrarPorNomeEEscolaridade(String nome, com.pies.api.projeto.integrado.pies_backend.model.Enums.GrauEscolar escolaridade) {
+        // Normaliza nome vazio para null
+        String nomeFiltro = (nome != null && !nome.trim().isEmpty()) ? nome.trim() : null;
+        
+        return educandoRepository.findByNomeAndEscolaridade(nomeFiltro, escolaridade).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Converte DTO -> Entidade.
+     * Constrói o grafo de objetos e configura os relacionamentos bidirecionais.
      */
     private Educando toEntity(EducandoDTO dto) {
         Educando e = new Educando();
-        BeanUtils.copyProperties(dto, e, "id", "responsaveis", "anamnese");
+        
+        BeanUtils.copyProperties(dto, e, "id", "responsavel", "anamnese");
 
-        // Verifica se o DTO tem responsáveis
-        if (dto.getResponsaveis() != null && !dto.getResponsaveis().isEmpty()) {
-            List<Responsavel> responsaveis = dto.getResponsaveis().stream().map(rdto -> {
-                Responsavel r = new Responsavel();
-                BeanUtils.copyProperties(rdto, r, "id", "educando", "endereco");
+        if (dto.getResponsavel() != null) {
+            Responsavel r = new Responsavel();
+            ResponsavelDTO rDto = dto.getResponsavel();
+            
+            BeanUtils.copyProperties(rDto, r, "id", "educando", "endereco");
 
-                // Converte o endereço, se existir
-                if (rdto.getEndereco() != null) {
-                    Endereco endereco = new Endereco();
-                    BeanUtils.copyProperties(rdto.getEndereco(), endereco, "id");
-                    r.setEndereco(endereco);
-                }
+            if (rDto.getEndereco() != null) {
+                Endereco endereco = new Endereco();
+                BeanUtils.copyProperties(rDto.getEndereco(), endereco, "id");
+                r.setEndereco(endereco);
+            }
 
-                // Define a relação entre o responsável e o educando
-                r.setEducando(e);
-                return r;
-            }).collect(Collectors.toList());
-
-            e.setResponsaveis(responsaveis);
+            r.setEducando(e); 
+            
+            e.setResponsavel(r);
         }
 
         if (dto.getAnamnese() != null) {
@@ -284,55 +218,24 @@ public class EducandoService {
         }
 
         return e;
-        }
+    }
 
-    /**
-     * Converte uma entidade Responsavel para um DTO ResponsavelDTO.
-     * Inclui a conversão do endereço se presente.
-     * 
-     * Este método é usado internamente pelo método toDTO() para converter
-     * os responsáveis vinculados a um educando.
-     * 
-     * @param r Entidade Responsavel a ser convertida
-     * @return ResponsavelDTO com os dados convertidos
-     */
+    // ========================================================================
+    // MÉTODOS AUXILIARES DE CONVERSÃO
+    // ========================================================================
+
     private ResponsavelDTO toResponsavelDTO(Responsavel r) {
-        // Cria uma nova instância do DTO
         ResponsavelDTO dto = new ResponsavelDTO();
-        
-        // Usa BeanUtils para copiar propriedades básicas da entidade para o DTO
-        // O terceiro parâmetro são os campos que devem ser IGNORADOS na cópia:
-        // - "educando": não copia o relacionamento com Educando (evita referência circular)
-        // - "endereco": não copia o endereço (será convertido manualmente abaixo)
         BeanUtils.copyProperties(r, dto, "educando", "endereco");
-        
-        // Converte o endereço se existir
-        // O relacionamento @OneToOne pode ser null, então verificamos antes
         if (r.getEndereco() != null) {
-            // Chama o método auxiliar para converter o endereço
             dto.setEndereco(toEnderecoDTO(r.getEndereco()));
         }
-        
         return dto;
     }
 
-    /**
-     * Converte uma entidade Endereco para um DTO EnderecoDTO.
-     * 
-     * Este método é usado internamente pelo método toResponsavelDTO() para converter
-     * o endereço vinculado a um responsável.
-     * 
-     * @param e Entidade Endereco a ser convertida
-     * @return EnderecoDTO com os dados convertidos
-     */
     private EnderecoDTO toEnderecoDTO(Endereco e) {
-        // Cria uma nova instância do DTO
         EnderecoDTO dto = new EnderecoDTO();
-        
-        // Usa BeanUtils para copiar todas as propriedades
-        // Como Endereco e EnderecoDTO têm os mesmos campos, não precisamos excluir nada
         BeanUtils.copyProperties(e, dto);
-        
         return dto;
     }
 
@@ -349,13 +252,19 @@ public class EducandoService {
         return anamnese;
     }
     
+    /**
+     * Define ou substitui o responsável de um aluno.
+     * Útil se a tela de edição de responsável for separada.
+     */
     @Transactional
-    public EducandoDTO adicionarResponsavel(String educandoId, ResponsavelDTO dto) {
+    public EducandoDTO definirResponsavel(String educandoId, ResponsavelDTO dto) {
         Educando educando = educandoRepository.findById(educandoId)
                 .orElseThrow(() -> new EducandoNotFoundException(educandoId));
 
         Responsavel responsavel = new Responsavel();
         BeanUtils.copyProperties(dto, responsavel, "id", "educando", "endereco");
+        
+        // Vínculo com o Aluno
         responsavel.setEducando(educando);
 
         if (dto.getEndereco() != null) {
@@ -364,14 +273,11 @@ public class EducandoService {
             responsavel.setEndereco(endereco);
         }
 
-        // Adiciona o responsável à lista
-        educando.getResponsaveis().add(responsavel);
+        // Atualiza a referência no objeto Pai
+        educando.setResponsavel(responsavel);
 
-        // Salva o educando novamente (CascadeType.ALL cuida do resto)
+        // O save() com CascadeType.ALL vai persistir o responsável novo
         Educando salvo = educandoRepository.save(educando);
-
         return toDTO(salvo);
     }
-
-
 }

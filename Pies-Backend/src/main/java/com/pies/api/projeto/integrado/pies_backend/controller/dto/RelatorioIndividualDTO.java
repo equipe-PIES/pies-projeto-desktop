@@ -1,5 +1,6 @@
 package com.pies.api.projeto.integrado.pies_backend.controller.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -28,6 +29,16 @@ public record RelatorioIndividualDTO(
      * ID do professor que criou o relatório.
      */
     String professorId,
+
+    /**
+     * Data de nascimento do educando.
+     */
+    LocalDate dataNascimento,
+    
+    /**
+     * CID do educando.
+     */
+    String educandoCid,
     
     /**
      * Nome do professor que criou o relatório.

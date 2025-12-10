@@ -3,6 +3,8 @@ package com.pies.projeto.integrado.piesfront.controllers;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.AnamneseDTO;
 import com.pies.projeto.integrado.piesfront.dto.AnamneseRequestDTO;
+import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
+import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
 import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
 import com.pies.projeto.integrado.piesfront.services.AnamneseService;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
@@ -32,12 +34,17 @@ public class AnamneseController {
     private Label indicadorDeTela;
     @FXML
     private Label validationMsg;
+    @FXML
+    private Label nameUser;
+    @FXML
+    private Label cargoUser;
 
     private EducandoDTO educando;
     private boolean temDadosExistentes = false;
     private AnamneseRequestDTO formData = new AnamneseRequestDTO();
     private final AuthService authService = AuthService.getInstance();
     private boolean carregarDadosExistentes = true; // Por padrão carrega dados existentes
+    private boolean somenteLeitura = false;
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
@@ -52,6 +59,11 @@ public class AnamneseController {
     public void setModoNovo() {
         this.carregarDadosExistentes = false;
         this.formData = new AnamneseRequestDTO(); // Limpa os dados
+    }
+
+    public void setSomenteLeitura(boolean sl) {
+        this.somenteLeitura = sl;
+        aplicarSomenteLeitura();
     }
 
     public void setFormData(AnamneseRequestDTO data) {
@@ -140,6 +152,10 @@ public class AnamneseController {
     @FXML
     private void handleConcluirAction() {
         captureCurrentStepData();
+        if (somenteLeitura) {
+            showPopup("Modo de visualização", false);
+            return;
+        }
         if (educando != null) {
             AnamneseDTO dto = toAnamneseDTO();
             
@@ -170,6 +186,28 @@ public class AnamneseController {
             } else {
                 System.err.println("Falha ao salvar anamnese");
                 showPopup("Falha ao salvar anamnese.", false);
+            }
+        }
+    }
+
+    private void aplicarSomenteLeitura() {
+        if (!somenteLeitura) return;
+        javafx.application.Platform.runLater(() -> {
+            disableInputs(anamnese);
+        });
+    }
+
+    private void disableInputs(javafx.scene.Parent root) {
+        if (root == null) return;
+        for (javafx.scene.Node node : root.getChildrenUnmodifiable()) {
+            if (node instanceof javafx.scene.control.TextInputControl tic) {
+                tic.setEditable(false);
+            } else if (node instanceof javafx.scene.control.CheckBox cb) {
+                cb.setDisable(true);
+            } else if (node instanceof javafx.scene.control.ChoiceBox<?> ch) {
+                ch.setDisable(true);
+            } else if (node instanceof javafx.scene.Parent p) {
+                disableInputs(p);
             }
         }
     }
@@ -262,6 +300,9 @@ public class AnamneseController {
             validationMsg.setVisible(false);
             validationMsg.setManaged(true);
         }
+        javafx.application.Platform.runLater(() -> {
+            atualizarNomeUsuarioAsync();
+        });
         if (tipoParto != null && (tipoParto.getItems() == null || tipoParto.getItems().isEmpty())) {
             tipoParto.setItems(FXCollections.observableArrayList("Normal", "Cesáreo", "Fórceps"));
         }
@@ -294,6 +335,37 @@ public class AnamneseController {
         if (sono != null && (sono.getItems() == null || sono.getItems().isEmpty())) {
             sono.setItems(FXCollections.observableArrayList("Calmo", "Agitado"));
         }
+    }
+
+    private void atualizarNomeUsuarioAsync() {
+        Thread t = new Thread(() -> {
+            ProfessorDTO prof = authService.getProfessorLogado();
+            UserInfoDTO userInfo = authService.getUserInfo();
+            javafx.application.Platform.runLater(() -> {
+                if (prof != null && prof.getNome() != null && !prof.getNome().isEmpty()) {
+                    if (nameUser != null) {
+                        nameUser.setText(prof.getNome());
+                    }
+                } else if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                    if (nameUser != null) {
+                        nameUser.setText(userInfo.name());
+                    }
+                } else if (nameUser != null) {
+                    nameUser.setText("Usuário");
+                }
+                if (cargoUser != null && userInfo != null && userInfo.role() != null) {
+                    String cargo = switch (userInfo.role().toUpperCase()) {
+                        case "PROFESSOR" -> "Professor(a)";
+                        case "COORDENADOR" -> "Coordenador(a)";
+                        case "ADMIN" -> "Administrador(a)";
+                        default -> "Usuário";
+                    };
+                    cargoUser.setText(cargo);
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     private void showValidation() {
@@ -519,6 +591,9 @@ public class AnamneseController {
     }
 
     private AnamneseDTO toAnamneseDTO() {
+        // Busca o professorId do usuário logado
+        String professorId = authService.getProfessorId();
+        
         String temConvulsao = tri(formData.convulsao);
         String convenioMedico = Boolean.TRUE.equals(formData.possuiConvenio) ? val(formData.convenio) : null;
         String vacinacaoEmDia = tri(formData.vacinacaoEmDia);
@@ -564,6 +639,8 @@ public class AnamneseController {
 
         return new AnamneseDTO(
                 null,
+                professorId,
+                null, // professorNome será preenchido pelo backend
                 temConvulsao,
                 convenioMedico,
                 vacinacaoEmDia,

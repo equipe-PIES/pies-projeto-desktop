@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,8 +18,8 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.LoginResponseD
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.RegisterDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.UserInfoDTO;
 import com.pies.api.projeto.integrado.pies_backend.infra.security.TokenService;
-import com.pies.api.projeto.integrado.pies_backend.model.User;
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.UserRole;
+import com.pies.api.projeto.integrado.pies_backend.model.User;
 import com.pies.api.projeto.integrado.pies_backend.repository.UserRepository;
 
 import jakarta.validation.Valid;
@@ -57,7 +57,7 @@ public class AuthenticationController { // Controller responsável pela autentic
 
     // Endpoint para registrar novos usuários
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody @Valid RegisterDTO data){
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterDTO data){
         
         try {
             System.out.println("=== DEBUG REGISTER ===");
@@ -101,7 +101,7 @@ public class AuthenticationController { // Controller responsável pela autentic
             return ResponseEntity.status(500).build();
         }
     }
-
+    
     /**
      * Endpoint para obter informações do usuário autenticado
      * Retorna id, email, nome e role do usuário logado

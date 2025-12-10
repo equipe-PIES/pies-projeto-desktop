@@ -183,6 +183,13 @@ public record CreatePAEEDTO(
      * Campo obrigatório - deve ser um ID válido de um educando existente
      */
     @NotBlank(message = "ID do educando é obrigatório")
-    String educandoId
+    String educandoId,
+
+    /**
+     * ID do professor responsável por este PAEE.
+     * Campo obrigatório - deve ser um ID válido de um professor existente
+     */
+    @NotBlank(message = "ID do professor é obrigatório")
+    String professorId
 ) {}
 

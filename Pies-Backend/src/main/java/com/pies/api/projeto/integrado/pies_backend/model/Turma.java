@@ -1,6 +1,7 @@
 package com.pies.api.projeto.integrado.pies_backend.model;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.GrauEscolar;
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.Turno;
@@ -63,5 +64,5 @@ Ele só é buscado quando for realmente acessado.*/
      *   acessados, melhorando a performance.
      */
     @ManyToMany(mappedBy = "turmas", fetch = FetchType.LAZY)
-    private List<Educando> educandos;
+    private List<Educando> educandos = new ArrayList<>();
 }

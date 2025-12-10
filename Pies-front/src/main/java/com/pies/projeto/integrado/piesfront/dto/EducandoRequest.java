@@ -12,5 +12,5 @@ public record EducandoRequest(
     String escola,
     String escolaridade,
     String observacao,
-    List<ResponsavelRequest> responsaveis
+    ResponsavelRequest responsavel
 ) {}

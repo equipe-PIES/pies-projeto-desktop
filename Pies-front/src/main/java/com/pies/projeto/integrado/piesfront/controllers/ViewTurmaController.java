@@ -3,6 +3,7 @@ package com.pies.projeto.integrado.piesfront.controllers;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.TurmaDTO;
 import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
+import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import com.utils.Janelas;
 import javafx.fxml.FXML;
@@ -96,20 +97,21 @@ public class ViewTurmaController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         atualizarIndicadorDeTela(url);
         if (alunosScrollPane != null && containerAlunos != null) {
-            alunosScrollPane.setFitToWidth(true);
-            alunosScrollPane.viewportBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-                double cardWidth = 520.0;
-                double hgap = containerAlunos.getHgap();
-                double threeColsWidth = cardWidth * 3 + hgap * 2;
-                double wrap = Math.min(newBounds.getWidth(), threeColsWidth);
-                containerAlunos.setPrefWrapLength(wrap);
-            });
-        }
-        javafx.application.Platform.runLater(() -> {
-            atualizarNomeUsuarioAsync();
-            if (turmaId != null && !turmaId.isEmpty()) {
-                carregarDadosTurmaEAlunosAsync();
+                alunosScrollPane.setFitToWidth(true);
+                alunosScrollPane.viewportBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+                    double cardWidth = 520.0;
+                    double hgap = containerAlunos.getHgap();
+                    double threeColsWidth = cardWidth * 3 + hgap * 2;
+                    double wrap = Math.min(newBounds.getWidth(), threeColsWidth);
+                    containerAlunos.setPrefWrapLength(wrap);
+                });
             }
+
+            javafx.application.Platform.runLater(() -> {
+                atualizarNomeUsuarioAsync();
+                if (turmaId != null && !turmaId.isEmpty()) {
+                    carregarDadosTurmaEAlunosAsync();
+                }
         });
     }
 
@@ -142,26 +144,24 @@ public class ViewTurmaController implements Initializable {
      */
     private void atualizarNomeUsuarioAsync() {
         Thread t = new Thread(() -> {
+            ProfessorDTO prof = authService.getProfessorLogado();
             UserInfoDTO userInfo = authService.getUserInfo();
             javafx.application.Platform.runLater(() -> {
-                if (userInfo != null) {
-                    if (nameUser != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
-                        nameUser.setText(userInfo.name());
-                    }
-                    if (cargoUser != null && userInfo.role() != null) {
-                        String cargo = switch (userInfo.role().toUpperCase()) {
-                            case "PROFESSOR" -> "Professor(a)";
-                            case "COORDENADOR" -> "Coordenador(a)";
-                            case "ADMIN" -> "Administrador(a)";
-                            default -> "Usuário";
-                        };
-                        cargoUser.setText(cargo);
-                    }
-                } else {
-                    if (nameUser != null) {
-                        nameUser.setText("Usuário");
-                    }
-                    System.err.println("Não foi possível carregar o nome do usuário.");
+                if (prof != null && prof.getNome() != null && !prof.getNome().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(prof.getNome());
+                } else if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(userInfo.name());
+                } else if (nameUser != null) {
+                    nameUser.setText("Usuário");
+                }
+                if (cargoUser != null && userInfo != null && userInfo.role() != null) {
+                    String cargo = switch (userInfo.role().toUpperCase()) {
+                        case "PROFESSOR" -> "Professor(a)";
+                        case "COORDENADOR" -> "Coordenador(a)";
+                        case "ADMIN" -> "Administrador(a)";
+                        default -> "Usuário";
+                    };
+                    cargoUser.setText(cargo);
                 }
             });
         });
@@ -172,44 +172,46 @@ public class ViewTurmaController implements Initializable {
     private void carregarDadosTurmaEAlunosAsync() {
         java.util.concurrent.CompletableFuture<TurmaDTO> turmaFuture =
                 java.util.concurrent.CompletableFuture.supplyAsync(() -> authService.getTurmaById(turmaId));
-        java.util.concurrent.CompletableFuture<java.util.List<EducandoDTO>> educandosFuture =
-                java.util.concurrent.CompletableFuture.supplyAsync(() -> authService.getEducandosPorTurma(turmaId));
 
         turmaFuture.thenAccept(turma -> javafx.application.Platform.runLater(() -> {
-            turmaAtual = turma;
+            this.turmaAtual = turma;
+            
             if (turmaAtual != null) {
-                if (nomeTurmaLabel != null) {
-                    String nome = turmaAtual.nome() != null ? turmaAtual.nome() : "Sem nome";
-                    nomeTurmaLabel.setText(nome);
-                }
-                if (grauTurma != null) {
-                    String grau = turmaAtual.grauEscolar() != null ?
-                            formatarGrauEscolar(turmaAtual.grauEscolar()) : "Não informado";
-                    grauTurma.setText(grau);
-                }
-                if (turnoTurma != null) {
-                    String turno = turmaAtual.turno() != null ?
-                            formatarTurno(turmaAtual.turno()) : "Não informado";
-                    turnoTurma.setText(turno);
-                }
-                if (fxEtariaTurma != null) {
-                    String faixaEtaria = turmaAtual.faixaEtaria() != null ?
-                            turmaAtual.faixaEtaria() : "Não informado";
-                    fxEtariaTurma.setText(faixaEtaria);
-                }
-            }
-        }));
+                // Atualiza Labels da Turma
+                if (nomeTurmaLabel != null) nomeTurmaLabel.setText(turmaAtual.nome() != null ? turmaAtual.nome() : "Sem nome");
+                if (grauTurma != null) grauTurma.setText(formatarGrauEscolar(turmaAtual.grauEscolar()));
+                if (turnoTurma != null) turnoTurma.setText(formatarTurno(turmaAtual.turno()));
+                if (fxEtariaTurma != null) fxEtariaTurma.setText(turmaAtual.faixaEtaria() != null ? turmaAtual.faixaEtaria() : "N/A");
 
-        turmaFuture.thenCombine(educandosFuture, (turma, educandos) -> {
-            if (turma == null || educandos == null) return java.util.List.<EducandoDTO>of();
-            return educandos;
-        }).thenAccept(alunos -> javafx.application.Platform.runLater(() -> {
-            educandosFiltrados = alunos;
-            if (totalAlunosTurma != null) {
-                totalAlunosTurma.setText(String.valueOf(educandosFiltrados.size()));
+                // === CORREÇÃO PRINCIPAL ===
+                // Pegamos a lista direto do DTO da turma
+                List<EducandoDTO> listaAlunos = turmaAtual.educandos();
+                
+                if (listaAlunos == null) {
+                    listaAlunos = new ArrayList<>();
+                }
+
+                // Atualiza as listas locais
+                this.educandosFiltrados = listaAlunos;
+                this.todosEducandos = listaAlunos;
+
+                // Atualiza contador
+                if (totalAlunosTurma != null) {
+                    totalAlunosTurma.setText(String.valueOf(educandosFiltrados.size()));
+                }
+                
+                // Renderiza os cards
+                exibirAlunos(educandosFiltrados);
+            } else {
+                System.err.println("Turma retornou nula do serviço.");
             }
-            exibirAlunos(educandosFiltrados);
-        }));
+        })).exceptionally(ex -> {
+            javafx.application.Platform.runLater(() -> {
+                System.err.println("Erro ao carregar turma: " + ex.getMessage());
+                ex.printStackTrace();
+            });
+            return null;
+        });
     }
     
     /**

@@ -7,7 +7,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="cardTurma" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="350.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #CCCCCC; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 15;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CardTurmaController">
+<VBox fx:id="cardTurma" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="350.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-border-color: #CCCCCC; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 15;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CardTurmaEditController">
     <children>
         <Label fx:id="nomeTurmaCard" prefHeight="21.0" prefWidth="400.0" text="Nome da Turma">
             <VBox.margin>

@@ -3,6 +3,8 @@ package com.pies.projeto.integrado.piesfront.controllers;
 import com.pies.projeto.integrado.piesfront.dto.CreateRelatorioIndividualDTO;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualRequestDTO;
+import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
+import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import javafx.fxml.FXML;
 import javafx.stage.StageStyle;
@@ -25,6 +27,10 @@ public class RelatorioIndividualController {
     @FXML
     private Label validationMsg;
     @FXML
+    private Label nameUser;
+    @FXML
+    private Label cargoUser;
+    @FXML
     private TextArea dificuldadesRaciocinio;
     @FXML
     private TextArea dificuldadesRaciocinio1;
@@ -36,6 +42,8 @@ public class RelatorioIndividualController {
     private final AuthService authService = AuthService.getInstance();
     private int currentStep = 1;
     private boolean novoRegistro = false;
+    private boolean somenteLeitura = false;
+    private String relatorioIdAtual;
 
     public void setEducando(EducandoDTO educando) {
         System.out.println("=== RelatorioIndividualController.setEducando ===");
@@ -50,6 +58,11 @@ public class RelatorioIndividualController {
             System.out.println("Modo novo registro - não carregando dados existentes");
         }
         populateFromFormData();
+        if (somenteLeitura) {
+            if (dificuldadesRaciocinio != null) dificuldadesRaciocinio.setEditable(false);
+            if (dificuldadesRaciocinio1 != null) dificuldadesRaciocinio1.setEditable(false);
+            if (dificuldadesRaciocinio11 != null) dificuldadesRaciocinio11.setEditable(false);
+        }
     }
 
     public void setNovoRegistro(boolean novo) {
@@ -57,6 +70,10 @@ public class RelatorioIndividualController {
         if (novo) {
             this.formData = new RelatorioIndividualRequestDTO();
         }
+    }
+
+    public void setSomenteLeitura(boolean sl) {
+        this.somenteLeitura = sl;
     }
 
     public void setFormData(RelatorioIndividualRequestDTO data) {
@@ -79,6 +96,9 @@ public class RelatorioIndividualController {
         }
         atualizarIndicador();
         populateFromFormData();
+        javafx.application.Platform.runLater(() -> {
+            atualizarNomeUsuarioAsync();
+        });
     }
 
     private void atualizarIndicador() {
@@ -150,6 +170,10 @@ public class RelatorioIndividualController {
     @FXML
     private void handleConcluirAction() {
         captureCurrentStepData();
+        if (somenteLeitura) {
+            showValidation();
+            return;
+        }
         if (educando == null || educando.id() == null) {
             showValidation();
             return;
@@ -165,8 +189,15 @@ public class RelatorioIndividualController {
                 formData.interacaoProfessora,
                 formData.atividadesVidaDiaria
         );
-        var created = authService.criarRelatorioIndividual(dto);
-        if (created != null) {
+        boolean sucesso;
+        if (novoRegistro) {
+            var created = authService.criarRelatorioIndividual(dto);
+            sucesso = created != null;
+        } else {
+            var updated = relatorioIdAtual != null ? authService.atualizarRelatorioIndividual(relatorioIdAtual, dto) : null;
+            sucesso = updated != null;
+        }
+        if (sucesso) {
             com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService.getInstance().concluirRelatorioIndividual(educando.id());
             NotificacaoController.agendar("Relatório Final registrado com sucesso!", true);
             handleCancelAction();
@@ -279,6 +310,7 @@ public class RelatorioIndividualController {
         var dto = lista.get(lista.size() - 1);
         System.out.println("Carregando último relatório (ID: " + dto.id() + ")");
         System.out.println("Dados funcionais: " + (dto.dadosFuncionais() != null ? dto.dadosFuncionais().substring(0, Math.min(50, dto.dadosFuncionais().length())) + "..." : "null"));
+        relatorioIdAtual = dto.id();
         formData.dadosFuncionais = dto.dadosFuncionais();
         formData.funcionalidadeCognitiva = dto.funcionalidadeCognitiva();
         formData.alfabetizacaoLetramento = dto.alfabetizacaoLetramento();
@@ -288,5 +320,32 @@ public class RelatorioIndividualController {
         formData.interacaoProfessora = dto.interacaoProfessora();
         formData.atividadesVidaDiaria = dto.atividadesVidaDiaria();
         System.out.println("Dados carregados no formData");
+    }
+
+    private void atualizarNomeUsuarioAsync() {
+        Thread t = new Thread(() -> {
+            ProfessorDTO prof = authService.getProfessorLogado();
+            UserInfoDTO userInfo = authService.getUserInfo();
+            javafx.application.Platform.runLater(() -> {
+                if (prof != null && prof.getNome() != null && !prof.getNome().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(prof.getNome());
+                } else if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(userInfo.name());
+                } else if (nameUser != null) {
+                    nameUser.setText("Usuário");
+                }
+                if (cargoUser != null && userInfo != null && userInfo.role() != null) {
+                    String cargo = switch (userInfo.role().toUpperCase()) {
+                        case "PROFESSOR" -> "Professor(a)";
+                        case "COORDENADOR" -> "Coordenador(a)";
+                        case "ADMIN" -> "Administrador(a)";
+                        default -> "Usuário";
+                    };
+                    cargoUser.setText(cargo);
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
     }
 }

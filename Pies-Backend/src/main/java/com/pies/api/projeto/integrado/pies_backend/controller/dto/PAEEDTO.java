@@ -90,6 +90,16 @@ public class PAEEDTO {
     private String comunicacaoLinguagemIntervencoes;
 
     /**
+     * ID do professor responsável.
+     */
+    private String professorId;
+
+    /**
+     * Nome do professor responsável.
+     */
+    private String professorNome;
+
+    /**
      * ID do educando ao qual este PAEE pertence.
      */
     private String educandoId;

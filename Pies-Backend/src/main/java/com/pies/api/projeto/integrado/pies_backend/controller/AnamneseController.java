@@ -15,6 +15,7 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.AnamneseDTO;
 import com.pies.api.projeto.integrado.pies_backend.exception.AnamneseAlreadyExistsException;
 import com.pies.api.projeto.integrado.pies_backend.exception.AnamneseNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.exception.EducandoNotFoundException;
+import com.pies.api.projeto.integrado.pies_backend.exception.ProfessorNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.service.AnamneseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,7 @@ public class AnamneseController {
     private <T> ResponseEntity<T> handleRequest(Supplier<ResponseEntity<T>> supplier) {
         try {
             return supplier.get();
-        } catch (EducandoNotFoundException | AnamneseNotFoundException e) {
+        } catch (EducandoNotFoundException | AnamneseNotFoundException | ProfessorNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (AnamneseAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();

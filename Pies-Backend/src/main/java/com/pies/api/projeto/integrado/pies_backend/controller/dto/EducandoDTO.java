@@ -1,7 +1,7 @@
 package com.pies.api.projeto.integrado.pies_backend.controller.dto;
 
 import java.time.LocalDate;
-import java.util.List;
+// Removido import java.util.List pois não é mais uma lista
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.Genero;
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.GrauEscolar;
 import org.hibernate.validator.constraints.br.CPF;
@@ -12,11 +12,9 @@ import lombok.Data;
 
 /**
  * DTO (Data Transfer Object) para transferência de dados do Educando.
- * 
- * Esta classe é usada para enviar e receber dados do educando através da API REST,
+ * * Esta classe é usada para enviar e receber dados do educando através da API REST,
  * separando a camada de apresentação da camada de persistência.
- * 
- * Contém validações Bean Validation para garantir a integridade dos dados
+ * * Contém validações Bean Validation para garantir a integridade dos dados
  * antes de serem processados pelo serviço.
  */
 @Data
@@ -97,13 +95,16 @@ public class EducandoDTO {
     private String turmaId;
 
     /**
-     * Lista de responsáveis vinculados a este educando.
-     * Populada automaticamente quando o educando é buscado do banco de dados.
+     * Responsável vinculado a este educando.
+     * * A anotação @Valid garante que os campos internos do DTO do responsável
+     * (nome, cpf, endereço, etc.) também sejam validados.
      */
-
     @Valid
-    private List<ResponsavelDTO> responsaveis;
+    private ResponsavelDTO responsavel;
 
+    /**
+     * Dados da Anamnese do educando (histórico médico/psicológico).
+     */
     @Valid
     private AnamneseDTO anamnese;
 }

@@ -1,5 +1,6 @@
 package com.pies.api.projeto.integrado.pies_backend.controller.dto;
 
+import java.util.List;
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.GrauEscolar;
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.Turno;
 
@@ -15,5 +16,6 @@ public record TurmaDTO(
     Turno turno,
     String professorId,
     String professorNome,
-    String professorCpf
+    String professorCpf,
+    List<EducandoDTO> educandos
 ) {}

@@ -1,10 +1,26 @@
 package com.pies.api.projeto.integrado.pies_backend.controller;
 
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.pies.api.projeto.integrado.pies_backend.controller.dto.EducandoDTO;
+import com.pies.api.projeto.integrado.pies_backend.controller.dto.ProfessorDTO;
+import com.pies.api.projeto.integrado.pies_backend.controller.dto.TurmaDTO;
+import com.pies.api.projeto.integrado.pies_backend.service.EducandoService;
+import com.pies.api.projeto.integrado.pies_backend.service.TurmaService;
+import com.pies.api.projeto.integrado.pies_backend.repository.ProfessorRepository;
+import com.pies.api.projeto.integrado.pies_backend.repository.TurmaRepository;
+import com.pies.api.projeto.integrado.pies_backend.model.Professor;
+import com.pies.api.projeto.integrado.pies_backend.model.Turma;
+import com.pies.api.projeto.integrado.pies_backend.model.Enums.GrauEscolar;
+
+import lombok.RequiredArgsConstructor;
+import java.util.stream.Collectors;
 
 /**
  * Controller responsável por gerenciar todas as funcionalidades específicas de coordenadores.
@@ -20,7 +36,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/coordenador")
+@RequiredArgsConstructor
 public class CoordenadorController {
+
+    private final EducandoService educandoService;
+    private final TurmaService turmaService;
+    private final ProfessorRepository professorRepository;
+    private final TurmaRepository turmaRepository;
 
     /**
      * Endpoint para acessar o dashboard principal do coordenador.
@@ -42,8 +64,135 @@ public class CoordenadorController {
      */
     @GetMapping("/professores")
     @PreAuthorize("hasRole('COORDENADOR')")
-    public ResponseEntity<String> getProfessores() {
-        return ResponseEntity.ok("Lista de professores gerenciados pelo coordenador");
+    public ResponseEntity<List<ProfessorDTO>> getProfessores() {
+        List<Professor> professores = professorRepository.findAllByOrderByNomeAsc();
+        List<ProfessorDTO> professoresDTO = professores.stream()
+                .map(professor -> {
+                    ProfessorDTO dto = new ProfessorDTO(professor);
+                    List<Turma> turmas = turmaRepository.findByProfessor(professor);
+                    List<String> turmasIds = turmas.stream()
+                            .map(Turma::getId)
+                            .collect(Collectors.toList());
+                    dto.setTurmasIds(turmasIds);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(professoresDTO);
+    }
+
+    /**
+     * Endpoint para buscar professores por termo (nome).
+     * Permite ao coordenador buscar professores pelo nome.
+     * 
+     * @param termo Termo de busca (nome ou parte do nome)
+     * @return ResponseEntity com lista de professores encontrados
+     */
+    @GetMapping("/professores/buscar")
+    @PreAuthorize("hasRole('COORDENADOR')")
+    public ResponseEntity<List<ProfessorDTO>> buscarProfessores(@RequestParam String termo) {
+        List<Professor> professores = professorRepository.findByNomeContainingIgnoreCase(termo);
+        List<ProfessorDTO> professoresDTO = professores.stream()
+                .map(professor -> {
+                    ProfessorDTO dto = new ProfessorDTO(professor);
+                    List<Turma> turmas = turmaRepository.findByProfessor(professor);
+                    List<String> turmasIds = turmas.stream()
+                            .map(Turma::getId)
+                            .collect(Collectors.toList());
+                    dto.setTurmasIds(turmasIds);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(professoresDTO);
+    }
+
+    /**
+     * Endpoint para listar todos os alunos (educandos) do sistema.
+     * Permite ao coordenador visualizar todos os alunos cadastrados.
+     * 
+     * @return ResponseEntity com lista de alunos
+     */
+    @GetMapping("/alunos")
+    @PreAuthorize("hasRole('COORDENADOR')")
+    public ResponseEntity<List<EducandoDTO>> getAlunos() {
+        List<EducandoDTO> alunos = educandoService.listarTodos();
+        return ResponseEntity.ok(alunos);
+    }
+
+    /**
+     * Endpoint para buscar alunos por termo (nome).
+     * Permite ao coordenador buscar alunos pelo nome.
+     * 
+     * @param termo Termo de busca (nome ou parte do nome)
+     * @return ResponseEntity com lista de alunos encontrados
+     */
+    @GetMapping("/alunos/buscar")
+    @PreAuthorize("hasRole('COORDENADOR')")
+    public ResponseEntity<List<EducandoDTO>> buscarAlunos(@RequestParam String termo) {
+        List<EducandoDTO> alunos = educandoService.buscarPorTermo(termo);
+        return ResponseEntity.ok(alunos);
+    }
+
+    /**
+     * Endpoint para filtrar alunos por nome e grau de escolaridade.
+     * Permite ao coordenador filtrar alunos usando múltiplos critérios.
+     * 
+     * @param nome Nome ou parte do nome (opcional)
+     * @param escolaridade Grau de escolaridade (opcional)
+     * @return ResponseEntity com lista de alunos encontrados
+     */
+    @GetMapping("/alunos/filtrar")
+    @PreAuthorize("hasRole('COORDENADOR')")
+    public ResponseEntity<List<EducandoDTO>> filtrarAlunos(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) GrauEscolar escolaridade) {
+        List<EducandoDTO> alunos = educandoService.filtrarPorNomeEEscolaridade(nome, escolaridade);
+        return ResponseEntity.ok(alunos);
+    }
+
+    /**
+     * Endpoint para listar todas as turmas do sistema.
+     * Permite ao coordenador visualizar todas as turmas cadastradas.
+     * 
+     * @return ResponseEntity com lista de turmas
+     */
+    @GetMapping("/turmas")
+    @PreAuthorize("hasRole('COORDENADOR')")
+    public ResponseEntity<List<TurmaDTO>> getTurmas() {
+        List<TurmaDTO> turmas = turmaService.listarTodas();
+        return ResponseEntity.ok(turmas);
+    }
+
+    /**
+     * Endpoint para buscar turmas por termo (nome).
+     * Permite ao coordenador buscar turmas pelo nome.
+     * 
+     * @param termo Termo de busca (nome ou parte do nome da turma)
+     * @return ResponseEntity com lista de turmas encontradas
+     */
+    @GetMapping("/turmas/buscar")
+    @PreAuthorize("hasRole('COORDENADOR')")
+    public ResponseEntity<List<TurmaDTO>> buscarTurmas(@RequestParam String termo) {
+        List<TurmaDTO> turmas = turmaService.buscarPorTermo(termo);
+        return ResponseEntity.ok(turmas);
+    }
+
+    /**
+     * Endpoint para filtrar turmas por nome, professor e grau de escolaridade.
+     * Permite ao coordenador filtrar turmas usando múltiplos critérios.
+     * 
+     * @param nome Nome ou parte do nome da turma (opcional)
+     * @param professorId ID do professor (opcional)
+     * @param grauEscolar Grau de escolaridade (opcional)
+     * @return ResponseEntity com lista de turmas encontradas
+     */
+    @GetMapping("/turmas/filtrar")
+    @PreAuthorize("hasRole('COORDENADOR')")
+    public ResponseEntity<List<TurmaDTO>> filtrarTurmas(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String professorId,
+            @RequestParam(required = false) GrauEscolar grauEscolar) {
+        List<TurmaDTO> turmas = turmaService.filtrarPorNomeProfessorEGrauEscolar(nome, professorId, grauEscolar);
+        return ResponseEntity.ok(turmas);
     }
 
     /**
@@ -56,18 +205,6 @@ public class CoordenadorController {
     @PreAuthorize("hasRole('COORDENADOR')")
     public ResponseEntity<String> getRelatorios() {
         return ResponseEntity.ok("Relatórios de gestão acadêmica");
-    }
-
-    /**
-     * Endpoint para acessar o calendário acadêmico com visão de coordenador.
-     * Permite visualizar eventos, prazos e atividades acadêmicas.
-     * 
-     * @return ResponseEntity com calendário acadêmico
-     */
-    @GetMapping("/calendario")
-    @PreAuthorize("hasRole('COORDENADOR')")
-    public ResponseEntity<String> getCalendario() {
-        return ResponseEntity.ok("Calendário acadêmico - visão coordenador");
     }
 
     /**

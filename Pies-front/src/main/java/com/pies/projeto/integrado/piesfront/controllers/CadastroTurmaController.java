@@ -55,6 +55,8 @@ public class CadastroTurmaController implements Initializable {
     private Button cadastroTurmaButton;
     @FXML
     private Button cancelCadastroBt;
+    @FXML
+    private Button cadastroTurmaButton1;
 
     // Campos do formulário de turma
     @FXML
@@ -92,6 +94,7 @@ public class CadastroTurmaController implements Initializable {
     private List<AlunoSimplificadoDTO> todosAlunosCache; // Cache para evitar múltiplas requisições
     private PauseTransition searchDebounce;
     private String currentQuery = "";
+    private String turmaId;
 
     public CadastroTurmaController() {
         this.authService = AuthService.getInstance();
@@ -111,6 +114,73 @@ public class CadastroTurmaController implements Initializable {
         configurarBuscaAlunosPorNome();
         javafx.application.Platform.runLater(this::carregarProfessoresAsync);
         carregarCacheAlunosEmBackground();
+        aplicarModoCriacao();
+    }
+
+    public void setTurma(com.pies.projeto.integrado.piesfront.dto.TurmaDTO turma) {
+        if (turma == null) return;
+        this.turmaId = turma.id();
+        aplicarModoEdicao();
+        if (nomeTurmaField != null) {
+            nomeTurmaField.setText(turma.nome());
+        }
+        if (grauTurma != null) {
+            grauTurma.setValue(mapGrauEscolarToFrontend(turma.grauEscolar()));
+        }
+        if (idadeAlunos != null) {
+            idadeAlunos.setValue(turma.faixaEtaria());
+        }
+        if (turnoTurma != null) {
+            turnoTurma.setValue(mapTurnoToFrontend(turma.turno()));
+        }
+        if (profRespon != null) {
+            String display = getProfessorDisplayText(turma.professorNome(), turma.professorCpf());
+            profRespon.setValue(display);
+        }
+        carregarAlunosTurma(this.turmaId);
+    }
+
+    private String mapGrauEscolarToFrontend(String backend) {
+        if (backend == null) return null;
+        return switch (backend) {
+            case "EDUCACAO_INFANTIL" -> "Educação Infantil";
+            case "ESTIMULACAO_PRECOCE" -> "Estimulação Precoce";
+            case "FUNDAMENTAL_I" -> "Fundamental I";
+            case "FUNDAMENTAL_II" -> "Fundamental II";
+            case "MEDIO" -> "Ensino Médio";
+            case "OUTRO" -> "Outro";
+            default -> backend;
+        };
+    }
+
+    private String mapTurnoToFrontend(String backend) {
+        if (backend == null) return null;
+        return switch (backend) {
+            case "MATUTINO" -> "Matutino";
+            case "VESPERTINO" -> "Vespertino";
+            default -> backend;
+        };
+    }
+
+    private String getProfessorDisplayText(String nome, String cpf) {
+        String n = nome != null ? nome : "";
+        String c = cpf != null ? cpf : "";
+        return n + " - " + c;
+    }
+
+    private void carregarAlunosTurma(String id) {
+        if (id == null || id.isEmpty()) return;
+        try {
+            List<com.pies.projeto.integrado.piesfront.dto.EducandoDTO> alunos = authService.getEducandosPorTurma(id);
+            if (alunos != null && !alunos.isEmpty()) {
+                this.alunosAdicionados.clear();
+                for (var e : alunos) {
+                    this.alunosAdicionados.add(toAlunoSimplificado(e));
+                }
+                atualizarListaAlunos();
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     // ----------------------------------------------------
@@ -216,19 +286,55 @@ public class CadastroTurmaController implements Initializable {
     }
 
     private void showPopup(String mensagem, boolean sucesso) {
-        javafx.scene.Scene scene = (inicioButton != null ? inicioButton.getScene() : cadastroTurmaButton.getScene());
-        NotificacaoController.exibirCadastro(scene, sucesso);
+        javafx.scene.Scene scene = null;
+        if (inicioButton != null) {
+            scene = inicioButton.getScene();
+        } else if (cadastroTurmaButton1 != null) {
+            scene = cadastroTurmaButton1.getScene();
+        } else if (cadastroTurmaButton1 != null) {
+            scene = cadastroTurmaButton1.getScene();
+        } else if (cadastroTurmaButton != null) {
+            scene = cadastroTurmaButton.getScene();
+        }
+        if (scene != null) {
+            NotificacaoController.exibirCadastro(scene, sucesso);
+        }
     }
 
     private void conectarAcoesFormulario() {
         if (cadastroTurmaButton != null) {
             cadastroTurmaButton.setOnAction(e -> enviarCadastroTurma());
         }
+        if (cadastroTurmaButton1 != null) {
+            cadastroTurmaButton1.setOnAction(e -> enviarCadastroTurma());
+        }
         if (cancelCadastroBt != null) {
             cancelCadastroBt.setOnAction(e -> handleInicioButtonAction(e));
         }
         if (adicionarAlunoButton != null) {
             adicionarAlunoButton.setOnAction(e -> adicionarAlunoSelecionado());
+        }
+    }
+
+    private void aplicarModoCriacao() {
+        if (cadastroTurmaButton1 != null) {
+            cadastroTurmaButton1.setDisable(false);
+            cadastroTurmaButton1.setText("Cadastrar Turma");
+        }
+        if (cadastroTurmaButton != null) {
+            cadastroTurmaButton.setDisable(false);
+            cadastroTurmaButton.setText("Cadastrar Turma");
+        }
+    }
+
+    private void aplicarModoEdicao() {
+        if (cadastroTurmaButton1 != null) {
+            cadastroTurmaButton1.setDisable(false);
+            cadastroTurmaButton1.setText("Salvar alterações");
+        }
+        if (cadastroTurmaButton != null) {
+            cadastroTurmaButton.setDisable(false);
+            cadastroTurmaButton.setText("Salvar alterações");
         }
     }
 
@@ -488,6 +594,15 @@ public class CadastroTurmaController implements Initializable {
         if (alunoEncontrado != null) {
             alunosAdicionados.add(alunoEncontrado);
             atualizarListaAlunos();
+            if (turmaId != null && !turmaId.isEmpty()) {
+                boolean ok = authService.atualizarEducandoTurma(alunoEncontrado.getId(), turmaId);
+                if (!ok) {
+                    alunosAdicionados.removeIf(a -> turmaId != null && a.getId().equals(alunoEncontrado.getId()));
+                    atualizarListaAlunos();
+                    mostrarErro("Falha ao vincular aluno à turma.");
+                    return;
+                }
+            }
             System.out.println("✓ Aluno vinculado: " + alunoEncontrado.getNome());
         } else {
             mostrarErro("Aluno não encontrado.");
@@ -497,8 +612,21 @@ public class CadastroTurmaController implements Initializable {
     
 
     private void removerAluno(String nomeAluno) {
-        // Remove o aluno da lista pelo nome
-        alunosAdicionados.removeIf(aluno -> aluno.getNome().equals(nomeAluno));
+        AlunoSimplificadoDTO alvo = alunosAdicionados.stream()
+                .filter(a -> a.getNome().equals(nomeAluno))
+                .findFirst()
+                .orElse(null);
+        if (alvo == null) {
+            return;
+        }
+        if (turmaId != null && !turmaId.isEmpty()) {
+            boolean ok = authService.atualizarEducandoTurma(alvo.getId(), null);
+            if (!ok) {
+                mostrarErro("Falha ao remover aluno da turma.");
+                return;
+            }
+        }
+        alunosAdicionados.removeIf(aluno -> aluno.getId().equals(alvo.getId()));
         atualizarListaAlunos();
         System.out.println("Aluno removido: " + nomeAluno);
     }
@@ -598,52 +726,62 @@ public class CadastroTurmaController implements Initializable {
 
         try {
             String json = objectMapper.writeValueAsString(turmaDTO);
-            
-            System.out.println("=== JSON SENDO ENVIADO PARA /turmas ===");
-            System.out.println(json);
-            System.out.println("========================================");
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/turmas"))
-                    .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + token)
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .timeout(java.time.Duration.ofSeconds(10))
-                    .build();
+            HttpRequest request;
+            if (turmaId != null && !turmaId.isEmpty()) {
+                request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8080/turmas/" + turmaId))
+                        .header("Content-Type", "application/json")
+                        .header("Authorization", "Bearer " + token)
+                        .PUT(HttpRequest.BodyPublishers.ofString(json))
+                        .timeout(java.time.Duration.ofSeconds(10))
+                        .build();
+            } else {
+                request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8080/turmas"))
+                        .header("Content-Type", "application/json")
+                        .header("Authorization", "Bearer " + token)
+                        .POST(HttpRequest.BodyPublishers.ofString(json))
+                        .timeout(java.time.Duration.ofSeconds(10))
+                        .build();
+            }
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println("=== RESPOSTA DO BACKEND ===");
-            System.out.println("Status: " + response.statusCode());
-            System.out.println("Body: " + response.body());
-            System.out.println("===========================");
-
             if (response.statusCode() == 200 || response.statusCode() == 201) {
-                System.out.println("Turma cadastrada com sucesso!");
-                NotificacaoController.agendarCadastro(true);
-                Janelas.carregarTela(new javafx.event.ActionEvent(inicioButton, null), "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml", "Início - Coordenador(a)");
+                String msg;
+                if (turmaId != null && !turmaId.isEmpty()) {
+                    msg = "Alterações de cadastro realizadas e salvas com sucesso!";
+                    NotificacaoController.agendar(msg, true);
+                    authService.invalidateTurmasCache();
+                    Janelas.carregarTela(new javafx.event.ActionEvent(inicioButton, null), 
+                            "/com/pies/projeto/integrado/piesfront/screens/view-turmas-coord.fxml", 
+                            "Turmas");
+                } else {
+                    NotificacaoController.agendarCadastro(true);
+                    authService.invalidateTurmasCache();
+                    Janelas.carregarTela(new javafx.event.ActionEvent(inicioButton, null), 
+                            "/com/pies/projeto/integrado/piesfront/screens/tela-inicio-coord.fxml", 
+                            "Início - Coordenador(a)");
+                }
             } else if (response.statusCode() == 400) {
                 String msg = "Dados inválidos. Verifique os campos.\n" + response.body();
                 mostrarErro(msg);
-                showPopup(msg, false);
+                NotificacaoController.exibirTexto(inicioButton.getScene(), msg, false);
             } else {
-                String msg = "Falha ao cadastrar turma. Código: " + response.statusCode();
+                String msg;
+                if (turmaId != null && !turmaId.isEmpty()) {
+                    msg = "Falha ao atualizar dados da turma!";
+                } else {
+                    msg = "Falha ao cadastrar turma. Código: " + response.statusCode();
+                }
                 mostrarErro(msg);
-                showPopup(msg, false);
+                NotificacaoController.exibirTexto(inicioButton.getScene(), msg, false);
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("=== ERRO DETALHADO ===");
-            System.err.println("Mensagem: " + e.getMessage());
-            System.err.println("Tipo: " + e.getClass().getName());
-            if (e.getCause() != null) {
-                System.err.println("Causa: " + e.getCause().getMessage());
-            }
-            System.err.println("======================");
-            String msg = "Erro ao comunicar com o servidor: " + e.getMessage();
+            String msg = (turmaId != null && !turmaId.isEmpty()) ? "Falha ao atualizar dados da turma!" : ("Erro ao comunicar com o servidor: " + e.getMessage());
             mostrarErro(msg);
-            showPopup(msg, false);
+            NotificacaoController.exibirTexto(inicioButton.getScene(), msg, false);
         }
     }
 

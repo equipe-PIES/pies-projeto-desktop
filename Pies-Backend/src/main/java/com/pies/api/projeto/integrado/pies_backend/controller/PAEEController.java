@@ -18,6 +18,7 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.CreatePAEEDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.PAEEDTO;
 import com.pies.api.projeto.integrado.pies_backend.exception.EducandoNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.exception.PAEENotFoundException;
+import com.pies.api.projeto.integrado.pies_backend.exception.ProfessorNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.service.PAEEService;
 
 import jakarta.validation.Valid;
@@ -199,7 +200,7 @@ public class PAEEController {
     private <T> ResponseEntity<T> handleRequest(Supplier<ResponseEntity<T>> supplier) {
         try {
             return supplier.get();
-        } catch (PAEENotFoundException | EducandoNotFoundException e) {
+        } catch (PAEENotFoundException | EducandoNotFoundException | ProfessorNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }

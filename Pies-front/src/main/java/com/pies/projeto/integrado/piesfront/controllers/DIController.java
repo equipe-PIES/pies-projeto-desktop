@@ -1,5 +1,7 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
+import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
+import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
 import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import com.utils.Janelas;
@@ -17,6 +19,8 @@ public class DIController implements Initializable {
     @FXML private BorderPane anamnese;
     @FXML private Label indicadorDeTela;
     @FXML private Label validationMsg;
+    @FXML private Label nameUser;
+    @FXML private Label cargoUser;
 
     @FXML private CheckBox falaSeuNome;
     @FXML private CheckBox dizDataNascimento;
@@ -100,6 +104,7 @@ public class DIController implements Initializable {
     private DIFormData formData = new DIFormData();
     private boolean novoRegistro = false;
     private String diagnosticoId = null;
+    private boolean somenteLeitura = false;
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
@@ -134,10 +139,40 @@ public class DIController implements Initializable {
         detectarEtapa(url);
         atualizarIndicadorDeTela();
         preencherCampos();
+        javafx.application.Platform.runLater(() -> {
+            atualizarNomeUsuarioAsync();
+        });
     }
 
     @FXML private void handleTurmasButtonAction() {
         navegar("/com/pies/projeto/integrado/piesfront/screens/tela-inicio-professor.fxml", null);
+    }
+
+    private void atualizarNomeUsuarioAsync() {
+        Thread t = new Thread(() -> {
+            ProfessorDTO prof = authService.getProfessorLogado();
+            UserInfoDTO userInfo = authService.getUserInfo();
+            javafx.application.Platform.runLater(() -> {
+                if (prof != null && prof.getNome() != null && !prof.getNome().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(prof.getNome());
+                } else if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(userInfo.name());
+                } else if (nameUser != null) {
+                    nameUser.setText("Usuário");
+                }
+                if (cargoUser != null && userInfo != null && userInfo.role() != null) {
+                    String cargo = switch (userInfo.role().toUpperCase()) {
+                        case "PROFESSOR" -> "Professor(a)";
+                        case "COORDENADOR" -> "Coordenador(a)";
+                        case "ADMIN" -> "Administrador(a)";
+                        default -> "Usuário";
+                    };
+                    cargoUser.setText(cargo);
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     @FXML private void handleSairButtonAction() {
@@ -180,6 +215,10 @@ public class DIController implements Initializable {
 
     @FXML private void handleConcluirAction() {
         captureCurrentStepData();
+        if (somenteLeitura) {
+            showValidation("Modo de visualização");
+            return;
+        }
         if (educando == null || educando.id() == null) {
             showValidation("Educando inválido.");
             return;
@@ -586,6 +625,33 @@ public class DIController implements Initializable {
 
     private void showPopup(String mensagem, boolean sucesso) {
         NotificacaoController.exibir(anamnese, mensagem, sucesso);
+    }
+
+    public void setSomenteLeitura(boolean sl) {
+        this.somenteLeitura = sl;
+        aplicarSomenteLeitura();
+    }
+
+    private void aplicarSomenteLeitura() {
+        if (!somenteLeitura) return;
+        javafx.application.Platform.runLater(() -> {
+            disableInputs(anamnese);
+        });
+    }
+
+    private void disableInputs(javafx.scene.Parent root) {
+        if (root == null) return;
+        for (javafx.scene.Node node : root.getChildrenUnmodifiable()) {
+            if (node instanceof javafx.scene.control.TextInputControl tic) {
+                tic.setEditable(false);
+            } else if (node instanceof javafx.scene.control.CheckBox cb) {
+                cb.setDisable(true);
+            } else if (node instanceof javafx.scene.control.ChoiceBox<?> ch) {
+                ch.setDisable(true);
+            } else if (node instanceof javafx.scene.Parent p) {
+                disableInputs(p);
+            }
+        }
     }
 
     public static class CreateDiagnosticoInicialDTO {

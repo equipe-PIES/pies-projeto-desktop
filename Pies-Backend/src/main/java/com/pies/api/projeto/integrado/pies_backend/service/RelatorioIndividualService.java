@@ -220,7 +220,7 @@ public class RelatorioIndividualService {
         
         String educandoId = r.getEducando() != null ? r.getEducando().getId() : null;
         String educandoNome = r.getEducando() != null ? r.getEducando().getNome() : null;
-
+        
         String professorId = r.getProfessor() != null ? r.getProfessor().getId() : null;
         String professorNome = r.getProfessor() != null ? r.getProfessor().getNome() : null;
 
@@ -229,6 +229,8 @@ public class RelatorioIndividualService {
                 educandoId,
                 educandoNome,
                 professorId,
+                r.getEducando() != null ? r.getEducando().getDataNascimento() : null,
+                r.getEducando() != null ? r.getEducando().getCid() : null,
                 professorNome,
                 r.getDataCriacao(),
                 r.getDadosFuncionais(),

@@ -11,10 +11,13 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.CreatePDIDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.PDIDTO;
 import com.pies.api.projeto.integrado.pies_backend.exception.EducandoNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.exception.PDINotFoundException;
+import com.pies.api.projeto.integrado.pies_backend.exception.ProfessorNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.model.Educando;
+import com.pies.api.projeto.integrado.pies_backend.model.Professor;
 import com.pies.api.projeto.integrado.pies_backend.model.PDI;
 import com.pies.api.projeto.integrado.pies_backend.repository.EducandoRepository;
 import com.pies.api.projeto.integrado.pies_backend.repository.PDIRepository;
+import com.pies.api.projeto.integrado.pies_backend.repository.ProfessorRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +45,12 @@ public class PDIService {
      * Necessário para validar e associar o educando ao PDI.
      */
     private final EducandoRepository educandoRepository;
+
+    /**
+     * Repositório para acesso aos dados dos professores no banco de dados.
+     * Necessário para validar e associar o professor responsável ao PDI.
+     */
+    private final ProfessorRepository professorRepository;
 
     /**
      * Lista todos os PDIs cadastrados no sistema.
@@ -108,9 +117,12 @@ public class PDIService {
         // Busca o educando no banco de dados
         Educando educando = educandoRepository.findById(dto.educandoId())
             .orElseThrow(() -> new EducandoNotFoundException(dto.educandoId()));
+
+        Professor professor = professorRepository.findById(dto.professorId())
+            .orElseThrow(() -> new ProfessorNotFoundException(dto.professorId()));
         
         // Converte o DTO para entidade
-        PDI entity = toEntity(dto, educando);
+        PDI entity = toEntity(dto, educando, professor);
         
         // Salva a entidade no banco de dados
         PDI salvo = pdiRepository.save(entity);
@@ -140,6 +152,9 @@ public class PDIService {
         // Busca o educando (pode ter sido alterado)
         Educando educando = educandoRepository.findById(dto.educandoId())
             .orElseThrow(() -> new EducandoNotFoundException(dto.educandoId()));
+
+        Professor professor = professorRepository.findById(dto.professorId())
+            .orElseThrow(() -> new ProfessorNotFoundException(dto.professorId()));
         
         // Atualiza os campos da entidade
         entity.setPeriodoPlanoAEE(dto.periodoPlanoAEE());
@@ -157,6 +172,7 @@ public class PDIService {
         entity.setRecursosMateriaisASeremProduzidos(dto.recursosMateriaisASeremProduzidos());
         entity.setParceriasNecessarias(dto.parceriasNecessarias());
         entity.setEducando(educando);
+        entity.setProfessor(professor);
         
         // Salva a entidade atualizada e converte para DTO antes de retornar
         return toDTO(pdiRepository.save(entity));
@@ -196,12 +212,17 @@ public class PDIService {
         PDIDTO dto = new PDIDTO();
         
         // Copia propriedades básicas da entidade para o DTO
-        BeanUtils.copyProperties(p, dto, "educando");
+        BeanUtils.copyProperties(p, dto, "educando", "professor");
         
         // Adiciona informações do educando se existir
         if (p.getEducando() != null) {
             dto.setEducandoId(p.getEducando().getId());
             dto.setEducandoNome(p.getEducando().getNome());
+        }
+
+        if (p.getProfessor() != null) {
+            dto.setProfessorId(p.getProfessor().getId());
+            dto.setProfessorNome(p.getProfessor().getNome());
         }
         
         return dto;
@@ -218,7 +239,7 @@ public class PDIService {
      * @param educando Educando relacionado ao PDI
      * @return Entidade PDI com os dados convertidos
      */
-    private PDI toEntity(CreatePDIDTO dto, Educando educando) {
+    private PDI toEntity(CreatePDIDTO dto, Educando educando, Professor professor) {
         PDI p = new PDI();
         
         p.setPeriodoPlanoAEE(dto.periodoPlanoAEE());
@@ -236,6 +257,7 @@ public class PDIService {
         p.setRecursosMateriaisASeremProduzidos(dto.recursosMateriaisASeremProduzidos());
         p.setParceriasNecessarias(dto.parceriasNecessarias());
         p.setEducando(educando);
+        p.setProfessor(professor);
         
         return p;
     }

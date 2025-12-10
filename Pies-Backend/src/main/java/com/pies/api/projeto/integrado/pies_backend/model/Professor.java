@@ -2,14 +2,17 @@ package com.pies.api.projeto.integrado.pies_backend.model;
 
 // Import para manipulação de datas
 import java.time.LocalDate;
+import java.util.List;
 
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.Genero;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -147,4 +150,8 @@ public class Professor {
         this.formacao = formacao;
         this.observacoes = observacoes;
     }
+
+    @OneToMany(mappedBy = "professor", fetch = FetchType.LAZY)
+        private List<Turma> turmas;
+
 }

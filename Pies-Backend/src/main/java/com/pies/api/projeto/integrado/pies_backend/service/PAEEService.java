@@ -11,10 +11,13 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.CreatePAEEDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.PAEEDTO;
 import com.pies.api.projeto.integrado.pies_backend.exception.EducandoNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.exception.PAEENotFoundException;
+import com.pies.api.projeto.integrado.pies_backend.exception.ProfessorNotFoundException;
 import com.pies.api.projeto.integrado.pies_backend.model.Educando;
+import com.pies.api.projeto.integrado.pies_backend.model.Professor;
 import com.pies.api.projeto.integrado.pies_backend.model.PAEE;
 import com.pies.api.projeto.integrado.pies_backend.repository.EducandoRepository;
 import com.pies.api.projeto.integrado.pies_backend.repository.PAEERepository;
+import com.pies.api.projeto.integrado.pies_backend.repository.ProfessorRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +45,12 @@ public class PAEEService {
      * Necessário para validar e associar o educando ao PAEE.
      */
     private final EducandoRepository educandoRepository;
+
+    /**
+     * Repositório para acesso aos dados dos professores no banco de dados.
+     * Necessário para validar e associar o professor responsável ao PAEE.
+     */
+    private final ProfessorRepository professorRepository;
 
     /**
      * Lista todos os PAEEs cadastrados no sistema.
@@ -108,9 +117,12 @@ public class PAEEService {
         // Busca o educando no banco de dados
         Educando educando = educandoRepository.findById(dto.educandoId())
             .orElseThrow(() -> new EducandoNotFoundException(dto.educandoId()));
+
+        Professor professor = professorRepository.findById(dto.professorId())
+            .orElseThrow(() -> new ProfessorNotFoundException(dto.professorId()));
         
         // Converte o DTO para entidade
-        PAEE entity = toEntity(dto, educando);
+        PAEE entity = toEntity(dto, educando, professor);
         
         // Salva a entidade no banco de dados
         PAEE salvo = paeeRepository.save(entity);
@@ -140,6 +152,9 @@ public class PAEEService {
         // Busca o educando (pode ter sido alterado)
         Educando educando = educandoRepository.findById(dto.educandoId())
             .orElseThrow(() -> new EducandoNotFoundException(dto.educandoId()));
+
+        Professor professor = professorRepository.findById(dto.professorId())
+            .orElseThrow(() -> new ProfessorNotFoundException(dto.professorId()));
         
         // Atualiza os campos da entidade
         entity.setResumoCaso(dto.resumoCaso());
@@ -176,6 +191,7 @@ public class PAEEService {
         entity.setEnvEducacaoFisica(dto.envEducacaoFisica());
         entity.setEnvEstimulacaoPrecoce(dto.envEstimulacaoPrecoce());
         entity.setEducando(educando);
+        entity.setProfessor(professor);
         
         // Salva a entidade atualizada e converte para DTO antes de retornar
         return toDTO(paeeRepository.save(entity));
@@ -215,12 +231,17 @@ public class PAEEService {
         PAEEDTO dto = new PAEEDTO();
         
         // Copia propriedades básicas da entidade para o DTO
-        BeanUtils.copyProperties(p, dto, "educando");
+        BeanUtils.copyProperties(p, dto, "educando", "professor");
         
         // Adiciona informações do educando se existir
         if (p.getEducando() != null) {
             dto.setEducandoId(p.getEducando().getId());
             dto.setEducandoNome(p.getEducando().getNome());
+        }
+
+        if (p.getProfessor() != null) {
+            dto.setProfessorId(p.getProfessor().getId());
+            dto.setProfessorNome(p.getProfessor().getNome());
         }
         
         return dto;
@@ -237,7 +258,7 @@ public class PAEEService {
      * @param educando Educando relacionado ao PAEE
      * @return Entidade PAEE com os dados convertidos
      */
-    private PAEE toEntity(CreatePAEEDTO dto, Educando educando) {
+    private PAEE toEntity(CreatePAEEDTO dto, Educando educando, Professor professor) {
         PAEE p = new PAEE();
         
         p.setResumoCaso(dto.resumoCaso());
@@ -274,6 +295,7 @@ public class PAEEService {
         p.setEnvEducacaoFisica(dto.envEducacaoFisica());
         p.setEnvEstimulacaoPrecoce(dto.envEstimulacaoPrecoce());
         p.setEducando(educando);
+        p.setProfessor(professor);
         
         return p;
     }

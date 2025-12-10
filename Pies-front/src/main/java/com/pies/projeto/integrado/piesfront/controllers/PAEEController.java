@@ -1,5 +1,7 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
+import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
+import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
 import com.pies.projeto.integrado.piesfront.services.AuthService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,6 +26,10 @@ public class PAEEController implements Initializable {
     private Label indicadorDeTela;
     @FXML
     private Label validationMsg;
+    @FXML
+    private Label nameUser;
+    @FXML
+    private Label cargoUser;
     @FXML
     private TextArea objetivosPlano;
     @FXML
@@ -97,6 +103,7 @@ public class PAEEController implements Initializable {
     private PaeeFormData formData = new PaeeFormData();
     // private boolean modoNovo = false;
     private boolean novoRegistro = false;
+    private boolean somenteLeitura = false;
 
     public void setEducando(EducandoDTO educando) {
         System.out.println("=== PAEEController.setEducando ===");
@@ -156,6 +163,9 @@ public class PAEEController implements Initializable {
         detectarEtapa(url);
         atualizarIndicadorDeTela();
         preencherCamposComFormData();
+        javafx.application.Platform.runLater(() -> {
+            atualizarNomeUsuarioAsync();
+        });
     }
 
     @FXML
@@ -259,6 +269,10 @@ public class PAEEController implements Initializable {
     private void handleConcluirAction() {
         System.out.println("=== handleConcluirAction PAEE ===");
         captureCurrentStepData();
+        if (somenteLeitura) {
+            showValidation("Modo de visualização");
+            return;
+        }
         if (educando == null || educando.id() == null) {
             System.err.println("Educando inválido!");
             showValidation("Educando inválido.");
@@ -312,6 +326,7 @@ public class PAEEController implements Initializable {
                     formData.envTO,
                     formData.envEducacaoFisica,
                     formData.envEstimulacaoPrecoce,
+                    authService.getProfessorId(),
                     educando.id()
             );
             System.out.println("DTO criado. Resumo: " + dto.resumoCaso);
@@ -519,6 +534,33 @@ public class PAEEController implements Initializable {
         System.out.println("=== Fim preencherCamposComFormData ===");
     }
 
+    private void atualizarNomeUsuarioAsync() {
+        Thread t = new Thread(() -> {
+            ProfessorDTO prof = authService.getProfessorLogado();
+            UserInfoDTO userInfo = authService.getUserInfo();
+            javafx.application.Platform.runLater(() -> {
+                if (prof != null && prof.getNome() != null && !prof.getNome().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(prof.getNome());
+                } else if (userInfo != null && userInfo.name() != null && !userInfo.name().isEmpty()) {
+                    if (nameUser != null) nameUser.setText(userInfo.name());
+                } else if (nameUser != null) {
+                    nameUser.setText("Usuário");
+                }
+                if (cargoUser != null && userInfo != null && userInfo.role() != null) {
+                    String cargo = switch (userInfo.role().toUpperCase()) {
+                        case "PROFESSOR" -> "Professor(a)";
+                        case "COORDENADOR" -> "Coordenador(a)";
+                        case "ADMIN" -> "Administrador(a)";
+                        default -> "Usuário";
+                    };
+                    cargoUser.setText(cargo);
+                }
+            });
+        });
+        t.setDaemon(true);
+        t.start();
+    }
+
     private boolean validateResumo() {
         if (resumoCaso == null) return true;
         String t = resumoCaso.getText() != null ? resumoCaso.getText().trim() : "";
@@ -711,6 +753,33 @@ public class PAEEController implements Initializable {
         NotificacaoController.exibir(anamnese, mensagem, sucesso);
     }
 
+    public void setSomenteLeitura(boolean sl) {
+        this.somenteLeitura = sl;
+        aplicarSomenteLeitura();
+    }
+
+    private void aplicarSomenteLeitura() {
+        if (!somenteLeitura) return;
+        javafx.application.Platform.runLater(() -> {
+            disableInputs(anamnese);
+        });
+    }
+
+    private void disableInputs(javafx.scene.Parent root) {
+        if (root == null) return;
+        for (javafx.scene.Node node : root.getChildrenUnmodifiable()) {
+            if (node instanceof javafx.scene.control.TextInputControl tic) {
+                tic.setEditable(false);
+            } else if (node instanceof javafx.scene.control.CheckBox cb) {
+                cb.setDisable(true);
+            } else if (node instanceof javafx.scene.control.ChoiceBox<?> ch) {
+                ch.setDisable(true);
+            } else if (node instanceof javafx.scene.Parent p) {
+                disableInputs(p);
+            }
+        }
+    }
+
     public static class CreatePAEEDTO {
         public String resumoCaso;
         public String dificuldadesMotoresPsicomotores;
@@ -745,6 +814,7 @@ public class PAEEController implements Initializable {
         public String envTO;
         public String envEducacaoFisica;
         public String envEstimulacaoPrecoce;
+        public String professorId;
         public String educandoId;
         public CreatePAEEDTO(String resumoCaso,
                              String dificuldadesMotoresPsicomotores,
@@ -779,6 +849,7 @@ public class PAEEController implements Initializable {
                              String envTO,
                              String envEducacaoFisica,
                              String envEstimulacaoPrecoce,
+                             String professorId,
                              String educandoId) {
             this.resumoCaso = resumoCaso;
             this.dificuldadesMotoresPsicomotores = dificuldadesMotoresPsicomotores;
@@ -813,6 +884,7 @@ public class PAEEController implements Initializable {
             this.envTO = envTO;
             this.envEducacaoFisica = envEducacaoFisica;
             this.envEstimulacaoPrecoce = envEstimulacaoPrecoce;
+            this.professorId = professorId;
             this.educandoId = educandoId;
         }
     }

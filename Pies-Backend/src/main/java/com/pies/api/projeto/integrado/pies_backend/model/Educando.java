@@ -2,6 +2,7 @@ package com.pies.api.projeto.integrado.pies_backend.model;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -20,7 +21,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -123,23 +123,9 @@ public class Educando {
      */
     private String turmaId;
 
-    /**
-     * Lista de responsáveis vinculados a este educando.
-     * 
-     * Relacionamento OneToMany: um educando pode ter vários responsáveis.
-     * 
-     * Configurações do relacionamento:
-     * - mappedBy: indica que o relacionamento é bidirecional e a propriedade
-     *   "educando" na classe Responsavel é o dono do relacionamento (lado "many").
-     * - cascade: CascadeType.ALL permite que operações no educando (persist, merge,
-     *   remove, refresh, detach) sejam propagadas automaticamente aos responsáveis.
-     * - orphanRemoval: true significa que quando um responsável é removido da lista
-     *   ou quando o educando é removido, os responsáveis órfãos serão automaticamente
-     *   deletados do banco de dados. Isso garante que não existam responsáveis sem
-     *   um educando associado.
-     */
-    @OneToMany(mappedBy = "educando", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Responsavel> responsaveis;
+   
+    @OneToOne(mappedBy = "educando", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Responsavel responsavel;
 
     @OneToOne(mappedBy = "educando", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Anamnese anamnese;
@@ -166,7 +152,7 @@ public class Educando {
         joinColumns = @JoinColumn(name = "educando_id"),
         inverseJoinColumns = @JoinColumn(name = "turma_id")
     )
-    private List<Turma> turmas;
+    private List<Turma> turmas = new ArrayList<>();
 
     /**
      * Construtor parametrizado para criação de instâncias de Educando.

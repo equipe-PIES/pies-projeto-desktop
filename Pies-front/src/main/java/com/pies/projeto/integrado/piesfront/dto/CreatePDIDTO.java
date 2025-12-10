@@ -17,5 +17,6 @@ public record CreatePDIDTO(
         String recursosQueNecessitamAdequacao,
         String recursosMateriaisASeremProduzidos,
         String parceriasNecessarias,
+        String professorId,
         String educandoId
 ) {}

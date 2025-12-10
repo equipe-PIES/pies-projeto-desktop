@@ -38,7 +38,7 @@
                         <Insets left="15.0" top="15.0" />
                     </HBox.margin>
                 </VBox>
-                <Button fx:id="infoAlunoButton" mnemonicParsing="false" onAction="#handleInfoAction" prefHeight="31.0" prefWidth="31.0" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15; -fx-font-size: 14px;" text="i">
+                <Button fx:id="infoButton" mnemonicParsing="false" onAction="#handleInfoAction" prefHeight="31.0" prefWidth="31.0" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15; -fx-font-size: 14px;" text="i">
                     <HBox.margin>
                         <Insets right="5.0" top="5.0" />
                     </HBox.margin>
@@ -50,8 +50,8 @@
                 <Insets />
             </VBox.margin>
          <children>
-            <Button mnemonicParsing="false" prefWidth="250.0" style="-fx-background-color: ff0000;" text="Excluir" textFill="WHITE" />
-            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" text="Editar" />
+            <Button fx:id="excluirAluno" mnemonicParsing="false" prefWidth="250.0" style="-fx-background-color: ff0000;" text="Excluir" textFill="WHITE" />
+            <Button fx:id="editarAluno" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" text="Editar" />
          </children>
         </HBox>
     </children>

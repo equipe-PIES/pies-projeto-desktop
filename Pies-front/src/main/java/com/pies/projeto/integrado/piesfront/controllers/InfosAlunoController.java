@@ -150,10 +150,7 @@ public class InfosAlunoController implements Initializable {
         }
         
         // Informações do Responsável
-        ResponsavelDTO responsavel = null;
-        if (educando.responsaveis() != null && !educando.responsaveis().isEmpty()) {
-            responsavel = educando.responsaveis().get(0);
-        }
+        ResponsavelDTO responsavel = educando.responsavel();
         
         if (nomeResponsavelLabel != null) {
             nomeResponsavelLabel.setText(responsavel != null && responsavel.nome() != null 

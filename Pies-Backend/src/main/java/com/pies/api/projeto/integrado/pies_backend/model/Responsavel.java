@@ -35,8 +35,8 @@ public class Responsavel {
 
     private String outroParentesco;
 
-    @ManyToOne
-    @JoinColumn(name = "educando_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "educando_id")
     private Educando educando;
 
     
