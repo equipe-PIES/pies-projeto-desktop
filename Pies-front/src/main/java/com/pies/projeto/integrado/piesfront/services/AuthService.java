@@ -981,7 +981,7 @@ public class AuthService {
                     encontrado.escolaridade(),
                     encontrado.observacao(),
                     turmaId,
-                    encontrado.responsaveis(),
+                    encontrado.responsavel(),
                     encontrado.anamnese()
             );
             String body = objectMapper.writeValueAsString(atualizado);

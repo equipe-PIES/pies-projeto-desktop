@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,11 +18,9 @@ import com.pies.api.projeto.integrado.pies_backend.controller.dto.LoginResponseD
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.RegisterDTO;
 import com.pies.api.projeto.integrado.pies_backend.controller.dto.UserInfoDTO;
 import com.pies.api.projeto.integrado.pies_backend.infra.security.TokenService;
-import com.pies.api.projeto.integrado.pies_backend.model.User;
 import com.pies.api.projeto.integrado.pies_backend.model.Enums.UserRole;
-import com.pies.api.projeto.integrado.pies_backend.model.Professor;
+import com.pies.api.projeto.integrado.pies_backend.model.User;
 import com.pies.api.projeto.integrado.pies_backend.repository.UserRepository;
-import com.pies.api.projeto.integrado.pies_backend.repository.ProfessorRepository;
 
 import jakarta.validation.Valid;
 
@@ -36,9 +34,6 @@ public class AuthenticationController { // Controller responsável pela autentic
 
     @Autowired
     private UserRepository repository; // Repositório para operações com usuários no banco
-
-    @Autowired
-    private ProfessorRepository professorRepository; // Repositório para operações com professores
 
     @Autowired
     private TokenService tokenService; // Serviço para gerar tokens JWT
@@ -62,7 +57,7 @@ public class AuthenticationController { // Controller responsável pela autentic
 
     // Endpoint para registrar novos usuários
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody @Valid RegisterDTO data){
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterDTO data){
         
         try {
             System.out.println("=== DEBUG REGISTER ===");
@@ -96,12 +91,6 @@ public class AuthenticationController { // Controller responsável pela autentic
             // Salva o novo usuário no banco de dados
             this.repository.save(newUser);
             System.out.println("Usuario salvo com sucesso!");
-            
-            // NOVO: Se for professor, tenta associar a um professor existente
-            if (userRole == UserRole.PROFESSOR) {
-                System.out.println("Role é PROFESSOR, procurando professor para associar...");
-                associarUsuarioAoProfessor(newUser);
-            }
 
             // Retorna sucesso (status 200) se o registro foi bem-sucedido
             return ResponseEntity.ok().build();
@@ -113,40 +102,6 @@ public class AuthenticationController { // Controller responsável pela autentic
         }
     }
     
-    /**
-     * Método privado que tenta associar um usuário a um professor existente.
-     * Procura por um professor que ainda não tem usuário vinculado e
-     * faz match pelo email do usuário.
-     * 
-     * @param user Usuário recém criado
-     */
-    private void associarUsuarioAoProfessor(User user) {
-        try {
-            // Procura todos os professores sem userId
-            var professoresComEmailSimilar = professorRepository.findAllByOrderByNomeAsc()
-                .stream()
-                .filter(p -> p.getUserId() == null) // Apenas professores sem usuário vinculado
-                .toList();
-            
-            if (professoresComEmailSimilar.isEmpty()) {
-                System.out.println("Nenhum professor sem usuário para associar");
-                return;
-            }
-            
-            // Por enquanto, vamos associar ao primeiro professor sem userId encontrado
-            // (Idealmente, teria uma forma mais robusta de matcher, como CPF ou nome)
-            Professor professor = professoresComEmailSimilar.get(0);
-            professor.setUserId(user.getId());
-            professorRepository.save(professor);
-            
-            System.out.println("✓ Usuário " + user.getEmail() + " associado ao professor " + professor.getNome());
-            
-        } catch (Exception e) {
-            System.err.println("Erro ao tentar associar usuário ao professor: " + e.getMessage());
-            // Não falha o registro se não conseguir associar
-        }
-    }
-
     /**
      * Endpoint para obter informações do usuário autenticado
      * Retorna id, email, nome e role do usuário logado

@@ -228,7 +228,7 @@ public class CadastroAlunoController implements Initializable {
         if (nisAluno != null) nisAluno.setText(educando.nis());
         if (obsAluno != null) obsAluno.setText(educando.observacao());
 
-        ResponsavelDTO resp = (educando.responsaveis() != null && !educando.responsaveis().isEmpty()) ? educando.responsaveis().get(0) : null;
+        ResponsavelDTO resp = educando.responsavel();
         if (resp != null) {
             if (nomeRespon != null) nomeRespon.setText(resp.nome());
             if (cpfRespon != null) cpfRespon.setText(resp.cpf());
@@ -596,7 +596,7 @@ public class CadastroAlunoController implements Initializable {
                 mapEscolaridadeToBackend(grauEscAluno.getValue().toString()),
                 (obsAluno != null && obsAluno.getText() != null) ? obsAluno.getText().trim() : null,
                 null,
-                java.util.List.of(responsavel),
+                responsavel,
                 null
         );
         try {

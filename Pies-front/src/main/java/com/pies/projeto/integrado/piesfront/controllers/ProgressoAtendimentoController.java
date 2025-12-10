@@ -1,19 +1,19 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
-import com.pies.projeto.integrado.piesfront.dto.CreateRelatorioIndividualDTO;
 import com.pies.projeto.integrado.piesfront.dto.RelatorioIndividualDTO;
+import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
+import com.pies.projeto.integrado.piesfront.services.AuthService;
+import com.utils.Janelas;
+
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-
-import java.net.URL;
-import java.util.ResourceBundle;
-import com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService;
-import com.pies.projeto.integrado.piesfront.services.AuthService;
-import com.utils.Janelas;
-import javafx.event.ActionEvent;
 
 /**
  * Controller para a tela de progresso de atendimento
