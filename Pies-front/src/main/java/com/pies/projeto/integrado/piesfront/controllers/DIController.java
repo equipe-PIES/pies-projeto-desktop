@@ -295,8 +295,10 @@ public class DIController implements Initializable {
 
     private void abrirDI(String resource, int step) {
         if (anamnese != null) {
+            boolean novoAtual = this.novoRegistro;
             Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, "Diagnóstico Inicial", controller -> {
                 if (controller instanceof DIController c) {
+                    c.setNovoRegistro(novoAtual);
                     c.setEducando(educando);
                     c.currentStep = step;
                     c.setFormData(formData);

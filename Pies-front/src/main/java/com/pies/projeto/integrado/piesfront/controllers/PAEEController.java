@@ -109,16 +109,12 @@ public class PAEEController implements Initializable {
             System.out.println("Carregando PAEE existente do backend...");
             carregarPaeeExistente();
             System.out.println("PAEE carregado. resumoCaso: " + (formData.resumoCaso != null ? formData.resumoCaso.substring(0, Math.min(50, formData.resumoCaso.length())) + "..." : "null"));
-        } else {
-            // Apenas cria novo formData se ainda não tiver dados (primeiro acesso)
-            if (this.formData == null || isFormDataEmpty(this.formData)) {
-                System.out.println("Criando novo formData vazio");
-                this.formData = new PaeeFormData();
-            } else {
-                System.out.println("Mantendo formData existente (já tem dados)");
-            }
         }
-        preencherCamposComFormData();
+        // Força o preenchimento dos campos após garantir que o formData está correto
+        javafx.application.Platform.runLater(() -> {
+            System.out.println("=== Preenchendo campos via Platform.runLater ===");
+            preencherCamposComFormData();
+        });
         System.out.println("=== Fim setEducando ===");
     }
 
@@ -145,6 +141,9 @@ public class PAEEController implements Initializable {
 
     public void setNovoRegistro(boolean novo) {
         this.novoRegistro = novo;
+        if (novo) {
+            this.formData = new PaeeFormData();
+        }
     }
 
     @Override
@@ -337,10 +336,16 @@ public class PAEEController implements Initializable {
     }
 
     private void abrirPaee(String resource, int step) {
+        System.out.println("=== abrirPaee ===");
+        System.out.println("Resource: " + resource);
+        System.out.println("Step: " + step);
+        System.out.println("FormData.resumoCaso: " + (formData.resumoCaso != null ? "presente" : "null"));
+        System.out.println("FormData.desenvolvimentoMotoresPsicomotoresDificuldades: " + (formData.desenvolvimentoMotoresPsicomotoresDificuldades != null ? "presente" : "null"));
         if (anamnese != null) {
+            boolean novoAtual = this.novoRegistro;
             Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, "PAEE", controller -> {
                 if (controller instanceof PAEEController c) {
-                    c.setNovoRegistro(true);
+                    c.setNovoRegistro(novoAtual);
                     c.currentStep = step;
                     c.setFormData(formData);
                     c.setEducando(educando);
@@ -440,7 +445,12 @@ public class PAEEController implements Initializable {
     private void preencherCamposComFormData() {
         System.out.println("=== preencherCamposComFormData (Step " + currentStep + ") ===");
         if (currentStep == 1) {
-            if (resumoCaso != null && formData.resumoCaso != null) resumoCaso.setText(formData.resumoCaso);
+            System.out.println("Preenchendo Step 1:");
+            System.out.println("  resumoCaso: " + (formData.resumoCaso != null ? "presente (" + formData.resumoCaso.length() + " chars)" : "null"));
+            if (resumoCaso != null && formData.resumoCaso != null) {
+                resumoCaso.setText(formData.resumoCaso);
+                System.out.println("  -> resumoCaso preenchido na UI");
+            }
             setChoice(dificuldadesMotoresPsicomotoresCb, formData.dificuldadesMotoresPsicomotores);
             setChoice(dificuldadesCognitivoCb, formData.dificuldadesCognitivo);
             setChoice(dificuldadesSensorialCb, formData.dificuldadesSensorial);
@@ -450,26 +460,53 @@ public class PAEEController implements Initializable {
             setChoice(dificuldadesRaciocinioLogicoMatematicoCb, formData.dificuldadesRaciocinioLogicoMatematico);
             setChoice(dificuldadesAVAsCb, formData.dificuldadesAVAs);
         } else if (currentStep == 2) {
-            if (desenvolvimentoMotoresPsicomotoresDificuldadesTa != null && formData.desenvolvimentoMotoresPsicomotoresDificuldades != null) desenvolvimentoMotoresPsicomotoresDificuldadesTa.setText(formData.desenvolvimentoMotoresPsicomotoresDificuldades);
+            System.out.println("Preenchendo Step 2:");
+            System.out.println("  desenvolvimentoMotoresPsicomotoresDificuldades: " + (formData.desenvolvimentoMotoresPsicomotoresDificuldades != null ? "presente" : "null"));
+            if (desenvolvimentoMotoresPsicomotoresDificuldadesTa != null && formData.desenvolvimentoMotoresPsicomotoresDificuldades != null) {
+                desenvolvimentoMotoresPsicomotoresDificuldadesTa.setText(formData.desenvolvimentoMotoresPsicomotoresDificuldades);
+                System.out.println("  -> desenvolvimentoMotoresPsicomotoresDificuldadesTa preenchido");
+            } else {
+                System.out.println("  -> Campo ou valor null: ta=" + (desenvolvimentoMotoresPsicomotoresDificuldadesTa != null) + ", valor=" + (formData.desenvolvimentoMotoresPsicomotoresDificuldades != null));
+            }
             if (desenvolvimentoMotoresPsicomotoresIntervencoesTa != null && formData.desenvolvimentoMotoresPsicomotoresIntervencoes != null) desenvolvimentoMotoresPsicomotoresIntervencoesTa.setText(formData.desenvolvimentoMotoresPsicomotoresIntervencoes);
             if (comunicacaoLinguagemDificuldadesTa != null && formData.comunicacaoLinguagemDificuldades != null) comunicacaoLinguagemDificuldadesTa.setText(formData.comunicacaoLinguagemDificuldades);
             if (comunicacaoLinguagemIntervencoesTa != null && formData.comunicacaoLinguagemIntervencoes != null) comunicacaoLinguagemIntervencoesTa.setText(formData.comunicacaoLinguagemIntervencoes);
         } else if (currentStep == 3) {
-            if (dificuldadesRaciocinioTa != null && formData.dificuldadesRaciocinio != null) dificuldadesRaciocinioTa.setText(formData.dificuldadesRaciocinio);
-            if (intervencoesRaciocinioTa != null && formData.intervencoesRaciocinio != null) intervencoesRaciocinioTa.setText(formData.intervencoesRaciocinio);
-            if (dificuldadesAtencaoTa != null && formData.dificuldadesAtencao != null) dificuldadesAtencaoTa.setText(formData.dificuldadesAtencao);
-            if (intervencoesAtencaoTa != null && formData.intervencoesAtencao != null) intervencoesAtencaoTa.setText(formData.intervencoesAtencao);
+            System.out.println("Preenchendo Step 3:");
+            System.out.println("  dificuldadesRaciocinio: " + (formData.dificuldadesRaciocinio != null ? "presente" : "null"));
+            System.out.println("  dificuldadesRaciocinioTa null? " + (dificuldadesRaciocinioTa == null));
+            if (dificuldadesRaciocinioTa != null && formData.dificuldadesRaciocinio != null) {
+                dificuldadesRaciocinioTa.setText(formData.dificuldadesRaciocinio);
+                System.out.println("  -> dificuldadesRaciocinioTa preenchido com: " + formData.dificuldadesRaciocinio.substring(0, Math.min(50, formData.dificuldadesRaciocinio.length())));
+            } else {
+                System.out.println("  -> Não preenchido. ta null? " + (dificuldadesRaciocinioTa == null) + ", valor null? " + (formData.dificuldadesRaciocinio == null));
+            }
+            if (intervencoesRaciocinioTa != null && formData.intervencoesRaciocinio != null) {
+                intervencoesRaciocinioTa.setText(formData.intervencoesRaciocinio);
+                System.out.println("  -> intervencoesRaciocinioTa preenchido");
+            }
+            if (dificuldadesAtencaoTa != null && formData.dificuldadesAtencao != null) {
+                dificuldadesAtencaoTa.setText(formData.dificuldadesAtencao);
+                System.out.println("  -> dificuldadesAtencaoTa preenchido");
+            }
+            if (intervencoesAtencaoTa != null && formData.intervencoesAtencao != null) {
+                intervencoesAtencaoTa.setText(formData.intervencoesAtencao);
+                System.out.println("  -> intervencoesAtencaoTa preenchido");
+            }
         } else if (currentStep == 4) {
+            System.out.println("Preenchendo Step 4:");
             if (dificuldadesMemoriaTa != null && formData.dificuldadesMemoria != null) dificuldadesMemoriaTa.setText(formData.dificuldadesMemoria);
             if (intervencoesMemoriaTa != null && formData.intervencoesMemoria != null) intervencoesMemoriaTa.setText(formData.intervencoesMemoria);
             if (dificuldadesPercepcaoTa != null && formData.dificuldadesPercepcao != null) dificuldadesPercepcaoTa.setText(formData.dificuldadesPercepcao);
             if (intervencoesPercepcaoTa != null && formData.intervencoesPercepcao != null) intervencoesPercepcaoTa.setText(formData.intervencoesPercepcao);
         } else if (currentStep == 5) {
+            System.out.println("Preenchendo Step 5:");
             if (dificuldadesSociabilidadeTa != null && formData.dificuldadesSociabilidade != null) dificuldadesSociabilidadeTa.setText(formData.dificuldadesSociabilidade);
             if (intervencoesSociabilidadeTa != null && formData.intervencoesSociabilidade != null) intervencoesSociabilidadeTa.setText(formData.intervencoesSociabilidade);
             if (dificuldadesAVATa != null && formData.dificuldadesAVA != null) dificuldadesAVATa.setText(formData.dificuldadesAVA);
             if (intervencoesAVATa != null && formData.intervencoesAVA != null) intervencoesAVATa.setText(formData.intervencoesAVA);
         } else if (currentStep == 6) {
+            System.out.println("Preenchendo Step 6:");
             if (objetivosPlano != null && formData.objetivosAEE != null) objetivosPlano.setText(formData.objetivosAEE);
             setChoice(cbAEE, formData.envAEE);
             setChoice(cbPsicologo, formData.envPsicologo);
@@ -479,6 +516,7 @@ public class PAEEController implements Initializable {
             setChoice(cbEducacaoFisica, formData.envEducacaoFisica);
             setChoice(cbEstimulacaoPrecoce, formData.envEstimulacaoPrecoce);
         }
+        System.out.println("=== Fim preencherCamposComFormData ===");
     }
 
     private boolean validateResumo() {

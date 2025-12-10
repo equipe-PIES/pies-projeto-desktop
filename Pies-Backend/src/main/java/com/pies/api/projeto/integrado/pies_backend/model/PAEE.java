@@ -49,63 +49,63 @@ public class PAEE {
      * Permite até 2000 caracteres para descrição detalhada
      */
     @NotBlank(message = "Resumo de caso é obrigatório")
-    @Column(length = 2000)
+    @Column(name = "resumo_caso", length = 2000)
     private String resumoCaso;
 
     /**
      * Dificuldades apresentadas - Motores/Psicomotores.
      * Campo opcional - valor selecionado no dropdown
      */
-    @Column(length = 500)
+    @Column(name = "dificuldades_motores_psicomotores", length = 500)
     private String dificuldadesMotoresPsicomotores;
 
     /**
      * Dificuldades apresentadas - Cognitivo.
      * Campo opcional - valor selecionado no dropdown
      */
-    @Column(length = 500)
+    @Column(name = "dificuldades_cognitivo", length = 500)
     private String dificuldadesCognitivo;
 
     /**
      * Dificuldades apresentadas - Sensorial.
      * Campo opcional - valor selecionado no dropdown
      */
-    @Column(length = 500)
+    @Column(name = "dificuldades_sensorial", length = 500)
     private String dificuldadesSensorial;
 
     /**
      * Dificuldades apresentadas - Linguagem oral/Comunicação.
      * Campo opcional - valor selecionado no dropdown
      */
-    @Column(length = 500)
+    @Column(name = "dificuldades_linguagem_comunicacao", length = 500)
     private String dificuldadesLinguagemComunicacao;
 
     /**
      * Dificuldades apresentadas - Familiar.
      * Campo opcional - valor selecionado no dropdown
      */
-    @Column(length = 500)
+    @Column(name = "dificuldades_familiar", length = 500)
     private String dificuldadesFamiliar;
 
     /**
      * Dificuldades apresentadas - Afetivo/Interpessoais.
      * Campo opcional - valor selecionado no dropdown
      */
-    @Column(length = 500)
+    @Column(name = "dificuldades_afetivo_interpessoais", length = 500)
     private String dificuldadesAfetivoInterpessoais;
 
     /**
      * Dificuldades apresentadas - Raciocínio Lógico/Matemático.
      * Campo opcional - valor selecionado no dropdown
      */
-    @Column(length = 500)
+    @Column(name = "dificuldades_raciocinio_logico_matematico", length = 500)
     private String dificuldadesRaciocinioLogicoMatematico;
 
     /**
      * Dificuldades apresentadas - AVAs.
      * Campo opcional - valor selecionado no dropdown
      */
-    @Column(length = 500)
+    @Column(name = "dificuldades_avas", length = 500)
     private String dificuldadesAVAs;
 
     /**
@@ -113,7 +113,7 @@ public class PAEE {
      * Campo opcional - descrição das dificuldades
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "desenvolvimento_motores_psicomotores_dificuldades", length = 2000)
     private String desenvolvimentoMotoresPsicomotoresDificuldades;
 
     /**
@@ -121,7 +121,7 @@ public class PAEE {
      * Campo opcional - descrição das intervenções
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "desenvolvimento_motores_psicomotores_intervencoes", length = 2000)
     private String desenvolvimentoMotoresPsicomotoresIntervencoes;
 
     /**
@@ -129,7 +129,7 @@ public class PAEE {
      * Campo opcional - descrição das dificuldades
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "comunicacao_linguagem_dificuldades", length = 2000)
     private String comunicacaoLinguagemDificuldades;
 
     /**
@@ -137,7 +137,7 @@ public class PAEE {
      * Campo opcional - descrição das intervenções
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "comunicacao_linguagem_intervencoes", length = 2000)
     private String comunicacaoLinguagemIntervencoes;
 
     /**
@@ -145,7 +145,7 @@ public class PAEE {
      * Campo opcional - descrição das dificuldades
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "dificuldades_raciocinio", length = 2000)
     private String dificuldadesRaciocinio;
 
     /**
@@ -153,7 +153,7 @@ public class PAEE {
      * Campo opcional - descrição das intervenções
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "intervencoes_raciocinio", length = 2000)
     private String intervencoesRaciocinio;
 
     /**
@@ -161,7 +161,7 @@ public class PAEE {
      * Campo opcional - descrição das dificuldades
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "dificuldades_atencao", length = 2000)
     private String dificuldadesAtencao;
 
     /**
@@ -169,7 +169,7 @@ public class PAEE {
      * Campo opcional - descrição das intervenções
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "intervencoes_atencao", length = 2000)
     private String intervencoesAtencao;
 
     /**
@@ -177,7 +177,7 @@ public class PAEE {
      * Campo opcional - descrição das dificuldades
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "dificuldades_memoria", length = 2000)
     private String dificuldadesMemoria;
 
     /**
@@ -185,7 +185,7 @@ public class PAEE {
      * Campo opcional - descrição das intervenções
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "intervencoes_memoria", length = 2000)
     private String intervencoesMemoria;
 
     /**
@@ -193,7 +193,7 @@ public class PAEE {
      * Campo opcional - descrição das dificuldades
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "dificuldades_percepcao", length = 2000)
     private String dificuldadesPercepcao;
 
     /**
@@ -201,7 +201,7 @@ public class PAEE {
      * Campo opcional - descrição das intervenções
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "intervencoes_percepcao", length = 2000)
     private String intervencoesPercepcao;
 
     /**
@@ -209,7 +209,7 @@ public class PAEE {
      * Campo opcional - descrição das dificuldades
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "dificuldades_sociabilidade", length = 2000)
     private String dificuldadesSociabilidade;
 
     /**
@@ -217,7 +217,7 @@ public class PAEE {
      * Campo opcional - descrição das intervenções
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "intervencoes_sociabilidade", length = 2000)
     private String intervencoesSociabilidade;
 
     /**
@@ -225,7 +225,7 @@ public class PAEE {
      * Campo opcional - descrição das dificuldades
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "dificuldades_ava", length = 2000)
     private String dificuldadesAVA;
 
     /**
@@ -233,7 +233,7 @@ public class PAEE {
      * Campo opcional - descrição das intervenções
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "intervencoes_ava", length = 2000)
     private String intervencoesAVA;
 
     /**
@@ -241,56 +241,56 @@ public class PAEE {
      * Campo opcional - descrição dos objetivos
      * Permite até 2000 caracteres
      */
-    @Column(length = 2000)
+    @Column(name = "objetivos_aee", length = 2000)
     private String objetivosAEE;
 
     /**
      * Encaminhamento AEE.
      * Campo opcional - Sim/Não
      */
-    @Column(length = 50)
+    @Column(name = "env_aee", length = 50)
     private String envAEE;
 
     /**
      * Encaminhamento Psicólogo.
      * Campo opcional - Sim/Não
      */
-    @Column(length = 50)
+    @Column(name = "env_psicologo", length = 50)
     private String envPsicologo;
 
     /**
      * Encaminhamento Fisioterapeuta.
      * Campo opcional - Sim/Não
      */
-    @Column(length = 50)
+    @Column(name = "env_fisioterapeuta", length = 50)
     private String envFisioterapeuta;
 
     /**
      * Encaminhamento Psicopedagogo.
      * Campo opcional - Sim/Não
      */
-    @Column(length = 50)
+    @Column(name = "env_psicopedagogo", length = 50)
     private String envPsicopedagogo;
 
     /**
      * Encaminhamento TO (Terapeuta Ocupacional).
      * Campo opcional - Sim/Não
      */
-    @Column(length = 50)
+    @Column(name = "env_to", length = 50)
     private String envTO;
 
     /**
      * Encaminhamento Educação Física.
      * Campo opcional - Sim/Não
      */
-    @Column(length = 50)
+    @Column(name = "env_educacao_fisica", length = 50)
     private String envEducacaoFisica;
 
     /**
      * Encaminhamento Estimulação Precoce.
      * Campo opcional - Sim/Não
      */
-    @Column(length = 50)
+    @Column(name = "env_estimulacao_precoce", length = 50)
     private String envEstimulacaoPrecoce;
 
     /**

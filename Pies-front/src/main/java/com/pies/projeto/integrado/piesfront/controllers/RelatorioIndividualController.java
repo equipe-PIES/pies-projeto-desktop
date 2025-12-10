@@ -54,6 +54,9 @@ public class RelatorioIndividualController {
 
     public void setNovoRegistro(boolean novo) {
         this.novoRegistro = novo;
+        if (novo) {
+            this.formData = new RelatorioIndividualRequestDTO();
+        }
     }
 
     public void setFormData(RelatorioIndividualRequestDTO data) {
@@ -176,8 +179,10 @@ public class RelatorioIndividualController {
     private void abrir(String resource, int step) {
         captureCurrentStepData();
         if (anamnese != null) {
+            boolean novoAtual = this.novoRegistro;
             Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, "Relatório Individual", controller -> {
                 if (controller instanceof RelatorioIndividualController c) {
+                    c.setNovoRegistro(novoAtual);
                     c.setEducando(educando);
                     c.setFormData(formData);
                     c.setStep(step);

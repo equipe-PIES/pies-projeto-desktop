@@ -41,7 +41,9 @@ public class AnamneseController {
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
-        carregarAnamneseExistente();
+        if (carregarDadosExistentes) {
+            carregarAnamneseExistente();
+        }
         if (!isFormDataVazio()) {
             populateFromFormData();
         }
@@ -175,8 +177,12 @@ public class AnamneseController {
     private void abrir(String resource, String titulo) {
         captureCurrentStepData();
         if (anamnese != null) {
+            boolean carregarAtual = this.carregarDadosExistentes;
             Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, titulo, controller -> {
                 if (controller instanceof AnamneseController c) {
+                    if (!carregarAtual) {
+                        c.setModoNovo();
+                    }
                     c.setEducando(educando);
                     c.setFormData(formData);
                 }

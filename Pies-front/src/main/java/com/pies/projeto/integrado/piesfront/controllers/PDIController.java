@@ -96,6 +96,9 @@ public class PDIController {
 
     public void setNovoRegistro(boolean novo) {
         this.novoRegistro = novo;
+        if (novo) {
+            this.formData = new PDIFormData();
+        }
     }
 
     @FXML
@@ -243,8 +246,10 @@ public class PDIController {
 
     private void abrir(String resource, String titulo, int step) {
         if (anamnese != null) {
+            boolean novoAtual = this.novoRegistro;
             Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, titulo, controller -> {
                 if (controller instanceof PDIController c) {
+                    c.setNovoRegistro(novoAtual);
                     c.setEducando(educando);
                     c.currentStep = step;
                     c.setFormData(formData);
