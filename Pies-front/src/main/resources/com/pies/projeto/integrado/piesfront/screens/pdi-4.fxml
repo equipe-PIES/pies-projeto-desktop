@@ -47,7 +47,7 @@
     <!-- CONTEÚDO CENTRAL -->
     <center>
         <!-- ScrollPane para garantir que o conteúdo seja rolável em telas menores -->
-        <ScrollPane fitToWidth="true" style="-fx-background-color: white;">
+        <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: white;">
             <content>
                 <VBox spacing="20" style="-fx-background-color: white;">
                     <padding>
@@ -90,12 +90,12 @@
                         <!-- BOTÕES -->
                         <HBox alignment="CENTER_RIGHT" spacing="20.0" VBox.vgrow="ALWAYS">
                             <children>
-                        <HBox HBox.hgrow="ALWAYS">
+                        <HBox alignment="BOTTOM_LEFT" HBox.hgrow="ALWAYS">
                            <children>
                                       <Button fx:id="cancelarButton" onAction="#handleCancelAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Cancelar" />
                            </children>
                         </HBox>
-                        <HBox spacing="20.0">
+                        <HBox alignment="BOTTOM_RIGHT" spacing="20.0">
                            <children>
                                       <Button fx:id="voltarButton" onAction="#handleGoToPdi3" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Voltar" />
                                       <Button fx:id="concluirButton" onAction="#handleConcluirAction" prefWidth="220.0" styleClass="botao-concluir" text="Concluir" />
