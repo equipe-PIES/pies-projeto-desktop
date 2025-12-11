@@ -684,7 +684,7 @@ public class PAEEController implements Initializable {
     System.out.println("=== FIM CAMPOS RETORNADOS ===");
     
     // Carrega TODOS os campos do PAEE de uma vez
-//    carregarTodosOsCamposDoDTO(dto); 
+        carregarTodosOsCamposDoDTO(dto); 
     
     System.out.println("=== Fim carregarPaeeExistente ===");
     System.out.println("FormData após carregamento:");
@@ -692,7 +692,55 @@ public class PAEEController implements Initializable {
     System.out.println("  desenvolvimentoMotoresPsicomotoresDificuldades: " + (formData.desenvolvimentoMotoresPsicomotoresDificuldades != null ? "presente" : "null"));
     System.out.println("  dificuldadesRaciocinio: " + (formData.dificuldadesRaciocinio != null ? "presente" : "null"));
     System.out.println("  objetivosAEE: " + (formData.objetivosAEE != null ? "presente" : "null"));
-}
+    }
+
+        /**
+         * Preenche o formData com os dados vindos do backend (dto).
+         */
+        private void carregarTodosOsCamposDoDTO(java.util.Map<String, Object> dto) {
+            if (dto == null) return;
+            formData.resumoCaso = getString(dto, "resumoCaso");
+            formData.dificuldadesMotoresPsicomotores = getString(dto, "dificuldadesMotoresPsicomotores");
+            formData.dificuldadesCognitivo = getString(dto, "dificuldadesCognitivo");
+            formData.dificuldadesSensorial = getString(dto, "dificuldadesSensorial");
+            formData.dificuldadesLinguagemComunicacao = getString(dto, "dificuldadesLinguagemComunicacao");
+            formData.dificuldadesFamiliar = getString(dto, "dificuldadesFamiliar");
+            formData.dificuldadesAfetivoInterpessoais = getString(dto, "dificuldadesAfetivoInterpessoais");
+            formData.dificuldadesRaciocinioLogicoMatematico = getString(dto, "dificuldadesRaciocinioLogicoMatematico");
+            formData.dificuldadesAVAs = getString(dto, "dificuldadesAVAs");
+            formData.desenvolvimentoMotoresPsicomotoresDificuldades = getString(dto, "desenvolvimentoMotoresPsicomotoresDificuldades");
+            formData.desenvolvimentoMotoresPsicomotoresIntervencoes = getString(dto, "desenvolvimentoMotoresPsicomotoresIntervencoes");
+            formData.comunicacaoLinguagemDificuldades = getString(dto, "comunicacaoLinguagemDificuldades");
+            formData.comunicacaoLinguagemIntervencoes = getString(dto, "comunicacaoLinguagemIntervencoes");
+            formData.dificuldadesRaciocinio = getString(dto, "dificuldadesRaciocinio");
+            formData.intervencoesRaciocinio = getString(dto, "intervencoesRaciocinio");
+            formData.dificuldadesAtencao = getString(dto, "dificuldadesAtencao");
+            formData.intervencoesAtencao = getString(dto, "intervencoesAtencao");
+            formData.dificuldadesMemoria = getString(dto, "dificuldadesMemoria");
+            formData.intervencoesMemoria = getString(dto, "intervencoesMemoria");
+            formData.dificuldadesPercepcao = getString(dto, "dificuldadesPercepcao");
+            formData.intervencoesPercepcao = getString(dto, "intervencoesPercepcao");
+            formData.dificuldadesSociabilidade = getString(dto, "dificuldadesSociabilidade");
+            formData.intervencoesSociabilidade = getString(dto, "intervencoesSociabilidade");
+            formData.dificuldadesAVA = getString(dto, "dificuldadesAVA");
+            formData.intervencoesAVA = getString(dto, "intervencoesAVA");
+            formData.objetivosAEE = getString(dto, "objetivosAEE");
+            formData.envAEE = getString(dto, "envAEE");
+            formData.envPsicologo = getString(dto, "envPsicologo");
+            formData.envFisioterapeuta = getString(dto, "envFisioterapeuta");
+            formData.envPsicopedagogo = getString(dto, "envPsicopedagogo");
+            formData.envTO = getString(dto, "envTO");
+            formData.envEducacaoFisica = getString(dto, "envEducacaoFisica");
+            formData.envEstimulacaoPrecoce = getString(dto, "envEstimulacaoPrecoce");
+        }
+
+        /**
+         * Helper para converter Object em String.
+         */
+        private String getString(java.util.Map<String, Object> dto, String key) {
+            Object value = dto.get(key);
+            return value != null ? value.toString() : null;
+        }
     private void showValidation(String msg) {
         if (validationMsg != null) {
             validationMsg.setText(msg);
