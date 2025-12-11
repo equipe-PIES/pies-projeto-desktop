@@ -126,11 +126,11 @@ public class EducandoController {
         } catch (RuntimeException e) {
             m.put("diagnosticoInicial", false);
         }
-        var pdis = pdiService.buscarPorEducandoId(id);
+        var pdis = (List<?>) pdiService.buscarPorEducandoId(id);
         m.put("pdiCount", pdis != null ? pdis.size() : 0);
-        var paees = paeeService.buscarPorEducandoId(id);
+        var paees = (List<?>) paeeService.findByAluno(id);
         m.put("paeeCount", paees != null ? paees.size() : 0);
-        var ris = relatorioIndividualService.buscarPorEducando(id);
+        var ris = (List<?>) relatorioIndividualService.buscarPorEducando(id);
         m.put("relatorioCount", ris != null ? ris.size() : 0);
         return ResponseEntity.ok(m);
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.pies.projeto.integrado.piesfront.controllers.PAEEController.CreatePAEEDTO;
 import com.pies.projeto.integrado.piesfront.dto.AnamneseDTO;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.LoginRequestDTO;
@@ -39,7 +40,7 @@ public class AuthService {
     private static final String EDUCANDOS_SIMPLIFICADOS_ENDPOINT = "/api/educandos/simplificados";
     private static final String ANAMNESES_ENDPOINT = "/api/anamneses";
     private static final String RELATORIOS_INDIVIDUAIS_ENDPOINT = "/api/relatorios-individuais";
-    private static final String PAEES_ENDPOINT = "/api/paees";
+    private static final String PAEES_ENDPOINT = "/api/paee";
     private static final String PDIS_ENDPOINT = "/api/pdis";
     private static final String DIAGNOSTICOS_INICIAIS_ENDPOINT = "/api/diagnosticos-iniciais";
     
@@ -1426,24 +1427,23 @@ public class AuthService {
         }
     }
 
-    public boolean criarPAEE(
-            com.pies.projeto.integrado.piesfront.controllers.PAEEController.CreatePAEEDTO dto) {
+    public boolean criarPAEE(CreatePAEEDTO dto) {
         System.out.println("=== AuthService.criarPAEE ===");
-        if (currentToken == null || dto == null || dto.educandoId == null) {
-            System.err.println("criarPAEE: Token ou DTO inválido");
-            System.err.println("Token null? " + (currentToken == null));
-            System.err.println("DTO null? " + (dto == null));
-            System.err.println("EducandoId null? " + (dto != null && dto.educandoId == null));
+
+        // Validação defensiva simples
+        if (currentToken == null || dto == null || dto.alunoId == null) {
+            System.err.println("Erro: Token, DTO ou EducandoID nulos.");
             return false;
         }
+
         try {
             String requestBody = objectMapper.writeValueAsString(dto);
-            System.out.println("Request Body:");
-            System.out.println(requestBody);
             String url = BASE_URL + PAEES_ENDPOINT;
-            System.out.println("URL: " + url);
-            System.out.println("Token (primeiros 20 chars): " + currentToken.substring(0, Math.min(20, currentToken.length())) + "...");
             
+            // Debug útil (sem vazar o token inteiro)
+            System.out.println("URL: " + url);
+            System.out.println("Enviando JSON: " + requestBody);
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .header("Authorization", "Bearer " + currentToken)
@@ -1451,28 +1451,39 @@ public class AuthService {
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .timeout(Duration.ofSeconds(10))
                     .build();
-            
-            System.out.println("Enviando requisição...");
+
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("Status Code: " + response.statusCode());
-            System.out.println("Response Body: " + response.body());
             
+            System.out.println("Status Code: " + response.statusCode());
+
             if (response.statusCode() == 201 || response.statusCode() == 200) {
                 System.out.println("PAEE criado com sucesso!");
-                if (dto.educandoId != null) {
-                    localCache.delete("paees_" + dto.educandoId);
-                    updateProgressLocal(dto.educandoId, m -> m.put("paeeCount", toInt(m.get("paeeCount")) + 1));
-                    refreshProgressoAsync(dto.educandoId);
+
+                // Atualização do estado local (Cache/Progresso)
+                if (dto.alunoId != null) {
+                    try {
+                        String educandoIdStr = String.valueOf(dto.alunoId);
+                        localCache.delete("paees_" + educandoIdStr);
+                        updateProgressLocal(educandoIdStr, m -> m.put("paeeCount", toInt(m.get("paeeCount")) + 1));
+                        refreshProgressoAsync(educandoIdStr);
+                    } catch (Exception e) {
+                        System.err.println("Aviso: PAEE criado, mas erro ao atualizar cache local: " + e.getMessage());
+                    }
                 }
                 return true;
             } else {
-                System.err.println("Erro ao criar PAEE. Status: " + response.statusCode());
-                System.err.println("Response body: " + response.body());
+                System.err.println("Erro ao criar PAEE. Resposta: " + response.body());
                 return false;
             }
-        } catch (IOException | InterruptedException e) {
-            System.err.println("Erro ao criar PAEE: " + e.getMessage());
+
+        } catch (IOException e) {
+            System.err.println("Erro de comunicação (IO): " + e.getMessage());
             e.printStackTrace();
+            return false;
+        } catch (InterruptedException e) {
+            System.err.println("Thread interrompida durante a requisição.");
+            // Restaura o estado de interrupção (Boas práticas de Java)
+            Thread.currentThread().interrupt();
             return false;
         }
     }
@@ -1533,7 +1544,7 @@ public class AuthService {
         }
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + PAEES_ENDPOINT + "/educando/" + educandoId))
+                    .uri(URI.create(BASE_URL + PAEES_ENDPOINT + "/aluno/" + educandoId))
                     .header("Authorization", "Bearer " + currentToken)
                     .GET()
                     .timeout(Duration.ofSeconds(10))
@@ -1853,9 +1864,9 @@ public class AuthService {
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             boolean ok = response.statusCode() == 200;
-            if (ok && dto.educandoId != null) {
-                localCache.delete("paees_" + dto.educandoId);
-                refreshProgressoAsync(dto.educandoId);
+            if (ok && dto.alunoId != null) {
+                localCache.delete("paees_" + dto.alunoId);
+                refreshProgressoAsync(String.valueOf(dto.alunoId));
             }
             return ok;
         } catch (IOException | InterruptedException e) {

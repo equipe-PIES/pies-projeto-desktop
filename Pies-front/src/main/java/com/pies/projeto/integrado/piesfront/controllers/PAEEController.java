@@ -1,4 +1,5 @@
 package com.pies.projeto.integrado.piesfront.controllers;
+
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
 import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
@@ -104,6 +105,7 @@ public class PAEEController implements Initializable {
     // private boolean modoNovo = false;
     private boolean novoRegistro = false;
     private boolean somenteLeitura = false;
+    private String currentPaeeId = null;
 
     public void setEducando(EducandoDTO educando) {
         System.out.println("=== PAEEController.setEducando ===");
@@ -130,8 +132,8 @@ public class PAEEController implements Initializable {
      * Neste modo, não carrega dados existentes.
      */
     // public void setModoNovo() {
-    //     this.modoNovo = true;
-    //     this.formData = new PaeeFormData(); // Limpa os dados
+    //    this.modoNovo = true;
+    //    this.formData = new PaeeFormData(); // Limpa os dados
     // }
 
     public void setFormData(PaeeFormData data) {
@@ -265,10 +267,17 @@ public class PAEEController implements Initializable {
         }
     }
 
+    // --- MÉTODOS AUXILIARES DE CONVERSÃO ---
+    private Boolean converterSimNao(String valor) {
+        if (valor == null) return false;
+        return valor.equalsIgnoreCase("Sim") || valor.equalsIgnoreCase("true") || valor.equals("1");
+    }
+
     @FXML
     private void handleConcluirAction() {
         System.out.println("=== handleConcluirAction PAEE ===");
-        captureCurrentStepData();
+        captureCurrentStepData(); // Garante que os dados da tela 6 foram salvos no formData
+
         if (somenteLeitura) {
             showValidation("Modo de visualização");
             return;
@@ -278,62 +287,92 @@ public class PAEEController implements Initializable {
             showValidation("Educando inválido.");
             return;
         }
-        System.out.println("Educando ID: " + educando.id());
         if (!validateResumo()) {
             System.err.println("Resumo do caso não preenchido!");
             showValidation("Informe o resumo do caso.");
             return;
         }
-        System.out.println("Resumo validado!");
+
         try {
             String token = authService.getCurrentToken();
-            System.out.println("Token presente: " + (token != null && !token.isEmpty()));
             if (token == null || token.isEmpty()) {
                 showValidation("Sessão expirada.");
                 return;
             }
-            var dto = new CreatePAEEDTO(
-                    formData.resumoCaso,
-                    formData.dificuldadesMotoresPsicomotores,
-                    formData.dificuldadesCognitivo,
-                    formData.dificuldadesSensorial,
-                    formData.dificuldadesLinguagemComunicacao,
-                    formData.dificuldadesFamiliar,
-                    formData.dificuldadesAfetivoInterpessoais,
-                    formData.dificuldadesRaciocinioLogicoMatematico,
-                    formData.dificuldadesAVAs,
-                    formData.desenvolvimentoMotoresPsicomotoresDificuldades,
-                    formData.desenvolvimentoMotoresPsicomotoresIntervencoes,
-                    formData.comunicacaoLinguagemDificuldades,
-                    formData.comunicacaoLinguagemIntervencoes,
-                    formData.dificuldadesRaciocinio,
-                    formData.intervencoesRaciocinio,
-                    formData.dificuldadesAtencao,
-                    formData.intervencoesAtencao,
-                    formData.dificuldadesMemoria,
-                    formData.intervencoesMemoria,
-                    formData.dificuldadesPercepcao,
-                    formData.intervencoesPercepcao,
-                    formData.dificuldadesSociabilidade,
-                    formData.intervencoesSociabilidade,
-                    formData.dificuldadesAVA,
-                    formData.intervencoesAVA,
-                    formData.objetivosAEE,
-                    formData.envAEE,
-                    formData.envPsicologo,
-                    formData.envFisioterapeuta,
-                    formData.envPsicopedagogo,
-                    formData.envTO,
-                    formData.envEducacaoFisica,
-                    formData.envEstimulacaoPrecoce,
-                    authService.getProfessorId(),
-                    educando.id()
-            );
-            System.out.println("DTO criado. Resumo: " + dto.resumoCaso);
-            System.out.println("Educando ID no DTO: " + dto.educandoId);
-            System.out.println("Chamando authService.criarPAEE...");
-            boolean ok = authService.criarPAEE(dto);
+
+            // --- CRIAÇÃO E MAPEAMENTO DO DTO PARA O BACKEND ---
+            CreatePAEEDTO dto = new CreatePAEEDTO();
+
+            dto.alunoId = educando.id();
+            dto.professorId = authService.getProfessorId();
+
+            // Resumo
+            dto.resumoCaso = formData.resumoCaso;
+
+            // Checkboxes (Conversão String -> Boolean)
+            dto.apresentaDificuldadeMotora = converterSimNao(formData.dificuldadesMotoresPsicomotores);
+            dto.apresentaDificuldadeCognitiva = converterSimNao(formData.dificuldadesCognitivo);
+            dto.apresentaDificuldadeSensorial = converterSimNao(formData.dificuldadesSensorial);
+            dto.apresentaDificuldadeLinguagem = converterSimNao(formData.dificuldadesLinguagemComunicacao);
+            dto.apresentaDificuldadeFamiliar = converterSimNao(formData.dificuldadesFamiliar);
+            dto.apresentaDificuldadeAfetiva = converterSimNao(formData.dificuldadesAfetivoInterpessoais);
+            dto.apresentaDificuldadeLogica = converterSimNao(formData.dificuldadesRaciocinioLogicoMatematico);
+            dto.apresentaDificuldadeAVA = converterSimNao(formData.dificuldadesAVAs);
+
+            // Detalhes - Mapeando nomes do Form para nomes do Backend
+            dto.desenvolvimentoMotorDificuldades = formData.desenvolvimentoMotoresPsicomotoresDificuldades;
+            dto.desenvolvimentoMotorIntervencoes = formData.desenvolvimentoMotoresPsicomotoresIntervencoes;
+
+            dto.comunicacaoLinguagemDificuldades = formData.comunicacaoLinguagemDificuldades;
+            dto.comunicacaoLinguagemIntervencoes = formData.comunicacaoLinguagemIntervencoes;
+
+            dto.raciocinioLogicoDificuldades = formData.dificuldadesRaciocinio;
+            dto.raciocinioLogicoIntervencoes = formData.intervencoesRaciocinio;
+
+            dto.atencaoConcentracaoDificuldades = formData.dificuldadesAtencao;
+            dto.atencaoConcentracaoIntervencoes = formData.intervencoesAtencao;
+
+            dto.memoriaDificuldades = formData.dificuldadesMemoria;
+            dto.memoriaIntervencoes = formData.intervencoesMemoria;
+
+            dto.percepcaoDificuldades = formData.dificuldadesPercepcao;
+            dto.percepcaoIntervencoes = formData.intervencoesPercepcao;
+
+            dto.sociabilidadeDificuldades = formData.dificuldadesSociabilidade;
+            dto.sociabilidadeIntervencoes = formData.intervencoesSociabilidade;
+
+            dto.avasDificuldades = formData.dificuldadesAVA;
+            dto.avasIntervencoes = formData.intervencoesAVA;
+
+            // Final
+            dto.objetivosGerais = formData.objetivosAEE;
+            
+            dto.apoioAEE = converterSimNao(formData.envAEE);
+            dto.apoioPsicologo = converterSimNao(formData.envPsicologo);
+            dto.apoioFisioterapeuta = converterSimNao(formData.envFisioterapeuta);
+            dto.apoioPsicopedagogo = converterSimNao(formData.envPsicopedagogo);
+            dto.apoioTO = converterSimNao(formData.envTO);
+            dto.apoioEdFisica = converterSimNao(formData.envEducacaoFisica);
+            dto.apoioEstimulacaoPrecoce = converterSimNao(formData.envEstimulacaoPrecoce);
+
+            System.out.println("Enviando PAEE para o backend...");
+            System.out.println("ResumoCaso len: " + (dto.resumoCaso != null ? dto.resumoCaso.length() : "null"));
+            System.out.println("DevMotor Dific len: " + (dto.desenvolvimentoMotorDificuldades != null ? dto.desenvolvimentoMotorDificuldades.length() : "null"));
+            System.out.println("DevMotor Interv len: " + (dto.desenvolvimentoMotorIntervencoes != null ? dto.desenvolvimentoMotorIntervencoes.length() : "null"));
+            System.out.println("Comunicacao Dific len: " + (dto.comunicacaoLinguagemDificuldades != null ? dto.comunicacaoLinguagemDificuldades.length() : "null"));
+            System.out.println("Comunicacao Interv len: " + (dto.comunicacaoLinguagemIntervencoes != null ? dto.comunicacaoLinguagemIntervencoes.length() : "null"));
+            
+            // Certifique-se que seu AuthService foi atualizado para aceitar este objeto CreatePAEEDTO
+            boolean ok;
+            if (!novoRegistro && currentPaeeId != null && !currentPaeeId.isEmpty()) {
+                System.out.println("Atualizando PAEE existente. ID: " + currentPaeeId);
+                ok = authService.atualizarPAEE(currentPaeeId, dto);
+            } else {
+                ok = authService.criarPAEE(dto);
+            }
+            
             System.out.println("Resultado criarPAEE: " + ok);
+
             if (ok) {
                 com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService.getInstance().concluirPAEE(educando.id());
                 NotificacaoController.agendar("PAEE registrado com sucesso!", true);
@@ -364,6 +403,7 @@ public class PAEEController implements Initializable {
                     c.currentStep = step;
                     c.setFormData(formData);
                     c.setEducando(educando);
+                    c.setSomenteLeitura(this.somenteLeitura);
                     // Força o preenchimento dos campos da página aberta
                     c.preencherCamposComFormData();
                 }
@@ -625,6 +665,23 @@ public class PAEEController implements Initializable {
         if (!cb.getItems().contains(value)) cb.getItems().add(value);
         cb.setValue(value);
     }
+    
+    private Object getFirst(java.util.Map<String, Object> m, String... keys) {
+        if (m == null || keys == null) return null;
+        for (String k : keys) {
+            if (m.containsKey(k)) {
+                Object v = m.get(k);
+                if (v != null) return v;
+            }
+        }
+        return null;
+    }
+    
+    private String getString(java.util.Map<String, Object> m, String... keys) {
+        Object v = getFirst(m, keys);
+        if (v == null) return null;
+        return v instanceof String ? (String) v : v.toString();
+    }
 
     private String toSimNao(Object o) {
         if (o == null) return null;
@@ -666,81 +723,87 @@ public class PAEEController implements Initializable {
             System.out.println("  " + key + " = " + valorStr);
         });
         System.out.println("--- Fim do log dos dados do PAEE ---");
+        Object idObj = dto.get("id");
+        if (idObj instanceof String sId) {
+            currentPaeeId = sId;
+            System.out.println("PAEE atual ID: " + currentPaeeId);
+        }
         Object o;
-        o = dto.get("resumoCaso");
+        o = getFirst(dto, "resumoCaso");
         if (o instanceof String s) {
             formData.resumoCaso = s;
             System.out.println("resumoCaso carregado: " + s.substring(0, Math.min(50, s.length())) + "...");
         }
-        o = dto.get("dificuldadesMotoresPsicomotores");
-        if (o instanceof String s) formData.dificuldadesMotoresPsicomotores = toSimNao(s);
-        o = dto.get("dificuldadesCognitivo");
-        if (o instanceof String s) formData.dificuldadesCognitivo = toSimNao(s);
-        o = dto.get("dificuldadesSensorial");
-        if (o instanceof String s) formData.dificuldadesSensorial = toSimNao(s);
-        o = dto.get("dificuldadesLinguagemComunicacao");
-        if (o instanceof String s) formData.dificuldadesLinguagemComunicacao = toSimNao(s);
-        o = dto.get("dificuldadesFamiliar");
-        if (o instanceof String s) formData.dificuldadesFamiliar = toSimNao(s);
-        o = dto.get("dificuldadesAfetivoInterpessoais");
-        if (o instanceof String s) formData.dificuldadesAfetivoInterpessoais = toSimNao(s);
-        o = dto.get("dificuldadesRaciocinioLogicoMatematico");
-        if (o instanceof String s) formData.dificuldadesRaciocinioLogicoMatematico = toSimNao(s);
-        o = dto.get("dificuldadesAVAs");
-        if (o instanceof String s) formData.dificuldadesAVAs = toSimNao(s);
-        o = dto.get("desenvolvimentoMotoresPsicomotoresDificuldades");
-        if (o instanceof String s) {
+        o = getFirst(dto, "apresentaDificuldadeMotora", "dificuldadesMotoresPsicomotores");
+        formData.dificuldadesMotoresPsicomotores = toSimNao(o);
+        o = getFirst(dto, "apresentaDificuldadeCognitiva", "dificuldadesCognitivo");
+        formData.dificuldadesCognitivo = toSimNao(o);
+        o = getFirst(dto, "apresentaDificuldadeSensorial", "dificuldadesSensorial");
+        formData.dificuldadesSensorial = toSimNao(o);
+        o = getFirst(dto, "apresentaDificuldadeLinguagem", "dificuldadesLinguagemComunicacao");
+        formData.dificuldadesLinguagemComunicacao = toSimNao(o);
+        o = getFirst(dto, "apresentaDificuldadeFamiliar", "dificuldadesFamiliar");
+        formData.dificuldadesFamiliar = toSimNao(o);
+        o = getFirst(dto, "apresentaDificuldadeAfetiva", "dificuldadesAfetivoInterpessoais");
+        formData.dificuldadesAfetivoInterpessoais = toSimNao(o);
+        o = getFirst(dto, "apresentaDificuldadeLogica", "dificuldadesRaciocinioLogicoMatematico");
+        formData.dificuldadesRaciocinioLogicoMatematico = toSimNao(o);
+        o = getFirst(dto, "apresentaDificuldadeAVA", "dificuldadesAVAs");
+        formData.dificuldadesAVAs = toSimNao(o);
+        String s;
+        s = getString(dto, "desenvolvimentoMotorDificuldades", "desenvolvimentoMotoresPsicomotoresDificuldades");
+        if (s != null) {
             formData.desenvolvimentoMotoresPsicomotoresDificuldades = s;
             System.out.println("desenvolvimentoMotoresPsicomotoresDificuldades carregado: " + s.length() + " chars");
         }
-        o = dto.get("desenvolvimentoMotoresPsicomotoresIntervencoes");
-        if (o instanceof String s) {
+        s = getString(dto, "desenvolvimentoMotorIntervencoes", "desenvolvimentoMotoresPsicomotoresIntervencoes");
+        if (s != null) {
             formData.desenvolvimentoMotoresPsicomotoresIntervencoes = s;
             System.out.println("desenvolvimentoMotoresPsicomotoresIntervencoes carregado: " + s.length() + " chars");
         }
-        o = dto.get("comunicacaoLinguagemDificuldades");
-        if (o instanceof String s) formData.comunicacaoLinguagemDificuldades = s;
-        o = dto.get("comunicacaoLinguagemIntervencoes");
-        if (o instanceof String s) formData.comunicacaoLinguagemIntervencoes = s;
-        o = dto.get("dificuldadesRaciocinio");
-        if (o instanceof String s) formData.dificuldadesRaciocinio = s;
-        o = dto.get("intervencoesRaciocinio");
-        if (o instanceof String s) formData.intervencoesRaciocinio = s;
-        o = dto.get("dificuldadesAtencao");
-        if (o instanceof String s) formData.dificuldadesAtencao = s;
-        o = dto.get("intervencoesAtencao");
-        if (o instanceof String s) formData.intervencoesAtencao = s;
-        o = dto.get("dificuldadesMemoria");
-        if (o instanceof String s) formData.dificuldadesMemoria = s;
-        o = dto.get("intervencoesMemoria");
-        if (o instanceof String s) formData.intervencoesMemoria = s;
-        o = dto.get("dificuldadesPercepcao");
-        if (o instanceof String s) formData.dificuldadesPercepcao = s;
-        o = dto.get("intervencoesPercepcao");
-        if (o instanceof String s) formData.intervencoesPercepcao = s;
-        o = dto.get("dificuldadesSociabilidade");
-        if (o instanceof String s) formData.dificuldadesSociabilidade = s;
-        o = dto.get("intervencoesSociabilidade");
-        if (o instanceof String s) formData.intervencoesSociabilidade = s;
-        o = dto.get("dificuldadesAVA");
-        if (o instanceof String s) formData.dificuldadesAVA = s;
-        o = dto.get("intervencoesAVA");
-        if (o instanceof String s) formData.intervencoesAVA = s;
-        o = dto.get("objetivosAEE");
-        if (o instanceof String s) formData.objetivosAEE = s;
-        o = dto.get("envAEE");
+        s = getString(dto, "comunicacaoLinguagemDificuldades");
+        if (s != null) formData.comunicacaoLinguagemDificuldades = s;
+        s = getString(dto, "comunicacaoLinguagemIntervencoes");
+        if (s != null) formData.comunicacaoLinguagemIntervencoes = s;
+        s = getString(dto, "raciocinioLogicoDificuldades", "dificuldadesRaciocinio");
+        if (s != null) formData.dificuldadesRaciocinio = s;
+        s = getString(dto, "raciocinioLogicoIntervencoes", "intervencoesRaciocinio");
+        if (s != null) formData.intervencoesRaciocinio = s;
+        s = getString(dto, "atencaoConcentracaoDificuldades", "dificuldadesAtencao");
+        if (s != null) formData.dificuldadesAtencao = s;
+        s = getString(dto, "atencaoConcentracaoIntervencoes", "intervencoesAtencao");
+        if (s != null) formData.intervencoesAtencao = s;
+        s = getString(dto, "memoriaDificuldades", "dificuldadesMemoria");
+        if (s != null) formData.dificuldadesMemoria = s;
+        s = getString(dto, "memoriaIntervencoes", "intervencoesMemoria");
+        if (s != null) formData.intervencoesMemoria = s;
+        s = getString(dto, "percepcaoDificuldades", "dificuldadesPercepcao");
+        if (s != null) formData.dificuldadesPercepcao = s;
+        s = getString(dto, "percepcaoIntervencoes", "intervencoesPercepcao");
+        if (s != null) formData.intervencoesPercepcao = s;
+        s = getString(dto, "sociabilidadeDificuldades", "dificuldadesSociabilidade");
+        if (s != null) formData.dificuldadesSociabilidade = s;
+        s = getString(dto, "sociabilidadeIntervencoes", "intervencoesSociabilidade");
+        if (s != null) formData.intervencoesSociabilidade = s;
+        s = getString(dto, "avasDificuldades", "dificuldadesAVA");
+        if (s != null) formData.dificuldadesAVA = s;
+        s = getString(dto, "avasIntervencoes", "intervencoesAVA");
+        if (s != null) formData.intervencoesAVA = s;
+        s = getString(dto, "objetivosGerais", "objetivosAEE");
+        if (s != null) formData.objetivosAEE = s;
+        o = getFirst(dto, "apoioAEE", "envAEE");
         formData.envAEE = toSimNao(o);
-        o = dto.get("envPsicologo");
+        o = getFirst(dto, "apoioPsicologo", "envPsicologo");
         formData.envPsicologo = toSimNao(o);
-        o = dto.get("envFisioterapeuta");
+        o = getFirst(dto, "apoioFisioterapeuta", "envFisioterapeuta");
         formData.envFisioterapeuta = toSimNao(o);
-        o = dto.get("envPsicopedagogo");
+        o = getFirst(dto, "apoioPsicopedagogo", "envPsicopedagogo");
         formData.envPsicopedagogo = toSimNao(o);
-        o = dto.get("envTO");
+        o = getFirst(dto, "apoioTO", "envTO");
         formData.envTO = toSimNao(o);
-        o = dto.get("envEducacaoFisica");
+        o = getFirst(dto, "apoioEdFisica", "envEducacaoFisica");
         formData.envEducacaoFisica = toSimNao(o);
-        o = dto.get("envEstimulacaoPrecoce");
+        o = getFirst(dto, "apoioEstimulacaoPrecoce", "envEstimulacaoPrecoce");
         formData.envEstimulacaoPrecoce = toSimNao(o);
     }
 
@@ -782,115 +845,61 @@ public class PAEEController implements Initializable {
         }
     }
 
+    // --- NOVA CLASSE DTO COMPATÍVEL COM O BACKEND SPRING BOOT ---
     public static class CreatePAEEDTO {
+        public String alunoId;
+        public String professorId;
         public String resumoCaso;
-        public String dificuldadesMotoresPsicomotores;
-        public String dificuldadesCognitivo;
-        public String dificuldadesSensorial;
-        public String dificuldadesLinguagemComunicacao;
-        public String dificuldadesFamiliar;
-        public String dificuldadesAfetivoInterpessoais;
-        public String dificuldadesRaciocinioLogicoMatematico;
-        public String dificuldadesAVAs;
-        public String desenvolvimentoMotoresPsicomotoresDificuldades;
-        public String desenvolvimentoMotoresPsicomotoresIntervencoes;
+
+        // Checkboxes Iniciais (Boolean)
+        public Boolean apresentaDificuldadeMotora;
+        public Boolean apresentaDificuldadeCognitiva;
+        public Boolean apresentaDificuldadeSensorial;
+        public Boolean apresentaDificuldadeLinguagem;
+        public Boolean apresentaDificuldadeFamiliar;
+        public Boolean apresentaDificuldadeAfetiva;
+        public Boolean apresentaDificuldadeLogica;
+        public Boolean apresentaDificuldadeAVA;
+
+        // Detalhes (Strings)
+        public String desenvolvimentoMotorDificuldades;
+        public String desenvolvimentoMotorIntervencoes;
+        
         public String comunicacaoLinguagemDificuldades;
         public String comunicacaoLinguagemIntervencoes;
-        public String dificuldadesRaciocinio;
-        public String intervencoesRaciocinio;
-        public String dificuldadesAtencao;
-        public String intervencoesAtencao;
-        public String dificuldadesMemoria;
-        public String intervencoesMemoria;
-        public String dificuldadesPercepcao;
-        public String intervencoesPercepcao;
-        public String dificuldadesSociabilidade;
-        public String intervencoesSociabilidade;
-        public String dificuldadesAVA;
-        public String intervencoesAVA;
-        public String objetivosAEE;
-        public String envAEE;
-        public String envPsicologo;
-        public String envFisioterapeuta;
-        public String envPsicopedagogo;
-        public String envTO;
-        public String envEducacaoFisica;
-        public String envEstimulacaoPrecoce;
-        public String professorId;
-        public String educandoId;
-        public CreatePAEEDTO(String resumoCaso,
-                             String dificuldadesMotoresPsicomotores,
-                             String dificuldadesCognitivo,
-                             String dificuldadesSensorial,
-                             String dificuldadesLinguagemComunicacao,
-                             String dificuldadesFamiliar,
-                             String dificuldadesAfetivoInterpessoais,
-                             String dificuldadesRaciocinioLogicoMatematico,
-                             String dificuldadesAVAs,
-                             String desenvolvimentoMotoresPsicomotoresDificuldades,
-                             String desenvolvimentoMotoresPsicomotoresIntervencoes,
-                             String comunicacaoLinguagemDificuldades,
-                             String comunicacaoLinguagemIntervencoes,
-                             String dificuldadesRaciocinio,
-                             String intervencoesRaciocinio,
-                             String dificuldadesAtencao,
-                             String intervencoesAtencao,
-                             String dificuldadesMemoria,
-                             String intervencoesMemoria,
-                             String dificuldadesPercepcao,
-                             String intervencoesPercepcao,
-                             String dificuldadesSociabilidade,
-                             String intervencoesSociabilidade,
-                             String dificuldadesAVA,
-                             String intervencoesAVA,
-                             String objetivosAEE,
-                             String envAEE,
-                             String envPsicologo,
-                             String envFisioterapeuta,
-                             String envPsicopedagogo,
-                             String envTO,
-                             String envEducacaoFisica,
-                             String envEstimulacaoPrecoce,
-                             String professorId,
-                             String educandoId) {
-            this.resumoCaso = resumoCaso;
-            this.dificuldadesMotoresPsicomotores = dificuldadesMotoresPsicomotores;
-            this.dificuldadesCognitivo = dificuldadesCognitivo;
-            this.dificuldadesSensorial = dificuldadesSensorial;
-            this.dificuldadesLinguagemComunicacao = dificuldadesLinguagemComunicacao;
-            this.dificuldadesFamiliar = dificuldadesFamiliar;
-            this.dificuldadesAfetivoInterpessoais = dificuldadesAfetivoInterpessoais;
-            this.dificuldadesRaciocinioLogicoMatematico = dificuldadesRaciocinioLogicoMatematico;
-            this.dificuldadesAVAs = dificuldadesAVAs;
-            this.desenvolvimentoMotoresPsicomotoresDificuldades = desenvolvimentoMotoresPsicomotoresDificuldades;
-            this.desenvolvimentoMotoresPsicomotoresIntervencoes = desenvolvimentoMotoresPsicomotoresIntervencoes;
-            this.comunicacaoLinguagemDificuldades = comunicacaoLinguagemDificuldades;
-            this.comunicacaoLinguagemIntervencoes = comunicacaoLinguagemIntervencoes;
-            this.dificuldadesRaciocinio = dificuldadesRaciocinio;
-            this.intervencoesRaciocinio = intervencoesRaciocinio;
-            this.dificuldadesAtencao = dificuldadesAtencao;
-            this.intervencoesAtencao = intervencoesAtencao;
-            this.dificuldadesMemoria = dificuldadesMemoria;
-            this.intervencoesMemoria = intervencoesMemoria;
-            this.dificuldadesPercepcao = dificuldadesPercepcao;
-            this.intervencoesPercepcao = intervencoesPercepcao;
-            this.dificuldadesSociabilidade = dificuldadesSociabilidade;
-            this.intervencoesSociabilidade = intervencoesSociabilidade;
-            this.dificuldadesAVA = dificuldadesAVA;
-            this.intervencoesAVA = intervencoesAVA;
-            this.objetivosAEE = objetivosAEE;
-            this.envAEE = envAEE;
-            this.envPsicologo = envPsicologo;
-            this.envFisioterapeuta = envFisioterapeuta;
-            this.envPsicopedagogo = envPsicopedagogo;
-            this.envTO = envTO;
-            this.envEducacaoFisica = envEducacaoFisica;
-            this.envEstimulacaoPrecoce = envEstimulacaoPrecoce;
-            this.professorId = professorId;
-            this.educandoId = educandoId;
-        }
+        
+        public String raciocinioLogicoDificuldades;
+        public String raciocinioLogicoIntervencoes;
+        
+        public String atencaoConcentracaoDificuldades;
+        public String atencaoConcentracaoIntervencoes;
+        
+        public String memoriaDificuldades;
+        public String memoriaIntervencoes;
+        
+        public String percepcaoDificuldades;
+        public String percepcaoIntervencoes;
+        
+        public String sociabilidadeDificuldades;
+        public String sociabilidadeIntervencoes;
+        
+        public String avasDificuldades;
+        public String avasIntervencoes;
+
+        // Final
+        public String objetivosGerais;
+        public Boolean apoioAEE;
+        public Boolean apoioPsicologo;
+        public Boolean apoioFisioterapeuta;
+        public Boolean apoioPsicopedagogo;
+        public Boolean apoioTO;
+        public Boolean apoioEdFisica;
+        public Boolean apoioEstimulacaoPrecoce;
+
+        public CreatePAEEDTO() {}
     }
 
+    // Mantida para preservar o estado do formulário (bindings dos campos de texto)
     public static class PaeeFormData {
         public String resumoCaso;
         public String dificuldadesMotoresPsicomotores;
