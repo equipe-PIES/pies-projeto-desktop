@@ -25,6 +25,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class AnamneseController {
@@ -45,6 +46,8 @@ public class AnamneseController {
     private final AuthService authService = AuthService.getInstance();
     private boolean carregarDadosExistentes = true; // Por padrão carrega dados existentes
     private boolean somenteLeitura = false;
+    @FXML
+    private Button concluirButton;
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
@@ -197,6 +200,11 @@ public class AnamneseController {
         if (!somenteLeitura) return;
         javafx.application.Platform.runLater(() -> {
             disableInputs(anamnese);
+            if (concluirButton != null) {
+                concluirButton.setDisable(true);
+                concluirButton.setVisible(false);
+                concluirButton.setManaged(false);
+            }
         });
     }
 
@@ -226,6 +234,7 @@ public class AnamneseController {
                     }
                     c.setEducando(educando);
                     c.setFormData(formData);
+                    c.setSomenteLeitura(this.somenteLeitura);
                 }
             });
         }

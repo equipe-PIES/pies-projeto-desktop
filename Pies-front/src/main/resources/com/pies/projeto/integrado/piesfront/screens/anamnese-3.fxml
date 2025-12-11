@@ -169,7 +169,7 @@
                                    <HBox alignment="BOTTOM_RIGHT" spacing="20">
                                        <children>
                                            <Button onAction="#handleBackToAnamnese2" prefWidth="200.0" text="Voltar" />
-                                           <Button alignment="CENTER" onAction="#handleConcluirAction" prefWidth="200.0" text="Concluir" />
+                                           <Button fx:id="concluirButton" alignment="CENTER" onAction="#handleConcluirAction" prefWidth="200.0" text="Concluir" />
                                        </children>
                                    </HBox>
          </children>
