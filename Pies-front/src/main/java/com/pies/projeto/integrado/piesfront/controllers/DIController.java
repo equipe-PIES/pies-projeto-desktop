@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 
 public class DIController implements Initializable {
     @FXML private BorderPane anamnese;
+    @FXML private javafx.scene.control.Button concluirButton;
     @FXML private Label indicadorDeTela;
     @FXML private Label validationMsg;
     @FXML private Label nameUser;
@@ -139,8 +140,19 @@ public class DIController implements Initializable {
         detectarEtapa(url);
         atualizarIndicadorDeTela();
         preencherCampos();
+        aplicarSomenteLeitura();
         javafx.application.Platform.runLater(() -> {
             atualizarNomeUsuarioAsync();
+            if (somenteLeitura) {
+                verDiagnostico();
+                // Desabilita apenas o botão concluir da tela 3
+                String path = url != null ? url.getPath() : "";
+                if (path.contains("diagnostico-3.fxml")) {
+                    if (concluirButton != null) concluirButton.setDisable(true);
+                    javafx.scene.control.Button concluirButton1 = (javafx.scene.control.Button) anamnese.lookup("#concluirButton");
+                    if (concluirButton1 != null) concluirButton1.setDisable(true);
+                }
+            }
         });
     }
 
@@ -341,6 +353,18 @@ public class DIController implements Initializable {
                     c.setEducando(educando);
                     c.currentStep = step;
                     c.setFormData(formData);
+                    c.somenteLeitura = this.somenteLeitura;
+                    c.preencherCampos();
+                    // Força o modo somente leitura após o preenchimento dos campos e após o carregamento da tela
+                    javafx.application.Platform.runLater(() -> {
+                        c.aplicarSomenteLeitura();
+                        // Desabilita manualmente todos os campos da página 2 e 3
+                        if (step == 2) {
+                            c.disableInputs(c.anamnese.lookup("#captaDetalhesGravura").getParent());
+                        } else if (step == 3) {
+                            c.disableInputs(c.anamnese.lookup("#usaSanitarioSemAjuda").getParent());
+                        }
+                    });
                 }
             });
         }
@@ -630,6 +654,7 @@ public class DIController implements Initializable {
     public void setSomenteLeitura(boolean sl) {
         this.somenteLeitura = sl;
         aplicarSomenteLeitura();
+        if (concluirButton != null) concluirButton.setDisable(somenteLeitura);
     }
 
     private void aplicarSomenteLeitura() {
@@ -935,5 +960,13 @@ public class DIController implements Initializable {
         public Boolean silabicoAlfabetico;
         public Boolean alfabetico;
         public String observacoes;
+    }
+
+    /**
+     * Ativa o modo de visualização (somente leitura) para o diagnóstico inicial.
+     * Desabilita todos os campos e impede alterações/salvamento.
+     */
+    public void verDiagnostico() {
+        setSomenteLeitura(true);
     }
 }

@@ -25,6 +25,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class PDIController {
+        // ...existing code...
     @FXML
     private BorderPane anamnese;
     @FXML
@@ -109,6 +110,10 @@ public class PDIController {
             this.formData = new PDIFormData();
         }
     }
+
+    // ...existing code...
+
+    // ...existing code...
 
     @FXML
     private void handleTurmasButtonAction(javafx.event.ActionEvent event) {

@@ -59,6 +59,8 @@ public class AuthService {
     private long professoresCacheTs;
     private final java.util.Map<String, java.util.Map<String, Object>> cachedProgresso = new java.util.HashMap<>();
     private final java.util.Map<String, Long> progressoCacheTs = new java.util.HashMap<>();
+    private final java.util.Set<String> progressoRefreshInFlight = java.util.Collections.synchronizedSet(new java.util.HashSet<>());
+    private final java.util.concurrent.ExecutorService background = java.util.concurrent.Executors.newFixedThreadPool(2);
     
     /**
      * Construtor privado para implementar o padrão singleton
@@ -933,7 +935,9 @@ public class AuthService {
     }
 
     private void refreshProgressoAsync(String educandoId) {
-        new Thread(() -> {
+        if (educandoId == null || progressoRefreshInFlight.contains(educandoId)) return;
+        progressoRefreshInFlight.add(educandoId);
+        background.submit(() -> {
             try {
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(BASE_URL + EDUCANDOS_ENDPOINT + "/" + educandoId + "/progresso"))
@@ -949,8 +953,11 @@ public class AuthService {
                     progressoCacheTs.put(educandoId, System.currentTimeMillis());
                     localCache.write("progresso_" + educandoId, map);
                 }
-            } catch (Exception ignored) {}
-        }).start();
+            } catch (Exception ignored) {
+            } finally {
+                progressoRefreshInFlight.remove(educandoId);
+            }
+        });
     }
 
     private int toInt(Object o) {

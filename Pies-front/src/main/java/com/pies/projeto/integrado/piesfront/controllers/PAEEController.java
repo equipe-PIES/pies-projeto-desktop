@@ -364,6 +364,8 @@ public class PAEEController implements Initializable {
                     c.currentStep = step;
                     c.setFormData(formData);
                     c.setEducando(educando);
+                    // Força o preenchimento dos campos da página aberta
+                    c.preencherCamposComFormData();
                 }
             });
         }
@@ -658,12 +660,12 @@ public class PAEEController implements Initializable {
         java.util.Map<String, Object> dto = lista.get(lista.size() - 1);
         System.out.println("DTO recuperado com " + dto.size() + " campos");
         System.out.println("Campos no DTO: " + dto.keySet());
-        System.out.println("Valores:");
+        System.out.println("Valores completos do DTO:");
         dto.forEach((key, value) -> {
             String valorStr = value != null ? value.toString() : "null";
-            if (valorStr.length() > 50) valorStr = valorStr.substring(0, 50) + "...";
             System.out.println("  " + key + " = " + valorStr);
         });
+        System.out.println("--- Fim do log dos dados do PAEE ---");
         Object o;
         o = dto.get("resumoCaso");
         if (o instanceof String s) {

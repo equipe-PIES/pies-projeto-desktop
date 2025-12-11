@@ -16,6 +16,7 @@ public record AnamneseDTO(
     String inicioEscolarizacao,
     String dificuldadesEscolares,
     String apoioPedagogicoEmCasa,
+    String apoioPedagogico,
     String duracaoGestacao,
     String fezPreNatal,
     String prematuridade,

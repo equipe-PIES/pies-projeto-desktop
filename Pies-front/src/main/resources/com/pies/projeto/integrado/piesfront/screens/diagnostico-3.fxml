@@ -154,7 +154,7 @@
                         <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
                         <Button onAction="#handleCancelAction" text="Cancelar" />
                         <Button onAction="#handleBackAction" text="Voltar" />
-                        <Button onAction="#handleConcluirAction" style="-fx-background-color: #bdbdbd;" text="Concluir" />
+                        <Button fx:id="concluirButton" onAction="#handleConcluirAction" style="-fx-background-color: #bdbdbd;" text="Concluir" />
                     </children>
                 </HBox>
 

@@ -124,6 +124,7 @@ public class AnamneseController {
     private void handleGoToAnamnese1() {
         captureCurrentStepData();
         abrir("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese");
+        aplicarSomenteLeitura();
         if (validationMsg != null) {
             validationMsg.setVisible(false);
         }
@@ -134,6 +135,7 @@ public class AnamneseController {
         captureCurrentStepData();
         if (validateAnamnese1()) {
             abrir("/com/pies/projeto/integrado/piesfront/screens/anamnese-2.fxml", "Anamnese");
+            aplicarSomenteLeitura();
         } else {
             showValidation();
         }
@@ -144,6 +146,7 @@ public class AnamneseController {
         captureCurrentStepData();
         if (validateAnamnese2()) {
             abrir("/com/pies/projeto/integrado/piesfront/screens/anamnese-3.fxml", "Anamnese");
+            aplicarSomenteLeitura();
         } else {
             showValidation();
         }
@@ -602,7 +605,8 @@ public class AnamneseController {
         String servicosSaudeOuEducacao = val(formData.servicosFrequentados);
         String inicioEscolarizacao = val(formData.inicioEscolarizacao);
         String dificuldadesEscolares = Boolean.TRUE.equals(formData.apresentaDificuldades) ? val(formData.dificuldades) : null;
-        String apoioPedagogicoEmCasa = Boolean.TRUE.equals(formData.apoioPedagogicoEmCasa) ? val(formData.apoioPedagogico) : null;
+        String apoioPedagogicoEmCasa = tri(formData.apoioPedagogicoEmCasa);
+        String apoioPedagogico = val(formData.apoioPedagogico);
         String duracaoGestacao = val(formData.duracaoGestacao);
         String fezPreNatal = tri(formData.fezPreNatal);
         String prematuridade = Boolean.TRUE.equals(formData.prematuridadeOcorrida) ? val(formData.prematuridade) : null;
@@ -650,6 +654,7 @@ public class AnamneseController {
                 inicioEscolarizacao,
                 dificuldadesEscolares,
                 apoioPedagogicoEmCasa,
+                apoioPedagogico,
                 duracaoGestacao,
                 fezPreNatal,
                 prematuridade,
