@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="cadastroProf" prefHeight="880.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CadastroProfController">
+<BorderPane fx:id="cadastroProf" prefHeight="880.0" prefWidth="1220.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.CadastroProfController">
 
     <!-- TOPO -->
     <top>
@@ -47,10 +40,10 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" text="Início" />
-                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
-                        <Button id="professoresButton" fx:id="professoresButton" onAction="#handleProfessoresButtonAction" text="Professores" />
-                        <Button id="alunosButton" fx:id="alunosButton" onAction="#handleAlunosButtonAction" text="Alunos" />
+                        <Button id="inicioButton" fx:id="inicioButton" onAction="#handleInicioButtonAction" styleClass="botao-topo" text="Início" />
+                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" styleClass="botao-topo" text="Turmas" />
+                        <Button id="professoresButton" fx:id="professoresButton" onAction="#handleProfessoresButtonAction" styleClass="botao-topo" text="Professores" />
+                        <Button id="alunosButton" fx:id="alunosButton" onAction="#handleAlunosButtonAction" styleClass="botao-topo" text="Alunos" />
                     </children>
                 </HBox>
             </children>
@@ -66,102 +59,120 @@
             <children>
                 <HBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
                     <children>
-                        <VBox style="-fx-border-color: #ddd;" HBox.hgrow="ALWAYS">
-                            <children>
-                                <Label text="Dados do Professor(a)">
-                                    <VBox.margin>
-                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                                    </VBox.margin>
-                                </Label>
-                                <Label text="Nome do professor(a):">
-                                    <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" right="20.0" />
-                                    </VBox.margin>
-                                </Label>
-                                <TextField fx:id="nomeProf" promptText="Nome do Professor(a)">
-                                    <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" right="20.0" />
-                                    </VBox.margin>
-                                </TextField>
-                                <Label text="CPF:">
-                                    <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" />
-                                    </VBox.margin>
-                                </Label>
-                                <TextField fx:id="cpfProf" promptText="000.000.000.-00">
-                                    <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" right="20.0" />
-                                    </VBox.margin>
-                                </TextField>
-                                <Label text="Data de Nascimento:">
-                                    <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" />
-                                    </VBox.margin>
-                                </Label>
-                                <DatePicker fx:id="dtNascProf" prefWidth="200.0" promptText="--/--/----">
-                                    <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" right="20.0" />
-                                    </VBox.margin>
-                                </DatePicker>
-                                <Label text="Gênero:">
-                                    <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" />
-                                    </VBox.margin>
-                                </Label>
-                                <ChoiceBox fx:id="generoProf" prefWidth="200.0">
-                                    <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" right="20.0" />
-                                    </VBox.margin>
-                                </ChoiceBox>
-                                <Label text="Observações:">
-                                    <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" right="20.0" />
-                                    </VBox.margin>
-                                </Label>
-                                <TextArea fx:id="obsProf" promptText="Guarde suas observações sobre o(a) Professoro(a) aqui. ">
-                                    <VBox.margin>
-                                        <Insets bottom="4.0" left="20.0" right="20.0" />
-                                    </VBox.margin>
-                                </TextArea>
-                            </children>
-                        </VBox>
+                  <VBox HBox.hgrow="ALWAYS">
+                     <children>
+                              <VBox spacing="8.0" style="-fx-border-color: #ddd; -fx-border-radius: 5;" VBox.vgrow="ALWAYS">
+                                  <children>
+                                      <Label text="Dados do Professor(a)">
+                                          <VBox.margin>
+                                              <Insets />
+                                          </VBox.margin>
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                                      </Label>
+                                      <Label text="Nome do professor(a):">
+                                          <VBox.margin>
+                                              <Insets />
+                                          </VBox.margin>
+                                      </Label>
+                                      <TextField fx:id="nomeProf" promptText="Nome do Professor(a)" styleClass="campo-digite-selecione">
+                                          <VBox.margin>
+                                              <Insets />
+                                          </VBox.margin>
+                                      </TextField>
+                                      <Label text="CPF:">
+                                          <VBox.margin>
+                                              <Insets />
+                                          </VBox.margin>
+                                      </Label>
+                                      <TextField fx:id="cpfProf" promptText="000.000.000.-00" styleClass="campo-digite-selecione">
+                                          <VBox.margin>
+                                              <Insets />
+                                          </VBox.margin>
+                                      </TextField>
+                                      <Label text="Data de Nascimento:">
+                                          <VBox.margin>
+                                              <Insets />
+                                          </VBox.margin>
+                                      </Label>
+                                      <DatePicker fx:id="dtNascProf" prefWidth="200.0" promptText="--/--/----" styleClass="campo-digite-selecione">
+                                          <VBox.margin>
+                                              <Insets />
+                                          </VBox.margin>
+                                      </DatePicker>
+                                      <Label text="Gênero:">
+                                          <VBox.margin>
+                                              <Insets />
+                                          </VBox.margin>
+                                      </Label>
+                                      <ChoiceBox fx:id="generoProf" prefWidth="200.0" styleClass="campo-digite-selecione">
+                                          <VBox.margin>
+                                              <Insets />
+                                          </VBox.margin>
+                                      </ChoiceBox>
+                                      <Label text="Observações:">
+                                          <VBox.margin>
+                                              <Insets />
+                                          </VBox.margin>
+                                      </Label>
+                                      <TextArea fx:id="obsProf" promptText="Guarde suas observações sobre o(a) Professoro(a) aqui. " styleClass="campo-digite-selecione">
+                                          <VBox.margin>
+                                              <Insets />
+                                          </VBox.margin>
+                                      </TextArea>
+                                  </children>
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                              </VBox>
+                        <HBox alignment="BOTTOM_LEFT" VBox.vgrow="ALWAYS">
+                           <children>
+                                        <Button fx:id="cancelCadastroBt" mnemonicParsing="false" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Cancelar" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
                         <VBox prefHeight="1024.0" spacing="20.0">
                             <children>
-                                <VBox style="-fx-border-color: #ddd;" VBox.vgrow="ALWAYS">
+                                <VBox spacing="8.0" style="-fx-border-color: #ddd; -fx-border-radius: 5;" VBox.vgrow="ALWAYS">
                                     <children>
                                         <Label text="Dados do Login">
                                             <VBox.margin>
-                                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                                <Insets />
                                             </VBox.margin>
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
                                         </Label>
                                         <Label text="E-mail:">
                                             <VBox.margin>
-                                                <Insets bottom="4.0" left="20.0" right="20.0" />
+                                                <Insets />
                                             </VBox.margin>
                                         </Label>
-                                        <TextField fx:id="emailProf" promptText="professor@gmail.com">
+                                        <TextField fx:id="emailProf" promptText="professor@gmail.com" styleClass="campo-digite-selecione">
                                             <VBox.margin>
-                                                <Insets bottom="4.0" left="20.0" right="20.0" />
+                                                <Insets />
                                             </VBox.margin>
                                         </TextField>
                                         <Label text="Senha:">
                                             <VBox.margin>
-                                                <Insets bottom="4.0" left="20.0" right="20.0" />
+                                                <Insets />
                                             </VBox.margin>
                                         </Label>
-                                        <PasswordField fx:id="passwordProf" promptText="Senha">
+                                        <PasswordField fx:id="passwordProf" promptText="Senha" styleClass="campo-digite-selecione">
                                             <VBox.margin>
-                                                <Insets bottom="4.0" left="20.0" right="20.0" />
+                                                <Insets />
                                             </VBox.margin>
                                         </PasswordField>
                                         <Label text="Confirmar Senha:">
                                             <VBox.margin>
-                                                <Insets bottom="4.0" left="20.0" right="20.0" />
+                                                <Insets />
                                             </VBox.margin>
                                         </Label>
-                                        <PasswordField fx:id="confirmPasswordProf" promptText="Confirmar Senha">
+                                        <PasswordField fx:id="confirmPasswordProf" promptText="Confirmar Senha" styleClass="campo-digite-selecione">
                                             <VBox.margin>
-                                                <Insets bottom="4.0" left="20.0" right="20.0" />
+                                                <Insets />
                                             </VBox.margin>
                                         </PasswordField>
                                         <Label fx:id="erroEscolhaSenha" alignment="CENTER_RIGHT" prefHeight="21.0" prefWidth="411.0" textFill="#ff3333">
@@ -171,12 +182,14 @@
                                         </Label>
                                         <Region prefHeight="25.0" prefWidth="433.0" />
                                     </children>
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
                                 </VBox>
-                                <HBox alignment="CENTER" spacing="20.0">
+                                <HBox alignment="BOTTOM_RIGHT" spacing="20.0" VBox.vgrow="ALWAYS">
                                     <children>
-                                        <Button fx:id="cancelCadastroBt" mnemonicParsing="false" prefWidth="220.0" text="Cancelar" />
                                         <Region prefHeight="31.0" prefWidth="13.0" />
-                                        <Button fx:id="cadastroProfBt" mnemonicParsing="false" prefWidth="220.0" text="Cadastrar Professor(a)" />
+                                        <Button fx:id="cadastroProfBt" mnemonicParsing="false" prefWidth="220.0" styleClass="botao-concluir" text="Cadastrar Professor(a)" />
                                     </children>
                                 </HBox>
                             </children>
