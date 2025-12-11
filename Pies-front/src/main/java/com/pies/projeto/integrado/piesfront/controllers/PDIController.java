@@ -25,7 +25,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class PDIController {
-        // ...existing code...
     @FXML
     private BorderPane anamnese;
     @FXML
@@ -63,28 +62,8 @@ public class PDIController {
     private int currentStep = 1;
     private final AuthService authService = AuthService.getInstance();
     private PDIFormData formData = new PDIFormData();
-    // private boolean modoNovo = false;
-
-    // public void setEducando(EducandoDTO educando) {
-    //     this.educando = educando;
-    //     // Se já foi inicializado E formData está vazio, carrega agora
-    //     if (anamnese != null && formData.periodoPlanoAEE == null && !modoNovo) {
-    //         carregarPdiExistente();
-    //         preencherCamposComFormData();
-    //     }
-    // }
-
-    // /**
-    //  * Define que o controller está em modo de novo cadastro.
-    //  * Neste modo, não carrega dados existentes.
-    //  */
-    // public void setModoNovo() {
-    //     this.modoNovo = true;
-    //     this.formData = new PDIFormData(); // Limpa os dados
     private boolean novoRegistro = false;
     private boolean somenteLeitura = false;
-
-    
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
@@ -95,6 +74,10 @@ public class PDIController {
             this.formData = new PDIFormData();
         }
         preencherCamposComFormData();
+        // Aplica o modo somente leitura após carregar os dados
+        if (somenteLeitura) {
+            aplicarModoSomenteLeitura();
+        }
     }
 
     public void setFormData(PDIFormData data) {
@@ -111,9 +94,14 @@ public class PDIController {
         }
     }
 
-    // ...existing code...
-
-    // ...existing code...
+    /**
+     * Método para ativar o modo de visualização somente leitura
+     * Deve ser chamado antes de carregar a tela quando for apenas para ver o PDI
+     */
+    public void ativarModoVisualizacao() {
+        this.somenteLeitura = true;
+        this.novoRegistro = false;
+    }
 
     @FXML
     private void handleTurmasButtonAction(javafx.event.ActionEvent event) {
@@ -211,11 +199,13 @@ public class PDIController {
 
     @FXML
     private void handleConcluirAction() {
-        captureCurrentStepData();
+        // Verifica se está no modo de visualização
         if (somenteLeitura) {
-            showValidation("Modo de visualização");
+            showValidation("Modo de visualização - Ação não permitida");
             return;
         }
+        
+        captureCurrentStepData();
         if (educando == null || educando.id() == null) {
             showValidation("Educando inválido.");
             return;
@@ -250,7 +240,7 @@ public class PDIController {
             );
             boolean ok = authService.criarPDI(dto);
             if (ok) {
-                com.pies.projeto.integrado.piesfront.services.AtendimentoFlowService.getInstance().concluirPDI(educando.id());
+                AtendimentoFlowService.getInstance().concluirPDI(educando.id());
                 NotificacaoController.agendar("PDI registrado com sucesso!", true);
                 handleCancelAction();
             } else {
@@ -266,12 +256,14 @@ public class PDIController {
     private void abrir(String resource, String titulo, int step) {
         if (anamnese != null) {
             boolean novoAtual = this.novoRegistro;
+            boolean leituraAtual = this.somenteLeitura;
             Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, titulo, controller -> {
                 if (controller instanceof PDIController c) {
                     c.setNovoRegistro(novoAtual);
                     c.setEducando(educando);
                     c.currentStep = step;
                     c.setFormData(formData);
+                    c.setSomenteLeitura(leituraAtual);
                 }
             });
         }
@@ -289,13 +281,21 @@ public class PDIController {
         System.out.println("Educando: " + (educando != null ? educando.nome() : "null"));
         System.out.println("FormData.periodoPlanoAEE: " + formData.periodoPlanoAEE);
         System.out.println("FormData.potencialidades: " + formData.potencialidades);
-        // Se o educando já foi definido E o formData está vazio (primeira abertura)
+        System.out.println("Modo somente leitura: " + somenteLeitura);
+        System.out.println("Current step: " + currentStep);
+        
         if (educando != null && formData.periodoPlanoAEE == null) {
             System.out.println("Carregando PDI do backend...");
             carregarPdiExistente();
         }
-        // Sempre preenche os campos com o formData (seja recém carregado ou de navegação entre telas)
+        
         preencherCamposComFormData();
+        
+        if (somenteLeitura) {
+            System.out.println("Aplicando modo somente leitura...");
+            aplicarModoSomenteLeitura();
+        }
+        
         javafx.application.Platform.runLater(() -> {
             atualizarNomeUsuarioAsync();
         });
@@ -314,27 +314,143 @@ public class PDIController {
 
     public void setSomenteLeitura(boolean sl) {
         this.somenteLeitura = sl;
-        aplicarSomenteLeitura();
+        if (sl) {
+            aplicarModoSomenteLeitura();
+        }
     }
 
-    private void aplicarSomenteLeitura() {
-        if (!somenteLeitura) return;
-        javafx.application.Platform.runLater(() -> {
-            disableInputs(anamnese);
-        });
+    private void aplicarModoSomenteLeitura() {
+        if (anamnese == null) return;
+        
+        System.out.println("Aplicando modo somente leitura para step " + currentStep);
+        
+        javafx.scene.control.Button concluirButton = (javafx.scene.control.Button) anamnese.lookup("#concluirButton");
+        if (concluirButton != null) {
+            concluirButton.setDisable(true);
+            concluirButton.setVisible(false);
+            concluirButton.setManaged(false);
+        }
+        
+        disableInputs(anamnese);
+        desabilitarCamposPorStep();
+    }
+
+    public void verPDI() {
+        setSomenteLeitura(true);
     }
 
     private void disableInputs(javafx.scene.Parent root) {
         if (root == null) return;
+        
+        System.out.println("Desabilitando inputs para: " + root.getClass().getSimpleName());
+        
+        // Percorre todos os nós da hierarquia
         for (javafx.scene.Node node : root.getChildrenUnmodifiable()) {
             if (node instanceof javafx.scene.control.TextInputControl tic) {
                 tic.setEditable(false);
-            } else if (node instanceof javafx.scene.control.CheckBox cb) {
+                tic.setStyle("-fx-background-color: #f0f0f0; -fx-text-fill: #666;");
+                System.out.println("Desabilitado TextInputControl: " + tic.getId());
+            } else if (node instanceof javafx.scene.control.ComboBox<?> cb) {
                 cb.setDisable(true);
+                cb.setStyle("-fx-opacity: 1; -fx-background-color: #f0f0f0;");
+                System.out.println("Desabilitado ComboBox: " + cb.getId());
             } else if (node instanceof javafx.scene.control.ChoiceBox<?> ch) {
                 ch.setDisable(true);
+                ch.setStyle("-fx-opacity: 1; -fx-background-color: #f0f0f0;");
+                System.out.println("Desabilitado ChoiceBox: " + ch.getId());
+            } else if (node instanceof javafx.scene.control.Button btn) {
+                // Mantém habilitados apenas:
+                // 1. Botões de navegação (cancelar, voltar)
+                // 2. Botões de etapas (pdi1Button, pdi2Button, etc)
+                String btnId = btn.getId();
+                if (btnId != null) {
+                    // Botões que devem permanecer habilitados
+                    boolean manterHabilitado = 
+                        btnId.equals("cancelarButton") || 
+                        btnId.equals("voltarButton") ||
+                        btnId.equals("pdi1Button") || 
+                        btnId.equals("pdi2Button") ||
+                        btnId.equals("pdi3Button") || 
+                        btnId.equals("pdi4Button") ||
+                        btnId.equals("seguinteButton") || // Botão "Seguinte" das telas intermediárias
+                        btnId.equals("turmasButton") ||
+                        btnId.equals("alunosButton") ||
+                        btnId.equals("sairButton");
+                    
+                    if (!manterHabilitado) {
+                        btn.setDisable(true);
+                        btn.setStyle("-fx-opacity: 0.5;");
+                        System.out.println("Desabilitado botão: " + btnId);
+                    } else {
+                        System.out.println("Mantido habilitado botão: " + btnId);
+                    }
+                }
             } else if (node instanceof javafx.scene.Parent p) {
                 disableInputs(p);
+            }
+        }
+    }
+
+    private void desabilitarCamposPorStep() {
+        // Desabilita campos específicos baseados no currentStep
+        
+        if (currentStep == 1) {
+            // Campos da tela 1
+            if (periodoPlano != null) {
+                periodoPlano.setEditable(false);
+                periodoPlano.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (horarioAtendimento != null) {
+                horarioAtendimento.setEditable(false);
+                horarioAtendimento.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (objetivosPlano != null) {
+                objetivosPlano.setEditable(false);
+                objetivosPlano.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (frequenciaSemana != null) frequenciaSemana.setDisable(true);
+            if (diasSemana != null) diasSemana.setDisable(true);
+            if (composicaoGrupo != null) composicaoGrupo.setDisable(true);
+        } 
+        else if (currentStep == 2) {
+            // Campos da tela 2
+            if (potencialidadesTextArea != null) {
+                potencialidadesTextArea.setEditable(false);
+                potencialidadesTextArea.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (necessidadesTextArea != null) {
+                necessidadesTextArea.setEditable(false);
+                necessidadesTextArea.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (habilidadesTextArea != null) {
+                habilidadesTextArea.setEditable(false);
+                habilidadesTextArea.setStyle("-fx-background-color: #f0f0f0;");
+            }
+        } 
+        else if (currentStep == 3) {
+            // Campos da tela 3
+            if (atividadesTextArea != null) {
+                atividadesTextArea.setEditable(false);
+                atividadesTextArea.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (recursosMateriaisTextArea != null) {
+                recursosMateriaisTextArea.setEditable(false);
+                recursosMateriaisTextArea.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (recursosAdequacaoTextArea != null) {
+                recursosAdequacaoTextArea.setEditable(false);
+                recursosAdequacaoTextArea.setStyle("-fx-background-color: #f0f0f0;");
+            }
+        } 
+        else if (currentStep == 4) {
+            // Campos da tela 4
+            if (recursosProduzidosTextArea != null) {
+                recursosProduzidosTextArea.setEditable(false);
+                recursosProduzidosTextArea.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (parceriasTextArea != null) {
+                parceriasTextArea.setEditable(false);
+                parceriasTextArea.setStyle("-fx-background-color: #f0f0f0;");
             }
         }
     }
@@ -384,15 +500,6 @@ public class PDIController {
     }
 
     private boolean canStartPDI() {
-        // if (educando == null) return false;
-        // // Verifica no backend se existe anamnese cadastrada
-        // try {
-        //     com.pies.projeto.integrado.piesfront.dto.AnamneseDTO anamnese = authService.getAnamnesePorEducando(educando.id());
-        //     return anamnese != null;
-        // } catch (Exception e) {
-        //     System.err.println("Erro ao verificar anamnese: " + e.getMessage());
-        //     return false;
-        // }
         if (educando == null || educando.id() == null) return false;
         var a = authService.getAnamnesePorEducando(educando.id());
         return a != null;
@@ -415,7 +522,8 @@ public class PDIController {
     private void atualizarIndicadorDeTela() {
         if (indicadorDeTela == null) return;
         String nome = educando != null ? educando.nome() : "Aluno(a)";
-        indicadorDeTela.setText("PDI (Plano de Desenvolvimento Individual) do aluno(a) " + nome);
+        String modo = somenteLeitura ? " - Modo Visualização" : "";
+        indicadorDeTela.setText("PDI (Plano de Desenvolvimento Individual) do aluno(a) " + nome + modo);
     }
 
     private void captureCurrentStepData() {
@@ -606,6 +714,7 @@ public class PDIController {
         public String recursosMateriaisASeremProduzidos;
         public String parceriasNecessarias;
     }
+    
     private void atualizarNomeUsuarioAsync() {
         Thread t = new Thread(() -> {
             ProfessorDTO prof = authService.getProfessorLogado();
