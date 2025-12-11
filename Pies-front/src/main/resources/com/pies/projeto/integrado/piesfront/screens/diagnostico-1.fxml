@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.*?>
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.DIController">
+<BorderPane fx:id="anamnese" prefHeight="880.0" prefWidth="1220.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.DIController">
 
     <!-- TOPO -->
     <top>
@@ -37,12 +34,13 @@
 
                 <Region HBox.hgrow="ALWAYS" />
 
-                <HBox alignment="CENTER_RIGHT" spacing="15.0">
-                    <children>
-                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
-                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
-                    </children>
-                </HBox>
+               <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                  <children>
+                     <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" styleClass="botao-topo" text="Turmas" />
+                     <Button id="alunosButton" fx:id="alunosButton" styleClass="botao-topo" text="Alunos" />
+                     <Button id="relatoriosButton" fx:id="relatoriosButton" styleClass="botao-topo" text="Relatórios" />
+                  </children>
+               </HBox>
             </children>
         </HBox>
     </top>
@@ -150,15 +148,22 @@
                   <Insets bottom="20" left="20" right="20" top="20" />
                </padding>
             </VBox>
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
 
 
                 <!-- BOTÕES -->
-                <HBox alignment="CENTER_RIGHT" spacing="20">
+                <HBox alignment="CENTER_RIGHT" spacing="20" VBox.vgrow="ALWAYS">
                     <children>
-                        <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
-                        <Button onAction="#handleCancelAction" text="Cancelar" />
-                        <Button onAction="#handleGoToDI2" style="-fx-background-color: #bdbdbd;" text="Seguinte" />
+                  <HBox alignment="BOTTOM_LEFT" HBox.hgrow="ALWAYS">
+                     <children>
+                              <Button onAction="#handleCancelAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Cancelar" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="BOTTOM_RIGHT">
+                     <children>
+                              <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
+                              <Button onAction="#handleGoToDI2" prefWidth="220.0" styleClass="botao-seguinte" text="Seguinte" />
+                     </children>
+                  </HBox>
                     </children>
                 </HBox>
 

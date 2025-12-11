@@ -34,8 +34,8 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
-                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" text="Turmas" />
-                        <Button id="alunosButton" fx:id="alunosButton" text="Alunos" />
+                        <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" styleClass="botao-topo" text="Turmas" />
+                        <Button id="alunosButton" fx:id="alunosButton" styleClass="botao-topo" text="Alunos" />
                     </children>
                 </HBox>
             </children>
@@ -73,10 +73,10 @@
                                       <TextField fx:id="cidadeNascimento" promptText="Digite" />
 
                                       <Label text="Maternidade em que nasceu" />
-                                      <TextField fx:id="maternidade" promptText="Digite" />
+                                      <TextField fx:id="maternidade" promptText="Digite" styleClass="campo-digite-selecione" />
 
                                       <Label text="Tipo de parto" />
-                              <ChoiceBox fx:id="tipoParto" prefWidth="200.0" />
+                              <ChoiceBox fx:id="tipoParto" prefWidth="200.0" styleClass="campo-digite-selecione" />
                                   </children>
                               </VBox>
 
@@ -140,7 +140,7 @@
                               </VBox>
                            <HBox alignment="BOTTOM_LEFT" VBox.vgrow="ALWAYS">
                               <children>
-                                    <Button onAction="#handleCancelAction" prefWidth="200.0" text="Cancelar" />
+                                    <Button onAction="#handleCancelAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Cancelar" />
                               </children>
                            </HBox>
       </children>
@@ -174,7 +174,7 @@
                                  </children>
                               </HBox>
                               <Label fx:id="lblSustentouCabecaMeses" text="Com quantos meses?" />
-                                     <TextField fx:id="sustentouCabeca" promptText="Digite" />
+                                     <TextField fx:id="sustentouCabeca" promptText="Digite" styleClass="campo-digite-selecione" />
       
                                      <Label text="Engatinhou?" />
                               <HBox>
@@ -188,7 +188,7 @@
                                  </children>
                               </HBox>
                               <Label fx:id="lblEngatinhouMeses" text="Com quantos meses?" />
-                                     <TextField fx:id="engatinhou" promptText="Digite" />
+                                     <TextField fx:id="engatinhou" promptText="Digite" styleClass="campo-digite-selecione" />
       
                                      <Label text="Sentou?" />
                               <HBox>
@@ -202,7 +202,7 @@
                                  </children>
                               </HBox>
                               <Label fx:id="lblSentouMeses" text="Com quantos meses?" />
-                                     <TextField fx:id="sentou" promptText="Digite" />
+                                     <TextField fx:id="sentou" promptText="Digite" styleClass="campo-digite-selecione" />
       
                                      <Label text="Andou? " />
                               <HBox>
@@ -216,7 +216,7 @@
                                  </children>
                               </HBox>
                               <Label fx:id="lblAndouMeses" text="Com quantos meses?" />
-                                     <TextField fx:id="andou" promptText="Digite" />
+                                     <TextField fx:id="andou" promptText="Digite" styleClass="campo-digite-selecione" />
       
                                      <Label text="Precisou de terapia? " />
                               <HBox>
@@ -230,10 +230,10 @@
                                  </children>
                               </HBox>
                               <Label fx:id="lblTerapiaMotivo" text="Qual o motivo?" />
-                                     <TextField fx:id="terapia" promptText="Digite" />
+                                     <TextField fx:id="terapia" promptText="Digite" styleClass="campo-digite-selecione" />
       
                                      <Label text="Falou?" />
-                              <HBox prefHeight="0.0">
+                              <HBox>
                                  <children>
                                     <CheckBox fx:id="falouSim" mnemonicParsing="false" text="Sim" />
                                     <CheckBox fx:id="falouNao" mnemonicParsing="false" text="Não">
@@ -244,7 +244,7 @@
                                  </children>
                               </HBox>
                               <Label fx:id="lblFalouMeses" text="Com quantos meses?" />
-                                     <TextField fx:id="falou" promptText="Digite" />
+                                     <TextField fx:id="falou" promptText="Digite" styleClass="campo-digite-selecione" />
                                  </children>
       
                              </VBox>
@@ -254,8 +254,8 @@
                             <HBox alignment="CENTER_RIGHT" spacing="20">
                                 <children>
                                     <Label fx:id="validationMsg" textFill="#e74c3c" visible="false">Algum campo está em branco. Preencha para prosseguir.</Label>
-                                    <Button onAction="#handleGoToAnamnese1" prefWidth="200.0" text="Voltar" />
-                                    <Button onAction="#handleGoToAnamnese3" prefWidth="200.0" text="Seguinte" />
+                                    <Button onAction="#handleGoToAnamnese1" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Voltar" />
+                                    <Button onAction="#handleGoToAnamnese3" prefWidth="220.0" styleClass="botao-seguinte" text="Seguinte" />
                                 </children>
                             </HBox>
                         </children>

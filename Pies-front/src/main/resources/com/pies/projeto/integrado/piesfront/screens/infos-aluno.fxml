@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.*?>
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox prefWidth="500.0" spacing="10" style="-fx-background-color: #ffffff; -fx-border-color: #c0c0c0; -fx-border-radius: 8; -fx-background-radius: 8;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.InfosAlunoController">
+<VBox prefWidth="500.0" spacing="10" style="-fx-background-color: #ffffff; -fx-border-color: #c0c0c0; -fx-border-radius: 8; -fx-background-radius: 8;" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pies.projeto.integrado.piesfront.controllers.InfosAlunoController">
   <children>
     <Label style="-fx-font-weight: bold; -fx-font-size: 24px;" text="Informações do Aluno">
          <font>
@@ -102,7 +100,7 @@
 
     <HBox alignment="CENTER_RIGHT" spacing="10">
       <children>
-        <Button fx:id="closeButton" onAction="#handleCloseAction" prefWidth="220.0" text="Fechar" />
+        <Button fx:id="closeButton" onAction="#handleCloseAction" prefWidth="220.0" styleClass="botao-cancelar-voltar-sair" text="Fechar" />
       </children>
     </HBox>
   </children>
