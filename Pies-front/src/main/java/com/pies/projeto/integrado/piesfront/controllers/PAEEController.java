@@ -1,4 +1,5 @@
 package com.pies.projeto.integrado.piesfront.controllers;
+
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.UserInfoDTO;
 import com.pies.projeto.integrado.piesfront.dto.ProfessorDTO;
@@ -101,7 +102,6 @@ public class PAEEController implements Initializable {
     private EducandoDTO educando;
     private final AuthService authService = AuthService.getInstance();
     private PaeeFormData formData = new PaeeFormData();
-    // private boolean modoNovo = false;
     private boolean novoRegistro = false;
     private boolean somenteLeitura = false;
 
@@ -117,6 +117,10 @@ public class PAEEController implements Initializable {
             carregarPaeeExistente();
             System.out.println("PAEE carregado. resumoCaso: " + (formData.resumoCaso != null ? formData.resumoCaso.substring(0, Math.min(50, formData.resumoCaso.length())) + "..." : "null"));
         }
+        // Aplica o modo somente leitura após carregar os dados
+        if (somenteLeitura) {
+            aplicarModoSomenteLeitura();
+        }
         // Força o preenchimento dos campos após garantir que o formData está correto
         javafx.application.Platform.runLater(() -> {
             System.out.println("=== Preenchendo campos via Platform.runLater ===");
@@ -124,15 +128,6 @@ public class PAEEController implements Initializable {
         });
         System.out.println("=== Fim setEducando ===");
     }
-
-    /**
-     * Define que o controller está em modo de novo cadastro.
-     * Neste modo, não carrega dados existentes.
-     */
-    // public void setModoNovo() {
-    //     this.modoNovo = true;
-    //     this.formData = new PaeeFormData(); // Limpa os dados
-    // }
 
     public void setFormData(PaeeFormData data) {
         System.out.println("=== setFormData ===");
@@ -153,6 +148,15 @@ public class PAEEController implements Initializable {
         }
     }
 
+    /**
+     * Método para ativar o modo de visualização somente leitura
+     * Deve ser chamado antes de carregar a tela quando for apenas para ver o PAEE
+     */
+    public void ativarModoVisualizacao() {
+        this.somenteLeitura = true;
+        this.novoRegistro = false;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (validationMsg != null) {
@@ -163,6 +167,11 @@ public class PAEEController implements Initializable {
         detectarEtapa(url);
         atualizarIndicadorDeTela();
         preencherCamposComFormData();
+        // Aplica o modo somente leitura se estiver ativo
+        if (somenteLeitura) {
+            System.out.println("Aplicando modo somente leitura...");
+            aplicarModoSomenteLeitura();
+        }
         javafx.application.Platform.runLater(() -> {
             atualizarNomeUsuarioAsync();
         });
@@ -267,12 +276,14 @@ public class PAEEController implements Initializable {
 
     @FXML
     private void handleConcluirAction() {
-        System.out.println("=== handleConcluirAction PAEE ===");
-        captureCurrentStepData();
+        // Verifica se está no modo de visualização
         if (somenteLeitura) {
-            showValidation("Modo de visualização");
+            showValidation("Modo de visualização - Ação não permitida");
             return;
         }
+        
+        System.out.println("=== handleConcluirAction PAEE ===");
+        captureCurrentStepData();
         if (educando == null || educando.id() == null) {
             System.err.println("Educando inválido!");
             showValidation("Educando inválido.");
@@ -358,12 +369,14 @@ public class PAEEController implements Initializable {
         System.out.println("FormData.desenvolvimentoMotoresPsicomotoresDificuldades: " + (formData.desenvolvimentoMotoresPsicomotoresDificuldades != null ? "presente" : "null"));
         if (anamnese != null) {
             boolean novoAtual = this.novoRegistro;
+            boolean leituraAtual = this.somenteLeitura;
             Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, "PAEE", controller -> {
                 if (controller instanceof PAEEController c) {
                     c.setNovoRegistro(novoAtual);
                     c.currentStep = step;
                     c.setFormData(formData);
                     c.setEducando(educando);
+                    c.setSomenteLeitura(leituraAtual); // Passa o estado de somente leitura
                     // Força o preenchimento dos campos da página aberta
                     c.preencherCamposComFormData();
                 }
@@ -391,7 +404,8 @@ public class PAEEController implements Initializable {
     private void atualizarIndicadorDeTela() {
         if (indicadorDeTela == null) return;
         String nome = educando != null ? educando.nome() : "Aluno(a)";
-        indicadorDeTela.setText("PAEE (Plano de Atendimento Educacional Especializado) do aluno(a) " + nome);
+        String modo = somenteLeitura ? " - Modo Visualização" : "";
+        indicadorDeTela.setText("PAEE (Plano de Atendimento Educacional Especializado) do aluno(a) " + nome + modo);
     }
 
     private void inicializarChoiceBoxesSimNao() {
@@ -646,104 +660,39 @@ public class PAEEController implements Initializable {
     }
 
     private void carregarPaeeExistente() {
-        System.out.println("=== carregarPaeeExistente ===");
-        if (educando == null || educando.id() == null) {
-            System.out.println("Educando null ou sem ID, abortando");
-            return;
-        }
-        java.util.List<java.util.Map<String, Object>> lista = authService.getPaeesPorEducandoRaw(educando.id());
-        System.out.println("Lista de PAEEs retornada: " + (lista != null ? lista.size() + " registros" : "null"));
-        if (lista == null || lista.isEmpty()) {
-            System.out.println("Nenhum PAEE encontrado");
-            return;
-        }
-        java.util.Map<String, Object> dto = lista.get(lista.size() - 1);
-        System.out.println("DTO recuperado com " + dto.size() + " campos");
-        System.out.println("Campos no DTO: " + dto.keySet());
-        System.out.println("Valores completos do DTO:");
-        dto.forEach((key, value) -> {
-            String valorStr = value != null ? value.toString() : "null";
-            System.out.println("  " + key + " = " + valorStr);
-        });
-        System.out.println("--- Fim do log dos dados do PAEE ---");
-        Object o;
-        o = dto.get("resumoCaso");
-        if (o instanceof String s) {
-            formData.resumoCaso = s;
-            System.out.println("resumoCaso carregado: " + s.substring(0, Math.min(50, s.length())) + "...");
-        }
-        o = dto.get("dificuldadesMotoresPsicomotores");
-        if (o instanceof String s) formData.dificuldadesMotoresPsicomotores = toSimNao(s);
-        o = dto.get("dificuldadesCognitivo");
-        if (o instanceof String s) formData.dificuldadesCognitivo = toSimNao(s);
-        o = dto.get("dificuldadesSensorial");
-        if (o instanceof String s) formData.dificuldadesSensorial = toSimNao(s);
-        o = dto.get("dificuldadesLinguagemComunicacao");
-        if (o instanceof String s) formData.dificuldadesLinguagemComunicacao = toSimNao(s);
-        o = dto.get("dificuldadesFamiliar");
-        if (o instanceof String s) formData.dificuldadesFamiliar = toSimNao(s);
-        o = dto.get("dificuldadesAfetivoInterpessoais");
-        if (o instanceof String s) formData.dificuldadesAfetivoInterpessoais = toSimNao(s);
-        o = dto.get("dificuldadesRaciocinioLogicoMatematico");
-        if (o instanceof String s) formData.dificuldadesRaciocinioLogicoMatematico = toSimNao(s);
-        o = dto.get("dificuldadesAVAs");
-        if (o instanceof String s) formData.dificuldadesAVAs = toSimNao(s);
-        o = dto.get("desenvolvimentoMotoresPsicomotoresDificuldades");
-        if (o instanceof String s) {
-            formData.desenvolvimentoMotoresPsicomotoresDificuldades = s;
-            System.out.println("desenvolvimentoMotoresPsicomotoresDificuldades carregado: " + s.length() + " chars");
-        }
-        o = dto.get("desenvolvimentoMotoresPsicomotoresIntervencoes");
-        if (o instanceof String s) {
-            formData.desenvolvimentoMotoresPsicomotoresIntervencoes = s;
-            System.out.println("desenvolvimentoMotoresPsicomotoresIntervencoes carregado: " + s.length() + " chars");
-        }
-        o = dto.get("comunicacaoLinguagemDificuldades");
-        if (o instanceof String s) formData.comunicacaoLinguagemDificuldades = s;
-        o = dto.get("comunicacaoLinguagemIntervencoes");
-        if (o instanceof String s) formData.comunicacaoLinguagemIntervencoes = s;
-        o = dto.get("dificuldadesRaciocinio");
-        if (o instanceof String s) formData.dificuldadesRaciocinio = s;
-        o = dto.get("intervencoesRaciocinio");
-        if (o instanceof String s) formData.intervencoesRaciocinio = s;
-        o = dto.get("dificuldadesAtencao");
-        if (o instanceof String s) formData.dificuldadesAtencao = s;
-        o = dto.get("intervencoesAtencao");
-        if (o instanceof String s) formData.intervencoesAtencao = s;
-        o = dto.get("dificuldadesMemoria");
-        if (o instanceof String s) formData.dificuldadesMemoria = s;
-        o = dto.get("intervencoesMemoria");
-        if (o instanceof String s) formData.intervencoesMemoria = s;
-        o = dto.get("dificuldadesPercepcao");
-        if (o instanceof String s) formData.dificuldadesPercepcao = s;
-        o = dto.get("intervencoesPercepcao");
-        if (o instanceof String s) formData.intervencoesPercepcao = s;
-        o = dto.get("dificuldadesSociabilidade");
-        if (o instanceof String s) formData.dificuldadesSociabilidade = s;
-        o = dto.get("intervencoesSociabilidade");
-        if (o instanceof String s) formData.intervencoesSociabilidade = s;
-        o = dto.get("dificuldadesAVA");
-        if (o instanceof String s) formData.dificuldadesAVA = s;
-        o = dto.get("intervencoesAVA");
-        if (o instanceof String s) formData.intervencoesAVA = s;
-        o = dto.get("objetivosAEE");
-        if (o instanceof String s) formData.objetivosAEE = s;
-        o = dto.get("envAEE");
-        formData.envAEE = toSimNao(o);
-        o = dto.get("envPsicologo");
-        formData.envPsicologo = toSimNao(o);
-        o = dto.get("envFisioterapeuta");
-        formData.envFisioterapeuta = toSimNao(o);
-        o = dto.get("envPsicopedagogo");
-        formData.envPsicopedagogo = toSimNao(o);
-        o = dto.get("envTO");
-        formData.envTO = toSimNao(o);
-        o = dto.get("envEducacaoFisica");
-        formData.envEducacaoFisica = toSimNao(o);
-        o = dto.get("envEstimulacaoPrecoce");
-        formData.envEstimulacaoPrecoce = toSimNao(o);
+    System.out.println("=== carregarPaeeExistente ===");
+    if (educando == null || educando.id() == null) {
+        System.out.println("Educando null ou sem ID, abortando");
+        return;
     }
-
+    java.util.List<java.util.Map<String, Object>> lista = authService.getPaeesPorEducandoRaw(educando.id());
+    System.out.println("Lista de PAEEs retornada: " + (lista != null ? lista.size() + " registros" : "null"));
+    if (lista == null || lista.isEmpty()) {
+        System.out.println("Nenhum PAEE encontrado");
+        return;
+    }
+    java.util.Map<String, Object> dto = lista.get(lista.size() - 1);
+    System.out.println("DTO recuperado com " + dto.size() + " campos");
+    
+    // LOG DETALHADO: Mostra TODOS os campos e valores retornados
+    System.out.println("=== CAMPOS RETORNADOS DO BACKEND ===");
+    dto.forEach((key, value) -> {
+        String valorStr = value != null ? value.toString() : "null";
+        System.out.println(String.format("  %-40s = %s", key, 
+            valorStr.length() > 100 ? valorStr.substring(0, 100) + "..." : valorStr));
+    });
+    System.out.println("=== FIM CAMPOS RETORNADOS ===");
+    
+    // Carrega TODOS os campos do PAEE de uma vez
+//    carregarTodosOsCamposDoDTO(dto); 
+    
+    System.out.println("=== Fim carregarPaeeExistente ===");
+    System.out.println("FormData após carregamento:");
+    System.out.println("  resumoCaso: " + (formData.resumoCaso != null ? "presente" : "null"));
+    System.out.println("  desenvolvimentoMotoresPsicomotoresDificuldades: " + (formData.desenvolvimentoMotoresPsicomotoresDificuldades != null ? "presente" : "null"));
+    System.out.println("  dificuldadesRaciocinio: " + (formData.dificuldadesRaciocinio != null ? "presente" : "null"));
+    System.out.println("  objetivosAEE: " + (formData.objetivosAEE != null ? "presente" : "null"));
+}
     private void showValidation(String msg) {
         if (validationMsg != null) {
             validationMsg.setText(msg);
@@ -757,28 +706,192 @@ public class PAEEController implements Initializable {
 
     public void setSomenteLeitura(boolean sl) {
         this.somenteLeitura = sl;
-        aplicarSomenteLeitura();
+        if (sl) {
+            aplicarModoSomenteLeitura();
+        }
     }
 
-    private void aplicarSomenteLeitura() {
-        if (!somenteLeitura) return;
-        javafx.application.Platform.runLater(() -> {
-            disableInputs(anamnese);
-        });
+    private void aplicarModoSomenteLeitura() {
+        if (anamnese == null) return;
+        
+        System.out.println("Aplicando modo somente leitura para PAEE step " + currentStep);
+        
+        // Desabilita/remove o botão Concluir
+        javafx.scene.control.Button concluirButton = (javafx.scene.control.Button) anamnese.lookup("#concluirButton");
+        if (concluirButton != null) {
+            concluirButton.setDisable(true);
+            concluirButton.setVisible(false);
+            concluirButton.setManaged(false);
+        }
+        
+        // Aplica a desabilitação em todos os campos
+        disableInputs(anamnese);
+        
+        // Desabilita campos específicos baseados no currentStep
+        desabilitarCamposPorStep();
+    }
+
+    public void verPAEE() {
+        setSomenteLeitura(true);
     }
 
     private void disableInputs(javafx.scene.Parent root) {
         if (root == null) return;
+        
+        System.out.println("Desabilitando inputs para PAEE: " + root.getClass().getSimpleName());
+        
+        // Percorre todos os nós da hierarquia
         for (javafx.scene.Node node : root.getChildrenUnmodifiable()) {
             if (node instanceof javafx.scene.control.TextInputControl tic) {
                 tic.setEditable(false);
-            } else if (node instanceof javafx.scene.control.CheckBox cb) {
+                tic.setStyle("-fx-background-color: #f0f0f0; -fx-text-fill: #666;");
+                System.out.println("Desabilitado TextInputControl: " + tic.getId());
+            } else if (node instanceof javafx.scene.control.ComboBox<?> cb) {
                 cb.setDisable(true);
+                cb.setStyle("-fx-opacity: 1; -fx-background-color: #f0f0f0;");
+                System.out.println("Desabilitado ComboBox: " + cb.getId());
             } else if (node instanceof javafx.scene.control.ChoiceBox<?> ch) {
                 ch.setDisable(true);
+                ch.setStyle("-fx-opacity: 1; -fx-background-color: #f0f0f0;");
+                System.out.println("Desabilitado ChoiceBox: " + ch.getId());
+            } else if (node instanceof javafx.scene.control.Button btn) {
+                // Mantém habilitados apenas:
+                // 1. Botões de navegação (cancelar, voltar)
+                // 2. Botões de etapas
+                // 3. Botões de navegação geral
+                String btnId = btn.getId();
+                if (btnId != null) {
+                    // Botões que devem permanecer habilitados
+                    boolean manterHabilitado = 
+                        btnId.equals("cancelarButton") || 
+                        btnId.equals("voltarButton") ||
+                        btnId.equals("seguinteButton") || // Botão "Seguinte" das telas intermediárias
+                        btnId.equals("turmasButton") ||
+                        btnId.equals("alunosButton") ||
+                        btnId.equals("sairButton") ||
+                        btnId.contains("paee"); // Botões específicos do PAEE
+                    
+                    if (!manterHabilitado) {
+                        btn.setDisable(true);
+                        btn.setStyle("-fx-opacity: 0.5;");
+                        System.out.println("Desabilitado botão: " + btnId);
+                    } else {
+                        System.out.println("Mantido habilitado botão: " + btnId);
+                    }
+                }
             } else if (node instanceof javafx.scene.Parent p) {
                 disableInputs(p);
             }
+        }
+    }
+
+    private void desabilitarCamposPorStep() {
+        // Desabilita campos específicos baseados no currentStep
+        
+        if (currentStep == 1) {
+            // Campos da tela 1
+            if (resumoCaso != null) {
+                resumoCaso.setEditable(false);
+                resumoCaso.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (dificuldadesMotoresPsicomotoresCb != null) dificuldadesMotoresPsicomotoresCb.setDisable(true);
+            if (dificuldadesCognitivoCb != null) dificuldadesCognitivoCb.setDisable(true);
+            if (dificuldadesSensorialCb != null) dificuldadesSensorialCb.setDisable(true);
+            if (dificuldadesLinguagemComunicacaoCb != null) dificuldadesLinguagemComunicacaoCb.setDisable(true);
+            if (dificuldadesFamiliarCb != null) dificuldadesFamiliarCb.setDisable(true);
+            if (dificuldadesAfetivoInterpessoaisCb != null) dificuldadesAfetivoInterpessoaisCb.setDisable(true);
+            if (dificuldadesRaciocinioLogicoMatematicoCb != null) dificuldadesRaciocinioLogicoMatematicoCb.setDisable(true);
+            if (dificuldadesAVAsCb != null) dificuldadesAVAsCb.setDisable(true);
+        } 
+        else if (currentStep == 2) {
+            // Campos da tela 2
+            if (desenvolvimentoMotoresPsicomotoresDificuldadesTa != null) {
+                desenvolvimentoMotoresPsicomotoresDificuldadesTa.setEditable(false);
+                desenvolvimentoMotoresPsicomotoresDificuldadesTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (desenvolvimentoMotoresPsicomotoresIntervencoesTa != null) {
+                desenvolvimentoMotoresPsicomotoresIntervencoesTa.setEditable(false);
+                desenvolvimentoMotoresPsicomotoresIntervencoesTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (comunicacaoLinguagemDificuldadesTa != null) {
+                comunicacaoLinguagemDificuldadesTa.setEditable(false);
+                comunicacaoLinguagemDificuldadesTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (comunicacaoLinguagemIntervencoesTa != null) {
+                comunicacaoLinguagemIntervencoesTa.setEditable(false);
+                comunicacaoLinguagemIntervencoesTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+        } 
+        else if (currentStep == 3) {
+            // Campos da tela 3
+            if (dificuldadesRaciocinioTa != null) {
+                dificuldadesRaciocinioTa.setEditable(false);
+                dificuldadesRaciocinioTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (intervencoesRaciocinioTa != null) {
+                intervencoesRaciocinioTa.setEditable(false);
+                intervencoesRaciocinioTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (dificuldadesAtencaoTa != null) {
+                dificuldadesAtencaoTa.setEditable(false);
+                dificuldadesAtencaoTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (intervencoesAtencaoTa != null) {
+                intervencoesAtencaoTa.setEditable(false);
+                intervencoesAtencaoTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+        } 
+        else if (currentStep == 4) {
+            // Campos da tela 4
+            if (dificuldadesMemoriaTa != null) {
+                dificuldadesMemoriaTa.setEditable(false);
+                dificuldadesMemoriaTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (intervencoesMemoriaTa != null) {
+                intervencoesMemoriaTa.setEditable(false);
+                intervencoesMemoriaTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (dificuldadesPercepcaoTa != null) {
+                dificuldadesPercepcaoTa.setEditable(false);
+                dificuldadesPercepcaoTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (intervencoesPercepcaoTa != null) {
+                intervencoesPercepcaoTa.setEditable(false);
+                intervencoesPercepcaoTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+        } 
+        else if (currentStep == 5) {
+            // Campos da tela 5
+            if (dificuldadesSociabilidadeTa != null) {
+                dificuldadesSociabilidadeTa.setEditable(false);
+                dificuldadesSociabilidadeTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (intervencoesSociabilidadeTa != null) {
+                intervencoesSociabilidadeTa.setEditable(false);
+                intervencoesSociabilidadeTa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (dificuldadesAVATa != null) {
+                dificuldadesAVATa.setEditable(false);
+                dificuldadesAVATa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (intervencoesAVATa != null) {
+                intervencoesAVATa.setEditable(false);
+                intervencoesAVATa.setStyle("-fx-background-color: #f0f0f0;");
+            }
+        } 
+        else if (currentStep == 6) {
+            // Campos da tela 6
+            if (objetivosPlano != null) {
+                objetivosPlano.setEditable(false);
+                objetivosPlano.setStyle("-fx-background-color: #f0f0f0;");
+            }
+            if (cbAEE != null) cbAEE.setDisable(true);
+            if (cbPsicologo != null) cbPsicologo.setDisable(true);
+            if (cbFisioterapeuta != null) cbFisioterapeuta.setDisable(true);
+            if (cbPsicopedagogo != null) cbPsicopedagogo.setDisable(true);
+            if (cbTO != null) cbTO.setDisable(true);
+            if (cbEducacaoFisica != null) cbEducacaoFisica.setDisable(true);
+            if (cbEstimulacaoPrecoce != null) cbEstimulacaoPrecoce.setDisable(true);
         }
     }
 

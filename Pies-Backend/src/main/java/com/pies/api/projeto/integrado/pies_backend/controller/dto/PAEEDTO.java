@@ -90,6 +90,106 @@ public class PAEEDTO {
     private String comunicacaoLinguagemIntervencoes;
 
     /**
+     * Raciocínio - Dificuldades.
+     */
+    private String dificuldadesRaciocinio;
+
+    /**
+     * Raciocínio - Intervenções.
+     */
+    private String intervencoesRaciocinio;
+
+    /**
+     * Atenção - Dificuldades.
+     */
+    private String dificuldadesAtencao;
+
+    /**
+     * Atenção - Intervenções.
+     */
+    private String intervencoesAtencao;
+
+    /**
+     * Memória - Dificuldades.
+     */
+    private String dificuldadesMemoria;
+
+    /**
+     * Memória - Intervenções.
+     */
+    private String intervencoesMemoria;
+
+    /**
+     * Percepção - Dificuldades.
+     */
+    private String dificuldadesPercepcao;
+
+    /**
+     * Percepção - Intervenções.
+     */
+    private String intervencoesPercepcao;
+
+    /**
+     * Sociabilidade - Dificuldades.
+     */
+    private String dificuldadesSociabilidade;
+
+    /**
+     * Sociabilidade - Intervenções.
+     */
+    private String intervencoesSociabilidade;
+
+    /**
+     * AVA - Dificuldades.
+     */
+    private String dificuldadesAVA;
+
+    /**
+     * AVA - Intervenções.
+     */
+    private String intervencoesAVA;
+
+    /**
+     * Objetivos AEE.
+     */
+    private String objetivosAEE;
+
+    /**
+     * Encaminhamento AEE.
+     */
+    private String envAEE;
+
+    /**
+     * Encaminhamento Psicólogo.
+     */
+    private String envPsicologo;
+
+    /**
+     * Encaminhamento Fisioterapeuta.
+     */
+    private String envFisioterapeuta;
+
+    /**
+     * Encaminhamento Psicopedagogo.
+     */
+    private String envPsicopedagogo;
+
+    /**
+     * Encaminhamento TO (Terapeuta Ocupacional).
+     */
+    private String envTO;
+
+    /**
+     * Encaminhamento Educação Física.
+     */
+    private String envEducacaoFisica;
+
+    /**
+     * Encaminhamento Estimulação Precoce.
+     */
+    private String envEstimulacaoPrecoce;
+
+    /**
      * ID do professor responsável.
      */
     private String professorId;
@@ -110,4 +210,3 @@ public class PAEEDTO {
      */
     private String educandoNome;
 }
-
