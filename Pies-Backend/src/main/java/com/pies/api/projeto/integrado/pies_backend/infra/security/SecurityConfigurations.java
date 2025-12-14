@@ -47,6 +47,7 @@ public class SecurityConfigurations {
                         //.requestMatchers(HttpMethod.POST, "/api/educandos/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/diagnosticos-iniciais/**").permitAll()
                         .requestMatchers("/api/pdis/**").hasAnyRole("COORDENADOR", "ADMIN", "PROFESSOR")
+                        .requestMatchers("/api/paee/**").hasAnyRole("COORDENADOR", "ADMIN", "PROFESSOR")
                         .requestMatchers("/api/paees/**").hasAnyRole("COORDENADOR", "ADMIN", "PROFESSOR")
                         .requestMatchers("/api/relatorios-individuais/**").hasAnyRole("COORDENADOR", "ADMIN", "PROFESSOR")
                         .requestMatchers("/coordenador/**").hasRole("COORDENADOR")

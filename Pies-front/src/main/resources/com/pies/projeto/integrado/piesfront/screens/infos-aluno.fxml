@@ -72,8 +72,8 @@
         <Label text="Turno:" GridPane.columnIndex="0" GridPane.rowIndex="17" />
         <Label fx:id="turnoLabel" GridPane.columnIndex="1" GridPane.rowIndex="17" />
 
-        <Label text="Horário AEE:" GridPane.columnIndex="0" GridPane.rowIndex="18" />
-        <Label fx:id="horarioAtendimentoLabel" GridPane.columnIndex="1" GridPane.rowIndex="18" />
+        <!-- <Label text="Horário AEE:" GridPane.columnIndex="0" GridPane.rowIndex="18" /> -->
+        <!-- <Label fx:id="horarioAtendimentoLabel" GridPane.columnIndex="1" GridPane.rowIndex="18" /> -->
       </children>
          <rowConstraints>
             <RowConstraints />

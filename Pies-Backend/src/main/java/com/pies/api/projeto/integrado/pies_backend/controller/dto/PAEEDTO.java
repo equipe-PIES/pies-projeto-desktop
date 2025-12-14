@@ -1,92 +1,45 @@
 package com.pies.api.projeto.integrado.pies_backend.controller.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
-/**
- * DTO (Data Transfer Object) para transferência de dados do PAEE.
- * 
- * Esta classe é usada para enviar e receber dados do PAEE através da API REST,
- * separando a camada de apresentação da camada de persistência.
- * 
- * Inclui informações do educando relacionado para facilitar a visualização
- * na interface do usuário.
- */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class PAEEDTO {
-    
-    /**
-     * Identificador único do PAEE.
-     * Gerado automaticamente pelo sistema.
-     */
+    // Campos de metadados
     private String id;
-
-    /**
-     * Resumo de caso do educando.
-     */
+    private String alunoId;
+    private LocalDateTime dataCriacao;
+    
+    // --- Campos de Dados (Cópia do CreatePAEEDTO) ---
+    
     private String resumoCaso;
+    
+    // Checkboxes
+    private Boolean apresentaDificuldadeMotora;
+    private Boolean apresentaDificuldadeCognitiva;
+    private Boolean apresentaDificuldadeSensorial;
+    private Boolean apresentaDificuldadeLinguagem;
+    private Boolean apresentaDificuldadeFamiliar;
+    private Boolean apresentaDificuldadeAfetiva;
+    private Boolean apresentaDificuldadeLogica;
+    private Boolean apresentaDificuldadeAVA;
 
-    /**
-     * Dificuldades apresentadas - Motores/Psicomotores.
-     */
-    private String dificuldadesMotoresPsicomotores;
-
-    /**
-     * Dificuldades apresentadas - Cognitivo.
-     */
-    private String dificuldadesCognitivo;
-
-    /**
-     * Dificuldades apresentadas - Sensorial.
-     */
-    private String dificuldadesSensorial;
-
-    /**
-     * Dificuldades apresentadas - Linguagem oral/Comunicação.
-     */
-    private String dificuldadesLinguagemComunicacao;
-
-    /**
-     * Dificuldades apresentadas - Familiar.
-     */
-    private String dificuldadesFamiliar;
-
-    /**
-     * Dificuldades apresentadas - Afetivo/Interpessoais.
-     */
-    private String dificuldadesAfetivoInterpessoais;
-
-    /**
-     * Dificuldades apresentadas - Raciocínio Lógico/Matemático.
-     */
-    private String dificuldadesRaciocinioLogicoMatematico;
-
-    /**
-     * Dificuldades apresentadas - AVAs.
-     */
-    private String dificuldadesAVAs;
-
-    /**
-     * Desenvolvimento Motores/Psicomotores - Dificuldades.
-     */
-    private String desenvolvimentoMotoresPsicomotoresDificuldades;
-
-    /**
-     * Desenvolvimento Motores/Psicomotores - Intervenções.
-     */
-    private String desenvolvimentoMotoresPsicomotoresIntervencoes;
-
-    /**
-     * Comunicação e Linguagem - Dificuldades.
-     */
+    // Detalhes
+    private String memoriaDificuldades;
+    private String memoriaIntervencoes;
+    private String percepcaoDificuldades;
+    private String percepcaoIntervencoes;
+    private String raciocinioLogicoDificuldades;
+    private String raciocinioLogicoIntervencoes;
+    private String atencaoConcentracaoDificuldades;
+    private String atencaoConcentracaoIntervencoes;
+    private String sociabilidadeDificuldades;
+    private String sociabilidadeIntervencoes;
+    private String avasDificuldades;
+    private String avasIntervencoes;
+    private String desenvolvimentoMotorDificuldades;
+    private String desenvolvimentoMotorIntervencoes;
     private String comunicacaoLinguagemDificuldades;
-
-    /**
-     * Comunicação e Linguagem - Intervenções.
-     */
     private String comunicacaoLinguagemIntervencoes;
 
     /**
@@ -209,4 +162,15 @@ public class PAEEDTO {
      * Incluído para facilitar a visualização na interface.
      */
     private String educandoNome;
+
+    // Final
+    private String objetivosGerais;
+    private Boolean apoioAEE;
+    private Boolean apoioPsicologo;
+    private Boolean apoioFisioterapeuta;
+    private Boolean apoioPsicopedagogo;
+    private Boolean apoioTO;
+    private Boolean apoioEdFisica;
+    private Boolean apoioEstimulacaoPrecoce;
+
 }

@@ -75,8 +75,8 @@ public class InfosAlunoController implements Initializable {
     @FXML
     private Label turnoLabel;
     
-    @FXML
-    private Label horarioAtendimentoLabel;
+    // @FXML
+    // private Label horarioAtendimentoLabel;
     
     @FXML
     private Button closeButton;
@@ -232,9 +232,9 @@ public class InfosAlunoController implements Initializable {
             if (turnoLabel != null) turnoLabel.setText("Não informado");
         }
         
-        if (horarioAtendimentoLabel != null) {
-            horarioAtendimentoLabel.setText("Não informado");
-        }
+        // if (horarioAtendimentoLabel != null) {
+        //     horarioAtendimentoLabel.setText("Não informado");
+        // }
     }
     
     /**
