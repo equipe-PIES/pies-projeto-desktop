@@ -1,5 +1,6 @@
 package com.pies.projeto.integrado.piesfront.controllers;
 
+import javafx.application.Platform;
 import com.pies.projeto.integrado.piesfront.dto.EducandoDTO;
 import com.pies.projeto.integrado.piesfront.dto.AnamneseDTO;
 import com.pies.projeto.integrado.piesfront.dto.AnamneseRequestDTO;
@@ -51,18 +52,125 @@ public class AnamneseController {
 
     public void setEducando(EducandoDTO educando) {
         this.educando = educando;
+        // Se NÃO estamos no modo novo E existe anamnese, carregue os dados
         if (carregarDadosExistentes) {
             carregarAnamneseExistente();
-        }
-        if (!isFormDataVazio()) {
-            populateFromFormData();
+            if (!isFormDataVazio()) {
+                populateFromFormData();
+            }
+        } else {
+            // Modo novo - garantir limpeza completa
+            formData = new AnamneseRequestDTO();
+            temDadosExistentes = false;
+            // Limpar os campos na interface
+            limparTodosOsCampos();
         }
     }
-    
+
     public void setModoNovo() {
         this.carregarDadosExistentes = false;
         this.formData = new AnamneseRequestDTO(); // Limpa os dados
+        this.temDadosExistentes = false; // Importante: definir como false
+        // Se a interface já foi inicializada, limpar todos os campos
+        javafx.application.Platform.runLater(() -> {
+            limparTodosOsCampos();
+        });
     }
+
+    private void limparTodosOsCampos() {
+    // Lista de todas as CheckBox para limpar
+    CheckBox[] todasCheckBox = {
+        convulsaoSim, convulsaoNao,
+        convenioSim, convenioNao,
+        vacinacaoSim, vacinacaoNao,
+        doencaContagiosaSim, doencaContagiosaNao,
+        medicacaoSim, medicacaoNao,
+        dificuldadesSim, dificuldadesNao,
+        apoioPedagogicoSim, apoioPedagogicoNao,
+        preNatalSim, preNatalNao,
+        prematuridadeSim, prematuridadeNao,
+        chorouSim, chorouNao,
+        ficouRoxoSim, ficouRoxoNao,
+        incubadoraSim, incubadoraNao,
+        amamentadoSim, amamentadoNao,
+        sustentouCabecaSim, sustentouCabecaNao,
+        engatinhouSim, engatinhouNao,
+        sentouSim, sentouNao,
+        andouSim, andouNao,
+        terapiaSim, terapiaNao,
+        falouSim, falouNao,
+        disturbioSim, disturbioNao
+    };
+    
+    for (CheckBox cb : todasCheckBox) {
+        if (cb != null) {
+            cb.setSelected(false);
+        }
+    }
+    
+    // Lista de todos os TextField para limpar
+    TextField[] todosTextField = {
+        convenio, doencaContagiosa, medicacoes,
+        servicosFrequentados1, servicos,
+        inicioEscolarizacao, dificuldades, apoioPedagogico,
+        duracaoGestacao1, prematuridade1,
+        cidadeNascimento, maternidade,
+        sustentouCabeca, engatinhou, sentou, andou,
+        terapia, falou,
+        primeiraPalavra, primeiraFrase, disturbio
+    };
+    
+    for (TextField tf : todosTextField) {
+        if (tf != null) {
+            tf.setText("");
+        }
+    }
+    
+    // Lista de todos os ChoiceBox para limpar
+
+    @SuppressWarnings("rawtypes")
+    ChoiceBox[] todosChoiceBox = {
+        tipoParto, balbucio, tipoFala,
+        dormeSozinho, temQuarto, sono,
+        respeitaRegras, desmotivado, agressivo, inquietacao
+    };
+
+    for (ChoiceBox cb : todosChoiceBox) {
+        if (cb != null) {
+            cb.setValue(null);
+        }
+    }
+    
+    // Esconder campos condicionais
+    Node[][] camposCondicionais = {
+        {questConvenio, convenio},
+        {questDoencaContagiosa, doencaContagiosa},
+        {questMedicacao, medicacoes},
+        {questDificuldade, dificuldades},
+        {questApioPedagogico, apoioPedagogico},
+        {questCausaPrematuridade1, prematuridade1},
+        {lblSustentouCabecaMeses, sustentouCabeca},
+        {lblEngatinhouMeses, engatinhou},
+        {lblSentouMeses, sentou},
+        {lblAndouMeses, andou},
+        {lblTerapiaMotivo, terapia},
+        {lblFalouMeses, falou},
+        {questDisturbio, disturbio}
+    };
+    
+    for (Node[] grupo : camposCondicionais) {
+        toggle(false, grupo);
+    }
+    
+    // Limpar mensagem de validação
+    if (validationMsg != null) {
+        validationMsg.setVisible(false);
+    }
+    
+    // Resetar o formData interno
+    formData = new AnamneseRequestDTO();
+    temDadosExistentes = false;
+}
 
     public void setSomenteLeitura(boolean sl) {
         this.somenteLeitura = sl;
@@ -229,10 +337,10 @@ public class AnamneseController {
             boolean carregarAtual = this.carregarDadosExistentes;
             Janelas.carregarTela(new javafx.event.ActionEvent(anamnese, null), resource, titulo, controller -> {
                 if (controller instanceof AnamneseController c) {
+                    c.setEducando(educando);
                     if (!carregarAtual) {
                         c.setModoNovo();
                     }
-                    c.setEducando(educando);
                     c.setFormData(formData);
                     c.setSomenteLeitura(this.somenteLeitura);
                 }

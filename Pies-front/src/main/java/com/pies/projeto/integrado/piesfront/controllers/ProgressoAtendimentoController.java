@@ -135,10 +135,26 @@ public class ProgressoAtendimentoController implements Initializable {
     }
 
     private void atualizarUIComResultados(boolean a, boolean di, boolean pdi, boolean paee, boolean ri) {
-        if (statusAnamnese != null) { statusAnamnese.setText(a ? "Novo" : "Iniciar"); statusAnamnese.setDisable(false); }
-        if (statusDI != null) { statusDI.setText(di ? "Novo" : "Iniciar"); statusDI.setDisable(!a); }
-        if (statusPDI != null) { statusPDI.setText(pdi ? "Novo" : "Iniciar"); statusPDI.setDisable(!a); }
-        if (statusPAEE != null) { statusPAEE.setText(paee ? "Novo" : "Iniciar"); statusPAEE.setDisable(!a); }
+        // Atualiza os textos dos botões principais
+        // "Novo" quando já existe documento, "Iniciar" quando é o primeiro
+        if (statusAnamnese != null) { 
+            statusAnamnese.setText(a ? "Novo" : "Iniciar"); 
+            statusAnamnese.setDisable(false); 
+        }
+        if (statusDI != null) { 
+            statusDI.setText(di ? "Novo" : "Iniciar"); 
+            statusDI.setDisable(!a); // DI só habilitado se já tiver anamnese
+        }
+        if (statusPDI != null) { 
+            statusPDI.setText(pdi ? "Novo" : "Iniciar"); 
+            statusPDI.setDisable(!a); // PDI só habilitado se já tiver anamnese
+        }
+        if (statusPAEE != null) { 
+            statusPAEE.setText(paee ? "Novo" : "Iniciar"); 
+            statusPAEE.setDisable(!a); // PAEE só habilitado se já tiver anamnese
+        }
+        
+        // Atualiza botões de ação (editar, ver, excluir)
         if (editarAnamnese != null) { editarAnamnese.setVisible(true); editarAnamnese.setManaged(true); editarAnamnese.setDisable(!a); }
         if (verAnamnese != null) { verAnamnese.setVisible(true); verAnamnese.setManaged(true); verAnamnese.setDisable(!a); }
         if (excluirAnamnese != null) { excluirAnamnese.setVisible(true); excluirAnamnese.setManaged(true); excluirAnamnese.setDisable(!a); }
@@ -202,10 +218,8 @@ public class ProgressoAtendimentoController implements Initializable {
             return;
         }
         System.out.println("Educando: " + educando.nome() + " (ID: " + educando.id() + ")");
-        // Verifica se já existe anamnese - se não existir, abre em modo novo
-        var anamnese = authService.getAnamnesePorEducando(educando.id());
-        boolean carregar = anamnese != null;
-        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese", carregar);
+        // SEMPRE abrir em modo NOVO (campos vazios) para criar nova anamnese
+        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/anamnese-1.fxml", "Anamnese", false);
     }
     
     /**
@@ -240,17 +254,16 @@ public class ProgressoAtendimentoController implements Initializable {
             return;
         }
         System.out.println("Educando: " + educando.nome() + " (ID: " + educando.id() + ")");
-        // Verifica se já existe DI - se não existir, abre em modo novo
-        var di = authService.getDiagnosticoInicialPorEducandoRaw(educando.id());
-        boolean carregar = di != null;
-        if (!carregar) {
-            var anamnese = authService.getAnamnesePorEducando(educando.id());
-            if (anamnese == null) {
-                NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Para iniciar o Diagnóstico Inicial, faça a Anamnese antes.", false);
-                return;
-            }
+        
+        // Verifica se já existe anamnese antes
+        var anamnese = authService.getAnamnesePorEducando(educando.id());
+        if (anamnese == null) {
+            NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Para iniciar o Diagnóstico Inicial, faça a Anamnese antes.", false);
+            return;
         }
-        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/diagnostico-1.fxml", "Diagnóstico Inicial", carregar);
+        
+        // SEMPRE abrir em modo NOVO (campos vazios) para criar novo diagnóstico
+        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/diagnostico-1.fxml", "Diagnóstico Inicial", false);
     }
 
     @FXML
@@ -267,7 +280,8 @@ public class ProgressoAtendimentoController implements Initializable {
         if (educando == null) {
             return;
         }
-        navegarNoStagePai("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI");
+        // Botão Editar sempre carrega dados existentes
+        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI", true);
     }
 
     @FXML
@@ -284,14 +298,21 @@ public class ProgressoAtendimentoController implements Initializable {
      */
     @FXML
     private void handleStatusPDIAction() {
+        System.out.println("=== handleStatusPDIAction chamado ===");
         if (educando == null) {
+            System.err.println("Educando é null!");
             return;
         }
+        System.out.println("Educando: " + educando.nome() + " (ID: " + educando.id() + ")");
+        
+        // Verifica se já existe anamnese antes
         var anamnese = authService.getAnamnesePorEducando(educando.id());
         if (anamnese == null) {
             NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Para iniciar o PDI, faça a Anamnese antes.", false);
             return;
         }
+        
+        // SEMPRE abrir em modo NOVO (campos vazios) para criar novo PDI
         navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/pdi-1.fxml", "PDI", false);
     }
     
@@ -306,17 +327,16 @@ public class ProgressoAtendimentoController implements Initializable {
             return;
         }
         System.out.println("Educando: " + educando.nome() + " (ID: " + educando.id() + ")");
-        // Verifica se já existe PAEE - se não existir, abre em modo novo
-        var paees = authService.getPaeesPorEducandoRaw(educando.id());
-        boolean carregar = paees != null && !paees.isEmpty();
-        if (!carregar) {
-            var anamnese = authService.getAnamnesePorEducando(educando.id());
-            if (anamnese == null) {
-                NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Para iniciar o PAEE, faça a Anamnese antes.", false);
-                return;
-            }
+        
+        // Verifica se já existe anamnese antes
+        var anamnese = authService.getAnamnesePorEducando(educando.id());
+        if (anamnese == null) {
+            NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Para iniciar o PAEE, faça a Anamnese antes.", false);
+            return;
         }
-        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE", carregar);
+        
+        // SEMPRE abrir em modo NOVO (campos vazios) para criar novo PAEE
+        navegarNoStagePaiComModo("/com/pies/projeto/integrado/piesfront/screens/paee-1.fxml", "PAEE", false);
     }
     
     /**
@@ -534,11 +554,12 @@ public class ProgressoAtendimentoController implements Initializable {
         Janelas.carregarTela(new ActionEvent(sourceNode, null), resource, titulo, controller -> {
             if (controller instanceof AnamneseController c) {
                 System.out.println("Controller é AnamneseController, setando educando...");
+                c.setEducando(educando);
                 if (!carregarDadosExistentes) {
+                    System.out.println("Configurando modo NOVO (campos vazios) para anamnese");
                     c.setModoNovo();
                 }
                 c.setSomenteLeitura(somenteLeitura);
-                c.setEducando(educando);
             } else if (controller instanceof PDIController c) {
                 System.out.println("Controller é PDIController, setando educando...");
                 c.setNovoRegistro(!carregarDadosExistentes);
@@ -670,8 +691,6 @@ public class ProgressoAtendimentoController implements Initializable {
         }));
     }
 
-    
-
     @FXML
     private void handleIniciarRelatorioIndividualAction() {
         if (educando == null) {
@@ -682,7 +701,7 @@ public class ProgressoAtendimentoController implements Initializable {
             NotificacaoController.exibirTexto(progressoAtendimentoRoot, "Para iniciar o Relatório Individual, faça a Anamnese antes.", false);
             return;
         }
+        // SEMPRE abrir em modo NOVO para criar novo relatório
         navegarRelatorioIndividual(false, false);
     }
 }
-
