@@ -44,7 +44,7 @@
                 <HBox alignment="CENTER_RIGHT" spacing="15.0">
                     <children>
                         <Button id="turmasButton" fx:id="turmasButton" onAction="#handleTurmasButtonAction" style="-fx-background-color: #26568C;" text="Turmas" textFill="WHITE" />
-                        <Button id="alunosButton" fx:id="alunosButton" style="-fx-background-color: #26568C;" text="Alunos" textFill="WHITE" />
+                  
                     </children>
                 </HBox>
             </children>
