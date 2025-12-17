@@ -288,8 +288,7 @@ public class CardAlunoController implements Initializable {
             // Centraliza a janela
             Stage parentStage = (Stage) (cardAluno != null ? cardAluno.getScene().getWindow() : null);
             popupStage.initOwner(parentStage);
-            popupStage.setX(parentStage.getX() + (parentStage.getWidth() - popupStage.getWidth()) / 2);
-            popupStage.setY(parentStage.getY() + (parentStage.getHeight() - popupStage.getHeight()) / 2);
+            popupStage.centerOnScreen();
             
             popupStage.showAndWait();
             
@@ -330,8 +329,7 @@ public class CardAlunoController implements Initializable {
             // Centraliza a janela
             Stage parentStage = (Stage) verProgressoButton.getScene().getWindow();
             popupStage.initOwner(parentStage);
-            popupStage.setX(parentStage.getX() + (parentStage.getWidth() - popupStage.getWidth()) / 2);
-            popupStage.setY(parentStage.getY() + (parentStage.getHeight() - popupStage.getHeight()) / 2);
+            popupStage.centerOnScreen();
             
             popupStage.showAndWait();
             
