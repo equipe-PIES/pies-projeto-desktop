@@ -92,48 +92,64 @@
                                       <Label text="Chorou?" />
                               <HBox>
                                  <children>
-                                    <CheckBox fx:id="chorouSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="chorouNao" mnemonicParsing="false" text="Não">
+                                    <RadioButton fx:id="chorouSim" mnemonicParsing="false" text="Sim">
+                                        <toggleGroup>
+                                            <ToggleGroup fx:id="chorouGroup" />
+                                        </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="chorouNao" mnemonicParsing="false" text="Não" toggleGroup="$chorouGroup">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
-                                    </CheckBox>
+                                    </RadioButton>
                                  </children>
                               </HBox>
 
                                       <Label text="Ficou roxo?" />
                               <HBox>
                                  <children>
-                                    <CheckBox fx:id="ficouRoxoSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="ficouRoxoNao" mnemonicParsing="false" text="Não">
+                                    <RadioButton fx:id="ficouRoxoSim" mnemonicParsing="false" text="Sim">
+                                        <toggleGroup>
+                                            <ToggleGroup fx:id="ficouRoxoGroup" />
+                                        </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="ficouRoxoNao" mnemonicParsing="false" text="Não" toggleGroup="$ficouRoxoGroup">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
-                                    </CheckBox>
+                                    </RadioButton>
                                  </children>
                               </HBox>
 
                                       <Label text="Fez uso de incubadora?" />
                               <HBox>
                                  <children>
-                              <CheckBox fx:id="incubadoraSim" mnemonicParsing="false" text="Sim" />
-                              <CheckBox fx:id="incubadoraNao" mnemonicParsing="false" text="Não">
+                              <RadioButton fx:id="incubadoraSim" mnemonicParsing="false" text="Sim">
+                                  <toggleGroup>
+                                      <ToggleGroup fx:id="incubadoraGroup" />
+                                  </toggleGroup>
+                              </RadioButton>
+                              <RadioButton fx:id="incubadoraNao" mnemonicParsing="false" text="Não" toggleGroup="$incubadoraGroup">
                                   <HBox.margin>
                                      <Insets left="20.0" />
                                   </HBox.margin>
-                               </CheckBox>
+                               </RadioButton>
                                  </children>
                               </HBox>
 
                                       <Label text="Foi amamentado?" />
                               <HBox>
                                  <children>
-                                    <CheckBox fx:id="amamentadoSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="amamentadoNao" mnemonicParsing="false" text="Não">
+                                    <RadioButton fx:id="amamentadoSim" mnemonicParsing="false" text="Sim">
+                                        <toggleGroup>
+                                            <ToggleGroup fx:id="amamentadoGroup" />
+                                        </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="amamentadoNao" mnemonicParsing="false" text="Não" toggleGroup="$amamentadoGroup">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
-                                    </CheckBox>
+                                                </RadioButton>
                                  </children>
                               </HBox>
                                   </children>
@@ -165,12 +181,16 @@
                                      <Label text="Sustentou a cabeça?" />
                               <HBox>
                                  <children>
-                                    <CheckBox fx:id="sustentouCabecaSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="sustentouCabecaNao" mnemonicParsing="false" text="Não">
+                                    <RadioButton fx:id="sustentouCabecaSim" mnemonicParsing="false" text="Sim">
+                                        <toggleGroup>
+                                            <ToggleGroup fx:id="sustentouCabecaGroup" />
+                                        </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="sustentouCabecaNao" mnemonicParsing="false" text="Não" toggleGroup="$sustentouCabecaGroup">
                                        <HBox.margin>
                                           <Insets left="20.0" />
                                        </HBox.margin>
-                                    </CheckBox>
+                                    </RadioButton>
                                  </children>
                               </HBox>
                               <Label fx:id="lblSustentouCabecaMeses" text="Com quantos meses?" />
@@ -179,12 +199,16 @@
                                      <Label text="Engatinhou?" />
                               <HBox>
                                  <children>
-                                    <CheckBox fx:id="engatinhouSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="engatinhouNao" mnemonicParsing="false" text="Não">
+                                    <RadioButton fx:id="engatinhouSim" mnemonicParsing="false" text="Sim">
+                                        <toggleGroup>
+                                            <ToggleGroup fx:id="engatinhouGroup" />
+                                        </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="engatinhouNao" mnemonicParsing="false" text="Não" toggleGroup="$engatinhouGroup">
                                         <HBox.margin>
                                            <Insets left="20.0" />
                                         </HBox.margin>
-                                     </CheckBox>
+                                     </RadioButton>
                                  </children>
                               </HBox>
                               <Label fx:id="lblEngatinhouMeses" text="Com quantos meses?" />
@@ -193,12 +217,16 @@
                                      <Label text="Sentou?" />
                               <HBox>
                                  <children>
-                                    <CheckBox fx:id="sentouSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="sentouNao" mnemonicParsing="false" text="Não">
+                                    <RadioButton fx:id="sentouSim" mnemonicParsing="false" text="Sim">
+                                        <toggleGroup>
+                                            <ToggleGroup fx:id="sentouGroup" />
+                                        </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="sentouNao" mnemonicParsing="false" text="Não" toggleGroup="$sentouGroup">
                                         <HBox.margin>
                                            <Insets left="20.0" />
                                         </HBox.margin>
-                                     </CheckBox>
+                                     </RadioButton>
                                  </children>
                               </HBox>
                               <Label fx:id="lblSentouMeses" text="Com quantos meses?" />
@@ -207,12 +235,16 @@
                                      <Label text="Andou? " />
                               <HBox>
                                  <children>
-                                    <CheckBox fx:id="andouSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="andouNao" mnemonicParsing="false" text="Não">
+                                    <RadioButton fx:id="andouSim" mnemonicParsing="false" text="Sim">
+                                        <toggleGroup>
+                                            <ToggleGroup fx:id="andouGroup" />
+                                        </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="andouNao" mnemonicParsing="false" text="Não" toggleGroup="$andouGroup">
                                         <HBox.margin>
                                            <Insets left="20.0" />
                                         </HBox.margin>
-                                     </CheckBox>
+                                     </RadioButton>
                                  </children>
                               </HBox>
                               <Label fx:id="lblAndouMeses" text="Com quantos meses?" />
@@ -221,12 +253,16 @@
                                      <Label text="Precisou de terapia? " />
                               <HBox>
                                  <children>
-                                    <CheckBox fx:id="terapiaSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="terapiaNao" mnemonicParsing="false" text="Não">
+                                    <RadioButton fx:id="terapiaSim" mnemonicParsing="false" text="Sim">
+                                        <toggleGroup>
+                                            <ToggleGroup fx:id="terapiaGroup" />
+                                        </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="terapiaNao" mnemonicParsing="false" text="Não" toggleGroup="$terapiaGroup">
                                         <HBox.margin>
                                            <Insets left="20.0" />
                                         </HBox.margin>
-                                     </CheckBox>
+                                     </RadioButton>
                                  </children>
                               </HBox>
                               <Label fx:id="lblTerapiaMotivo" text="Qual o motivo?" />
@@ -235,12 +271,16 @@
                                      <Label text="Falou?" />
                               <HBox>
                                  <children>
-                                    <CheckBox fx:id="falouSim" mnemonicParsing="false" text="Sim" />
-                                    <CheckBox fx:id="falouNao" mnemonicParsing="false" text="Não">
+                                    <RadioButton fx:id="falouSim" mnemonicParsing="false" text="Sim">
+                                        <toggleGroup>
+                                            <ToggleGroup fx:id="falouGroup" />
+                                        </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="falouNao" mnemonicParsing="false" text="Não" toggleGroup="$falouGroup">
                                         <HBox.margin>
                                            <Insets left="20.0" />
                                         </HBox.margin>
-                                     </CheckBox>
+                                     </RadioButton>
                                  </children>
                               </HBox>
                               <Label fx:id="lblFalouMeses" text="Com quantos meses?" />
