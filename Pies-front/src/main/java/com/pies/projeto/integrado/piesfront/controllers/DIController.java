@@ -140,7 +140,6 @@ public class DIController implements Initializable {
         detectarEtapa(url);
         atualizarIndicadorDeTela();
         preencherCampos();
-        aplicarSomenteLeitura();
         javafx.application.Platform.runLater(() -> {
             atualizarNomeUsuarioAsync();
             if (somenteLeitura) {
@@ -236,11 +235,6 @@ public class DIController implements Initializable {
             return;
         }
         
-        System.out.println("=== Concluir Diagnóstico Inicial ===");
-        System.out.println("Educando ID: " + educando.id());
-        System.out.println("Diagnóstico ID: " + diagnosticoId);
-        System.out.println("Modo: " + (diagnosticoId != null ? "Edição" : "Criação"));
-        
         CreateDiagnosticoInicialDTO dto = new CreateDiagnosticoInicialDTO(
                 formData.falaSeuNome,
                 formData.dizDataNascimento,
@@ -317,17 +311,21 @@ public class DIController implements Initializable {
         try {
             if (diagnosticoId != null) {
                 // Modo edição - atualizar existente
-                System.out.println("Atualizando diagnóstico existente...");
                 ok = authService.atualizarDiagnosticoInicial(diagnosticoId, educando.id(), dto);
             } else {
-                // Modo criação - criar novo
-                System.out.println("Criando novo diagnóstico...");
-                ok = authService.criarDiagnosticoInicial(dto, educando.id());
+                // Modo criação - criar novo, mas verificar primeiro se já existe
+                java.util.Map<String, Object> existente = authService.getDiagnosticoInicialPorEducandoRaw(educando.id());
+                if (existente != null && existente.get("id") != null) {
+                    // Se existe, atualizar ao invés de criar
+                    String idExistente = String.valueOf(existente.get("id"));
+                    ok = authService.atualizarDiagnosticoInicial(idExistente, educando.id(), dto);
+                    this.diagnosticoId = idExistente;
+                } else {
+                    // Se não existe, criar novo
+                    ok = authService.criarDiagnosticoInicial(dto, educando.id());
+                }
             }
-            System.out.println("Resultado da operação: " + ok);
         } catch (Exception e) {
-            System.err.println("ERRO ao salvar diagnóstico: " + e.getMessage());
-            e.printStackTrace();
             ok = false;
         }
         
@@ -355,16 +353,12 @@ public class DIController implements Initializable {
                     c.setFormData(formData);
                     c.somenteLeitura = this.somenteLeitura;
                     c.preencherCampos();
-                    // Força o modo somente leitura após o preenchimento dos campos e após o carregamento da tela
-                    javafx.application.Platform.runLater(() -> {
-                        c.aplicarSomenteLeitura();
-                        // Desabilita manualmente todos os campos da página 2 e 3
-                        if (step == 2) {
-                            c.disableInputs(c.anamnese.lookup("#captaDetalhesGravura").getParent());
-                        } else if (step == 3) {
-                            c.disableInputs(c.anamnese.lookup("#usaSanitarioSemAjuda").getParent());
-                        }
-                    });
+                    // Aplica o modo somente leitura se necessário
+                    if (c.somenteLeitura) {
+                        javafx.application.Platform.runLater(() -> {
+                            c.aplicarSomenteLeitura();
+                        });
+                    }
                 }
             });
         }

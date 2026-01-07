@@ -22,6 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.Node;
 import javafx.collections.FXCollections;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -78,8 +79,8 @@ public class AnamneseController {
     }
 
     private void limparTodosOsCampos() {
-    // Lista de todas as CheckBox para limpar
-    CheckBox[] todasCheckBox = {
+    // Lista de todos os RadioButtons para limpar
+    RadioButton[] todosRadioButtons = {
         convulsaoSim, convulsaoNao,
         convenioSim, convenioNao,
         vacinacaoSim, vacinacaoNao,
@@ -102,9 +103,9 @@ public class AnamneseController {
         disturbioSim, disturbioNao
     };
     
-    for (CheckBox cb : todasCheckBox) {
-        if (cb != null) {
-            cb.setSelected(false);
+    for (RadioButton rb : todosRadioButtons) {
+        if (rb != null) {
+            rb.setSelected(false);
         }
     }
     
@@ -243,11 +244,16 @@ public class AnamneseController {
 
     @FXML
     private void handleGoToAnamnese2() {
+        System.out.println("=== TENTANDO IR PARA ANAMNESE 2 ===");
         captureCurrentStepData();
-        if (validateAnamnese1()) {
+        boolean isValid = validateAnamnese1();
+        System.out.println("Validação resultado: " + isValid);
+        if (isValid) {
+            System.out.println("Validação OK, abrindo anamnese-2");
             abrir("/com/pies/projeto/integrado/piesfront/screens/anamnese-2.fxml", "Anamnese");
             aplicarSomenteLeitura();
         } else {
+            System.out.println("Validação FALHOU, mostrando mensagem");
             showValidation();
         }
     }
@@ -268,6 +274,10 @@ public class AnamneseController {
         captureCurrentStepData();
         if (somenteLeitura) {
             showPopup("Modo de visualização", false);
+            return;
+        }
+        if (!validateAnamnese3()) {
+            showValidation();
             return;
         }
         if (educando != null) {
@@ -321,10 +331,18 @@ public class AnamneseController {
         for (javafx.scene.Node node : root.getChildrenUnmodifiable()) {
             if (node instanceof javafx.scene.control.TextInputControl tic) {
                 tic.setEditable(false);
+                tic.setDisable(true);
             } else if (node instanceof javafx.scene.control.CheckBox cb) {
                 cb.setDisable(true);
+            } else if (node instanceof javafx.scene.control.RadioButton rb) {
+                rb.setDisable(true);
             } else if (node instanceof javafx.scene.control.ChoiceBox<?> ch) {
                 ch.setDisable(true);
+            } else if (node instanceof javafx.scene.control.ScrollPane sp) {
+                javafx.scene.Node content = sp.getContent();
+                if (content instanceof javafx.scene.Parent cp) {
+                    disableInputs(cp);
+                }
             } else if (node instanceof javafx.scene.Parent p) {
                 disableInputs(p);
             }
@@ -349,17 +367,17 @@ public class AnamneseController {
     }
 
     @FXML
-    private CheckBox convenioSim, convenioNao, doencaContagiosaSim, doencaContagiosaNao, medicacaoSim, medicacaoNao;
+    private RadioButton convenioSim, convenioNao, doencaContagiosaSim, doencaContagiosaNao, medicacaoSim, medicacaoNao;
     @FXML
-    private CheckBox convulsaoSim, convulsaoNao, vacinacaoSim, vacinacaoNao;
+    private RadioButton convulsaoSim, convulsaoNao, vacinacaoSim, vacinacaoNao;
     @FXML
-    private CheckBox dificuldadesSim, dificuldadesNao, apoioPedagogicoSim, apoioPedagogicoNao;
+    private RadioButton dificuldadesSim, dificuldadesNao, apoioPedagogicoSim, apoioPedagogicoNao;
     @FXML
-    private CheckBox sustentouCabecaSim, sustentouCabecaNao, engatinhouSim, engatinhouNao, sentouSim, sentouNao, andouSim, andouNao, terapiaSim, terapiaNao, falouSim, falouNao;
+    private RadioButton sustentouCabecaSim, sustentouCabecaNao, engatinhouSim, engatinhouNao, sentouSim, sentouNao, andouSim, andouNao, terapiaSim, terapiaNao, falouSim, falouNao;
     @FXML
-    private CheckBox chorouSim, chorouNao, ficouRoxoSim, ficouRoxoNao, incubadoraSim, incubadoraNao, amamentadoSim, amamentadoNao;
+    private RadioButton chorouSim, chorouNao, ficouRoxoSim, ficouRoxoNao, incubadoraSim, incubadoraNao, amamentadoSim, amamentadoNao;
     @FXML
-    private CheckBox prematuridadeSim, prematuridadeNao;
+    private RadioButton prematuridadeSim, prematuridadeNao;
     @FXML
     private Label questConvenio, questDoencaContagiosa, questMedicacao, questDificuldade, questApioPedagogico;
     @FXML
@@ -378,7 +396,7 @@ public class AnamneseController {
     @FXML
     private TextField duracaoGestacao1;
     @FXML
-    private CheckBox preNatalSim, preNatalNao;
+    private RadioButton preNatalSim, preNatalNao;
     @FXML
     private TextField servicos;
     @FXML
@@ -406,7 +424,7 @@ public class AnamneseController {
     @FXML
     private ChoiceBox<String> inquietacao;
     @FXML
-    private CheckBox disturbioSim, disturbioNao;
+    private RadioButton disturbioSim, disturbioNao;
     @FXML
     private Label questDisturbio;
 
@@ -506,13 +524,26 @@ public class AnamneseController {
         return false;
     }
 
-    private boolean anyUnselected(CheckBox... pairs) {
+    private boolean anyUnselected(RadioButton... pairs) {
         if (pairs == null) return false;
         for (int i = 0; i + 1 < pairs.length; i += 2) {
-            CheckBox a = pairs[i], b = pairs[i + 1];
-            if (a == null || b == null) continue;
-            if (!a.isVisible() && !b.isVisible()) continue;
-            if (!a.isSelected() && !b.isSelected()) return true;
+            RadioButton a = pairs[i], b = pairs[i + 1];
+            if (a == null || b == null) {
+                System.out.println("Par " + (i/2) + ": RadioButton nulo");
+                continue;
+            }
+            if (!a.isVisible() && !b.isVisible()) {
+                System.out.println("Par " + (i/2) + " (" + a.getId() + "/" + b.getId() + "): Não visível, ignorando");
+                continue;
+            }
+            boolean aSelected = a.isSelected();
+            boolean bSelected = b.isSelected();
+            System.out.println("Par " + (i/2) + " (" + a.getId() + "/" + b.getId() + "): " + 
+                             aSelected + "/" + bSelected + " - visível: " + a.isVisible() + "/" + b.isVisible());
+            if (!aSelected && !bSelected) {
+                System.out.println("  -> NENHUM SELECIONADO!");
+                return true;
+            }
         }
         return false;
     }
@@ -528,6 +559,7 @@ public class AnamneseController {
     }
 
     private boolean validateAnamnese1() {
+        System.out.println("=== VALIDANDO ANAMNESE 1 ===");
         boolean emptyText = anyEmpty(servicosFrequentados1, inicioEscolarizacao,
                 convenioSim != null && convenioSim.isSelected() ? convenio : null,
                 doencaContagiosaSim != null && doencaContagiosaSim.isSelected() ? doencaContagiosa : null,
@@ -535,6 +567,8 @@ public class AnamneseController {
                 dificuldadesSim != null && dificuldadesSim.isSelected() ? dificuldades : null,
                 apoioPedagogicoSim != null && apoioPedagogicoSim.isSelected() ? apoioPedagogico : null,
                 prematuridadeSim != null && prematuridadeSim.isSelected() ? prematuridade1 : null);
+
+        System.out.println("Campos de texto vazios: " + emptyText);
 
         boolean missingChecks = anyUnselected(convulsaoSim, convulsaoNao,
                 convenioSim, convenioNao,
@@ -545,6 +579,9 @@ public class AnamneseController {
                 apoioPedagogicoSim, apoioPedagogicoNao,
                 preNatalSim, preNatalNao,
                 prematuridadeSim, prematuridadeNao);
+
+        System.out.println("Radio buttons não selecionados: " + missingChecks);
+        System.out.println("Resultado final: " + (!emptyText && !missingChecks));
 
         return !emptyText && !missingChecks;
     }
@@ -570,6 +607,18 @@ public class AnamneseController {
                 falouSim, falouNao);
 
         boolean emptyChoices = choiceEmpty(tipoParto);
+        return !emptyText && !missingChecks && !emptyChoices;
+    }
+
+    private boolean validateAnamnese3() {
+        boolean emptyText = anyEmpty(primeiraPalavra, primeiraFrase, servicos,
+                disturbioSim != null && disturbioSim.isSelected() ? disturbio : null);
+
+        boolean missingChecks = anyUnselected(disturbioSim, disturbioNao);
+
+        boolean emptyChoices = choiceEmpty(balbucio, tipoFala, dormeSozinho, temQuarto, 
+                sono, respeitaRegras, desmotivado, agressivo, inquietacao);
+        
         return !emptyText && !missingChecks && !emptyChoices;
     }
 
@@ -603,7 +652,7 @@ public class AnamneseController {
         wire(disturbioSim, disturbioNao, questDisturbio, disturbio);
     }
 
-    private void wire(CheckBox sim, CheckBox nao, Node... dependents) {
+    private void wire(RadioButton sim, RadioButton nao, Node... dependents) {
         if (sim == null || nao == null) return;
         sim.selectedProperty().addListener((obs, was, is) -> toggle(is, dependents));
         nao.selectedProperty().addListener((obs, was, is) -> {
@@ -871,7 +920,7 @@ public class AnamneseController {
         if (prematuridade1 != null) prematuridade1.setText(val(formData.prematuridade));
         if (cidadeNascimento != null) cidadeNascimento.setText(val(formData.cidadeNascimento));
         if (maternidade != null) maternidade.setText(val(formData.maternidade));
-        if (tipoParto != null && formData.tipoParto != null) tipoParto.setValue(formData.tipoParto);
+        if (tipoParto != null && formData.tipoParto != null) setChoiceValue(tipoParto, formData.tipoParto);
         if (sustentouCabeca != null) sustentouCabeca.setText(val(formData.sustentouCabecaMeses));
         if (engatinhou != null) engatinhou.setText(val(formData.engatinhouMeses));
         if (sentou != null) sentou.setText(val(formData.sentouMeses));
@@ -879,10 +928,10 @@ public class AnamneseController {
         if (terapia != null) terapia.setText(val(formData.terapiaMotivo));
         if (falou != null) falou.setText(val(formData.falouMeses));
 
-        if (balbucio != null && formData.primeiroBalbucioMeses != null) balbucio.setValue(formData.primeiroBalbucioMeses);
+        if (balbucio != null && formData.primeiroBalbucioMeses != null) setChoiceValue(balbucio, formData.primeiroBalbucioMeses);
         if (primeiraPalavra != null) primeiraPalavra.setText(val(formData.primeiraPalavraQuando));
         if (primeiraFrase != null) primeiraFrase.setText(val(formData.primeiraFraseQuando));
-        if (tipoFala != null && formData.falaNaturalOuInibido != null) tipoFala.setValue(formData.falaNaturalOuInibido);
+        if (tipoFala != null && formData.falaNaturalOuInibido != null) setChoiceValue(tipoFala, formData.falaNaturalOuInibido);
         if (disturbio != null) disturbio.setText(val(formData.disturbioFala));
         if (disturbioSim != null && disturbioNao != null) {
             Boolean b = formData.possuiDisturbio;
@@ -890,13 +939,13 @@ public class AnamneseController {
             disturbioNao.setSelected(Boolean.FALSE.equals(b) && permiteSelecionarNao);
         }
 
-        if (dormeSozinho != null && formData.dormeSozinho != null) dormeSozinho.setValue(toDisplaySimNao(formData.dormeSozinho));
-        if (temQuarto != null && formData.temQuartoProprio != null) temQuarto.setValue(toDisplaySimNao(formData.temQuartoProprio));
-        if (sono != null && formData.sonoCalmoOuAgitado != null) sono.setValue(formData.sonoCalmoOuAgitado);
-        if (respeitaRegras != null && formData.respeitaRegras != null) respeitaRegras.setValue(toDisplaySimNao(formData.respeitaRegras));
-        if (desmotivado != null && formData.desmotivado != null) desmotivado.setValue(toDisplaySimNao(formData.desmotivado));
-        if (agressivo != null && formData.agressivo != null) agressivo.setValue(toDisplaySimNao(formData.agressivo));
-        if (inquietacao != null && formData.apresentaInquietacao != null) inquietacao.setValue(toDisplaySimNao(formData.apresentaInquietacao));
+        if (dormeSozinho != null && formData.dormeSozinho != null) setChoiceValue(dormeSozinho, toDisplaySimNao(formData.dormeSozinho));
+        if (temQuarto != null && formData.temQuartoProprio != null) setChoiceValue(temQuarto, toDisplaySimNao(formData.temQuartoProprio));
+        if (sono != null && formData.sonoCalmoOuAgitado != null) setChoiceValue(sono, formData.sonoCalmoOuAgitado);
+        if (respeitaRegras != null && formData.respeitaRegras != null) setChoiceValue(respeitaRegras, toDisplaySimNao(formData.respeitaRegras));
+        if (desmotivado != null && formData.desmotivado != null) setChoiceValue(desmotivado, toDisplaySimNao(formData.desmotivado));
+        if (agressivo != null && formData.agressivo != null) setChoiceValue(agressivo, toDisplaySimNao(formData.agressivo));
+        if (inquietacao != null && formData.apresentaInquietacao != null) setChoiceValue(inquietacao, toDisplaySimNao(formData.apresentaInquietacao));
     }
 
     private String toDisplaySimNao(String s) {
@@ -904,6 +953,19 @@ public class AnamneseController {
         if ("SIM".equalsIgnoreCase(s)) return "Sim";
         if ("NAO".equalsIgnoreCase(s) || "NÃO".equalsIgnoreCase(s)) return "Não";
         return s;
+    }
+
+    private void setChoiceValue(ChoiceBox<String> box, String value) {
+        if (box == null || value == null) return;
+        var items = box.getItems();
+        if (items == null) {
+            box.setItems(FXCollections.observableArrayList());
+            items = box.getItems();
+        }
+        if (!items.contains(value)) {
+            items.add(value);
+        }
+        box.setValue(value);
     }
 
     @FXML
