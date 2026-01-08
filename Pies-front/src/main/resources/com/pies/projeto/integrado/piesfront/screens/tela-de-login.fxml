@@ -68,8 +68,8 @@
                      </cursor>
                   </Button>
                   
-                  <Hyperlink fx:id="forgotPasswordLink" onAction="#handleForgotPasswordAction" text="Esqueci minha senha." textFill="#8a8686" />
-                  
+                  <!-- <Hyperlink fx:id="forgotPasswordLink" onAction="#handleForgotPasswordAction" text="Esqueci minha senha." textFill="#8a8686" />
+                   -->
                   <Label fx:id="errorMessageLabel" textFill="#e44c3c" wrapText="true" />
                   
                   <ProgressBar fx:id="loginProgressBar" prefWidth="290.0" progress="0.0" visible="true" />
